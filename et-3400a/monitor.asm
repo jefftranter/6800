@@ -148,3 +148,139 @@ ZERO    RTS                          ; JUMP TO HANDLER
 BKSET   LDX     #BKTBL-2
         LDAA    #$FF
         LDAB    #NBR                 ; FIND SPOT IN TABLE
+BKSE1   INX
+        INX
+        CMPA    0
+        BNE     BKSE2
+        CMPA    1,X
+        BEQ     BKSE3                ; EMPTY SPOT
+BKSE2   DECB
+        BNE     BKSE1                ; STILL HOPE
+
+;       FULL UP
+
+        JSR     STO
+        DB      0,LTRF,LTRU,LTRL,LTRL,$A0
+        INCA
+        RTS
+
+BKSE3   STX     T1
+        BSR     OUTSTA
+        DB      LTRB,LTRR+$80
+        BSR     DOPM1
+        INCA                         ; (A) = 1
+        RTS
+
+        PAGE
+;;      DOPPMT - ACCEPT ADDRESS VALUE WITH "DO" PROMPT
+;
+;       ENTRY:   (X) = ADDRESS TO STORE INPUTTED VALUE
+;       EXIT:    (B) = 2
+;                (X) UNCHANGED
+;       USES:    ALL.TO.T1
+
+DOPMT   STX      T1
+        BSR      OUTSTA              ; OUTPUT PROMPT "DO"
+        DW       LTRD,LTRO+$80
+DOPM1   BSR      REDIS               ; RESET DISPLAY
+        LDX      T1                  ; RESTORE X
+        LDAB     #2
+        JMP      PROMPT              ; INPUT NEW VALUE
+
+;;      ADDR - ACCEPT ADDRESS VALUE WITH 'AD' PROMPT
+;
+;       ENTRY, EXIT -- SEE 'DOPMT'
+
+ADDR    STX      T1
+        BSR      OUTSTA
+        DB       HEXA,LTRD+$80
+        BRA      DOMP1
+
+;;      OUTSTA - OUTPUT STRING FOR ADDRESS PROMPT
+;
+
+OUTSTA  LDX      #DG2ADD
+        JMP      OUTST1
+
+;;      DO - RESET USER PC AND RESUME
+;
+;       ENTRY:  NONE
+;       EXIT:   TO 'RESUME'
+;       U:      ALL
+
+DO      LDX     USERS
+        INX
+        INX
+        INX
+        INX
+        INX
+        INX                          ; X TO USER PC
+        BSR     DOPMT
+
+        PAGE
+;;      RESUME - RESUME USER PROGRAM
+;
+;       1) BLANKS ALL DISPLAYS
+;       2) INITIALIZES (DIGADD)
+;       3) STEPS USER CODE PAST BREAKPOINT
+;       4) INSERTS BREAKPOINTS
+;       5) PRINTS INSTRUCTION UPON RETURN
+;       ENTRY:NONE
+;       EXIT: (B) = 1
+;             (X) = USERPC
+;       USES  ALL.TO.T1
+
+RESUME  BSR     REDIS                ; RESET DISPLAY
+        CLRA
+        LDAB    #6
+RES1    JSR     OUTCH                ; CLEAR DISPLAYS
+        DECB
+        BNE     RES1
+        BSR     REDIS                ; RESET DISPLAY
+RES2    JSR     SSTEP                ; STEP PAST BREAKPOINT
+        LDAB    #NBR                 ; SET BREAKPOINTS
+RES3    TSX
+        LDX     2*NBR,X              ; GET BREAKPOINT ADDRESS
+
+        LDAA    0,X
+        PSHA
+        PSHA
+        PSHA
+        LDAA    #$3F                 ; REPLACE WITH SWI
+        STAA    0,X
+        DECB
+        BNE     RES3
+        LDX     #BKPT
+        JMP     SWIVE1               ; GO TO USER CODE
+
+;;      REDIS - RESET DISPLAYS
+;
+;       ENTRY:  NONE
+;       EXIT:   DIGADD SET TO LEFTMOST DIGIT
+;       USES:   T0
+
+REDIS   STX     T0
+        LDX     #DG6ADD
+        STX     DIGADD
+        LDX     T0
+        RTS
+
+        PAGE
+;;      BADDR - BUILD ADDRESS
+;
+;       ENTRY: NONE
+;       EXIT   (X) = ADDRESS
+
+BADDR   LDX    #T1
+        BSR    ADDR
+        LDX    T1
+        RTS
+
+;;      BKPT - BREAK POINT RETURN
+;       1) REMOVE BKPTS FROM USER CODE
+;       2) CHECK FOR BREAKPOINT HIT AND EITHER
+;           A)  RESUME IF NO HIT
+;           B)  PRINT INSTRUCTION AND RETURN IF HIT
+
+BKPT    TSX
+        STS    USERS

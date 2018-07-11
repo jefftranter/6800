@@ -1,4 +1,5 @@
         NAM Heathkit ET-3400A Monitor
+        PAGE 132,66
 
 	CPU 6800
 
@@ -268,12 +269,12 @@ REDIS   STX     T0
         PAGE
 ;;      BADDR - BUILD ADDRESS
 ;
-;       ENTRY: NONE
-;       EXIT   (X) = ADDRESS
+;       ENTRY:  NONE
+;       EXIT    (X) = ADDRESS
 
-BADDR   LDX    #T1
-        BSR    ADDR
-        LDX    T1
+BADDR   LDX     #T1
+        BSR     ADDR
+        LDX     T1
         RTS
 
 ;;      BKPT - BREAK POINT RETURN
@@ -283,4 +284,53 @@ BADDR   LDX    #T1
 ;           B)  PRINT INSTRUCTION AND RETURN IF HIT
 
 BKPT    TSX
-        STS    USERS
+        STS     USERS
+        LDAA    6,X
+        BNE     BKP1                 ; DECREMENT PC ON USERS STACK
+        DEC     5,X
+BKP1    DECA
+        STAA    6,X
+        LDAB    5,X
+        STAB    T0                   ; SAVE FOR COMPARE
+        STAA    T0+1
+
+;;      NOW CLEAR BREAKPOINTS
+
+        CLC                          ; 'C' IS HIT FLAG
+BKP2    LDS     #BKTBL-3-NBR-NBR
+
+        LDAB    #NBR
+BKP3    PULA
+        PULA                         ; OLD OP CODE INTO A
+        TSX
+        LDX     2*NBR,X
+        CPX     T0                   ; DO WE HAVE A HIT?
+        BNE     BKP4                 ;    NO WE DO NOT
+        SEC                          ;       YES WE DO - SET FLAG
+BKP4    EQU     *
+        STAA    0,X                  ; FIX USER CODE
+        DECB
+        BNE     BKP3
+        BCC     RES2                 ; BREAKPOINT NOT HIT
+        LDX     T0                   ;  = USER PC
+
+;;      MEM - DISPLAY ADDRESS AND DATA
+;
+;       ENTRY:  (X) = ADDRESS
+;       EXIT:   (B) = 1
+;       USES: A,B,C,T0,T1
+
+MEM     BSR   REDIS                  ; RESET DISPLAY
+        STX   T1
+EE      LDX   #T1
+        LDAB  #2
+        BSR   MEM2                   ; DISPLAY ADDRESS
+        LDX   0,X
+        DECB
+MEM2    JMP   DSPLAY                 ; OUTPUT DATA
+
+;;      AUTO - AUTO LOAD OF MEMORY
+;
+;       ENTRY: NONE
+;       EXIT:  NO EXIT POSSIBLE
+;       USES:  ALL,T0,T1

@@ -144,7 +144,7 @@ ZERO    RTS                          ; JUMP TO HANDLER
 ;       ENTRY:  NONE
 ;       EXIT    (B) = 2
 ;               (X) = ADDRESS IN TABLE
-;       USES: ALL.TO.11
+;       USES: ALL,TO,11
 
 BKSET   LDX     #BKTBL-2
         LDAA    #$FF
@@ -178,7 +178,7 @@ BKSE3   STX     T1
 ;       ENTRY:   (X) = ADDRESS TO STORE INPUTTED VALUE
 ;       EXIT:    (B) = 2
 ;                (X) UNCHANGED
-;       USES:    ALL.TO.T1
+;       USES:    ALL,TO,T1
 
 DOPMT   STX      T1
         BSR      OUTSTA              ; OUTPUT PROMPT "DO"
@@ -229,7 +229,7 @@ DO      LDX     USERS
 ;       ENTRY:NONE
 ;       EXIT: (B) = 1
 ;             (X) = USERPC
-;       USES  ALL.TO.T1
+;       USES  ALL,TO,T1
 
 RESUME  BSR     REDIS                ; RESET DISPLAY
         CLRA
@@ -334,3 +334,71 @@ MEM2    JMP   DSPLAY                 ; OUTPUT DATA
 ;       ENTRY: NONE
 ;       EXIT:  NO EXIT POSSIBLE
 ;       USES:  ALL,T0,T1
+
+AUTO    BSR    BADDR                 ; BUILD ADDRESS
+AUT1    BSR    MEM
+        BSR    REPLAC
+        INX
+        BRA     AUT1                 ; NO EXIT
+
+;;      EXAM - EXAMINE MEMORY
+;
+;       ENTRY:  NONE
+;       EXIT:   (X) = ADDRESS
+;               (B) = 0
+;               (A) = 0
+;       USES:   ALL,T0,T1
+
+EXAM    BSR     BADDR                ; BUILD ADDRESS
+        DEX
+
+;;      FOWD - DISPLAY NEXT BYTE
+;
+;       ENTRY:  (X) = OLD ADDRESS
+;       EXIT:   (X) = (XOLD) + 1
+;               (B) = 1
+;               (A) = 0
+;       USES:   ALL,T0
+
+FOWD    INX
+        INX
+
+;;      BACK - DISPLAY PREVIOUS BYTE
+;
+;       ENTRY:  (X) = ADDRESS
+;       EXIT:   (X) = (XOLD) + 1
+;               (B) = 1
+;               (A) = 0
+;       USES:   ALL,T0
+BACK    DEX
+        BRA     MEM                  ; DISPLAY ADDRESS AND DATA
+
+;;      REPLAC - REPLACE DISPLAYED VALUE
+;
+;       'REPLAC' 1) BACKSPACES DISPLAY TO CANCEL DISPLAYED VALUE
+;                2) SENDS PROMPT FOR REPLACEMENT VALUE
+;                3) ACCEPTS AND REPLACES DESIGNATED BYTE(S)
+;       ENTRY:  (X) = ADDRESS OF BYTE(S) TO REPLACE
+;               (B) = NUMBER OF BYTES
+;               (DIGIADD) = ADDRESS OF DIGIT TO RIGHT OF DISPLAYED
+;       EXIT:   B,X,DIGADD UNCHANGED
+;       USES:   T0,A,C
+
+REPLAC  TSTB
+        BEQ     REPL1                ; NO BYTES
+        PSHA
+        BSR     BKSP                 ; BACKSPACE DISPLAYS
+        BSR     PROMPT
+        PULA
+REPL1   RTS
+
+
+;;      PROMPT - PROMPT AND INPUT BYTES
+;
+;       ENTRY:  (X) = ADDRESS TO STORE VALUE
+;               (B) = NUMBER OF BYTES
+;               (DIGADD) = ADDRESS OF FIRST ECHO CHARACTER
+;       EXIT:   B,X UNCHANGED
+;               DIGADD UPDATED
+;       USES:   T0, DIGADD
+

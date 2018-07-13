@@ -402,3 +402,81 @@ REPL1   RTS
 ;               DIGADD UPDATED
 ;       USES:   T0, DIGADD
 
+PROMPT  PSHB
+        LDAA    #DASH                ; PROMPT CHARACTER
+        ASLB
+PROM1   JSR     OUTCH                ; SEND PROMPT
+
+        DECB
+        BNE     PROM1
+        PULB
+        BSR     BKSP                 ; BACKSPACE DISPLAYS
+        PSHB                         ; **ALTERNATE ENTRY**
+PROM2   JSR     IHB                  ; GET BYTE VALUE
+        STAA    0,X                  ; PLACE INTO MEMORY
+        INX                          ; BUMP POINTER
+        DECB
+        BNE     PROM2                ; MORE TO GO
+        PULB
+        TBA                          ; DUPLICATE
+PROM3   DEX                          ; FIX X
+        DECA
+        BNE     PROM3
+        RTS                          ; EXIT
+
+
+;;      BKSP - BACKSPACE DISPLAYS
+;
+;       ENTRY: (B) = NUMBER DIGIT PAIRS TO BACKSPACE
+;       EXIT:  (DIGADD) = (DIGADD) + 20 * (B)
+;       USES:  A,C
+
+BKSP    PSHB
+        LDAA    DIGADD+1             ; L.S. BYTE
+BKSP1   ADDA    #$20                 ; BACKSPACE TWO PLACES
+        DECB
+        BNE     BKSP1
+        STAA    DIGADD+1
+        PULB
+        RTS
+
+;;      REGISTER DISPLAY FUNCTIONS
+;
+;       ENTRY:  NONE
+;       EXIT:   (B) = NUMBER BYTES THIS REGISTER
+;               (X) = REGISTER ADDRESS ON STACK
+;               (DIGADD) INITIALIZED TO DIGIT 6
+;       USES:   ALL,T0
+
+REGX    BSR     OUTSTJ               ; PRINT 'REGX'
+        DB      LTRI,LTRN+$80
+        BRA     REGX1
+
+REGA    BSR     OUTSTJ               ; PRINT 'ACCA'
+        DB      HEXA,LTRC,LTRC,LTRA+$80
+        BRA     REGA1
+
+REGB    BSR     OUTSTJ               ; PRINT 'ACCB'
+        DB      HEXA,LTRC,LTRC,LTRB+$80
+        BRA     REGB1
+
+REGP    BSR     OUTSTJ               ; PRINT 'PC'
+        DB      LTRP,LTRC+$80
+
+        INCA
+        INCA
+REGX1   INCB
+        INCA
+REGA1   INCA
+REGB1   INCB
+        ADDA    #2
+
+        LDX     USERS                ; POINT X TO REGISTER
+REG1    INX
+        DECA
+        BNE     REG1
+        BSR     DISPLAY
+        INCA
+        RTS
+
+;;      DISPLAY - DISPLAY INDEXED BYTES

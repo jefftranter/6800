@@ -878,3 +878,67 @@ BSTRD   LDS     TEMP                 ; RETURN TO CALLING ROUTINE
 BSRH    CMPA    #$8D                 ; IS IT BSR
         BNE     JSRH
         LDAA    #$5F                 ; THIS CONVERTS BSR'S TO BRA'S
+
+;;      JSR HANDLER
+
+JSRH    SUBA    #$3F                 ; JSR'S TO JUMPS
+        PSHA                         ; CORRECTED OPCODE ONTO STACK
+        DEX
+        DEX
+        STX     USERS
+JSRH1   LDAA    3,X
+        STAA    1,X                  ; MOVE USER REGISTERS
+        INX
+        DECB
+        BPL     JSRH1
+        BRA     SRCHOP               ; NOW EXECUTE JUMP INSTRUCT
+
+;;      JPXH - INDEXED JUMP HANDLER.
+
+JPXH    PULB                         ; GET OFFSET
+        CLRA
+        ADDB    5,X
+        ADCA    4,X
+        DB      $8C                  ; CPX#: ONE BYTE BRA NEWPC
+
+;;      JMP HANDLER
+
+JMPH    PULA
+        PULB
+NEWPC   STAA    6,X
+        STAB    7,X
+        BRA     STOX                 ; RETURN TO CALLER
+
+;;      RTS HANDLER
+
+RTSH    INX
+        INX
+        STX     USERS                ; NET PULL OF TWO BYTES
+RTS1    LDAA    3,X
+        STAA    5,X
+        DEX
+        DECB
+        BGT     RTS1
+        BRA     BSTRD
+
+;;      RTI HANDLER
+
+RTIH    INX
+        DECB
+        BPL     RTIH
+        BRA     STOX
+
+;;      SWI HANDLER
+
+SWIH    LDAA    7,X
+        STAA    0,X
+        DEX
+        DECB
+        BPL     SWIH
+        ORAA    #%00010000           ; SET INTERRUPT MASK
+        STAA    1,X
+        LDAB    #-USWI/256*256+USWI  ; USWI LO ORDER
+        LDAA    #USWI/256
+        BRA     NEWPC                ; PATCH IN UIRQ
+
+;; OPTAB - LEGAL OP-CODE LOOKUP TABLE

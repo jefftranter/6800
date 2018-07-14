@@ -137,8 +137,6 @@ MAIN3   INX
 ZERO    RTS                          ; JUMP TO HANDLER
 
 
-        PAGE
-
 ;;      RESET - ENTRY FOR BREAKPOINT TABLE
 ;
 ;       ENTRY:  NONE
@@ -172,7 +170,6 @@ BKSE3   STX     T1
         INCA                         ; (A) = 1
         RTS
 
-        PAGE
 ;;      DOPPMT - ACCEPT ADDRESS VALUE WITH "DO" PROMPT
 ;
 ;       ENTRY:   (X) = ADDRESS TO STORE INPUTTED VALUE
@@ -218,7 +215,6 @@ DO      LDX     USERS
         INX                          ; X TO USER PC
         BSR     DOPMT
 
-        PAGE
 ;;      RESUME - RESUME USER PROGRAM
 ;
 ;       1) BLANKS ALL DISPLAYS
@@ -266,7 +262,6 @@ REDIS   STX     T0
         LDX     T0
         RTS
 
-        PAGE
 ;;      BADDR - BUILD ADDRESS
 ;
 ;       ENTRY:  NONE
@@ -480,3 +475,267 @@ REG1    INX
         RTS
 
 ;;      DISPLAY - DISPLAY INDEXED BYTES
+;
+;       ENTRY:  (X) = ADDRESS OF BYTES TO OUTPUT
+;               (B) = NUMBER OF BYTES TO DISPLAY
+;       EXIT:   X,B UNCHANGED
+;               (DIGADD) UPDATED
+;       USES:   ALL, T0
+
+DSPLAY  PSHB
+DIS1    LDAA    0,X                  ; GET BYTE
+        JSR     OUTBYT               ; DISPLAY BYTE
+        INX
+        DECB
+        BNE     DIS1
+        PULB
+        TBA                          ; DUPLICATE BYTE COUNT
+DIS2    DEX
+        DECA
+        BNE     DIS2
+        RTS
+
+;       CLEAR B AND JUMP TO OUTSTR
+
+OUTSTJ  CLRB
+OUTST0  LDX     #DG6ADD
+        JMP OUTST1
+
+;;      CONDX - DISPLAY CONDITION CODES
+;
+;       ENTRY:  DIGADD INITIALIZED
+;       EXIT:   (B) = 0
+;       USES:   ALL,T0
+
+CONDX   JSR     REDIS                ; RESET DISPLAYS
+        LDX     USERS
+        LDAB    #$20
+COND0   CLRA
+        BITB    1,X                  ; MASK DESIRED BIT
+
+        BEQ     COND1                ; IS A ZERO
+        INCA                         ; IS A ONE
+COND1   JSR     OUTHEX
+        RORB
+        BNE     COND0                ; MORE TO DO
+        INCA
+        RTS
+
+;;      STKPTR - OUTPUT USER STACK POINTER
+;
+;       ENTRY:  (DIGADD) INITIALIZED
+;       EXIT:   (B) = 0
+;       USES: ALL, T0
+
+REGS    EQU     *
+STKPTR  BSR     OUTSTJ
+        DB      LTRS,LTRP+$80
+        LDAB    USERS+1
+        ADDB    #7
+        ADCA    USERS                ; CLEAN UP FOR THE USER
+        BSR     OUTBYT
+        TBA
+        CLRB
+        BSR     OUTBYT
+        LDAA    #1
+        RTS
+
+;;      ENCODE - SCAN END ENCODE KEYBOARD
+;
+;       ENTRY:  NONE
+;       EXIT:   (A) = HEX VALUE OF KEY PRESSED
+;               'C' SET FOR VALID CONDITION
+;       USES:   A,T,T0
+
+ENCODE  PSHB
+        LDAB    COL1                 ; GET KEYBOARD DATA
+        LDAA    COL3
+        ASLA
+        ASLA
+        ASLA
+        ROLB
+        ASLA
+        ROLB
+        ASLA
+        ROLB
+        PSHB
+        LDAB    COL2                 ; GET LAST DATA
+        ANDB    #$1F                 ; MASK ANY GARBAGE
+        ABA
+        PULB
+        COMA
+        COMB
+
+;       (B4) IS NOW KEYBOARD PATTERN
+
+        STX     T0
+        LDX     #HEXTAB-1            ; TABLE OF POSSILE OUTPUTS
+        CBA                          ; FIND ACTIVE ACCUMULATOR
+        BEQ     ENC3                 ; ILLEGAL OR NO KEY
+        BCC     ENC1                 ; A ACTIVE
+        PSHA                         ; B ACTIVE
+        TBA                          ;     INTERCHANGE B,A
+        PULB
+        LDX     #HEXTAB+7
+ENC1    TSTB                         ; B SHOULD BE ZERO
+        BNE     ENC3                 ; ILLEGAL
+ENC2    INX                          ; SCAN FOR ACTIVE BIT
+        ASLA
+        BHI     ENC2                 ; NOT ACTIVE BIT
+        BEQ     ENC4                 ; LEGAL CHARACTER
+ENC3    CLC                          ; ILLEGAL RETURNS 'C' CLEAR
+ENC4    LDAA    0,X                  ; GET HEX FROM TABLE
+        LDX     T0
+        PULB                         ; CLEAN UP
+        RTS                          ;   AND RETURN
+
+
+;;      INCH - INPUT CHARACTER FROM KEYBOARD
+;
+;         'INCH' WAITS FOR A TRANSITION BETWEEN ILLEGAL AND
+;            LEGAL KEYBOARD CONDITIONS, AND RETURNS HEX VALUE
+;               OF KEY DEPRESSED
+;
+;       ENTRY:  NONE
+;       EXIT:   (A) = HEX VALUE
+;       USES:   A,T,T0
+
+INCH    PSHB
+INC1    LDAB    #TIME                ; VIOLATION COUNT
+INC2    BSR     ENCODE               ; WAIT FOR ILLEGAL INTERVAL
+        BCS     INC1                 ; STILL LEGAL
+        DECB
+        BNE     INC2                 ; NOT A FELONY
+
+;       NOW WE'RE SURE WE HAVE AN ILLEGAL CONDITION AND
+;       NOT JUST A RELEASE CONTACT BOUNCE
+
+INC3    LDAB    #TIME                ; TIME UNTIL PAROLE
+INC4    BSR     ENCODE
+        BCC     INC3                 ; BAD BEHAVIOR
+        DECB
+        BNE     INC4                 ; BACK IN THE SLAMMER
+        PULB
+        RTS
+
+;;      IHB - INPUT HEX BYTE AND DISPLAY ON LEDS
+;
+;       ENTRY: NONE
+;       EXIT:  (A) = BYTE VALUE
+;              (DIGADD) UPDATED
+;       USES: A,T0,C
+
+IHB     BSR     INCH                 ; GET FIRST HALF
+        BSR     OUTHEX               ; ECHO TO DISPLAYS
+        ASLA
+        ASLA
+        ASLA
+        ASLA
+        PSHB
+        TAB
+        BSR     INCH                 ; GET NEXT HALF
+        ABA
+        PULB
+        PSHA
+IHB1    BSR     ENCODE               ; WAIT FOR KEY RELEASE
+        BCS     IHB1
+        PULA                         ; RESTORE LEGAL ENTRY
+        RTS
+
+;;      OUTBYT - OUTPUT TWO HEX DIGITS
+;
+;       ENTRY:  (A) = BYTE VALUE TO OUTPUT
+;       EXIT:   (DIGADD) UPDATED
+;       USES:   C,T0
+
+OUTBYT  PSHA
+        LSRA
+        LSRA
+        LSRA
+        LSRA
+        BSR     OUTHEX               ; OUTPUT M.S. FOUR BITS
+        PULA
+
+;;      OUTHEX - OUTPUT HEX DIGIT
+;
+;       ENTRY: (A) = HEX VALUE
+;       EXIT: (DIGADD UPDATED)
+;       USES: C,T0
+
+OUTHEX  PSHA
+        ANDA    #$F                 ; MASK GARBAGE
+        STX     T0
+        LDX     #DISTAB-1           ; DISPLAY CODE TABLE
+OUTH1   INX
+        DECA
+        BPL     OUTH1
+        LDAA    0,X                 ; DISPLAY CODE FOR HEX
+        BSR     OUT0                ; ALTERNATE ENTRY FOR 'OUTCH'
+        PULA
+        RTS
+
+;;      OUTCH - OUTPUT CHARACTER TO DISPLAY
+;
+;       ENTRY: (A) = SEGMENT CODE
+;              (DIGADD) = ADDRESS OF DIGIT TO OUTPUT
+;       EXIT:  (DIGADD) UPDATED
+;       USES: C,T0
+
+OUTCH   STX     T0
+OUT0    LDX     DIGADD              ; **ALTERNATE ENTRY** FROM 'OUTHEX'
+        PSHB
+        ROLA
+        ROLA                        ; PRE-ROTATE A
+        LDAB    #$10                ; TO GET NEXT DIGIT
+OUT1    ROLA                        ; HERE WE MAKE TWO PASSES AT
+        STAA    0,X                 ;    LIGHTING DIGITS--
+        DEX                         ;       KING'S X ON FIRST PASS!!
+        DECB
+        BNE     OUT1
+        STX     DIGADD              ; UPDATE 'DIGADD'
+        LDX     T0                  ; RESTORES X
+        PULB
+        RTS
+
+;;      OUTSTR--OUTPUT IMBEDDED CHARACTER STRING
+;          CALLING CONVENTION:
+;               JSR     OUTSTR
+;               FIRST CHARACTER
+;                    *
+;                    *
+;               LAST CHARACTER (AS D.P. LIT)
+;               NEXT INSTRUCTION
+;
+;       ENTRY:  NONE
+;       EXIT:   TO 'NEXT INSTRUCTION'
+;               (A0) = 0
+;       USES:   A,X,T0
+
+OUTST1  STX     DIGADD              ; **ALTERNATE ENTRY** SETS UP DIGADD
+OUTSTR  TSX                         ; POINT 'X' AT STRING
+        LDX     0,X
+        INS
+        INS
+OUTST3  LDAA    0,X                 ; GET CHARACTER
+        BSR     OUTCH               ; OUTPUT IT TO DISPLAYS
+        INX
+        TSTA                        ; LAST CHARACTER IS NEGATIVE
+        BPL     OUTST3
+        CLRA
+        JMP     0,X                 ; RETURN TO 'NEXT INST.'
+
+;;      STEP - STEP USER CODE
+;
+;       ENTRY:  NONE
+;       EXIT:   (B) = 1
+;               (X) = USER P.C.
+;               (A) = 0
+;       USES:   ALL,T0,T1
+STEP    BSR     SSTEP               ; STEP USER CODE
+        LDX     USERS               ; DISPLAY INSTRUCTION
+        LDX     6,X
+        JMP     MEM
+
+;;      SSET - PERFORM SINGLE STEP.
+;
+

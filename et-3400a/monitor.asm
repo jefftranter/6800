@@ -808,4 +808,73 @@ SRCHOP  LDX     USERS
         LDAB    #6
         PULA
         PSHA                         ; GET COPY OF OPCODE
+        ANDA    #$CF                 ; IS THIS A SUBROUTINE CALL?
+        CMPA    #$8D
+        PULA
+        BEQ     BSRH
+        CMPA    #$6E                 ; IT IS INDEXED JUMP
+        BEQ     JPXH
+        CMPA    #$7E
+        BEQ     JMPH                 ; IT IS EXTENDED JUMP
+        CMPA    #$39
+        BEQ     RTSH                 ; IT IS RTS
+        CMPA    #$3B
+        BEQ     RTIH                 ; IT IS RTI
+        CMPA    #$3F
+        BEQ     SWIH                 ; IT IS SWI
+        STS     6,X                  ; AIM USER PC AT SCRATCH AREA
+        PSHA                         ; REPLACE OPCODE
+        LDX     #SSRET
 
+;;      SWIVE1 - SET UP BREAKPOINT RETURN AND JUMP TO USER CODE
+;
+;       ENTRY:  (X) = SWI VECTOR
+;       EXIT:   TO USER PROGRAM
+;
+
+SWIVE1  LDAA    #$7E
+        STAA    SYSSWI
+        STX     SYSSWI+1
+        LDS     USERS
+        RTI
+
+;;      THE FOLLOWING CODE IS EXECUTED AFTER A SINGLE STEP
+;         OF AN OUT-OF-PLACE INSTRUCTION.  NOW CHECK TO SEE
+;           IF BRANCH OCURRED, MODIFY THE USER PC ACCORDINGL
+;
+
+SSRET   TSX                          ; GET SWI LOCATION INTO X
+        LDX     5,X
+        INX
+        CLRA
+        CLRB
+        CPX     TEMP
+        BNE     BCHNTK
+
+;       ADD THE BRANCH OFFSET TO THE USER PC
+
+        DEX                          ; X WILL NOW POINT AT USERPC
+        LDX     0,X                  ; SAVED VALUE OF PC INTO X
+        DEX                          ; PREPARE TO FETCH BRANCH OFFSET
+        LDAB    0,X
+        BPL     PLUS
+        COMA                         ; A IS SIGN EXENSION OF B
+PLUS    TSX                          ; LO COST WAY TO POINT TO USERPC
+        LDX     5,X
+BCHNTK  ADDB    1,X                  ; ADD BRANCH OFFSET OR ZERO TO PC
+        ADCA    0,X
+        TSX                          ; PLACE NEW USERPC ONTO STACK
+        STAA    5,X
+        STAB    6,X
+        DEX                          ; NOW X AND SP ARE EQUAL
+STOX    STX     USERS
+BSTRD   LDS     TEMP                 ; RETURN TO CALLING ROUTINE
+        RTS
+
+;;      SPECIAL HANDLERS
+
+;;      BSR HANDLER
+
+BSRH    CMPA    #$8D                 ; IS IT BSR
+        BNE     JSRH
+        LDAA    #$5F                 ; THIS CONVERTS BSR'S TO BRA'S

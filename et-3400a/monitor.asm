@@ -7,9 +7,9 @@
 
 ;;      KEYBOARD LOCATIONS
 
-        COL1  EQU $0003              ; RIGHTMOST COLUMN
-        COL2  EQU $0005
-        COL3  EQU $0006              ; LEFTMOST COLUMN
+        COL1  EQU $C003              ; RIGHTMOST COLUMN
+        COL2  EQU $C005
+        COL3  EQU $C006              ; LEFTMOST COLUMN
 
 ;;      MISC CONSTANTS
 
@@ -33,7 +33,7 @@
         HEX2 EQU $6D
         HEX3 EQU $79
         HEX4 EQU $33
-        HEX5 EQU $58
+        HEX5 EQU $5B
         HEX6 EQU $5F
         HEX7 EQU $70
         HEX8 EQU $7F
@@ -52,14 +52,12 @@
         LTRI EQU $30
         LTRP EQU $67
         LTRL EQU $0E
-        LTRH EQU $37
         LTRD EQU $3D
-        LTRG EQU $5E
         LTRO EQU $1D
         LTRR EQU $05
         LTRU EQU $3E
         LTRY EQU $3B
-        LTRS EQU $58
+        LTRS EQU $5B
         DASH EQU $08
 
         PAGE
@@ -77,7 +75,7 @@ T0      DS 2                         ; TEMPORARY
 TEMP    DS 2                         ; JSRD BY SINGLE STEPPER
 DIGADD  DS 2                         ; DISPLAY POINTER
 USERS   DS 2                         ; USER STACK POINTER
-T1      EQU TEMP+1
+T1      EQU TEMP
 SYSSWI  DS 3                         ; SYSTEM SWI VECTOR
 UIRQ    DS 3                         ; USER IRQ VECTOR
 USWI    DS 3                         ; USER SWI VECTOR
@@ -158,7 +156,7 @@ BKSE2   DECB
 
 ;       FULL UP
 
-        JSR     STO
+        JSR     OUTSTO
         DB      0,LTRF,LTRU,LTRL,LTRL,$A0
         INCA
         RTS
@@ -179,7 +177,7 @@ BKSE3   STX     T1
 
 DOPMT   STX      T1
         BSR      OUTSTA              ; OUTPUT PROMPT "DO"
-        DW       LTRD,LTRO+$80
+        DB       LTRD,LTRO+$80
 DOPM1   BSR      REDIS               ; RESET DISPLAY
         LDX      T1                  ; RESTORE X
         LDAB     #2
@@ -240,7 +238,6 @@ RES3    TSX
         LDX     2*NBR,X              ; GET BREAKPOINT ADDRESS
 
         LDAA    0,X
-        PSHA
         PSHA
         PSHA
         LDAA    #$3F                 ; REPLACE WITH SWI
@@ -317,7 +314,7 @@ BKP4    EQU     *
 
 MEM     BSR   REDIS                  ; RESET DISPLAY
         STX   T1
-EE      LDX   #T1
+        LDX   #T1
         LDAB  #2
         BSR   MEM2                   ; DISPLAY ADDRESS
         LDX   0,X
@@ -470,7 +467,7 @@ REGB1   INCB
 REG1    INX
         DECA
         BNE     REG1
-        BSR     DISPLAY
+        BSR     DSPLAY
         INCA
         RTS
 
@@ -634,6 +631,7 @@ IHB     BSR     INCH                 ; GET FIRST HALF
         PSHB
         TAB
         BSR     INCH                 ; GET NEXT HALF
+        BSR     OUTHEX               ; ECHO TO DISPLAYS
         ABA
         PULB
         PSHA

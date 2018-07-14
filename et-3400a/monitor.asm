@@ -739,3 +739,73 @@ STEP    BSR     SSTEP               ; STEP USER CODE
 ;;      SSET - PERFORM SINGLE STEP.
 ;
 
+SSTEP   STS     TEMP                 ; WE'LL USE THIS WHEN WE RETURN
+        LDX     USERS
+        LDAA    7,X                  ; PUSHING USER PC ONTO MONITOR
+        PSHA                         ;   STACK
+        LDAA    6,X
+        PSHA
+        LDX     6,X                  ; NOW GET USER PC INTO X
+        LDAA    #$3F                 ; SWI'S ARE NORMAL EXIT FROM
+        PSHA                         ;   SCRATCHPAD EXECUTION
+        PSHA
+        LDAA    2,X                  ; NOW WE ARE COPYING THREE BYTES
+        PSHA                         ;   OF INSTRUCTION
+        LDAA    1,X
+        PSHA
+        LDAA    0,X                  ; THIS IS THE OP CODE SO
+BYTCNT  PSHA                         ;   SCRUTINIZE CAREFULLY
+        TAB
+        LDX     #OPTAB-1
+BYT1    INX
+        SUBB    #8
+        BCC     BYT1
+        LDAA    0,X
+BYT2    RORA
+        INCB
+        BNE     BYT2
+        PULA
+        PSHA
+        BCS     BYT7
+        CMPA    #$30                 ; CHECK FOR BRANCH
+        BCC     BYT3
+        CMPA    #$20
+        BCC     BYT5                 ; IT IS A BRANCH
+BYT3    CMPA    #$60
+        BCS     BYT6                 ; IT IS ONE BYTE
+        CMPA    #$8d
+        BEQ     BYT5                 ; IT IS BSR
+        ANDA    #$BD
+        CMPA    #$8C
+        BEQ     BYT4                 ; IS X OR SP IMMEDIATE
+        ANDA    #$30                 ; CHECK FOR THREE BYTES
+        CMPA    #$30
+BYT4    SBCB    #$FF
+BYT5    INCB
+BYT6    INCB
+BYT7    BEQ     BSTRD
+        TSX
+        BCS     STEP1
+        STAB    1,X                  ; BRANCH OFFSET TO 2
+STEP1   LDAA    #1
+        CMPB    #2
+        BGT     STEP3
+        BEQ     STEP2                ; TWO BYTES
+        STAA    1,X                  ; FOR ONE BYTERS
+STEP2   STAA    2,X                  ; NOT FOR THREE BYTERS
+STEP3   CLRA                         ; NOW ADD BYTE COUNT TO PC
+        ADDB    6,X
+        ADCA    5,X
+        STAA    5,X
+        STAB    6,X
+
+;;      DOES THE INSTRUCTION INVOLE THE PC? IF SO THEN IT
+;         MUST BE INTERPRETED
+
+SRCHOP  LDX     USERS
+        STAA    6,X
+        STAB    7,X                  ; UPDATE PC ON USER STACK
+        LDAB    #6
+        PULA
+        PSHA                         ; GET COPY OF OPCODE
+

@@ -1,7 +1,12 @@
         NAM Heathkit ET-3400A Monitor
         PAGE 132,66
 
-	CPU 6800
+; Entered from listing in ET-3400A manual by Jeff Tranter <tranter@pobox.com>.
+; Fixed some small errors in the listing.
+; Adapted to the crasm assembler (https://github.com/colinbourassa/crasm).
+; Note that I do not own an ET-3400A and have no way of testing it.
+
+        CPU 6800
 
 ;;      ASSEMBLY CONSTANT TABLE
 

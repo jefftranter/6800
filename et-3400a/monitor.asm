@@ -43,7 +43,7 @@
         HEXC EQU $4E
         HEXD EQU $3D
         HEXE EQU $4F
-        HEXE EQU $47
+        HEXF EQU $47
         LTRA EQU $7D
         LTRB EQU $1F
         LTRC EQU $0D
@@ -192,7 +192,7 @@ DOPM1   BSR      REDIS               ; RESET DISPLAY
 ADDR    STX      T1
         BSR      OUTSTA
         DB       HEXA,LTRD+$80
-        BRA      DOMP1
+        BRA      DOPM1
 
 ;;      OUTSTA - OUTPUT STRING FOR ADDRESS PROMPT
 ;
@@ -498,7 +498,7 @@ DIS2    DEX
 ;       CLEAR B AND JUMP TO OUTSTR
 
 OUTSTJ  CLRB
-OUTST0  LDX     #DG6ADD
+OUTSTO  LDX     #DG6ADD
         JMP OUTST1
 
 ;;      CONDX - DISPLAY CONDITION CODES
@@ -941,4 +941,32 @@ SWIH    LDAA    7,X
         LDAA    #USWI/256
         BRA     NEWPC                ; PATCH IN UIRQ
 
-;; OPTAB - LEGAL OP-CODE LOOKUP TABLE
+;;      OPTAB - LEGAL OP-CODE LOOKUP TABLE
+
+OPTAB   DW      $9C00,$3CAF,$4000,$00AC,$6412,$6412,$6410,$6410
+        DW      $1101,$1004,$1000,$1000,$110D,$100C,$100C,$100C
+
+;;      HEX DISPLAY CODE TABLE
+
+DISTAB  DB      HEX0,HEX1,HEX2,HEX3,HEX4,HEX5,HEX6,HEX7
+        DB      HEX8,HEX9,HEXA,HEXB,HEXC,HEXD,HEXE,HEXF
+
+;;      KEY VALUE TABLE
+
+HEXTAB  DB      7,10,13,2,5,8,11,14
+        DB      3,6,9,12,15,0,1,4
+
+;;      COMMAND HANDLER ENTRY POINT TABLE
+
+CMDTAB  DW      ZERO,REGA,REGB,REGP,REGX,CONDX,REGS,RESUME,STEP
+        DW      BKSET,AUTO,BACK,REPLAC,DO,EXAM,FOWD
+
+
+        * EQU $FFF8
+
+;;      INTERRUPT VECTORS.
+
+        DW      UIRQ                 ; USER IRQ HANDLER
+        DW      SYSSWI               ; SYSTEM SWI HANDLER
+        DW      UNMI                 ; USER NMI HANDLER
+        DW      RESET

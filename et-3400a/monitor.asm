@@ -4,7 +4,9 @@
 ; Entered from listing in ET-3400A manual by Jeff Tranter <tranter@pobox.com>.
 ; Fixed some small errors in the listing.
 ; Adapted to the crasm assembler (https://github.com/colinbourassa/crasm).
-; Note that I do not own an ET-3400A and have no way of testing it.
+; Note that I do not own an ET-3400A and have no way of testing it but I
+; have confirmed that it produces the same binary output as the Heathkit
+; ROMs.
 
         CPU 6800
 
@@ -152,7 +154,7 @@ BKSET   LDX     #BKTBL-2
         LDAB    #NBR                 ; FIND SPOT IN TABLE
 BKSE1   INX
         INX
-        CMPA    0
+        CMPA    0,X
         BNE     BKSE2
         CMPA    1,X
         BEQ     BKSE3                ; EMPTY SPOT

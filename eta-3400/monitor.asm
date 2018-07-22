@@ -1,4 +1,4 @@
-        NAM Heathkit ETA-3400 Monitor
+        NAM HEATH KEYBOARD MONITOR
         PAGE 132,66
 
 ; Entered from listing in ETA-340A manual by Jeff Tranter <tranter@pobox.com>.
@@ -124,3 +124,66 @@ MAIN3   STAB    2*NBR+2,X
         DECA
         BNE     MAIN3
 MAIN4   LDAA    #NBR            ; CLEAR BREAKPOINTS
+MAIN44  PULB
+        PULB
+        TSX
+        LDX     2*NBR+4,X
+        STAB    0,X
+        DECA
+        BNE     MAIN44
+        CLC                     ; NO ERROR MESSAGE
+        INS
+        INS
+MAIN5   BCC     MAIN6           ; NO ERROR
+        JSR     OUTIS
+        DB      CR,LF
+        ASC     "ERROR!"
+        db      7,0
+MAIN6   JSR     OUTIS
+        DB      CR,LF
+        ASC     "MON> "
+        DB      0
+MAIN66  TST     TERM
+        BPL     MAIN66
+        JSR     INCH            ; INPUT COMMAND
+        LDX     #CMDTAB-3
+MAIN7   INX
+        INX
+        INX
+        CMPA    0,X
+        BCS     MAIN7
+        BNE     MAIN5           ; ILLEGAL COMMAND
+        PSHA
+        JSR     OUTSP
+        PULA
+        LDAB    #-MAIN5/256*256+MAIN5
+        PSHB
+        LDAB    #MAIN5/256
+        PSHB
+        LDAB    2,X
+        PSHB
+        LDAB    1,X
+        PSHB
+        CLRB
+        LDX     USERS
+        RTS
+
+;;      GO - GO TO USER CODE
+;
+;       ENTRY:  (X) = USERS
+;       EXIT:   UPON BREAKPOINT
+;       USES:   ALL,T0,T1,T2
+
+GO      JSR     AHV
+        BCC     GO1             ; OPTIONAL ADDRESS
+        STAA    7,X
+        STAB    6,X              
+GO1     JSR     SSTEP           ; STEP PAST BKPT
+        LDAB    #NBR
+GO2     TSX
+        LDX     2*NBR+4,X
+        LDAA    0,X
+        PSHA
+        PSHA
+
+        

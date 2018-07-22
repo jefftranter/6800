@@ -986,3 +986,181 @@ OLT1    BSR     BIT
 ;       USES:   C EXCEPT 'C'
 
 BIT     PSHA                    ; 192 US
+        LDAA    #21
+        NOP
+        NOP
+        BRA     BIT3            ; 182 US
+
+BIT1    PSHA                    ; 64 US
+        LDAA    #1
+BIT3    PSHB
+        DB      $8C             ; 3 CYCLE SKIP
+BIT4    LDAA    #29
+BIT5    DECA
+        BNE     BIT5
+        INCA
+        BSR     FLIP            ; 43 US
+        LDAA    #30
+BIT6    DECA
+        BNE     BIT6
+        TPA
+        ANDA    #1              ; MASK TO CARRY
+        BSR     FLIP1
+        DECB
+        BNE     BIT4
+        PULB
+        PULA
+        RTS                     ; ___ ALL TIMES REFERENCED HERE !!!
+
+;;      FLIP - FLIP CASSETTE BIT
+;
+;       ENTRY:  (A) = 0 THEN NO FLIP
+;               (A) = 1 THEN FLIP
+;       USES:   A,C EXCEPT 'C'
+
+FLIP    NOP                     ; 35 US
+FLIP1   EORA    TAPE
+        STAA    TAPE
+        RTS                     ; 24 US
+
+;;      OUTSP - OUTPUT SPACE TO TERMINAL
+;
+;       ENTRY:  NONE
+;       EXIT:   (A) = ' '
+;       USES:   A,C
+
+OUTSP   LDAA    #' '
+
+;;      OUTCH - OUTPUT CHARACTER TO TERMINAL
+;
+;       ENTRY:  (A) = CHARACTER
+;       EXIT:   (A) PRESERVED UNLESS -LF-
+;       USES:   C
+
+OUTCH   PSHA
+        PSHB
+        BSR     BRD             ; BAUD RATE DETERMINE
+        SEC                     ; STOP BIT
+        BSR     WOB
+        CLC                     ; START BIT
+        BSR     WOB
+        SEC
+        RORA
+OUTC1   BSR     WOB             ; WAIT - OUTPUT BIT
+        LSRA
+        BNE     OUTC1
+        BSR     WOB             ; WAIT; OUTPUT STOP
+        PULB
+        PULA
+        CMPA    #LF
+        BNE     OUTC2
+        PSHA
+        CLRA
+        BSR     OUTCH           ; OUTPUT FILL CHARACTER
+        BSR     OUTCH
+        BSR     OUTCH
+        BSR     OUTCH
+        PULA
+OUTC2   RTS
+
+;;      BRD - BAUD RATE DETERMINATION
+;
+;       ENTRY:  NONE
+;       EXIT:   (B) = BAUD RATE DIVISOR
+;                      (COMPENSATED FOR 5*13 EXTRA
+;                        EXECUTION TIME!!)
+;       USES:   B,C
+
+BRD     PSHA
+        LDAB    #1              ; ASSUME 110 BAUD
+        LDAA    TERM            ;  BAUD SWITCH DATA
+        COMA
+        ANDA    #%00001110      ; MASK TO SWITCHES
+        LSRA
+        BEQ     BRD2            ; IS 110
+BRD1    RORB
+        DECA
+        BNE     BRD1
+        SUBB    #5              ; EXECUTION COMPENSATION
+BRD2    PULA
+        RTS
+
+;;      WOB - WAIT AND OUTPUT BIT
+;
+;       ENTRY:  (B) = DELAY COUNT
+;               'C' = BIT
+;       EXIT:   (B), 'C' PRESERVED
+;       USES:   C
+
+WOB     PSHB
+        BSR     DLB             ; DELAY ONE BIT
+        BRA     WIB1
+
+;;      IHD - INPUT HEX DIGIT FROM TERMINAL
+;
+;       ENTRY:  NONE
+;       EXIT:   (A) = HEX VALUE IF VALID
+;               'C' SET IF HEX
+;               'Z' SET IF CR
+;       USES:   A,C
+
+IHD     BSR     INCH
+        CMPA    #SPACE
+        BEQ     IHD             ; IGNORE SPACES
+
+;;      ASH - ASCII TO HEX TRANSLATOR
+;
+;       ENTRY:  (A) = ASCII
+;       EXIT, USES: SEE "IHD"
+
+ASH     SUBA  #'0'
+        BCS   ASH1              ; NOT HEX
+        CMPA  #10
+        BCS   ASH3
+        SUBA  #'A'-'0'
+        CMPA  #6
+        BCS   ASH2              ; IS HEX
+        ADDA  #'A'-'0'          ; DISPLACE BACK
+ASH1    ADDA  #'0'
+        CMPA  #CR
+        CLC
+        RTS
+
+ASH2    SUBA    #-10
+ASH3    RTS
+
+;;      IHB - INPUT HEX BYTE
+;
+;       ENTRY:  (B) = CASSETTE/TERMINAL FLAG
+;               (X) = ADDRESS
+;               (A) = CHECKSUM
+;       EXIT:   A, X UPDATED
+;               (B) PRESERVED
+
+IHB     PSHA                    ; SAVE CHECKSUM
+        BSR     ICT             ; INPUT CASSETTE/TERMINAL
+        ANDA    #$7F
+        BSR     ASH             ; ASCII - HEX
+        ASLA
+        ASLA
+        ASLA
+        ASLA
+        STAA    T0
+        BSR     ICT             ; INPUT CASSETTE/TERMINAL
+        ANDA    #$7F
+        BSR     ASH             ; ASCII - HEX
+        ADDA    T0
+        STAA    0,X             ; PLACE IN MEMORY
+        PULA
+        ADDA    0,X
+        INX
+IHB2    RTS
+
+;;      ICT - INPUT FROM CASSETTE OR TERMINAL
+;
+;       ENTRY:  (B) = CASSETTE/TERMINAL FLAG
+;       EXIT:   (A) = CHARACTER
+;       USES:   A,C
+
+ICT     TSTB
+        BGT     ICC             ; IS CASSETTE

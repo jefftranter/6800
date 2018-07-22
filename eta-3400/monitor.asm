@@ -175,15 +175,66 @@ MAIN7   INX
 ;       USES:   ALL,T0,T1,T2
 
 GO      JSR     AHV
-        BCC     GO1             ; OPTIONAL ADDRESS
+        BCC     GO1             ; NO OPTIONAL ADDRESS
         STAA    7,X
         STAB    6,X              
 GO1     JSR     SSTEP           ; STEP PAST BKPT
         LDAB    #NBR
-GO2     TSX
+GO2     TSX                     ; COPY IN BREAKPOINTS
         LDX     2*NBR+4,X
         LDAA    0,X
         PSHA
         PSHA
+        LDAA    #$3F
+        STAA    0,X
+        DECB
+        BNE     GO2
+        BRA     GO7
 
-        
+GO3     TSX
+        LDAA    6,X
+        BNE     GO33
+        DEC     5,X
+GO33    LDAB    5,X
+        DECA
+        STAA    6,X             ; DECREMENT USER PC
+        STS     USERS
+        LDS     T0
+        PSHA
+        LDAA    #NBR
+        STAA    T0
+        PULA
+        TSX
+GO4     INX                     ; SEARCH TABLE FOR HIT
+        INX
+        CMPA    2*NBR+5,X
+        BNE     GO5
+        JSR     OUTIS
+        DB      CR,LF,0
+        LDAA    #NBR
+GO44    PULB
+        PULB                    ; OP CODE INTO B
+        TSX
+        LDX     2*NBR+4,X
+        STAB    0,X
+        DECA
+        BNE     GO44
+        JMP     REGS            ; DISPLAY REGISTERS
+
+GO5     DEC     T0
+        BNE     GO4
+
+;       SWI NO MONITORS SO INTERPRET
+
+        JSR     SSTEP           ; STEP PAST SWI
+GO7     STS     T0
+        LDX     #GO3
+        JMP     SWIVE1
+
+;;      BKPT - INSERT BREAKPOINT INTO TABLE
+;
+;       ENTRY:  NONE
+;       EXIT:   'C' SET IF TABLE FULL
+;       USES:   ALL,T0
+
+BKPT    TSX

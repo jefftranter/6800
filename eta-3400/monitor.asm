@@ -304,7 +304,7 @@ EXEC0   PSHA                    ; SAVE COUNT
         PULA
 EXEC1   DECA
         BNE     EXEC0           ; MORE STEPS
-        JSR     COUTIS
+        JSR     OUTIS
         DB      CR,LF,0
 
 ;;      STEP - STEP USER CODE
@@ -342,7 +342,7 @@ REGS    CLRB
         LDX     6,X             ; (X) = USERPC
         STX     T0
         LDAA    0,X
-        BSR     TYPINFO         ; TYPE INSTRUCTION
+        BSR     TYPIN0          ; TYPE INSTRUCTION
         CLC
         RTS
 
@@ -448,7 +448,7 @@ TYPIN1  LDX     T0
         BSR     OUT2HS
 TYPIN2  CMPB    #1
         BMI     THB1
-        BEQ     OUT2H2
+        BEQ     OUT2HS
         BRA     OUT4HS
 
 ;;      DISB - DISPLAY BREAKPOINTS
@@ -813,7 +813,7 @@ PNCH75  LDAA    TERM
         ROLA
         STX     T1
         STX     T1
-        BHI     PNC0            ; NOT DONE; NO BREAK
+        BHI     PNCH0           ; NOT DONE; NO BREAK
         INX
         PSHB
         LDAA    #6
@@ -1228,7 +1228,7 @@ DLB3    DECA
         DECB
         BNE     DLB2
         PULA
-        CPX     DLB             ; 5 CYCLE NUTHIN'
+DLB4    CPX     DLB             ; 5 CYCLE NUTHIN'
         NOP
         DECB
         BNE     DLB4
@@ -1299,7 +1299,7 @@ TNC2    INCB
         LDAA    TAPE
         CMPB    #29
         PULB
-        RTS
+TNC3    RTS
 
 ;;      MOVE - REENTRANT MOVE MEMORY
 ;
@@ -1440,7 +1440,7 @@ CMDTAB  DB     'T'             ; TAPE RECORD DATA
         DW      DUMP
 
         DB      'C'             ; BREAKPOINT CLEAR
-        DW      CLEA
+        DW      CLEAR
 
         DB      'B'             ; GO TO BASIC
         DW      $1C03           ; WARM START ENTRY
@@ -1487,7 +1487,7 @@ MTST    SEI
         INS
 MTS2    CLR     0,X
         DEX
-        BNE     MTST2           ; CLEAR ALL MEMORY
+        BNE     MTS2            ; CLEAR ALL MEMORY
         CLR     0,X
         STS     T1              ; HOPE THIS IS GOOD!!
         LDS     #T0-1
@@ -1579,7 +1579,7 @@ CCL     LDAB    #8
         TXS
         INS
         JSR     LOA0            ; LOAD MEMORY
-        BCC     CCE1            ; NORMAL RETURN
+        BCC     CCD1            ; NORMAL RETURN
         JSR     REDIS           ;   PRINT ERROR MESSAGE
         JSR     OUTSTR
         DB      $4F,$05,$05,$1D,$05+$80

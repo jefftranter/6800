@@ -1164,3 +1164,201 @@ IHB2    RTS
 
 ICT     TSTB
         BGT     ICC             ; IS CASSETTE
+
+;;      INCH - INPUT TERMINAL CHARACTER
+;
+;       ENTRY:  NONE
+;       EXIT:   (A) = CHARACTER
+;       USES:   A,C
+
+INCH    PSHB
+        BSR     BRD             ; BAUD RATE DETERMINE
+        TBA
+INC1    TAB
+        LSRB
+        LSRB
+INC2    TST     TERM
+        BMI     INC2            ; WAIT FOR SPACING
+        BSR     WIB             ; WAIT, INPUT START
+        BCS     INC2            ; WAS NOISE
+        TAB
+        LDAA    #$80
+INC3    BSR     WIB             ; WAIT; INPUT BIT
+        RORA
+        BCC     INC3
+        BSR     WIB             ; GET STOP
+        BCS     INC4            ; NO FRAME ERROR
+        INC     TERM            ;   SEND STOP BIT
+INC4    ANDA    #$7F            ; MASK TO SEVEN BITS
+        PULB
+        RTS
+
+;;      WIB - WAIT AND INPUT BIT
+;
+;       ENTRY:  (B) = DELAY COUNT
+;       EXIT:   'C' = BIT
+;       USES:   C
+
+WIB     PSHB
+        BSR     DLB             ; WAIT ONE BIT TIME
+        ADDB    #$80
+        SUBB    #$80
+WIB1    ADCB    #0              ; COPY BIT INTO LSB
+        STAB    TERM
+        RORB                    ; RESTORE SMASHED 'C'
+        PULB
+        RTS
+
+;       DB - DELAY ONE BIT AND RETURN (TERM) IN B
+;
+;       ENTRY:  (B) = DELAY CONSTANT
+;       EXIT:   (B) = (TERM) .AND. 11111110 B
+;       USES:   C EXCEPT 'C'
+
+DLB     BITB    #$FE
+        BNE     DLB4            ; NOT 110 BAUD
+        DECB
+        BEQ     DLB1            ; 110 FULL BIT TIME
+        LDAB    #56
+DLB1    EORB    #49
+        PSHA
+DLB2    LDAA    #18
+DLB3    DECA
+        BNE     DLB3
+        DECB
+        BNE     DLB2
+        PULA
+        CPX     DLB             ; 5 CYCLE NUTHIN'
+        NOP
+        DECB
+        BNE     DLB4
+        LDAB    TERM
+        ANDB    #$FE
+        RTS
+
+;;      ICC - INPUT CASSETTE CHARACTER
+;
+;       GETS BITS FROM CASSETTE IN SERIAL FASHION
+;       EACH BIT CONSISTS OF SEVERAL 'CELLS'
+;       EACH CELL IS EITHER 1/2 CYCLE OF 1200HZ
+;                        OE 1/2 CYCLE OF 2400HZ
+;       AT 8 CELLS/BIT THE ROUTINE IS 'KCS'
+;         COMPATIBLE
+;
+;       ENTRY:  (B) = CELLS PER BIT
+;       EXIT:   (A) = CHARACTER
+;               'C' = STOP BIT
+;       USES:   A,C
+
+ICC     PSHB
+        LSRB
+ICC1    BSR     TNC             ; TAKE NEXT CELL
+        BCS     ICC1            ; NOT START BIT
+        DECB
+        BPL     ICC1            ; NOT ENOUGH CELLS
+        PULB
+        LDAA    #%01111111      ; PRESET ASSEMBLY
+ICC2    PSHB
+        PSHA
+ICC3    BSR     TNC             ; TAKE NEXT CELL
+        DECB
+        BNE     ICC3
+        PULA
+        PULB
+        RORA
+        BCS     ICC2
+        PSHB
+        PSHA
+ICC4    BSR     TNC             ; GET STOP BIT
+        DECB
+        BNE     ICC4
+        PULA
+        PULB
+        RTS
+
+;;      TNC - TAKE NEXT CELL
+;
+;       WAIT FOR 1/2 CYCLE OF 1200 HZ OR
+;                  1 CYCLE OF 2400 HZ
+;       STRUCTURE ASSURES EXIT AT END OF
+;        ZERO CELL
+;
+;       ENTRY:  NONE
+;       EXIT:   'C' = NEW CELL VALUE
+;               (A) = NEW CASSETTE DATA
+;       USES:   A,C
+
+TNC     LDAA    TAPE
+        BSR     TNC1
+        BCC     TNC3            ; WAS ZERO
+TNC1    PSHB
+        CLRB
+TNC2    INCB
+        CMPA    TAPE
+        BEQ     TNC2           ; NO TRANSITION
+        LDAA    TAPE
+        CMPB    #29
+        PULB
+        RTS
+
+;;      MOVE - REENTRANT MOVE MEMORY
+;
+;
+;       ENTRY:  STACK>  RETURN (0,S)
+;                       COUNT  (2,S)       
+;                       TO     (4,S)
+;                       FROM   (6,S)
+;       EXIT:   STACK CLEANED
+;       USES:   ALL
+
+MOVE    TSX
+        LDX     2,X             ; CHECK COUNT <> 0
+        BEQ     MOV4            ; NO MOVE
+MOVEA   TSX                     ; ** ALTERANATE ENTRY **
+        LDAA    5,X             ; (BA) = TO
+        LDAB    4,X
+        SUBA    7,X             ; (BA) = TO - FROM
+        SBCB    6,X
+        BCS     MOV2            ; IS MOVE DOWN
+        BNE     MOV1
+        TSTA
+        BEQ     MOV4            ; DISPLACEMENT = 0
+
+;       HAVE MOVE UP - MUST START AT TOP
+;          TO AVOID CONFLICT
+
+MOV1    LDAA    #-1             ; (BA) = -1
+        TAB
+        PSHA                    ; DELTA = -1
+        PSHB
+        ADDA    3,X             ; (BA) = COUNT - 1
+        ADCB    2,X
+        PSHA
+        PSHB
+        ADDA    5,X             ; TO = TO + COUNT - 1
+        ADCb    4,X
+        STAA    5,X
+        STAB    4,X
+        PULB
+        PULA
+        ADDA    7,X             ; FROM = FROM
+        ADCB    6,X             ;   + COUNT = 1
+        STAA    7,X
+        STAB    6,X
+        BRA     MOV3
+
+;       HAVE MOVE DOWN - MAY START AT TOP
+
+MOV2    LDAA    #1              ; DELTA = 1
+        CLRB
+        PSHA
+        PSHB
+        CLRA
+        SUBA    3,X             ; (BA) = - COUNT
+        SBCB    2,X
+        STAA    3,X
+        STAB    2,X             ; COUNT = - COUNT
+
+;       ACTUAL MOVE LOOP FOLLOWS
+
+MOV3    TSX

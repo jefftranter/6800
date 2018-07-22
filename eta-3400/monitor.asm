@@ -847,3 +847,142 @@ CRSTR   DB      CR,LF,0
 
 ;;      OAS - OUTPUT ASCII STRING
 ;
+;       ENTRY:  (X) = ADDRESS OF STRING IN FORM:
+;                 'STRING',0
+;               (B) = CASSETTE/TERM FLAG
+;       EXIT:   X POINTS PAST END OF STRING ZERO
+;       USES:   X,A,C
+
+OAS     LDAA    0,X             ; 97 US
+        INX
+OAS1    BSR     OAB             ; 88 US
+        NOP
+        LDAA    #16             ; 208 US
+OAS2    DECA
+        BNE     OAS2
+        LDAA    0,X
+        INX
+        TST     0,X
+        BNE     OAS1            ; NOT LAST BYTE
+        INX
+        BRA     OAB             ; OUTPUT LAST AND RETURN
+
+;;      OSH - OUTPUT OPTIONAL SPACE WITH HEX BYTE
+;
+;       ENTRY:  (X) = ADDRESS OF BYTE
+;               (A) = CHECKSUM
+;               (B) = CASSETTE/TERMINAL FLAG
+;       EXIT:   (X) INCREMENTED, (A) UPDATED
+;       USES:   X,A,C
+
+OSH     ADDA    0,X             ; 174 US
+        PSHA
+        LDAA    #5
+        TSTB
+        BPL     OCH0            ; NO SPACE
+        JSR     OUTSP           ; OUTPUT SPACE
+        PULA
+
+;;      OCH - OUTPUT AND CHECKSUM HEX BYTE
+;
+;       ENTRY:  (X) = ADDRESS OF BYTE
+;               (A) = CHECKSUM
+;               (B) = CASSETTE/TERMINAL FLAG
+;       EXIT:   (X) INCREMENTED, (A) UPDATED
+;               'Z' SET IF END OF HEADER INFO
+;       USES:   X,A,C
+
+OCH     ADDA    0,X             ; 174 US
+        PSHA
+        LDAA    #6
+OCH0    NOP
+OCH1    DECA
+        BNE     OCH1
+        LDAA    0,X
+        BSR     OHB
+        PULA
+        INX
+        CPX     #T1+2
+        RTS                     ; 16 US USED
+
+;;      OHB - OUTPUT HEX BYTE
+;
+;       ENTRY:  (A) = BYTE
+;               (B) = CASSETTE TERMINAL FLAG
+;       USES:   A,C
+
+OHB     PSHA                    ; 112 US
+        LSRA
+        LSRA
+        LSRA
+        LSRA
+        BSR     OHB2
+        LDAA    #18             ; 208 US
+OHB1    DECA
+        BNE     OHB1
+        PULA
+        ANDA    #$0F
+OHB2    CMPA    #10
+        BCC     OHB3            ; IS A - F
+        BRA     OHB4
+OHB3    NOP
+        ADDA    #7
+OHB4    ADDA    #$30
+
+;;      OAB - OUTPUT ASCII BYTE
+;
+;       ENTRY:  (A) = ASCII
+;               (B) = CASSETTE/TERMINAL FLAG
+;       EXIT:   (A) PRESERVED
+;       USES:   C
+
+OAB     TSTB                    ; 80 US
+        BLE     OUTCH
+
+;;      OCB - OUTPUT CASSETTE BYTE
+;
+;       ENTRY:  (B) = CELLS/BUT COUNT
+;               (A) = CHARACTER
+;       USES:   C
+
+OCB     CLC                     ; START BIT; 74 US
+        BSR     BIT1            ; 72 US
+        PSHA                    ; 208 US
+        SEC                     ; STOP BIT
+        RORA
+OCB1    BSR     BIT             ; 200 US
+        NOP                     ; 208 US
+        LSRA
+        BNE     OCB1
+        BSR     BIT
+        PULA
+        INX
+        DEX                     ; 8 CYCLE PSEUDO-OP
+        BRA     BIT
+
+;;      OLT - OUTPUT LEADER TRAILER
+;
+;       ENTRY:  NONE
+;       EXIT:   5 SECONDS MARKING WRITTEN
+;       USES:   C
+
+OLT     SEC                     ; 78 US
+        PSHA
+        BSR     BIT1
+        PSHB
+        LDAB    #110
+        TBA
+OLT1    BSR     BIT
+        NOP
+        DECA
+        BNE     OLT1
+        PULB
+        PULA
+
+;;      BIT - OUTPUT 'C' TO CASSETTE
+;
+;       ENTRY:  (B) = CELL/BIT COUNT
+;               'C' = BIT
+;       USES:   C EXCEPT 'C'
+
+BIT     PSHA                    ; 192 US

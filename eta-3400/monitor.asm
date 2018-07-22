@@ -238,3 +238,163 @@ GO7     STS     T0
 ;       USES:   ALL,T0
 
 BKPT    TSX
+        LDAA    #$FF
+        LDAB    #NBR
+BKP1    INX
+        INX                     ; LOOK FOR EMPTY SPOT
+        CMPA    4,X
+        BNE     BKP2            ; NOT EMPTY
+        CMPA    5,X
+        BEQ     BKP3            ; IS EMPTY
+BKP2    DECB
+        BNE     BKP1            ; STILL HOPE
+        SEC
+        RTS                     ; FULL!!
+
+BKP3    JSR     AHV             ; GET BREAKPOINT VALUE
+        BCC     BKP4            ; NO ENTRY
+        STAA    5,X
+        STAB    4,X
+BKP4    CLC
+        RTS
+
+;;      CLEAR - CLEAR BREAKPOINT ENTRY
+;
+;       ENTRY:  (X) = USERS
+;       EXIT:   'C' SET IF NOT FOUND
+;       USES:   ALL,T0
+
+CLEAR   LDAA    #NBR
+        STAA    T0
+        JSR     AHV             ; GET LOCATION
+        BCS     CLE1            ; NO VALID HEX
+        LDAA    7,X
+        LDAB    6,X             ; USER PC FOR DEFAULT
+CLE1    TSX
+CLE2    INX
+        INX
+        CMPA    5,X             ; SEARCH TABLE
+        BNE     CLE3            ; NOT FOUND
+        CMPB    4,X
+        BEQ     CLE4            ; FOUND
+CLE3    DEC     T0
+        BNE     CLE2
+        SEC
+        RTS
+
+CLE4    LDAB    #$FF
+        STAB    4,X             ; CLEAR ENTRY
+        STAB    5,X
+        CLC
+        RTS
+
+;;      EXEC - PROCESS MULTIPLE SINGLE STEP
+;
+;       ENTRY:  NONE
+;       EXIT:   REGISTERS PRINTED
+;       USES:   ALL,T0,T1,T2
+
+EXEC    JSR     AHV             ; GET COUNT
+        BCS     EXEC1
+        LDAA    #1              ; DEFAULT COUNT
+        BRA     EXEC1
+
+EXEC0   PSHA                    ; SAVE COUNT
+        JSR     SSTEP           ; STEP CODE
+        PULA
+EXEC1   DECA
+        BNE     EXEC0           ; MORE STEPS
+        JSR     COUTIS
+        DB      CR,LF,0
+
+;;      STEP - STEP USER CODE
+;
+;       ENTRY:  NONE
+;       EXIT:   REGISTERS PRINTED
+;       USES:   ALL,T0,T1,T2
+
+STEP    JSR     SSTEP           ; STEP USER CODE
+
+;;      REGS - DISPLAY ALL USER REGISTERS
+;
+;       ENTRY:  NONE
+;       EXIT:   REGISTERS PRINTER
+;       USES:   ALL,T0
+
+REGS    CLRB
+        LDX     USERS
+        LDAA    #'C'
+        BSR     REGS1
+        LDAA    #'B'
+        BSR     REGS3
+        LDAA    #'A'
+        BSR     REGS3
+        LDAA    #'X'
+        BSR     REGS2
+        LDAA    #'P'
+        BSR     REGS3
+        LDAA    #'S'
+        DEX
+        STX     T0
+        LDX     #T0-1
+        BSR     REGS1
+        LDX     USERS
+        LDX     6,X             ; (X) = USERPC
+        STX     T0
+        LDAA    0,X
+        BSR     TYPINFO         ; TYPE INSTRUCTION
+        CLC
+        RTS
+
+REGS1   INX
+REGS2   INCB
+REGS3   JSR     OUTCH           ; OUTPUT REGISTER NAME
+        LDAA    #'='
+        JSR     OUTCH
+        BRA     TYPIN2
+
+;;      REGISTER DISPLAY COMMANDS
+;
+;       ENTRY:  (X) = USERSP
+;               (B) = 0
+;       EXIT:   OPTIONAL REPLACEMENT VALUE STORED
+;       USES:   ALL,T0
+
+REGP    INX
+        INX
+REGX    INX
+        INCB
+REGA    INX
+REGB    INX
+REGC    ADDA    #$40            ; DISPLAY REG NAME
+        BSR     REGS1           ; OUTPUT WITH NAME
+        PSHB
+        JSR     AHV
+        BCC     MEM4
+        BSR     REG1
+        TBA
+        PULB
+        DECB
+        BEQ     REG2
+REG1    DEX
+        STAA    0,X
+        CMPA    0,X
+        BEQ     REG2
+        SEC
+REG2    RTS
+
+;;      MEM - DISPLAY MEMORY BYTES
+;
+;       ENTRY:  (B) = 0
+;               (X) = USER S.P.
+;       USES:   ALL,T0
+
+MEM     DECB
+
+;;      INST - DISPLAY INSTRUCTIONS
+;
+;       ENTRY:  (B) = 0
+;               (X) = USER S.P.
+;       USES:   ALL,T0
+
+INST    PSHB

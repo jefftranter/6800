@@ -208,6 +208,8 @@ GO33    LDAB    5,X
 GO4     INX                     ; SEARCH TABLE FOR HIT
         INX
         CMPA    2*NBR+5,X
+        BNE     GO5             ; NO HIT HERE
+        CMPB    2*NBR+4,X
         BNE     GO5
         JSR     OUTIS
         DB      CR,LF,0
@@ -595,7 +597,7 @@ BYT7    RTS
 ;       COMMAND SYNTAX: (CNTL-D)D <FROM>,<TO>,<COUNT>
 
 COPY    JSR     OUTIS
-        ASC     "SLIDE"
+        ASC     "SLIDE "
         DB      0
         JSR     AHV             ; GET *FROM*
         BCC     COP3            ; NO HEX
@@ -1415,7 +1417,7 @@ CMDTAB  DB     'T'             ; TAPE RECORD DATA
         DB      'R'             ; DISPLAY USER REGISTERS
         DW      REGS
 
-        DW      'P'             ; PUNCH TO PAPER TAPE
+        DB      'P'             ; PUNCH TO PAPER TAPE
         DW      PTAP
 
         DB      'M'             ; DISPLAY MEMORY (BYTE)
@@ -1605,6 +1607,8 @@ IN.PIA  LDX     #TERM
         LDAA    #4
         STAA    3,X
         RTS
+
+*       EQU     $1AF6
 
 ;;      TTST - TERMINAL TESTER
 ;

@@ -99,5 +99,28 @@ MAIN    SEI
         STAB    3,X
         STAA    0,X             ; IDLE MARKING!!
 
-;;      NOT FIND MEMORY EXTENT
+;;      NOW FIND MEMORY EXTENT
 
+MAIN1   DEX
+        LDAA    0,X
+        COM     0,X
+        COMA
+        CMPA    0,X
+        BNE     MAIN1
+        COM     0,X             ; RESTORE GOOD BYTE
+        LDAA    #4*NBR+5
+MAIN2   DEX                     ; GO TO MONITOR GRAVEYARD
+        DECA
+        BNE     MAIN2
+        TXS
+        LDAA    #2*NBR+4
+        LDX     2*NBR,X         ; RETURN ADDRESS IF ANY
+        CPX     #MAIN5
+        BEQ     MAIN4           ; IS RE-INCARNATION
+        LDAB    #$FF
+        TSX
+MAIN3   STAB    2*NBR+2,X
+        INX
+        DECA
+        BNE     MAIN3
+MAIN4   LDAA    #NBR            ; CLEAR BREAKPOINTS

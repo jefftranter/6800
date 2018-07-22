@@ -764,3 +764,86 @@ PNCH1   DECA
         PSHB                    ; SAVE FLAG; 160 US
         LDAB    T2              ; (B1) = END; 156 US
         LDAA    T2+1
+        SUBA    T1+1
+        SBCB    T1              ; (BA) = END - CURRENT
+        BCS     PNCH9           ; DONE;   144 US
+        CMPA    #15             ; 140 US
+        SBCB    #0
+        PULB                    ; RESTORE FLAG
+        BCC     PNCH2           ; AT LEAST FULL RECORD
+        BRA     PNCH3
+ PNCH2  LDAA    #15
+        NOP
+ PNCH3  STAA    T0              ; COUNTER
+        ADDA    #4
+        STAA    T0+1            ; BYTE COUNT
+        LDX     #S1STR          ; 114 US
+        TSTB
+        BPL     PNCH35
+        LDX     #CRSTR
+PNCH35  BSR     OAS             ; OUTPUT ASCII STRING
+        LDX     #T0+2
+        CLRA                    ; (A) = CHECKSUM
+        NOP
+        TSTB
+        BMI     PNCH5
+        DEX
+        BITA    0,X             ; 5 CYCLE NUTHIN'
+PNCH5   NOP
+        NOP
+        BSR     OCH             ; 182 US
+        NOP
+        BNE     PNCH5
+        LDX     T1
+PNCH6   BSR     OSH             ; 182 US
+        DEC     T0
+        BPL     PNCH6
+        COMA
+        PSHA
+        NOP
+        LDAA    #7
+PNCH7   DECA
+        BNE     PNCH7
+        PULA
+        TSTB
+        BMI     PNCH75          ; NO CHECKSUM
+        BSR     OHB
+PNCH75  LDAA    TERM
+        COMA
+        ROLA
+        STX     T1
+        STX     T1
+        BHI     PNC0            ; NOT DONE; NO BREAK
+        INX
+        PSHB
+        LDAA    #6
+PNCH8   DECA
+        BNE     PNCH8
+PNCH9   PULB                    ; 140 US
+        NOP
+        LDAA    #3
+PNCHA   DECA
+        BNE     PNCHA
+        LDX     #S9STR
+        TSTB
+        BMI     PNCHC           ; RETURN
+        BSR     OAS
+        TSTB
+        BEQ     PNCHC           ; NOT CASSETTE
+        LDAA    #19
+PNCHB   DECA
+        BNE     PNCHB
+        BSR     OLT
+        CLC                     ; NO ERRORS
+PNCHC   RTS
+
+S1STR   DB      CR,LF
+        ASC     "S1"
+        DB      0
+S9STR   DB      CR,LF
+        ASC     "S9"
+        DB      0
+CRSTR   DB      CR,LF,0
+
+;;      OAS - OUTPUT ASCII STRING
+;

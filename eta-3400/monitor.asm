@@ -1362,3 +1362,261 @@ MOV2    LDAA    #1              ; DELTA = 1
 ;       ACTUAL MOVE LOOP FOLLOWS
 
 MOV3    TSX
+        LDX     8,X
+        LDAA    0,X
+        TSX
+        LDX     6,X
+        STAA    0,X
+        TSX
+        LDAA    1,X
+        LDAB    0,X
+        ADDA    9,X
+        ADCB    8,X
+        STAA    9,X
+        STAB    8,X
+        LDAA    1,X             ; BUMP *TO*
+        LDAB    0,X
+        ADDA    7,X
+        ADCB    6,X
+        STAA    7,X
+        STAB    6,X
+        LDAA    1,X             ; BUMP  *COUNT*
+        LDAB    0,X
+        ADDA    5,X
+        ADCB    4,X
+        STAA    5,X
+        STAB    4,X
+        BNE     MOV3            ; COUNT <> 0
+        TSTA
+        BNE     MOV3
+        INS
+        INS                     ; DISCARD DELTA
+        TSX
+
+MOV4    LDX     0,X
+        INS
+        INS
+        INS
+        INS
+        INS
+        INS
+        INS
+        INS
+        JMP     0,X
+
+;;      COMMAND TABLE
+
+CMDTAB  DB     'T'             ; TAPE RECORD DATA
+        DW      RCRD
+
+        DB      'S'             ; SET USER CODE
+        DW      STEP
+
+        DB      'R'             ; DISPLAY USER REGISTERS
+        DW      REGS
+
+        DW      'P'             ; PUNCH TO PAPER TAPE
+        DW      PTAP
+
+        DB      'M'             ; DISPLAY MEMORY (BYTE)
+        DW      MEM
+
+        DB      'L'             ; LOAD FROM TAPE
+        DW      LOAD
+
+        DB      'I'             ; DISPLAY MEMORY (INST)
+        DW      INST
+
+        DB      'H'             ; HALTPOINT INSERT
+        DW      BKPT
+
+        DB      'G'             ; GO TO USER CODE
+        DW      GO
+
+        DB      'E'             ; MULTIPLE STEP
+        DW      EXEC
+
+        DB      'D'             ; DUMP MEMORY
+        DW      DUMP
+
+        DB      'C'             ; BREAKPOINT CLEAR
+        DW      CLEA
+
+        DB      'B'             ; GO TO BASIC
+        DW      $1C03           ; WARM START ENTRY
+
+        DB      'X'-$40         ; DISPLAY INDEX
+        DW      REGX
+
+        DB      'T'-$40         ; HI SPEED TAPE
+        DW      CTLT
+
+        DB      'S'-$40         ; SLIVE MEMORY!!
+        DW      COPY
+
+        DB      'P'-$40         ; DISPLAY P.C.
+        DW      REGP
+
+        DB      'H'-$40         ; HALTPOINT LIST
+        DW      DISB
+
+        DB      'C'-$40         ; DISPLAY CONDX
+        DW      REGC
+
+        DB      'B'-$40         ; DISPLAY B ACC.
+        DW      REGB
+
+        DB      'A'-$40         ; DISPLAY A ACC.
+        DW      REGA
+
+        DB      '@'-$40         ; EXIT TO OLD MONITOR
+        DW      $FC00
+
+;;      MTST - MEMORY DIAGNOSTIC
+;
+;         DISPLAYS LWA IN 'ADDR' FIELD ON LEDS
+;                  CURRENT TEST PATTERN IN 'DATA'
+;       ENTRY:  NONE
+;       EXIT:   FAILED ADDRESS/PATTERN DISPLAYED
+;                PROCESSOR HALTED
+;       USES:   ALL,T0,T1,DIGADD
+
+MTST    SEI
+        BSR     FTOP            ; FIND TOP OF MEMORY
+        TXS                     ; STACK AT TOP
+        INS
+MTS2    CLR     0,X
+        DEX
+        BNE     MTST2           ; CLEAR ALL MEMORY
+        CLR     0,X
+        STS     T1              ; HOPE THIS IS GOOD!!
+        LDS     #T0-1
+        JSR     REDIS           ; RESET DISPLAYS
+        LDX     #T1
+        LDAB    #2
+        JSR     DISPLAY         ; OUTPUT LWA FOUND
+        CLRA
+        DECB
+MTS3    JSR     OUTBYT          ; OUTPUT PATTERN
+        PSHA
+        JSR     BKSP            ; BACKSPACE DISPLAYS
+        PULA
+        LDX     T1
+MTS4    CMPA    0,X
+        BNE     MTS6            ; FAILURE!
+        INC     0,X
+        DEX
+        CPX     #DIGADD+1       ; SKIP CONTAMINATED AREA
+        BNE     MTS5
+        LDX     #T0-13
+MTS5    CPX     #-1
+        BNE     MTS4
+        INCA
+        BRA     MTS3
+
+MTS6    STX     T1
+        JSR     REDIS           ; RESET DISPLAYS
+        LDX     #T1
+        INCB
+        JSR     DISPLAY
+        WAI
+
+;;      FTOP - FIND MEMORY TOP
+;
+;       SEARCHES DOWN FROM 1000H UNTIL FINDS
+;         GOOD MEMORY
+;
+;       ENTRY:  NONE
+;       EXIT:   (X) = LWA MEMORY
+;       USES:   X
+
+FTOP    PSHA
+        LDX     #TERM           ; TOP OF MEMORY+1
+        IF      DEBUG
+        ENDC
+        LDAA    #$55            ; TEST PATTERN
+FTO1    DEX
+        STAA    0,X
+        CMPA    0,X
+        BNE     FTO1
+        PULA
+        RTS
+
+;;      CCD - CONSOLE CASSETTE DUMP
+;
+;       ENTRY: NONE
+;       EXIT:  TO LED MONITOR
+;       USES:  ALL,T0,T1,T2
+
+CCD     LDAB   #8
+        BSR    IN.PIA           ; INITIALIZE PIA
+        LDS    #T0-1
+        PSHB
+        JSR     OUTSTA
+        DB      $47,$05+$80     ; 'FR'
+        LDX     #T1
+        LDAB    #2
+        JSR     REDIS           ; RESET DISPLAYS
+        JSR     PROMPT          ; PROMPT FWA
+        JSR     OUTSTA
+        DB      $0E,$7d+$80     ; 'LA'
+        JSR     REDIS           ; RESET DISPLAYS
+        LDX     #T2
+        JSR     PROMPT          ; PROMPT LWA
+        PULB
+        JSR     PUNCH
+CCD1    JMP     $FC00           ; EXIT TO MONITOR
+
+;;      CCL - CONSOLE CASSETTE LOAD
+;
+;       ENTRY:  NONE
+;       EXIT:   TO CONSOLE MONITOR IF SUCESS
+;       USES:   ALL,T0,HIGHEST MEMORY
+
+CCL     LDAB    #8
+        BSR     IN.PIA          ; INITIALIZE PIA
+        BSR     FTOP            ; FIND MEMORY TOP
+        TXS
+        INS
+        JSR     LOA0            ; LOAD MEMORY
+        BCC     CCE1            ; NORMAL RETURN
+        JSR     REDIS           ;   PRINT ERROR MESSAGE
+        JSR     OUTSTR
+        DB      $4F,$05,$05,$1D,$05+$80
+        WAI
+
+;       IN.PI - INITIALIZE PIA FOR LED MONITOR
+;
+;       INITIALIZE CASSETTE SIDE FOR LOAD OR DUMP
+;        AND SET (TERM) SO THAT A BREAK IS NOT
+;         SENSED.
+;
+;       ENTRY:  NONE
+;       EXIT:   NONE
+;       USES:   A,X
+
+IN.PIA  LDX     #TERM
+        CLR     1,X
+        CLR     3,X
+        LDAA    #%100000000
+        STAA    0,X             ; INTO DDR
+        COMA
+        STAA    2,X             ; INITIALIZE CASSETTE
+        LDAA    #4
+        STAA    3,X
+        RTS
+
+;;      TTST - TERMINAL TESTER
+;
+;       ENTRY:  NONE
+;       EXIT:   NEVER
+
+TTST    LDAA    #1
+        STAA    TERM
+        LDAB    #4
+        STAB    TERM.C
+TTS0    JSR     OUTIS
+        DB      CR,LF
+        ASC     "THIS IS A TERMINAL TEST"
+        DB      0
+        BRA     TTS0

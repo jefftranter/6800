@@ -605,3 +605,162 @@ COPY    JSR     OUTIS
         BCC     COP2            ; NO HEX
         PSHA
         PSHB
+        JSR     AHV             ; GET *COUNT*
+        BCC     COP1            ; NO HEX
+        PSHA
+        PSHB
+        JSR     MOVE            ; MOVE DATA
+        CLC                     ; NO ERRORS
+        RTS
+
+COP1    INS
+        INS
+COP2    INS
+        INS
+COP3    SEC
+        RTS
+
+;;      LOAD - LOAD DATA INTO MEMORY
+;
+;       ENTRY:  NONE
+;       EXIT:   'C' SET IF ERROR
+;       USES:   ALL,T0
+
+LOAD    JSR     AHV             ; GET OPTIONAL PARAMETERS
+        BCS     LOA00
+        LDAA    #8              ; DEFAULT TO CASSETTE
+LOA00   TAB
+LOA0    DES
+        DES                     ; SCRATCHPAD ON STACK
+LOA1    JSR     ICT             ; INPUT CASSETTET/TERM
+        ANDA    #$7F
+        CMPA    #'S'
+        BNE     LOA1
+        JSR     ICT
+        ANDA    #$7F
+        CMPA    #'9'
+        BEQ     LOA4            ; IS EOF
+        DES
+        CMPA    #'1'
+        BNE     LOA1            ; NOT START-OF-RECORD
+        STAA    $C16F           ; TURN ON D.P.
+        CLRA
+        TSX
+        JSR     IHB             ; COUNT
+        JSR     IHB             ; ADDRESS (2 BYTES)
+        JSR     IHB
+        TSX
+        LDX     1,X             ; GET FWA OF BUFFER
+        STAB    T0
+        PULB
+        SUBB    #3              ; ACCOUNT 3 BYTES
+LOA2    PSHB
+        LDAB    T0
+        JSR     IHB
+        STAB    T0
+        PULB
+        DECB
+        BNE     LOA2
+        CLR     $C16F           ; TURN OFF D.P.
+        LDAB    T0
+        LDX     #T0
+        JSR     IHB
+        INCA
+        BEQ     LOA1
+LOA3    SEC
+LOA4    INS
+        INS
+        RTS
+
+;;      TIME CRITICAL ROUTINES !!!!!
+;       SINCE CASSETTE I/O IS DONE USING ONLY SOFTWARE
+;        TIMING LOOPS, THE ROUTINE 'BIT' MUST BE CALLED
+;        EVERY 208 US.  CRITICAL TIMES IN THESE ROUTINES
+;        ARE LISTED IN THE COMMENT FIELDS OF CERTAIN
+;        INSTRUCTIONS IN THE FORM 'NNN US'.  THESE TIMES
+;        REPRESENT THE TIME REMAINING BEFORE THE NEXT
+;        RETURN FROM 'BIT'.  THE TIME INCLUDES THE
+;        LABELED INSTRUCTION AND INCLUDES THE EXECUTION
+;        OF THE 'RTS' AT THE END OF 'BIT'.  SOME
+;        ROUTINES HAVE 'NNN US USED' AS A COMMENT
+;        ON THEIR LAST STATEMENT.  THIS REPRESENTS
+;        THE TIME EXPIRED SINCE THE LAST RETURN
+;        FROM 'BIT' INCLUDING THE LABLED INSTRUCTION.
+
+;;      HIGH SPEED LOAD
+;
+;         ACCEPTS ADDITIONAL BIT/CELL PARAMETER
+;
+;       ENTRY:  (A) = COMMAND
+;               (B) = 0
+;       USES:   ALL,T0,T1,T2
+
+CTLT    ADDA    #$40            ; DISPLACE TO PRINTING
+        JSR     OUTCH           ; ECHO TO USER
+        JSR     AHV
+        TAB
+        ANDB    #$7F
+        BRA     PTAP
+
+;;      RCRD - RECORD MEMORY DATA IN 'KCS' FORMAT
+;
+;       ENTRY:  (B) = 0
+;       USES:   ALL,T0,T1,T2
+
+RCRD    ADDB    #9
+
+;;      DUMP - RAW MEMORY DUMP 16 BYTES PER LINE
+;
+;       ENTRY:  (B) = 0
+;       USES:   T0,T1,T2
+
+DUMP    DECB
+
+;;      PTAP - PUNCH TO TAPE
+;
+;       ENTRY:  DEFAULT VALUES ON STACK
+;                BELOW RETURN ADDRESS
+;       EXIT:   'C' SET FOR ERROR
+;       USES:   ALL,T0,T1,T2
+
+PTAP    TSX
+        PSHB                    ; CASSETTE/TERMINAL FLAG
+        JSR     AHV             ; ACCUMULATE HEX
+        BCC     PTAP1           ; USE DEFAULT
+        STAA    3,X             ;   STORE FWA
+        STAB    2,X
+        JSR     AHV
+        STAA    5,X
+        STAB    4,X
+PTAP1   LDAA    5,X
+        LDAB    4,X             ; GET LWA, FWA
+        LDX     2,X
+        STX     T1
+        STAA    T2+1
+        STAB    T2
+        PULB
+
+;;      PUNCH - WRITE LOADER FILE TO TERMINAL OR CASSETTE
+;
+;       ENTRY:  (T1) = FWA BYTES TO PUNCH
+;               (T2) = LWA BYTES TO PUNCH
+;               (B) = CASSETTE TERMINAL FLAG:
+;                   (B) > 0 THEN TO CASSETTE
+;                       USING (B) CELLS PER BIT
+;                   (B) = 0 THEN TO TERMINAL
+;                   (B) < 0 THEN TO TERMINAL WITH
+;                       IMBEDDED SPACES AND NO S1,ETC.
+;       USES:   ALL,T0,T1
+
+PUNCH   TSTB
+        BLE     PNCH0
+        JSR     OLT             ; OUTPUT LEADER
+        LDAA    #7
+        BRA     PNCH1
+
+PNCH0   LDAA    #4              ; 186 US
+PNCH1   DECA
+        BNE     PNCH1
+        PSHB                    ; SAVE FLAG; 160 US
+        LDAB    T2              ; (B1) = END; 156 US
+        LDAA    T2+1

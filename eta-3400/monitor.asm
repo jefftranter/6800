@@ -398,3 +398,210 @@ MEM     DECB
 ;       USES:   ALL,T0
 
 INST    PSHB
+        LDX     6,X             ; GET USER P.C.
+        BSR     AHV
+        BCC     MEM1
+        PSHA
+        PSHB
+        TSX
+        LDX     0,X
+        INS
+        INS
+MEM1    CLC
+MEM2    PULB
+        BCC     MEM3
+        BSR     REG1
+        BCS     MEM5
+        INX
+MEM3    BSR     TYPINS          ; TYPE THE DATA
+        PSHB                    ; SAVE MODE FLAGS
+        BSR     AHV             ; GET REPLACEMENT VALUE
+        BLS     MEM2
+MEM4    CLC
+        PULB
+MEM5    RTS
+
+;;      TYPINS - TYPE INSTRUCTION IN HEX
+;
+;       ENTRY:  (X) = ADDRESS OF INSTRUCTION
+;       EXIT:   (X) = ADDRESS OF NEXT INS.
+;       USES:   ALL
+
+TYPINS  LDAA    0,X             ; OP CODE
+        PSHA                    ;  ONTO STACK
+        STX     T0
+        BSR     OUTIS
+        DB      CR,LF,0
+        LDX     #T0
+        BSR     OUT4HS
+        PULA
+        TSTB
+        BMI     TYPIN1          ; ONE BYTE ONLY
+TYPIN0  BSR     BYTCNT
+        DECB
+        BPL     TYPIN1          ; IS VALID INST.
+        INCB                    ; RESTORE (B)
+        BSR     OUTIS
+        ASC    "DATA="
+        DB      0
+TYPIN1  LDX     T0
+        BSR     OUT2HS
+TYPIN2  CMPB    #1
+        BMI     THB1
+        BEQ     OUT2H2
+        BRA     OUT4HS
+
+;;      DISB - DISPLAY BREAKPOINTS
+;
+;       ENTRY:  NONE
+;       EXIT:   BREAKPOINT TABLE PRINTED
+;       USES:   ALL
+
+DISB    LDAB    #6              ; OFFSET INTO TABLE
+        TSX
+DISB1   INX
+        DECB
+        BNE     DISB1
+        LDAB    #NBR
+DISB2   BSR     OUT4HS
+        DECB
+        BNE     DISB2
+        RTS
+
+;;      OUT4HS, OUT2HS - OUTPUT HEX AND SPACES
+;
+;       ENTRY:  (X) = ADDRESS
+;       EXIT:   X UPDATED PAST BYTE(S)
+;       USES:   X,A,C
+
+OUT4HS  BSR     THB             ; TYPE HEX BYTE
+OUT2HS  BSR     THB
+        JMP     OUTSP
+
+;;      THB - TYPE HEX BYTE
+;
+;       ENTRY:  (X) = ADDRESS OF BYTE
+;       EXIT:   X INCREMENTED PAST BYTE
+;       USES:   X,A,C
+
+THB     PSHB
+        CLRB
+        JSR     OCH
+        PULB
+THB1    RTS
+
+;;      OUTIS - OUTPUT IMBEDDED STRING
+;
+;       CALLING CONVENTION:
+;               JSR    OUTIS
+;               FCB    'STRING',0
+;               <NEXT INST>
+;       EXIT:  TO NEXT INSTRUCTION
+;       USES:  A,X
+
+OUTIS   TSX
+        LDX     0,X
+        INS
+        INS
+        PSHB
+        CLRB
+        JSR     OAS
+        PULB
+        JMP     0,X
+
+;;      AHV - ACCUMULATE HEX VALUE
+;
+;       ENTRY:  NONE
+;       EXIT:   (BA) = ACCUMULATED HEX VALUE OR
+;                (A) = ASCII IF NO HEX
+;                'C' SET FOR VALID HEX
+;                'Z' SET FOR TERMINATOR = CR
+;       USES:  B,A,C
+
+AHV     CLRB
+AHVD    JSR     IHD             ; GET FIRST DIGIT
+        BCC     AHV3            ; NOT HEX
+AHV1    PSHA
+        PSHB
+        ASLA
+        ROLB
+        ASLA
+        ROLB
+        ASLA
+        ROLB
+        ASLA
+        ROLB                    ; MAKE WAY FOR NEXT DIGIT
+        PSHB
+        PSHA
+        JSR     IHD
+        BCC     AHV2            ; THIS NOT HEX
+        PULB
+        ABA
+        PULB
+        INS
+        INS                     ; DISCARD OLD VALUE
+        BRA     AHV1
+
+AHV2    INS
+        INS                     ; SKIP LATEST VALUE
+        PULB
+        PULA
+        SEC
+AHV3    RTS
+
+;;      BYTCNT - COUNT INSTRUCTION BYTES
+;
+;       ENTRY:  (A) = OPCODE
+;       EXIT:   (B) = 0,1,2 OR 3
+;               'C' CLEAR IF RELATIVE ADDRESSING
+;               'Z' SET IF ILLEGAL
+
+BYTCNT  PSHA
+        TAB
+        LDX     #OPTAB-1
+BYT1    INX
+        SUBB    #8
+        BCC     BYT1
+        LDAA    0,X
+BYT2    RORA
+        INCB
+        BNE     BYT2
+        PULA
+        BCS     BYT7
+        CMPA    #$30            ; CHECK FOR BRANCH
+        BCC     BYT3
+        CMPA    #$20
+        BCC     BYT5            ; IS BRANCH
+BYT3    CMPA    #$60
+        BCS     BYT6            ; IS ONE BYTE
+        CMPA    #$8D
+        BEQ     BYT5            ; IS BSR
+        ANDA    #$BD
+        CMPA    #$8C
+        BEQ     BYT4            ; IS X OR SP IMM.
+        ANDA    #$30            ; CHECK FOR THREE BYTES
+        CMPA    #$30
+BYT4    SBCB    #$FF
+BYT5    INCB
+BYT6    INCB
+BYT7    RTS
+
+;;      COPY - COPY MEMORY ELSEWHERE
+;
+;       ENTRY:  NONE
+;       EXIT:   BLOCK MOVED
+;       USES:   ALL
+;
+;       COMMAND SYNTAX: (CNTL-D)D <FROM>,<TO>,<COUNT>
+
+COPY    JSR     OUTIS
+        ASC     "SLIDE"
+        DB      0
+        JSR     AHV             ; GET *FROM*
+        BCC     COP3            ; NO HEX
+        PSHA
+        PSHB
+        JSR     AHV             ; GET *TO*
+        BCC     COP2            ; NO HEX
+        PSHA
+        PSHB

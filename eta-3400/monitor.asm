@@ -1128,7 +1128,7 @@ ASH1    ADDA  #'0'
         CLC
         RTS
 
-ASH2    SUBA    #-10
+ASH2    SUBA    #$F6            ; -10
 ASH3    RTS
 
 ;;      IHB - INPUT HEX BYTE
@@ -1316,7 +1316,7 @@ TNC3    RTS
 MOVE    TSX
         LDX     2,X             ; CHECK COUNT <> 0
         BEQ     MOV4            ; NO MOVE
-MOVEA   TSX                     ; ** ALTERANATE ENTRY **
+MOVEA   TSX                     ; ** ALTERNATE ENTRY **
         LDAA    5,X             ; (BA) = TO
         LDAB    4,X
         SUBA    7,X             ; (BA) = TO - FROM
@@ -1329,7 +1329,7 @@ MOVEA   TSX                     ; ** ALTERANATE ENTRY **
 ;       HAVE MOVE UP - MUST START AT TOP
 ;          TO AVOID CONFLICT
 
-MOV1    LDAA    #-1             ; (BA) = -1
+MOV1    LDAA    #$FF            ; (BA) = -1
         TAB
         PSHA                    ; DELTA = -1
         PSHB
@@ -1600,7 +1600,7 @@ CCL     LDAB    #8
 IN.PIA  LDX     #TERM
         CLR     1,X
         CLR     3,X
-        LDAA    #%100000000
+        LDAA    #%10000000
         STAA    0,X             ; INTO DDR
         COMA
         STAA    2,X             ; INITIALIZE CASSETTE

@@ -1437,33 +1437,33 @@ FFC8 FC46FD0AFD18FD
 FFCF 1BFC8CFD13FD16    967          DW      BKSET,AUTO,BACK,REPLAC
                 ,DO,EXAM,FOWD
                        968  
-                       969  
-  FFF8                 970          * EQU $FFF8
-                       971  
-                       972  ;;      INTERRUPT VECTORS.
-                       973  
-FFF8 00F7              974          DW      UIRQ                 ;
+                       969  ;; FILL UNUSED LOCATIONS WITH FF
+                       970  
+FFD6 FFFFFFFFFFFFFF
+FFDD FFFFFFFFFFFFFF
+FFE4 FFFFFFFFFFFFFF    971          DS      $FFF8-*,$FF
+                       972  
+                       973  ;;      INTERRUPT VECTORS.
+                       974  
+FFF8 00F7              975          DW      UIRQ                 ;
                                       USER IRQ HANDLER
-FFFA 00F4              975          DW      SYSSWI               ;
-                                      SYSTEM SWI HANDLER
-FFFC 00FD              976          DW      UNMI                 ;
-                                      USER NMI HANDLER
+FFFA 00F4              976          DW      SYSSWI               ;
 
 
 Crasm 1.8:        Heathkit ET-3400A Monitor        page 12
 
-FFFE FC00              977          DW      RESET
-                       978  
+                                      SYSTEM SWI HANDLER
+FFFC 00FD              977          DW      UNMI                 ;
+                                      USER NMI HANDLER
+FFFE FC00              978          DW      RESET
+                       979  
 
 ERRORS:       0
 WARNINGS:     0
 
 Successful assembly...
  Last address     ffff (65535)
- Code length       7bc (1980)
-
-
-
+ Code length       800 (2048)
 
 
 

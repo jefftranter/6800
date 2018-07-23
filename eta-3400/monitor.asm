@@ -1174,9 +1174,15 @@ ICT     TSTB
 INCH    PSHB
         BSR     BRD             ; BAUD RATE DETERMINE
         TBA
-INC1    TAB
-        LSRB
-        LSRB
+
+;; Official ROM has this code?
+        JMP     $1B50
+
+;; Source code in manual has three lines below?
+;;INC1    TAB
+;;        LSRB
+;;        INCB
+
 INC2    TST     TERM
         BMI     INC2            ; WAIT FOR SPACING
         BSR     WIB             ; WAIT, INPUT START
@@ -1604,7 +1610,9 @@ IN.PIA  LDX     #TERM
         STAA    3,X
         RTS
 
-*       EQU     $1AF6
+;; Code below is in the ROM, but not in the source code in the manual.
+
+        DW      $BD16,$180D,$0A4D,$4545,$4741,$4E00,$20F2
 
 ;;      TTST - TERMINAL TESTER
 ;
@@ -1620,3 +1628,15 @@ TTS0    JSR     OUTIS
         ASC     "THIS IS A TERMINAL TEST"
         DB      0
         BRA     TTS0
+
+;; Code below is in the ROM, but not in the source code in the manual.
+
+        DW      $B610,$0043,$4924,$067D,$1000,$2BFB,$0D39,$C608
+        DW      $BD16,$AD24,$037E,$144E,$39CE,$0000,$DFEE,$DE24
+        DW      $DFF4,$C608,$BD17,$2939,$FFFF,$FFFF,$FFFF,$FFFF
+        DB      $FF
+        DW      $1654,$2701,$5C7E,$18E8
+
+;; Fill the rest of the ROM with FF.
+        
+        DS      $1C00-*,$FF

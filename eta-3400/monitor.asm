@@ -1175,13 +1175,13 @@ INCH    PSHB
         BSR     BRD             ; BAUD RATE DETERMINE
         TBA
 
-;; Official ROM has this code?
-        JMP     $1B50
+; Official ROM has this code?
+JMP     PATCH
 
-;; Source code in manual has three lines below?
-;;INC1    TAB
-;;        LSRB
-;;        INCB
+; Source code in manual has three lines below?
+;INC1    TAB
+;        LSRB
+;        INCB
 
 INC2    TST     TERM
         BMI     INC2            ; WAIT FOR SPACING
@@ -1612,7 +1612,11 @@ IN.PIA  LDX     #TERM
 
 ;; Code below is in the ROM, but not in the source code in the manual.
 
-        DW      $BD16,$180D,$0A4D,$4545,$4741,$4E00,$20F2
+RET     JSR     OUTIS
+        DB      CR,LF
+        ASC     "MEEGAN"
+        DB      0
+        BRA     RET
 
 ;;      TTST - TERMINAL TESTER
 ;
@@ -1631,12 +1635,35 @@ TTS0    JSR     OUTIS
 
 ;; Code below is in the ROM, but not in the source code in the manual.
 
-        DW      $B610,$0043,$4924,$067D,$1000,$2BFB,$0D39,$C608
-        DW      $BD16,$AD24,$037E,$144E,$39CE,$0000,$DFEE,$DE24
-        DW      $DFF4,$C608,$BD17,$2939
-        DS      9,$FF
-        DW      $1654,$2701,$5C7E,$18E8
+        LDAA    TERM
+        COMA
+        ROLA
+        BCC     X2
+X1      TST     TERM
+        BMI     X1
+        SEC
+X2      RTS
+        LDAB    #08
+        JSR     LOA0
+        BCC     X3
+        JMP     $144E
+X3      RTS
+        LDX     #0
+        STX     T1
+        LDX     $24
+        STX     T2
+        LDAB    #8
+        JSR     PUNCH
+        RTS
 
-;; Fill the rest of the ROM with FF.
+        DS      9,$FF
+
+PATCH   TAB
+        LSRB
+        BEQ     P1
+        INCB
+P1      JMP     INC2
+
+;; Fill the rest of the ROM with FFs.
         
         DS      $1C00-*,$FF

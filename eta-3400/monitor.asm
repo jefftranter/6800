@@ -1633,8 +1633,8 @@ TTS0    JSR     OUTIS
 
         DW      $B610,$0043,$4924,$067D,$1000,$2BFB,$0D39,$C608
         DW      $BD16,$AD24,$037E,$144E,$39CE,$0000,$DFEE,$DE24
-        DW      $DFF4,$C608,$BD17,$2939,$FFFF,$FFFF,$FFFF,$FFFF
-        DB      $FF
+        DW      $DFF4,$C608,$BD17,$2939
+        DS      9,$FF
         DW      $1654,$2701,$5C7E,$18E8
 
 ;; Fill the rest of the ROM with FF.

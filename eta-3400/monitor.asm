@@ -29,6 +29,7 @@ SPACE   EQU     ' '
 
 ;;      PIA DEFINITION
 
+        DUMMY
 *       EQU     $1000
 TERM    DS      1
 TERM.C  DS      1
@@ -70,11 +71,8 @@ UIRQ    DS      3
 USWI    DS      3
 UNMI    DS      3
 
-        IF      DEBUG
-        ELSE
+        CODE
 *       EQU     $1400
-        ENDC
-
 
 ;;      MAIN MONITOR LOOP
 ;
@@ -1534,8 +1532,6 @@ MTS6    STX     T1
 
 FTOP    PSHA
         LDX     #TERM           ; TOP OF MEMORY+1
-        IF      DEBUG
-        ENDC
         LDAA    #$55            ; TEST PATTERN
 FTO1    DEX
         STAA    0,X

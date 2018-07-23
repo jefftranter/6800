@@ -65,7 +65,7 @@ T0      DS      2
 T1      DS      2
 DIGADD  DS      2
 USERS   DS      2
-T2      EQU     *
+T2      DS      0
 SYSSWI  DS      3
 UIRQ    DS      3
 USWI    DS      3

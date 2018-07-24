@@ -8,9 +8,12 @@
 ; Tiny BASIC was implemented as a (target dependent) virtual machine
 ; running a (portable) interpreted language. The disassembled source
 ; code here does not reflect this and is not particularly meaningful
-; (e.g. many of the instructions are actually data).
+; (e.g. many of the instructions are actually data). Apparently the
+; original source for for the 6800 version of Tiny BASIC has been
+; lost.
 ;
 ; See:
+;   http://www.ittybittycomputers.com/IttyBitty/TinyBasic
 ;   https://github.com/Arakula/f9dasm
 ;   https://github.com/colinbourassa/crasm
 ;

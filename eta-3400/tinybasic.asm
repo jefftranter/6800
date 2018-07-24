@@ -105,1109 +105,1109 @@ Z2346   EQU     $2346
 
         * =     $1C00
 
-        JMP     Z1D00                    ;'~..'
-        JMP     Z1D25                    ;'~.%'
-Z1C06   JMP     Z18E1                    ;'~..'
-Z1C09   JMP     Z1865                    ;'~.e'
-Z1C0C   JMP     Z1B1F                    ;'~..'
-M1C0F   INX                              ;'.'
-M1C10   DB      $15                      ;'.'
-M1C11   DB      $83                      ;'.'
-M1C12   SUBA    #$20                     ;'. '
-        LDAA    ,X                       ;'..'
-        CLRB                             ;'_'
-M1C17   RTS                              ;'9'
-        STAA    ,X                       ;'..'
-        RTS                              ;'9'
-        DB      $1D                      ;'.'
-        EORA    M001D                    ;'..'
-        ADDA    M001D                    ;'..'
-        LDX     $1E,X                    ;'..'
-        DB      $12                      ;'.'
-        DB      $1E                      ;'.'
-        RTI                              ;';'
-        DB      $1E                      ;'.'
-        SEV                              ;'.'
-        DB      $1C                      ;'.'
-        DB      $FC                      ;'.'
-        DB      $1C                      ;'.'
-        STAB    M001C                    ;'..'
-        ADDB    M001C                    ;'..'
-Z1C2E   ADCA    #$1C                     ;'..'
-        LDAA    $1C,X                    ;'..'
-        ADCA    $1C,X                    ;'..'
-        ASR     Z1C80                    ;'w..'
-        DB      $1F                      ;'.'
-        ADDA    $1F,X                    ;'..'
-        SUBA    M1F00                    ;'...'
-        DB      $1F                      ;'.'
-        SBA                              ;'.'
-        DB      $1F                      ;'.'
-        LDX     #M1F99                   ;'...'
-        DB      $1F                      ;'.'
-        LDS     #Z1EC2                   ;'...'
-        DB      $1E                      ;'.'
-        DB      $CF                      ;'.'
-        DB      $1E                      ;'.'
-        DB      $CD                      ;'.'
-        DB      $1E                      ;'.'
-        BITB    $1E,X                    ;'..'
-        DB      $6B                      ;'k'
-        DB      $1F                      ;'.'
-        BLS     Z1C71                    ;'#.'
-        ROLA                             ;'I'
-        DB      $1C                      ;'.'
-        DB      $FC                      ;'.'
-        BRA     Z1C2E                    ;' .'
-        BRA     Z1C9E                    ;' E'
-        BRA     Z1C15                    ;' .'
-        BRA     Z1C1F                    ;' .'
-        DB      $21                      ;'!'
-        BVC     Z1C80                    ;'( '
-        JSR     $20,X                    ;'. '
-        ADDB    #$14                     ;'..'
-        DB      $00                      ;'.'
-        DB      $21                      ;'!'
-        ROLB                             ;'Y'
-        ABA                              ;'.'
-        BLT     Z1C85                    ;'-.'
-        DB      $38                      ;'8'
-        DB      $21                      ;'!'
-        CMPA    M1D12                    ;'...'
-        DB      $1F                      ;'.'
-        JMP     Z1D25                    ;'~.%'
-        DB      $1C                      ;'.'
-        ADCA    M1FA6                    ;'...'
-        BSR     Z1CA6                    ;'.-'
-        STAA    M00BC                    ;'..'
-        STAB    M00BD                    ;'..'
-        JMP     Z1FD7                    ;'~..'
-Z1C80   JSR     Z1FFC                    ;'...'
-        LDAA    M00BC                    ;'..'
-Z1C85   LDAB    M00BD                    ;'..'
-        BRA     Z1C8D                    ;' .'
-        BSR     Z1CA6                    ;'..'
-        BSR     Z1C8D                    ;'..'
-Z1C8D   LDX     M00C2                    ;'..'
-        DEX                              ;'.'
-        STAB    ,X                       ;'..'
-        BRA     Z1C96                    ;' .'
-Z1C94   LDX     M00C2                    ;'..'
-Z1C96   DEX                              ;'.'
-        STAA    ,X                       ;'..'
-        STX     M00C2                    ;'..'
-        PSHA                             ;'6'
-        LDAA    M00C1                    ;'..'
-Z1C9E   CMPA    M00C3                    ;'..'
-        PULA                             ;'2'
-        BCS     Z1CFC                    ;'%Y'
-Z1CA3   JMP     Z1D5C                    ;'~.\'
-Z1CA6   BSR     Z1CA9                    ;'..'
-        TBA                              ;'.'
-Z1CA9   LDAB    #$01                     ;'..'
-Z1CAB   ADDB    M00C3                    ;'..'
-        CMPB    #$80                     ;'..'
-        BHI     Z1CA3                    ;'".'
-        LDX     M00C2                    ;'..'
-        INC     M00C3                    ;'|..'
-        LDAB    ,X                       ;'..'
-        RTS                              ;'9'
-        BSR     Z1CC0                    ;'..'
-        BSR     Z1C94                    ;'..'
-        TBA                              ;'.'
-        BRA     Z1C94                    ;' .'
-Z1CC0   LDAA    #$06                     ;'..'
-        TAB                              ;'.'
-        ADDA    M00C3                    ;'..'
-        CMPA    #$80                     ;'..'
-        BHI     Z1CA3                    ;'".'
-        LDX     M00C2                    ;'..'
-        STAA    M00C3                    ;'..'
-Z1CCD   LDAA    $05,X                    ;'..'
-        PSHA                             ;'6'
-        DEX                              ;'.'
-        DECB                             ;'Z'
-        BNE     Z1CCD                    ;'&.'
-        TPA                              ;'.'
-        PSHA                             ;'6'
-        RTI                              ;';'
-        BSR     Z1CF5                    ;'..'
-        BRA     Z1C94                    ;' .'
-        BSR     Z1CF5                    ;'..'
-        PSHA                             ;'6'
-        BSR     Z1CF5                    ;'..'
-        TAB                              ;'.'
-        PULA                             ;'2'
-        BRA     Z1C8D                    ;' .'
-Z1CE4   ADDA    M00C3                    ;'..'
-        STAA    M00BD                    ;'..'
-        CLR     M00BC                    ;'...'
-        BSR     Z1CA9                    ;'..'
-        LDX     M00BC                    ;'..'
-        LDAA    ,X                       ;'..'
-        STAB    ,X                       ;'..'
-        BRA     Z1C94                    ;' .'
-Z1CF5   LDX     M002A                    ;'.*'
-        LDAA    ,X                       ;'..'
-        INX                              ;'.'
-        STX     M002A                    ;'.*'
-Z1CFC   TSTA                             ;'M'
-        RTS                              ;'9'
-M1CFE   BHI     Z1D6A                    ;'"j'
-Z1D00   LDX     #M0100                   ;'...'
-        STX     M0020                    ;'. '
-        JSR     Z1A80                    ;'...'
-        STX     M0022                    ;'."'
-        JSR     Z1618                    ;'...'
-        ASLA                             ;'H'
-        LSRB                             ;'T'
-        DB      $42                      ;'B'
-        INS                              ;'1'
-        DB      $00                      ;'.'
-M1D12   LDAA    M0020                    ;'. '
-        LDAB    M0021                    ;'.!'
-        ADDB    M1C13                    ;'...'
-        ADCA    #$00                     ;'..'
-        STAA    M0024                    ;'.$'
-        STAB    M0025                    ;'.%'
-        LDX     M0020                    ;'. '
-        CLR     ,X                       ;'o.'
-        CLR     $01,X                    ;'o.'
-Z1D25   LDS     M0022                    ;'."'
-Z1D27   JSR     Z212C                    ;'.!,'
-Z1D2A   LDX     M1CFE                    ;'...'
-        STX     M002A                    ;'.*'
-        LDX     #M0080                   ;'...'
-        STX     M00C2                    ;'..'
-        LDX     #M0030                   ;'..0'
-        STX     M00C0                    ;'..'
-Z1D39   STS     M0026                    ;'.&'
-Z1D3B   BSR     Z1CF5                    ;'..'
-        BSR     Z1D46                    ;'..'
-        BRA     Z1D3B                    ;' .'
-        CPX     #M0099                   ;'...'
-        BRA     Z1D39                    ;' .'
-Z1D46   LDX     #M1C17                   ;'...'
-        STX     M00BC                    ;'..'
-        CMPA    #$30                     ;'.0'
-        BCC     Z1DA5                    ;'$V'
-        CMPA    #$08                     ;'..'
-        BCS     Z1CE4                    ;'%.'
-        ASLA                             ;'H'
-        STAA    M00BD                    ;'..'
-        LDX     M00BC                    ;'..'
-        LDX     $17,X                    ;'..'
-        JMP     ,X                       ;'n.'
-Z1D5C   JSR     Z212C                    ;'.!,'
-        LDAA    #$21                     ;'.!'
-        STAA    M00C1                    ;'..'
-        JSR     Z1C09                    ;'...'
-        LDAA    #$80                     ;'..'
-        STAA    M00C3                    ;'..'
-Z1D6A   LDAB    M002B                    ;'.+'
-        LDAA    M002A                    ;'.*'
-        SUBB    M1CFF                    ;'...'
-        SBCA    M1CFE                    ;'...'
-        JSR     Z2042                    ;'. B'
-        LDAA    M00C0                    ;'..'
-        BEQ     Z1D8A                    ;''.'
-        LDX     #M1D93                   ;'...'
-        STX     M002A                    ;'.*'
-        JSR     Z20AD                    ;'. .'
-        LDAA    M0028                    ;'.('
-        LDAB    M0029                    ;'.)'
-        JSR     Z2042                    ;'. B'
-Z1D8A   LDAA    #$07                     ;'..'
-        JSR     Z1C09                    ;'...'
-        LDS     M0026                    ;'.&'
-        BRA     Z1D27                    ;' .'
-M1D93   BRA     Z1DD6                    ;' A'
-        LSRB                             ;'T'
-        BRA     Z1D18                    ;' .'
-        DEC     M00BC                    ;'z..'
-Z1D9B   TST     M00BC                    ;'}..'
-        BEQ     Z1D5C                    ;''.'
-Z1DA0   LDX     M00BC                    ;'..'
-        STX     M002A                    ;'.*'
-        RTS                              ;'9'
-Z1DA5   CMPA    #$40                     ;'.@'
-        BCC     Z1DCC                    ;'$#'
-        PSHA                             ;'6'
-        JSR     Z1CF5                    ;'...'
-        ADDA    M1CFF                    ;'...'
-        STAA    M00BD                    ;'..'
-        PULA                             ;'2'
-        TAB                              ;'.'
-        ANDA    #$07                     ;'..'
-        ADCA    M1CFE                    ;'...'
-        STAA    M00BC                    ;'..'
-        ANDB    #$08                     ;'..'
-        BNE     Z1DA0                    ;'&.'
-        LDX     M002A                    ;'.*'
-        STAA    M002A                    ;'.*'
-        LDAB    M00BD                    ;'..'
-        STAB    M002B                    ;'.+'
-        STX     M00BC                    ;'..'
-        JMP     Z1FD7                    ;'~..'
-Z1DCC   TAB                              ;'.'
-        LSRA                             ;'D'
-        LSRA                             ;'D'
-        LSRA                             ;'D'
-        LSRA                             ;'D'
-        ANDA    #$0E                     ;'..'
-        STAA    M00BD                    ;'..'
-        LDX     M00BC                    ;'..'
-        LDX     $17,X                    ;'..'
-        CLRA                             ;'O'
-        CMPB    #$60                     ;'.`'
-        ANDB    #$1F                     ;'..'
-        BCC     Z1DE2                    ;'$.'
-        ORAB    #$E0                     ;'..'
-Z1DE2   BEQ     Z1DEA                    ;''.'
-        ADDB    M002B                    ;'.+'
-        STAB    M00BD                    ;'..'
-        ADCA    M002A                    ;'.*'
-Z1DEA   STAA    M00BC                    ;'..'
-        JMP     ,X                       ;'n.'
-        LDX     M002C                    ;'.,'
-        STX     M00B8                    ;'..'
-Z1DF2   BSR     Z1E2A                    ;'.6'
-        BSR     Z1E20                    ;'.*'
-        TAB                              ;'.'
-        JSR     Z1CF5                    ;'...'
-        BPL     Z1DFE                    ;'*.'
-        ORAB    #$80                     ;'..'
-Z1DFE   CBA                              ;'.'
-        BNE     Z1E05                    ;'&.'
-        TSTA                             ;'M'
-        BPL     Z1DF2                    ;'*.'
-        RTS                              ;'9'
-Z1E05   LDX     M00B8                    ;'..'
-        STX     M002C                    ;'.,'
-Z1E09   BRA     Z1D9B                    ;' .'
-        BSR     Z1E2A                    ;'..'
-        CMPA    #$0D                     ;'..'
-        BNE     Z1E09                    ;'&.'
-        RTS                              ;'9'
-        BSR     Z1E2A                    ;'..'
-        CMPA    #$5A                     ;'.Z'
-        BGT     Z1E09                    ;'..'
-        CMPA    #$41                     ;'.A'
-        BLT     Z1E09                    ;'-.'
-        ASLA                             ;'H'
-        JSR     Z1C94                    ;'...'
-Z1E20   LDX     M002C                    ;'.,'
-        LDAA    ,X                       ;'..'
-        INX                              ;'.'
-        STX     M002C                    ;'.,'
-        CMPA    #$0D                     ;'..'
-        RTS                              ;'9'
-Z1E2A   BSR     Z1E20                    ;'..'
-        CMPA    #$20                     ;'. '
-        BEQ     Z1E2A                    ;''.'
-        DEX                              ;'.'
-        STX     M002C                    ;'.,'
-        CMPA    #$30                     ;'.0'
-        CLC                              ;'.'
-        BLT     Z1E3A                    ;'-.'
-        CMPA    #$3A                     ;'.:'
-Z1E3A   RTS                              ;'9'
-        BSR     Z1E2A                    ;'..'
-        BCC     Z1E09                    ;'$.'
-        LDX     #M0000                   ;'...'
-        STX     M00BC                    ;'..'
-Z1E44   BSR     Z1E20                    ;'..'
-        PSHA                             ;'6'
-        LDAA    M00BC                    ;'..'
-        LDAB    M00BD                    ;'..'
-        ASLB                             ;'X'
-        ROLA                             ;'I'
-        ASLB                             ;'X'
-        ROLA                             ;'I'
-        ADDB    M00BD                    ;'..'
-        ADCA    M00BC                    ;'..'
-        ASLB                             ;'X'
-        ROLA                             ;'I'
-        STAB    M00BD                    ;'..'
-        PULB                             ;'3'
-        ANDB    #$0F                     ;'..'
-        ADDB    M00BD                    ;'..'
-        ADCA    #$00                     ;'..'
-        STAA    M00BC                    ;'..'
-        STAB    M00BD                    ;'..'
-        BSR     Z1E2A                    ;'..'
-        BCS     Z1E44                    ;'%.'
-        LDAA    M00BC                    ;'..'
-        JMP     Z1C8D                    ;'~..'
-        BSR     Z1EE0                    ;'.s'
-        LDAA    $02,X                    ;'..'
-        ASRA                             ;'G'
-        ROLA                             ;'I'
-        SBCA    $02,X                    ;'..'
-        STAA    M00BC                    ;'..'
-        STAA    M00BD                    ;'..'
-        TAB                              ;'.'
-        ADDB    $03,X                    ;'..'
-        STAB    $03,X                    ;'..'
-        TAB                              ;'.'
-        ADCB    $02,X                    ;'..'
-        STAB    $02,X                    ;'..'
-        EORA    ,X                       ;'..'
-        STAA    M00BE                    ;'..'
-        BPL     Z1E89                    ;'*.'
-        BSR     Z1EC4                    ;'.;'
-Z1E89   LDAB    #$11                     ;'..'
-        LDAA    ,X                       ;'..'
-        ORAA    $01,X                    ;'..'
-        BNE     Z1E94                    ;'&.'
-        JMP     Z1D5C                    ;'~.\'
-Z1E94   LDAA    M00BD                    ;'..'
-        SUBA    $01,X                    ;'..'
-        PSHA                             ;'6'
-        LDAA    M00BC                    ;'..'
-        SBCA    ,X                       ;'..'
-        PSHA                             ;'6'
-        EORA    M00BC                    ;'..'
-        BMI     Z1EAB                    ;'+.'
-        PULA                             ;'2'
-        STAA    M00BC                    ;'..'
-        PULA                             ;'2'
-        STAA    M00BD                    ;'..'
-        SEC                              ;'.'
-        BRA     Z1EAE                    ;' .'
-Z1EAB   PULA                             ;'2'
-        PULA                             ;'2'
-        CLC                              ;'.'
-Z1EAE   ROL     $03,X                    ;'i.'
-        ROL     $02,X                    ;'i.'
-        ROL     M00BD                    ;'y..'
-        ROL     M00BC                    ;'y..'
-        DECB                             ;'Z'
-        BNE     Z1E94                    ;'&.'
-        BSR     Z1EDD                    ;'. '
-        TST     M00BE                    ;'}..'
-        BPL     Z1ECC                    ;'*.'
-Z1EC2   LDX     M00C2                    ;'..'
-Z1EC4   NEG     $01,X                    ;'`.'
-        BNE     Z1ECA                    ;'&.'
-        DEC     ,X                       ;'j.'
-Z1ECA   COM     ,X                       ;'c.'
-Z1ECC   RTS                              ;'9'
-        BSR     Z1EC2                    ;'..'
-        BSR     Z1EE0                    ;'..'
-        LDAB    $03,X                    ;'..'
-        ADDB    $01,X                    ;'..'
-        LDAA    $02,X                    ;'..'
-        ADCA    ,X                       ;'..'
-Z1ED9   STAA    $02,X                    ;'..'
-        STAB    $03,X                    ;'..'
-Z1EDD   JMP     Z1CA9                    ;'~..'
-Z1EE0   LDAB    #$04                     ;'..'
-Z1EE2   JMP     Z1CAB                    ;'~..'
-        BSR     Z1EE0                    ;'..'
-        LDAA    #$10                     ;'..'
-        STAA    M00BC                    ;'..'
-        CLRA                             ;'O'
-        CLRB                             ;'_'
-Z1EED   ASLB                             ;'X'
-        ROLA                             ;'I'
-        ASL     $01,X                    ;'h.'
-        ROL     ,X                       ;'i.'
-        BCC     Z1EF9                    ;'$.'
-        ADDB    $03,X                    ;'..'
-        ADCA    $02,X                    ;'..'
-Z1EF9   DEC     M00BC                    ;'z..'
-        BNE     Z1EED                    ;'&.'
-        BRA     Z1ED9                    ;' .'
-M1F00   BSR     Z1EDD                    ;'..'
-        STAB    M00BD                    ;'..'
-        CLR     M00BC                    ;'...'
-        LDX     M00BC                    ;'..'
-        LDAA    ,X                       ;'..'
-        LDAB    $01,X                    ;'..'
-        JMP     Z1C8D                    ;'~..'
-        LDAB    #$03                     ;'..'
-        BSR     Z1EE2                    ;'..'
-        LDAB    $01,X                    ;'..'
-        CLR     $01,X                    ;'o.'
-        LDAA    ,X                       ;'..'
-        LDX     $01,X                    ;'..'
-        STAA    ,X                       ;'..'
-        STAB    $01,X                    ;'..'
-Z1F20   JMP     Z1CA6                    ;'~..'
-        BSR     Z1F20                    ;'..'
-        PSHB                             ;'7'
-        LDAB    #$03                     ;'..'
-        BSR     Z1EE2                    ;'..'
-        INC     M00C3                    ;'|..'
-        INC     M00C3                    ;'|..'
-        PULB                             ;'3'
-        SUBB    $02,X                    ;'..'
-        SBCA    $01,X                    ;'..'
-        BGT     Z1F42                    ;'..'
-        BLT     Z1F3E                    ;'-.'
-        TSTB                             ;']'
-        BEQ     Z1F40                    ;''.'
-        BRA     Z1F42                    ;' .'
-Z1F3E   ASR     ,X                       ;'g.'
-Z1F40   ASR     ,X                       ;'g.'
-Z1F42   ASR     ,X                       ;'g.'
-        BCC     Z1F61                    ;'$.'
-        JMP     Z1CF5                    ;'~..'
-        LDAA    M00C0                    ;'..'
-        BEQ     Z1F6A                    ;''.'
-Z1F4D   JSR     Z1E20                    ;'.. '
-        BNE     Z1F4D                    ;'&.'
-        BSR     Z1F71                    ;'..'
-        BEQ     Z1F67                    ;''.'
-Z1F56   BSR     Z1F8A                    ;'.2'
-        JSR     Z1C0C                    ;'...'
-        BCS     Z1F62                    ;'%.'
-        LDX     M00C4                    ;'..'
-        STX     M002A                    ;'.*'
-Z1F61   RTS                              ;'9'
-Z1F62   LDX     M1CFE                    ;'...'
-        STX     M002A                    ;'.*'
-Z1F67   JMP     Z1D5C                    ;'~.\'
-Z1F6A   LDS     M0026                    ;'.&'
-        STAA    M00BF                    ;'..'
-        JMP     Z1D2A                    ;'~.*'
-Z1F71   JSR     Z1E20                    ;'.. '
-        STAA    M0028                    ;'.('
-        JSR     Z1E20                    ;'.. '
-        STAA    M0029                    ;'.)'
-        LDX     M0028                    ;'.('
-        RTS                              ;'9'
-        LDX     M0020                    ;'. '
-        STX     M002C                    ;'.,'
-        BSR     Z1F71                    ;'..'
-        BEQ     Z1F67                    ;''.'
-        LDX     M002A                    ;'.*'
-        STX     M00C4                    ;'..'
-Z1F8A   TPA                              ;'.'
-        STAA    M00C0                    ;'..'
-        RTS                              ;'9'
-        JSR     Z201A                    ;'. .'
-        BEQ     Z1F56                    ;''.'
-Z1F93   LDX     M00BC                    ;'..'
-        STX     M0028                    ;'.('
-        BRA     Z1F67                    ;' .'
-M1F99   BSR     Z1FFC                    ;'.a'
-        TSX                              ;'0'
-        INC     $01,X                    ;'l.'
-        INC     $01,X                    ;'l.'
-        JSR     Z2025                    ;'. %'
-        BNE     Z1F93                    ;'&.'
-        RTS                              ;'9'
-M1FA6   BSR     Z1FFC                    ;'.T'
-        STX     M002A                    ;'.*'
-        RTS                              ;'9'
-        LDX     #M002C                   ;'..,'
-        BRA     Z1FB3                    ;' .'
-        LDX     #M002E                   ;'...'
-Z1FB3   LDAA    $01,X                    ;'..'
-        CMPA    #$80                     ;'..'
-        BCC     Z1FC1                    ;'$.'
-        LDAA    ,X                       ;'..'
-        BNE     Z1FC1                    ;'&.'
-        LDX     M002C                    ;'.,'
-        BRA     Z1DB                     ;' .'
-Z1FC1   LDX     M002C                    ;'.,'
-        LDAA    M002E                    ;'..'
-        STAA    M002C                    ;'.,'
-        LDAA    M002F                    ;'./'
-        STAA    M002D                    ;'.-'
-Z1DB    STX     M002E                    ;'..'
-        RTS                              ;'9'
-        TSX                              ;'0'
-        INC     $01,X                    ;'l.'
-        INC     $01,X                    ;'l.'
-        LDX     M0028                    ;'.('
-        STX     M00BC                    ;'..'
-Z1FD7   DES                              ;'4'
-        DES                              ;'4'
-        TSX                              ;'0'
-        LDAA    $02,X                    ;'..'
-        STAA    ,X                       ;'..'
-        LDAA    $03,X                    ;'..'
-        STAA    $01,X                    ;'..'
-        LDAA    M00BC                    ;'..'
-        STAA    $02,X                    ;'..'
-        LDAA    M00BD                    ;'..'
-        STAA    $03,X                    ;'..'
-        LDX     #M0024                   ;'..$'
-        STS     M00BC                    ;'..'
-        LDAA    $01,X                    ;'..'
-        SUBA    M00BD                    ;'..'
-        LDAA    ,X                       ;'..'
-        SBCA    M00BC                    ;'..'
-        BCS     Z2019                    ;'% '
-Z1FF9   JMP     Z1D5C                    ;'~.\'
-Z1FFC   TSX                              ;'0'
-        INX                              ;'.'
-        INX                              ;'.'
-        INX                              ;'.'
-        CPX     M0022                    ;'."'
-        BEQ     Z1FF9                    ;''.'
-        LDX     $01,X                    ;'..'
-        STX     M00BC                    ;'..'
-        TSX                              ;'0'
-        PSHB                             ;'7'
-        LDAB    #$04                     ;'..'
-Z200C   LDAA    $03,X                    ;'..'
-        STAA    $05,X                    ;'..'
-        DEX                              ;'.'
-        DECB                             ;'Z'
-        BNE     Z200C                    ;'&.'
-        PULB                             ;'3'
-        INS                              ;'1'
-        INS                              ;'1'
-        LDX     M00BC                    ;'..'
-Z2019   RTS                              ;'9'
-Z201A   JSR     Z1CA6                    ;'...'
-        STAB    M00BD                    ;'..'
-        STAA    M00BC                    ;'..'
-        ORAA    M00BD                    ;'..'
-        BEQ     Z1FF9                    ;''.'
-Z2025   LDX     M0020                    ;'. '
-        STX     M002C                    ;'.,'
-Z2029   JSR     Z1F71                    ;'..q'
-        BEQ     Z203F                    ;''.'
-        LDAB    M0029                    ;'.)'
-        LDAA    M0028                    ;'.('
-        SUBB    M00BD                    ;'..'
-        SBCA    M00BC                    ;'..'
-        BCC     Z203F                    ;'$.'
-Z2038   JSR     Z1E20                    ;'.. '
-        BNE     Z2038                    ;'&.'
-        BRA     Z2029                    ;' .'
-Z203F   CPX     M00BC                    ;'..'
-        RTS                              ;'9'
-Z2042   JSR     Z1C8D                    ;'...'
-        LDX     M00C2                    ;'..'
-        TST     ,X                       ;'m.'
-        BPL     Z2052                    ;'*.'
-        JSR     Z1EC2                    ;'...'
-        LDAA    #$2D                     ;'.-'
-        BSR     Z2098                    ;'.F'
-Z2052   CLRA                             ;'O'
-        PSHA                             ;'6'
-        LDAB    #$0F                     ;'..'
-        LDAA    #$1A                     ;'..'
-        PSHA                             ;'6'
-        PSHB                             ;'7'
-        PSHA                             ;'6'
-        PSHB                             ;'7'
-        JSR     Z1CA6                    ;'...'
-        TSX                              ;'0'
-Z2060   INC     ,X                       ;'l.'
-        SUBB    #$10                     ;'..'
-        SBCA    #$27                     ;'.''
-        BCC     Z2060                    ;'$.'
-Z2068   DEC     $01,X                    ;'j.'
-        ADDB    #$E8                     ;'..'
-        ADCA    #$03                     ;'..'
-        BCC     Z2068                    ;'$.'
-Z2070   INC     $02,X                    ;'l.'
-        SUBB    #$64                     ;'.d'
-        SBCA    #$00                     ;'..'
-        BCC     Z2070                    ;'$.'
-Z2078   DEC     $03,X                    ;'j.'
-        ADDB    #$0A                     ;'..'
-        BCC     Z2078                    ;'$.'
-        CLR     M00BE                    ;'...'
-Z2081   PULA                             ;'2'
-        TSTA                             ;'M'
-        BEQ     Z2089                    ;''.'
-        BSR     Z208A                    ;'..'
-        BRA     Z2081                    ;' .'
-Z2089   TBA                              ;'.'
-Z208A   CMPA    #$10                     ;'..'
-        BNE     Z2093                    ;'&.'
-        TST     M00BE                    ;'}..'
-        BEQ     Z20AA                    ;''.'
-Z2093   INC     M00BE                    ;'|..'
-        ORAA    #$30                     ;'.0'
-Z2098   INC     M00BF                    ;'|..'
-        BMI     Z20A7                    ;'+.'
-        STX     M00BA                    ;'..'
-        PSHB                             ;'7'
-        JSR     Z1C09                    ;'...'
-        PULB                             ;'3'
-        LDX     M00BA                    ;'..'
-        RTS                              ;'9'
-Z20A7   DEC     M00BF                    ;'z..'
-Z20AA   RTS                              ;'9'
-Z20AB   BSR     Z2098                    ;'..'
-Z20AD   JSR     Z1CF5                    ;'...'
-        BPL     Z20AB                    ;'*.'
-        BRA     Z2098                    ;' .'
-Z20B4   CMPA    #$22                     ;'."'
-        BEQ     Z20AA                    ;''.'
-        BSR     Z2098                    ;'..'
-        JSR     Z1E20                    ;'.. '
-        BNE     Z20B4                    ;'&.'
-        JMP     Z1D5C                    ;'~.\'
-        LDAB    M00BF                    ;'..'
-        BMI     Z20AA                    ;'+.'
-        ORAB    #$F8                     ;'..'
-        NEGB                             ;'P'
-        BRA     Z20CE                    ;' .'
-        JSR     Z1CA6                    ;'...'
-Z20CE   DECB                             ;'Z'
-        BLT     Z20AA                    ;'-.'
-        LDAA    #$20                     ;'. '
-        BSR     Z2098                    ;'..'
-        BRA     Z20CE                    ;' .'
-        LDX     M002C                    ;'.,'
-        STX     M00B8                    ;'..'
-        LDX     M0020                    ;'. '
-        STX     M002C                    ;'.,'
-        LDX     M0024                    ;'.$'
-        BSR     Z210F                    ;'.,'
-        BEQ     Z20E7                    ;''.'
-        BSR     Z210F                    ;'.('
-Z20E7   LDAA    M002C                    ;'.,'
-        LDAB    M002D                    ;'.-'
-        SUBB    M00B7                    ;'..'
-        SBCA    M00B6                    ;'..'
-        BCC     Z2123                    ;'$2'
-        JSR     Z1F71                    ;'..q'
-        BEQ     Z2123                    ;''-'
-        LDAA    M0028                    ;'.('
-        LDAB    M0029                    ;'.)'
-        JSR     Z2042                    ;'. B'
-        LDAA    #$20                     ;'. '
-Z20FF   BSR     Z214C                    ;'.K'
-        JSR     Z1C0C                    ;'...'
-        BCS     Z2123                    ;'%.'
-        JSR     Z1E20                    ;'.. '
-        BNE     Z20FF                    ;'&.'
-        BSR     Z2128                    ;'..'
-        BRA     Z20E7                    ;' .'
-Z210F   INX                              ;'.'
-        STX     M00B6                    ;'..'
-        LDX     M00C2                    ;'..'
-        CPX     #M0080                   ;'...'
-        BEQ     Z2122                    ;''.'
-        JSR     Z201A                    ;'. .'
-Z211C   LDX     M002C                    ;'.,'
-        DEX                              ;'.'
-        DEX                              ;'.'
-        STX     M002C                    ;'.,'
-Z2122   RTS                              ;'9'
-Z2123   LDX     M00B8                    ;'..'
-        STX     M002C                    ;'.,'
-        RTS                              ;'9'
-Z2128   LDAA    M00BF                    ;'..'
-        BMI     Z2122                    ;'+.'
-Z212C   LDAA    #$0D                     ;'..'
-        BSR     Z2149                    ;'..'
-        LDAB    M1C11                    ;'...'
-        ASLB                             ;'X'
-        BEQ     Z213E                    ;''.'
-Z2136   PSHB                             ;'7'
-        BSR     Z2142                    ;'..'
-        PULB                             ;'3'
-        DECB                             ;'Z'
-        DECB                             ;'Z'
-        BNE     Z2136                    ;'&.'
-Z213E   LDAA    #$0A                     ;'..'
-        BSR     Z214C                    ;'..'
-Z2142   CLRA                             ;'O'
-        TST     M1C11                    ;'}..'
-        BPL     Z2149                    ;'*.'
-        COMA                             ;'C'
-Z2149   CLR     M00BF                    ;'...'
-Z214C   JMP     Z2098                    ;'~ .'
-Z214F   LDAA    M1C12                    ;'...'
-        BRA     Z2155                    ;' .'
-Z2154   CLRA                             ;'O'
-Z2155   STAA    M00BF                    ;'..'
-        BRA     Z2163                    ;' .'
-        LDX     #M0030                   ;'..0'
-        STX     M002C                    ;'.,'
-        STX     M00BC                    ;'..'
-        JSR     Z1C8D                    ;'...'
-Z2163   EORA    M0080                    ;'..'
-        STAA    M0080                    ;'..'
-        JSR     Z1C06                    ;'...'
-        ANDA    #$7F                     ;'..'
-        BEQ     Z2163                    ;''.'
-        CMPA    #$7F                     ;'..'
-        BEQ     Z2163                    ;''.'
-        CMPA    #$0A                     ;'..'
-        BEQ     Z214F                    ;''.'
-        CMPA    #$13                     ;'..'
-        BEQ     Z2154                    ;''.'
-        LDX     M00BC                    ;'..'
-        CMPA    M1C10                    ;'...'
-        BEQ     Z218B                    ;''.'
-        CMPA    M1C0F                    ;'...'
-        BNE     Z2192                    ;'&.'
-        CPX     #M0030                   ;'..0'
-        BNE     Z21A0                    ;'&.'
-Z218B   LDX     M002C                    ;'.,'
-        LDAA    #$0D                     ;'..'
-        CLR     M00BF                    ;'...'
-Z2192   CPX     M00C2                    ;'..'
-        BNE     Z219C                    ;'&.'
-        LDAA    #$07                     ;'..'
-        BSR     Z214C                    ;'..'
-        BRA     Z2163                    ;' .'
-Z219C   STAA    ,X                       ;'..'
-        INX                              ;'.'
-        INX                              ;'.'
-Z21A0   DEX                              ;'.'
-        STX     M00BC                    ;'..'
-        CMPA    #$0D                     ;'..'
-        BNE     Z2163                    ;'&.'
-        JSR     Z2128                    ;'.!('
-        LDAA    M00BD                    ;'..'
-        STAA    M00C1                    ;'..'
-        JMP     Z1CA6                    ;'~..'
-        JSR     Z1FC1                    ;'...'
-        JSR     Z201A                    ;'. .'
-        TPA                              ;'.'
-        JSR     Z211C                    ;'.!.'
-        STX     M00B8                    ;'..'
-        LDX     M00BC                    ;'..'
-        STX     M00B6                    ;'..'
-        CLRB                             ;'_'
-        TAP                              ;'.'
-        BNE     Z21D0                    ;'&.'
-        JSR     Z1F71                    ;'..q'
-        LDAB    #$FE                     ;'..'
-Z21CA   DECB                             ;'Z'
-        JSR     Z1E20                    ;'.. '
-        BNE     Z21CA                    ;'&.'
-Z21D0   LDX     #M0000                   ;'...'
-        STX     M0028                    ;'.('
-        JSR     Z1FC1                    ;'...'
-        LDAA    #$0D                     ;'..'
-        LDX     M002C                    ;'.,'
-        CMPA    ,X                       ;'..'
-        BEQ     Z21EC                    ;''.'
-        ADDB    #$03                     ;'..'
-Z21E2   INCB                             ;'\'
-        INX                              ;'.'
-        CMPA    ,X                       ;'..'
-        BNE     Z21E2                    ;'&.'
-        LDX     M00B6                    ;'..'
-        STX     M0028                    ;'.('
-Z21EC   LDX     M00B8                    ;'..'
-        STX     M00BC                    ;'..'
-        TSTB                             ;']'
-        BEQ     Z2248                    ;''U'
-        BPL     Z2218                    ;'*#'
-        LDAA    M002F                    ;'./'
-        ABA                              ;'.'
-        STAA    M00B9                    ;'..'
-        LDAA    M002E                    ;'..'
-        ADCA    #$FF                     ;'..'
-        STAA    M00B8                    ;'..'
-Z2200   LDX     M002E                    ;'..'
-        LDAB    ,X                       ;'..'
-        CPX     M0024                    ;'.$'
-        BEQ     Z2244                    ;''<'
-        CPX     M0026                    ;'.&'
-        BEQ     Z2244                    ;''8'
-        INX                              ;'.'
-        STX     M002E                    ;'..'
-        LDX     M00B8                    ;'..'
-        STAB    ,X                       ;'..'
-        INX                              ;'.'
-        STX     M00B8                    ;'..'
-        BRA     Z2200                    ;' .'
-Z2218   ADDB    M0025                    ;'.%'
-        STAB    M002F                    ;'./'
-        LDAA    #$00                     ;'..'
-        ADCA    M0024                    ;'.$'
-        STAA    M002E                    ;'..'
-        SUBB    M0027                    ;'.''
-        SBCA    M0026                    ;'.&'
-        BCS     Z222E                    ;'%.'
-        DEC     M002B                    ;'z.+'
-        JMP     Z1D5C                    ;'~.\'
-Z222E   LDX     M002E                    ;'..'
-        STX     M00B8                    ;'..'
-Z2232   LDX     M0024                    ;'.$'
-        LDAA    ,X                       ;'..'
-        DEX                              ;'.'
-        STX     M0024                    ;'.$'
-        LDX     M002E                    ;'..'
-        STAA    ,X                       ;'..'
-        DEX                              ;'.'
-        STX     M002E                    ;'..'
-        CPX     M00BC                    ;'..'
-        BNE     Z2232                    ;'&.'
-Z2244   LDX     M00B8                    ;'..'
-        STX     M0024                    ;'.$'
-Z2248   LDX     M0028                    ;'.('
-        BEQ     Z2265                    ;''.'
-        LDX     M00BC                    ;'..'
-        LDAA    M0028                    ;'.('
-        LDAB    M0029                    ;'.)'
-        STAA    ,X                       ;'..'
-        INX                              ;'.'
-        STAB    ,X                       ;'..'
-Z2257   INX                              ;'.'
-        STX     M00BC                    ;'..'
-        JSR     Z1E20                    ;'.. '
-        LDX     M00BC                    ;'..'
-        STAA    ,X                       ;'..'
-        CMPA    #$0D                     ;'..'
-        BNE     Z2257                    ;'&.'
-Z2265   LDS     M0026                    ;'.&'
-        JMP     Z1D2A                    ;'~.*'
-        BCC     Z22A6                    ;'$:'
-        CMPA    M0027                    ;'.''
-        SBA                              ;'.'
-        CMPB    $59,X                    ;'.Y'
-        BITB    #$2A                     ;'.*'
-        RORB                             ;'V'
-        SBA                              ;'.'
-        CBA                              ;'.'
-        BGE     Z2203                    ;',.'
-        INCA                             ;'L'
-        DB      $45                      ;'E'
-        ANDB    M00A0                    ;'..'
-        SUBA    #$BD                     ;'..'
-        TSX                              ;'0'
-        CPX     ME013                    ;'...'
-        DB      $1D                      ;'.'
-        ANDA    M0047                    ;'.G'
-        DB      $CF                      ;'.'
-        EORA    #$54                     ;'.T'
-        DB      $CF                      ;'.'
-        TSX                              ;'0'
-        CPX     ME010                    ;'...'
-        CBA                              ;'.'
-        TAB                              ;'.'
-Z228F   SUBA    #$53                     ;'.S'
-        DB      $55                      ;'U'
-        SBCB    #$30                     ;'.0'
-        CPX     ME014                    ;'...'
-        TAB                              ;'.'
-        SUBA    M0050                    ;'.P'
-        SBCB    M0083                    ;'..'
-        ROLA                             ;'I'
-        DB      $4E                      ;'N'
-        ANDB    M00E5                    ;'..'
-        DB      $71                      ;'q'
-        EORA    #$BB                     ;'..'
-        CMPB    $1D,X                    ;'..'
-        DB      $8F                      ;'.'
-Z22A6   SBCA    $21,X                    ;'.!'
-        ASLB                             ;'X'
-        CLR     $83,X                    ;'o.'
-        CPX     $22,X                    ;'."'
-        DB      $55                      ;'U'
-        DB      $83                      ;'.'
-        ORAA    M2493                    ;'.$.'
-        SUBB    $23,X                    ;'.#'
-        DB      $1D                      ;'.'
-        TSX                              ;'0'
-        CPX     M2048                    ;'. H'
-        CMPA    M0049                    ;'.I'
-Z22BB   LDAB    #$30                     ;'.0'
-        CPX     M3134                    ;'.14'
-        TSX                              ;'0'
-        CPX     M8454                    ;'..T'
-        ASLA                             ;'H'
-        DB      $45                      ;'E'
-        LDX     #M1C1D                   ;'...'
-        DB      $38                      ;'8'
-        SEC                              ;'.'
-        ORAA    M0049                    ;'.I'
-        DB      $4E                      ;'N'
-        NEGB                             ;'P'
-        DB      $55                      ;'U'
-        ANDB    M00A0                    ;'..'
-        SBA                              ;'.'
-        STAB    $24,X                    ;'.$'
-        SWI                              ;'?'
-        BRA     Z2269                    ;' .'
-        BEQ     Z22BB                    ;''.'
-        ROLB                             ;'Y'
-        CMPA    #$AC                     ;'..'
-        TSX                              ;'0'
-        CPX     M1311                    ;'...'
-        SBCA    #$AC                     ;'..'
-        TSTA                             ;'M'
-Z22E4   SUBB    $1D,X                    ;'..'
-        ADCA    #$52                     ;'.R'
-        DB      $45                      ;'E'
-        LSRB                             ;'T'
-        DB      $55                      ;'U'
-        DB      $52                      ;'R'
-        LDX     #ME015                   ;'...'
-        DB      $1D                      ;'.'
-        BITA    #$45                     ;'.E'
-        DB      $4E                      ;'N'
-        ANDB    #$E0                     ;'..'
-        BLT     Z228F                    ;'-.'
-        INCA                             ;'L'
-        ROLA                             ;'I'
-        COMB                             ;'S'
-        ANDB    M00EC                    ;'..'
-        BCC     Z22FE                    ;'$.'
-Z22FE   DB      $00                      ;'.'
-        DB      $00                      ;'.'
-        DB      $00                      ;'.'
-        CLV                              ;'.'
-        SUBA    #$1F                     ;'..'
-        BCC     Z2299                    ;'$.'
-        BLS     Z2325                    ;'#.'
-Z2308   TSX                              ;'0'
-        CPX     ME150                    ;'..P'
-        SUBA    #$AC                     ;'..'
-Z230E   ROLB                             ;'Y'
-        BITA    #$52                     ;'.R'
-        DB      $55                      ;'U'
-        LDX     #M380A                   ;'.8.'
-        LDAA    #$43                     ;'.C'
-        INCA                             ;'L'
-Z2318   DB      $45                      ;'E'
-        DB      $41                      ;'A'
-        SBCB    M002B                    ;'.+'
-        ANDA    #$52                     ;'.R'
-        DB      $45                      ;'E'
-        DB      $CD                      ;'.'
-        DB      $1D                      ;'.'
-        RTS                              ;'9'
-        ASRB                             ;'W'
-Z2323   DB      $00                      ;'.'
-        DB      $00                      ;'.'
-Z2325   DB      $00                      ;'.'
-        BITA    #$AD                     ;'..'
-        TSX                              ;'0'
-        DB      $D3                      ;'.'
-        TBA                              ;'.'
-Z232B   LSR     $81,X                    ;'d.'
-        ADDA    $30,X                    ;'.0'
-Z232F   DB      $D3                      ;'.'
-        BITA    #$AB                     ;'..'
-Z2332   TSX                              ;'0'
-Z2333   DB      $D3                      ;'.'
-        DB      $18                      ;'.'
-        DECB                             ;'Z'
-        BITA    #$AD                     ;'..'
-        TSX                              ;'0'
-        DB      $D3                      ;'.'
-        DAA                              ;'.'
-        LSRB                             ;'T'
-        BLE     Z236E                    ;'/0'
-Z233E   SBCB    $85,X                    ;'..'
-        ORAA    $30,X                    ;'.0'
-        SBCB    $1A,X                    ;'..'
-        DECB                             ;'Z'
-        BITA    #$AF                     ;'..'
-        TSX                              ;'0'
-        SBCB    $1B,X                    ;'..'
-        LSRB                             ;'T'
-        BLE     Z22E4                    ;'/.'
-Z234D   DB      $52                      ;'R'
-        DB      $4E                      ;'N'
-        ANDB    #$0A                     ;'..'
-        SUBA    #$80                     ;'..'
-        DB      $12                      ;'.'
-        CLV                              ;'.'
-        DEX                              ;'.'
-        BVS     Z2372                    ;').'
-        CLV                              ;'.'
-        DB      $1A                      ;'.'
-        BITA    #$18                     ;'..'
-        DB      $13                      ;'.'
-        DEX                              ;'.'
-        SUBA    #$12                     ;'..'
-        SEV                              ;'.'
-        INS                              ;'1'
-        TSX                              ;'0'
-        DB      $61                      ;'a'
-        COM     M0B02                    ;'s..'
-        DB      $04                      ;'.'
-        DB      $02                      ;'.'
-        DB      $03                      ;'.'
-        DB      $05                      ;'.'
-        DB      $03                      ;'.'
-        ABA                              ;'.'
-        DB      $1A                      ;'.'
-Z236E   DAA                              ;'.'
-        SEV                              ;'.'
-        DEX                              ;'.'
-        TAP                              ;'.'
-Z2372   CLV                              ;'.'
-        DB      $00                      ;'.'
-        DB      $00                      ;'.'
-        DB      $1C                      ;'.'
-        TBA                              ;'.'
-        BLE     Z2308                    ;'/.'
-        DB      $55                      ;'U'
-        COMB                             ;'S'
-        SBCB    M0080                    ;'..'
-        EORA    $30,X                    ;'.0'
-        CPX     M312A                    ;'.1*'
-        INS                              ;'1'
-        BPL     Z2305                    ;'*.'
-        ADCA    $2E,X                    ;'..'
-        BLE     Z232B                    ;'/.'
-        DB      $12                      ;'.'
-        BLE     Z234D                    ;'/.'
-        BLE     Z230E                    ;'/.'
-        EORA    $30,X                    ;'.0'
-        CPX     M80A9                    ;'...'
-        BLE     Z2318                    ;'/.'
-        CPX     $38,X                    ;'.8'
-        CPX     M0B2F                    ;'../'
-        SUBA    #$A8                     ;'..'
-        DB      $52                      ;'R'
-        BLE     Z2323                    ;'/.'
-        JSR     Z0902                    ;'...'
-        BLE     Z2332                    ;'/.'
-        CPX     M84BD                    ;'...'
-        DEX                              ;'.'
-        DB      $03                      ;'.'
-        BLE     Z232F                    ;'/.'
-        LDS     M0905                    ;'...'
-        BLE     Z23B9                    ;'/.'
-        NOP                              ;'.'
-        BLE     Z2333                    ;'/.'
-        LDS     M84BD                    ;'...'
-        DEX                              ;'.'
-        TAP                              ;'.'
-        BLE     Z233E                    ;'/.'
-        CPX     M0905                    ;'...'
-        BLE     Z23C8                    ;'/.'
-        DB      $04                      ;'.'
-        BLE     Z2346                    ;'/.'
-        DB      $42                      ;'B'
-        ROLB                             ;'Y'
-        BITB    #$26                     ;'.&'
-        LDAA    #$4C                     ;'.L'
-Z23C8   CLRA                             ;'O'
-        DB      $41                      ;'A'
-        ANDB    #$28                     ;'.('
-        DB      $1D                      ;'.'
-        LDAA    #$53                     ;'.S'
-        DB      $41                      ;'A'
-        RORB                             ;'V'
-        BITB    #$29                     ;'.)'
-        DB      $1D                      ;'.'
-        SUBA    $80,X                    ;'..'
-        JSR     Z3814                    ;'.8.'
-        STX     MFFFF                    ;'...'
-        STX     MFFFF                    ;'...'
-        STX     MFFFF                    ;'...'
-        STX     MFFFF                    ;'...'
-        STX     MFFFF                    ;'...'
-        STX     MFFFF                    ;'...'
-        STX     MFFFF                    ;'...'
-        STX     MFFFF                    ;'...'
-        STX     MFFFF                    ;'...'
-        STX     MFFFF                    ;'...'
-        STX     MFFFF                    ;'...'
-        STX     MFFFF                    ;'...'
-        STX     MFFFF                    ;'...'
+        JMP     Z1D00
+        JMP     Z1D25
+Z1C06   JMP     Z18E1
+Z1C09   JMP     Z1865
+Z1C0C   JMP     Z1B1F
+M1C0F   INX
+M1C10   DB      $15
+M1C11   DB      $83
+M1C12   SUBA    #$20
+        LDAA    ,X
+        CLRB
+M1C17   RTS
+        STAA    ,X
+        RTS
+        DB      $1D
+        EORA    M001D
+        ADDA    M001D
+        LDX     $1E,X
+        DB      $12
+        DB      $1E
+        RTI
+        DB      $1E
+        SEV
+        DB      $1C
+        DB      $FC
+        DB      $1C
+        STAB    M001C
+        ADDB    M001C
+Z1C2E   ADCA    #$1C
+        LDAA    $1C,X
+        ADCA    $1C,X
+        ASR     Z1C80
+        DB      $1F
+        ADDA    $1F,X
+        SUBA    M1F00
+        DB      $1F
+        SBA
+        DB      $1F
+        LDX     #M1F99
+        DB      $1F
+        LDS     #Z1EC2
+        DB      $1E
+        DB      $CF
+        DB      $1E
+        DB      $CD
+        DB      $1E
+        BITB    $1E,X
+        DB      $6B
+        DB      $1F
+        BLS     Z1C71
+        ROLA
+        DB      $1C
+        DB      $FC
+        BRA     Z1C2E
+        BRA     Z1C9E
+        BRA     Z1C15
+        BRA     Z1C1F
+        DB      $21
+        BVC     Z1C80
+        JSR     $20,X
+        ADDB    #$14
+        DB      $00
+        DB      $21
+        ROLB
+        ABA
+        BLT     Z1C85
+        DB      $38
+        DB      $21
+        CMPA    M1D12
+        DB      $1F
+        JMP     Z1D25
+        DB      $1C
+        ADCA    M1FA6
+        BSR     Z1CA6
+        STAA    M00BC
+        STAB    M00BD
+        JMP     Z1FD7
+Z1C80   JSR     Z1FFC
+        LDAA    M00BC
+Z1C85   LDAB    M00BD
+        BRA     Z1C8D
+        BSR     Z1CA6
+        BSR     Z1C8D
+Z1C8D   LDX     M00C2
+        DEX
+        STAB    ,X
+        BRA     Z1C96
+Z1C94   LDX     M00C2
+Z1C96   DEX
+        STAA    ,X
+        STX     M00C2
+        PSHA
+        LDAA    M00C1
+Z1C9E   CMPA    M00C3
+        PULA
+        BCS     Z1CFC
+Z1CA3   JMP     Z1D5C
+Z1CA6   BSR     Z1CA9
+        TBA
+Z1CA9   LDAB    #$01
+Z1CAB   ADDB    M00C3
+        CMPB    #$80
+        BHI     Z1CA3
+        LDX     M00C2
+        INC     M00C3
+        LDAB    ,X
+        RTS
+        BSR     Z1CC0
+        BSR     Z1C94
+        TBA
+        BRA     Z1C94
+Z1CC0   LDAA    #$06
+        TAB
+        ADDA    M00C3
+        CMPA    #$80
+        BHI     Z1CA3
+        LDX     M00C2
+        STAA    M00C3
+Z1CCD   LDAA    $05,X
+        PSHA
+        DEX
+        DECB
+        BNE     Z1CCD
+        TPA
+        PSHA
+        RTI
+        BSR     Z1CF5
+        BRA     Z1C94
+        BSR     Z1CF5
+        PSHA
+        BSR     Z1CF5
+        TAB
+        PULA
+        BRA     Z1C8D
+Z1CE4   ADDA    M00C3
+        STAA    M00BD
+        CLR     M00BC
+        BSR     Z1CA9
+        LDX     M00BC
+        LDAA    ,X
+        STAB    ,X
+        BRA     Z1C94
+Z1CF5   LDX     M002A
+        LDAA    ,X
+        INX
+        STX     M002A
+Z1CFC   TSTA
+        RTS
+M1CFE   BHI     Z1D6A
+Z1D00   LDX     #M0100
+        STX     M0020
+        JSR     Z1A80
+        STX     M0022
+        JSR     Z1618
+        ASLA
+        LSRB
+        DB      $42
+        INS
+        DB      $00
+M1D12   LDAA    M0020
+        LDAB    M0021
+        ADDB    M1C13
+        ADCA    #$00
+        STAA    M0024
+        STAB    M0025
+        LDX     M0020
+        CLR     ,X
+        CLR     $01,X
+Z1D25   LDS     M0022
+Z1D27   JSR     Z212C
+Z1D2A   LDX     M1CFE
+        STX     M002A
+        LDX     #M0080
+        STX     M00C2
+        LDX     #M0030
+        STX     M00C0
+Z1D39   STS     M0026
+Z1D3B   BSR     Z1CF5
+        BSR     Z1D46
+        BRA     Z1D3B
+        CPX     #M0099
+        BRA     Z1D39
+Z1D46   LDX     #M1C17
+        STX     M00BC
+        CMPA    #$30
+        BCC     Z1DA5
+        CMPA    #$08
+        BCS     Z1CE4
+        ASLA
+        STAA    M00BD
+        LDX     M00BC
+        LDX     $17,X
+        JMP     ,X
+Z1D5C   JSR     Z212C
+        LDAA    #$21
+        STAA    M00C1
+        JSR     Z1C09
+        LDAA    #$80
+        STAA    M00C3
+Z1D6A   LDAB    M002B
+        LDAA    M002A
+        SUBB    M1CFF
+        SBCA    M1CFE
+        JSR     Z2042
+        LDAA    M00C0
+        BEQ     Z1D8A
+        LDX     #M1D93
+        STX     M002A
+        JSR     Z20AD
+        LDAA    M0028
+        LDAB    M0029
+        JSR     Z2042
+Z1D8A   LDAA    #$07
+        JSR     Z1C09
+        LDS     M0026
+        BRA     Z1D27
+M1D93   BRA     Z1DD6
+        LSRB
+        BRA     Z1D18
+        DEC     M00BC
+Z1D9B   TST     M00BC
+        BEQ     Z1D5C
+Z1DA0   LDX     M00BC
+        STX     M002A
+        RTS
+Z1DA5   CMPA    #$40
+        BCC     Z1DCC
+        PSHA
+        JSR     Z1CF5
+        ADDA    M1CFF
+        STAA    M00BD
+        PULA
+        TAB
+        ANDA    #$07
+        ADCA    M1CFE
+        STAA    M00BC
+        ANDB    #$08
+        BNE     Z1DA0
+        LDX     M002A
+        STAA    M002A
+        LDAB    M00BD
+        STAB    M002B
+        STX     M00BC
+        JMP     Z1FD7
+Z1DCC   TAB
+        LSRA
+        LSRA
+        LSRA
+        LSRA
+        ANDA    #$0E
+        STAA    M00BD
+        LDX     M00BC
+        LDX     $17,X
+        CLRA
+        CMPB    #$60
+        ANDB    #$1F
+        BCC     Z1DE2
+        ORAB    #$E0
+Z1DE2   BEQ     Z1DEA
+        ADDB    M002B
+        STAB    M00BD
+        ADCA    M002A
+Z1DEA   STAA    M00BC
+        JMP     ,X
+        LDX     M002C
+        STX     M00B8
+Z1DF2   BSR     Z1E2A
+        BSR     Z1E20
+        TAB
+        JSR     Z1CF5
+        BPL     Z1DFE
+        ORAB    #$80
+Z1DFE   CBA
+        BNE     Z1E05
+        TSTA
+        BPL     Z1DF2
+        RTS
+Z1E05   LDX     M00B8
+        STX     M002C
+Z1E09   BRA     Z1D9B
+        BSR     Z1E2A
+        CMPA    #$0D
+        BNE     Z1E09
+        RTS
+        BSR     Z1E2A
+        CMPA    #$5A
+        BGT     Z1E09
+        CMPA    #$41
+        BLT     Z1E09
+        ASLA
+        JSR     Z1C94
+Z1E20   LDX     M002C
+        LDAA    ,X
+        INX
+        STX     M002C
+        CMPA    #$0D
+        RTS
+Z1E2A   BSR     Z1E20
+        CMPA    #$20
+        BEQ     Z1E2A
+        DEX
+        STX     M002C
+        CMPA    #$30
+        CLC
+        BLT     Z1E3A
+        CMPA    #$3A
+Z1E3A   RTS
+        BSR     Z1E2A
+        BCC     Z1E09
+        LDX     #M0000
+        STX     M00BC
+Z1E44   BSR     Z1E20
+        PSHA
+        LDAA    M00BC
+        LDAB    M00BD
+        ASLB
+        ROLA
+        ASLB
+        ROLA
+        ADDB    M00BD
+        ADCA    M00BC
+        ASLB
+        ROLA
+        STAB    M00BD
+        PULB
+        ANDB    #$0F
+        ADDB    M00BD
+        ADCA    #$00
+        STAA    M00BC
+        STAB    M00BD
+        BSR     Z1E2A
+        BCS     Z1E44
+        LDAA    M00BC
+        JMP     Z1C8D
+        BSR     Z1EE0
+        LDAA    $02,X
+        ASRA
+        ROLA
+        SBCA    $02,X
+        STAA    M00BC
+        STAA    M00BD
+        TAB
+        ADDB    $03,X
+        STAB    $03,X
+        TAB
+        ADCB    $02,X
+        STAB    $02,X
+        EORA    ,X
+        STAA    M00BE
+        BPL     Z1E89
+        BSR     Z1EC4
+Z1E89   LDAB    #$11
+        LDAA    ,X
+        ORAA    $01,X
+        BNE     Z1E94
+        JMP     Z1D5C
+Z1E94   LDAA    M00BD
+        SUBA    $01,X
+        PSHA
+        LDAA    M00BC
+        SBCA    ,X
+        PSHA
+        EORA    M00BC
+        BMI     Z1EAB
+        PULA
+        STAA    M00BC
+        PULA
+        STAA    M00BD
+        SEC
+        BRA     Z1EAE
+Z1EAB   PULA
+        PULA
+        CLC
+Z1EAE   ROL     $03,X
+        ROL     $02,X
+        ROL     M00BD
+        ROL     M00BC
+        DECB
+        BNE     Z1E94
+        BSR     Z1EDD
+        TST     M00BE
+        BPL     Z1ECC
+Z1EC2   LDX     M00C2
+Z1EC4   NEG     $01,X
+        BNE     Z1ECA
+        DEC     ,X
+Z1ECA   COM     ,X
+Z1ECC   RTS
+        BSR     Z1EC2
+        BSR     Z1EE0
+        LDAB    $03,X
+        ADDB    $01,X
+        LDAA    $02,X
+        ADCA    ,X
+Z1ED9   STAA    $02,X
+        STAB    $03,X
+Z1EDD   JMP     Z1CA9
+Z1EE0   LDAB    #$04
+Z1EE2   JMP     Z1CAB
+        BSR     Z1EE0
+        LDAA    #$10
+        STAA    M00BC
+        CLRA
+        CLRB
+Z1EED   ASLB
+        ROLA
+        ASL     $01,X
+        ROL     ,X
+        BCC     Z1EF9
+        ADDB    $03,X
+        ADCA    $02,X
+Z1EF9   DEC     M00BC
+        BNE     Z1EED
+        BRA     Z1ED9
+M1F00   BSR     Z1EDD
+        STAB    M00BD
+        CLR     M00BC
+        LDX     M00BC
+        LDAA    ,X
+        LDAB    $01,X
+        JMP     Z1C8D
+        LDAB    #$03
+        BSR     Z1EE2
+        LDAB    $01,X
+        CLR     $01,X
+        LDAA    ,X
+        LDX     $01,X
+        STAA    ,X
+        STAB    $01,X
+Z1F20   JMP     Z1CA6
+        BSR     Z1F20
+        PSHB
+        LDAB    #$03
+        BSR     Z1EE2
+        INC     M00C3
+        INC     M00C3
+        PULB
+        SUBB    $02,X
+        SBCA    $01,X
+        BGT     Z1F42
+        BLT     Z1F3E
+        TSTB
+        BEQ     Z1F40
+        BRA     Z1F42
+Z1F3E   ASR     ,X
+Z1F40   ASR     ,X
+Z1F42   ASR     ,X
+        BCC     Z1F61
+        JMP     Z1CF5
+        LDAA    M00C0
+        BEQ     Z1F6A
+Z1F4D   JSR     Z1E20
+        BNE     Z1F4D
+        BSR     Z1F71
+        BEQ     Z1F67
+Z1F56   BSR     Z1F8A
+        JSR     Z1C0C
+        BCS     Z1F62
+        LDX     M00C4
+        STX     M002A
+Z1F61   RTS
+Z1F62   LDX     M1CFE
+        STX     M002A
+Z1F67   JMP     Z1D5C
+Z1F6A   LDS     M0026
+        STAA    M00BF
+        JMP     Z1D2A
+Z1F71   JSR     Z1E20
+        STAA    M0028
+        JSR     Z1E20
+        STAA    M0029
+        LDX     M0028
+        RTS
+        LDX     M0020
+        STX     M002C
+        BSR     Z1F71
+        BEQ     Z1F67
+        LDX     M002A
+        STX     M00C4
+Z1F8A   TPA
+        STAA    M00C0
+        RTS
+        JSR     Z201A
+        BEQ     Z1F56
+Z1F93   LDX     M00BC
+        STX     M0028
+        BRA     Z1F67
+M1F99   BSR     Z1FFC
+        TSX
+        INC     $01,X
+        INC     $01,X
+        JSR     Z2025
+        BNE     Z1F93
+        RTS
+M1FA6   BSR     Z1FFC
+        STX     M002A
+        RTS
+        LDX     #M002C
+        BRA     Z1FB3
+        LDX     #M002E
+Z1FB3   LDAA    $01,X
+        CMPA    #$80
+        BCC     Z1FC1
+        LDAA    ,X
+        BNE     Z1FC1
+        LDX     M002C
+        BRA     Z1DB
+Z1FC1   LDX     M002C
+        LDAA    M002E
+        STAA    M002C
+        LDAA    M002F
+        STAA    M002D
+Z1DB    STX     M002E
+        RTS
+        TSX
+        INC     $01,X
+        INC     $01,X
+        LDX     M0028
+        STX     M00BC
+Z1FD7   DES
+        DES
+        TSX
+        LDAA    $02,X
+        STAA    ,X
+        LDAA    $03,X
+        STAA    $01,X
+        LDAA    M00BC
+        STAA    $02,X
+        LDAA    M00BD
+        STAA    $03,X
+        LDX     #M0024
+        STS     M00BC
+        LDAA    $01,X
+        SUBA    M00BD
+        LDAA    ,X
+        SBCA    M00BC
+        BCS     Z2019
+Z1FF9   JMP     Z1D5C
+Z1FFC   TSX
+        INX
+        INX
+        INX
+        CPX     M0022
+        BEQ     Z1FF9
+        LDX     $01,X
+        STX     M00BC
+        TSX
+        PSHB
+        LDAB    #$04
+Z200C   LDAA    $03,X
+        STAA    $05,X
+        DEX
+        DECB
+        BNE     Z200C
+        PULB
+        INS
+        INS
+        LDX     M00BC
+Z2019   RTS
+Z201A   JSR     Z1CA6
+        STAB    M00BD
+        STAA    M00BC
+        ORAA    M00BD
+        BEQ     Z1FF9
+Z2025   LDX     M0020
+        STX     M002C
+Z2029   JSR     Z1F71
+        BEQ     Z203F
+        LDAB    M0029
+        LDAA    M0028
+        SUBB    M00BD
+        SBCA    M00BC
+        BCC     Z203F
+Z2038   JSR     Z1E20
+        BNE     Z2038
+        BRA     Z2029
+Z203F   CPX     M00BC
+        RTS
+Z2042   JSR     Z1C8D
+        LDX     M00C2
+        TST     ,X
+        BPL     Z2052
+        JSR     Z1EC2
+        LDAA    #$2D
+        BSR     Z2098
+Z2052   CLRA
+        PSHA
+        LDAB    #$0F
+        LDAA    #$1A
+        PSHA
+        PSHB
+        PSHA
+        PSHB
+        JSR     Z1CA6
+        TSX
+Z2060   INC     ,X
+        SUBB    #$10
+        SBCA    #$27
+        BCC     Z2060
+Z2068   DEC     $01,X
+        ADDB    #$E8
+        ADCA    #$03
+        BCC     Z2068
+Z2070   INC     $02,X
+        SUBB    #$64
+        SBCA    #$00
+        BCC     Z2070
+Z2078   DEC     $03,X
+        ADDB    #$0A
+        BCC     Z2078
+        CLR     M00BE
+Z2081   PULA
+        TSTA
+        BEQ     Z2089
+        BSR     Z208A
+        BRA     Z2081
+Z2089   TBA
+Z208A   CMPA    #$10
+        BNE     Z2093
+        TST     M00BE
+        BEQ     Z20AA
+Z2093   INC     M00BE
+        ORAA    #$30
+Z2098   INC     M00BF
+        BMI     Z20A7
+        STX     M00BA
+        PSHB
+        JSR     Z1C09
+        PULB
+        LDX     M00BA
+        RTS
+Z20A7   DEC     M00BF
+Z20AA   RTS
+Z20AB   BSR     Z2098
+Z20AD   JSR     Z1CF5
+        BPL     Z20AB
+        BRA     Z2098
+Z20B4   CMPA    #$22
+        BEQ     Z20AA
+        BSR     Z2098
+        JSR     Z1E20
+        BNE     Z20B4
+        JMP     Z1D5C
+        LDAB    M00BF
+        BMI     Z20AA
+        ORAB    #$F8
+        NEGB
+        BRA     Z20CE
+        JSR     Z1CA6
+Z20CE   DECB
+        BLT     Z20AA
+        LDAA    #$20
+        BSR     Z2098
+        BRA     Z20CE
+        LDX     M002C
+        STX     M00B8
+        LDX     M0020
+        STX     M002C
+        LDX     M0024
+        BSR     Z210F
+        BEQ     Z20E7
+        BSR     Z210F
+Z20E7   LDAA    M002C
+        LDAB    M002D
+        SUBB    M00B7
+        SBCA    M00B6
+        BCC     Z2123
+        JSR     Z1F71
+        BEQ     Z2123
+        LDAA    M0028
+        LDAB    M0029
+        JSR     Z2042
+        LDAA    #$20
+Z20FF   BSR     Z214C
+        JSR     Z1C0C
+        BCS     Z2123
+        JSR     Z1E20
+        BNE     Z20FF
+        BSR     Z2128
+        BRA     Z20E7
+Z210F   INX
+        STX     M00B6
+        LDX     M00C2
+        CPX     #M0080
+        BEQ     Z2122
+        JSR     Z201A
+Z211C   LDX     M002C
+        DEX
+        DEX
+        STX     M002C
+Z2122   RTS
+Z2123   LDX     M00B8
+        STX     M002C
+        RTS
+Z2128   LDAA    M00BF
+        BMI     Z2122
+Z212C   LDAA    #$0D
+        BSR     Z2149
+        LDAB    M1C11
+        ASLB
+        BEQ     Z213E
+Z2136   PSHB
+        BSR     Z2142
+        PULB
+        DECB
+        DECB
+        BNE     Z2136
+Z213E   LDAA    #$0A
+        BSR     Z214C
+Z2142   CLRA
+        TST     M1C11
+        BPL     Z2149
+        COMA
+Z2149   CLR     M00BF
+Z214C   JMP     Z2098
+Z214F   LDAA    M1C12
+        BRA     Z2155
+Z2154   CLRA
+Z2155   STAA    M00BF
+        BRA     Z2163
+        LDX     #M0030
+        STX     M002C
+        STX     M00BC
+        JSR     Z1C8D
+Z2163   EORA    M0080
+        STAA    M0080
+        JSR     Z1C06
+        ANDA    #$7F
+        BEQ     Z2163
+        CMPA    #$7F
+        BEQ     Z2163
+        CMPA    #$0A
+        BEQ     Z214F
+        CMPA    #$13
+        BEQ     Z2154
+        LDX     M00BC
+        CMPA    M1C10
+        BEQ     Z218B
+        CMPA    M1C0F
+        BNE     Z2192
+        CPX     #M0030
+        BNE     Z21A0
+Z218B   LDX     M002C
+        LDAA    #$0D
+        CLR     M00BF
+Z2192   CPX     M00C2
+        BNE     Z219C
+        LDAA    #$07
+        BSR     Z214C
+        BRA     Z2163
+Z219C   STAA    ,X
+        INX
+        INX
+Z21A0   DEX
+        STX     M00BC
+        CMPA    #$0D
+        BNE     Z2163
+        JSR     Z2128
+        LDAA    M00BD
+        STAA    M00C1
+        JMP     Z1CA6
+        JSR     Z1FC1
+        JSR     Z201A
+        TPA
+        JSR     Z211C
+        STX     M00B8
+        LDX     M00BC
+        STX     M00B6
+        CLRB
+        TAP
+        BNE     Z21D0
+        JSR     Z1F71
+        LDAB    #$FE
+Z21CA   DECB
+        JSR     Z1E20
+        BNE     Z21CA
+Z21D0   LDX     #M0000
+        STX     M0028
+        JSR     Z1FC1
+        LDAA    #$0D
+        LDX     M002C
+        CMPA    ,X
+        BEQ     Z21EC
+        ADDB    #$03
+Z21E2   INCB
+        INX
+        CMPA    ,X
+        BNE     Z21E2
+        LDX     M00B6
+        STX     M0028
+Z21EC   LDX     M00B8
+        STX     M00BC
+        TSTB
+        BEQ     Z2248
+        BPL     Z2218
+        LDAA    M002F
+        ABA
+        STAA    M00B9
+        LDAA    M002E
+        ADCA    #$FF
+        STAA    M00B8
+Z2200   LDX     M002E
+        LDAB    ,X
+        CPX     M0024
+        BEQ     Z2244
+        CPX     M0026
+        BEQ     Z2244
+        INX
+        STX     M002E
+        LDX     M00B8
+        STAB    ,X
+        INX
+        STX     M00B8
+        BRA     Z2200
+Z2218   ADDB    M0025
+        STAB    M002F
+        LDAA    #$00
+        ADCA    M0024
+        STAA    M002E
+        SUBB    M0027
+        SBCA    M0026
+        BCS     Z222E
+        DEC     M002B
+        JMP     Z1D5C
+Z222E   LDX     M002E
+        STX     M00B8
+Z2232   LDX     M0024
+        LDAA    ,X
+        DEX
+        STX     M0024
+        LDX     M002E
+        STAA    ,X
+        DEX
+        STX     M002E
+        CPX     M00BC
+        BNE     Z2232
+Z2244   LDX     M00B8
+        STX     M0024
+Z2248   LDX     M0028
+        BEQ     Z2265
+        LDX     M00BC
+        LDAA    M0028
+        LDAB    M0029
+        STAA    ,X
+        INX
+        STAB    ,X
+Z2257   INX
+        STX     M00BC
+        JSR     Z1E20
+        LDX     M00BC
+        STAA    ,X
+        CMPA    #$0D
+        BNE     Z2257
+Z2265   LDS     M0026
+        JMP     Z1D2A
+        BCC     Z22A6
+        CMPA    M0027
+        SBA
+        CMPB    $59,X
+        BITB    #$2A
+        RORB
+        SBA
+        CBA
+        BGE     Z2203
+        INCA
+        DB      $45
+        ANDB    M00A0
+        SUBA    #$BD
+        TSX
+        CPX     ME013
+        DB      $1D
+        ANDA    M0047
+        DB      $CF
+        EORA    #$54
+        DB      $CF
+        TSX
+        CPX     ME010
+        CBA
+        TAB
+Z228F   SUBA    #$53
+        DB      $55
+        SBCB    #$30
+        CPX     ME014
+        TAB
+        SUBA    M0050
+        SBCB    M0083
+        ROLA
+        DB      $4E
+        ANDB    M00E5
+        DB      $71
+        EORA    #$BB
+        CMPB    $1D,X
+        DB      $8F
+Z22A6   SBCA    $21,X
+        ASLB
+        CLR     $83,X
+        CPX     $22,X
+        DB      $55
+        DB      $83
+        ORAA    M2493
+        SUBB    $23,X
+        DB      $1D
+        TSX
+        CPX     M2048
+        CMPA    M0049
+Z22BB   LDAB    #$30
+        CPX     M3134
+        TSX
+        CPX     M8454
+        ASLA
+        DB      $45
+        LDX     #M1C1D
+        DB      $38
+        SEC
+        ORAA    M0049
+        DB      $4E
+        NEGB
+        DB      $55
+        ANDB    M00A0
+        SBA
+        STAB    $24,X
+        SWI
+        BRA     Z2269
+        BEQ     Z22BB
+        ROLB
+        CMPA    #$AC
+        TSX
+        CPX     M1311
+        SBCA    #$AC
+        TSTA
+Z22E4   SUBB    $1D,X
+        ADCA    #$52
+        DB      $45
+        LSRB
+        DB      $55
+        DB      $52
+        LDX     #ME015
+        DB      $1D
+        BITA    #$45
+        DB      $4E
+        ANDB    #$E0
+        BLT     Z228F
+        INCA
+        ROLA
+        COMB
+        ANDB    M00EC
+        BCC     Z22FE
+Z22FE   DB      $00
+        DB      $00
+        DB      $00
+        CLV
+        SUBA    #$1F
+        BCC     Z2299
+        BLS     Z2325
+Z2308   TSX
+        CPX     ME150
+        SUBA    #$AC
+Z230E   ROLB
+        BITA    #$52
+        DB      $55
+        LDX     #M380A
+        LDAA    #$43
+        INCA
+Z2318   DB      $45
+        DB      $41
+        SBCB    M002B
+        ANDA    #$52
+        DB      $45
+        DB      $CD
+        DB      $1D
+        RTS
+        ASRB
+Z2323   DB      $00
+        DB      $00
+Z2325   DB      $00
+        BITA    #$AD
+        TSX
+        DB      $D3
+        TBA
+Z232B   LSR     $81,X
+        ADDA    $30,X
+Z232F   DB      $D3
+        BITA    #$AB
+Z2332   TSX
+Z2333   DB      $D3
+        DB      $18
+        DECB
+        BITA    #$AD
+        TSX
+        DB      $D3
+        DAA
+        LSRB
+        BLE     Z236E
+Z233E   SBCB    $85,X
+        ORAA    $30,X
+        SBCB    $1A,X
+        DECB
+        BITA    #$AF
+        TSX
+        SBCB    $1B,X
+        LSRB
+        BLE     Z22E4
+Z234D   DB      $52
+        DB      $4E
+        ANDB    #$0A
+        SUBA    #$80
+        DB      $12
+        CLV
+        DEX
+        BVS     Z2372
+        CLV
+        DB      $1A
+        BITA    #$18
+        DB      $13
+        DEX
+        SUBA    #$12
+        SEV
+        INS
+        TSX
+        DB      $61
+        COM     M0B02
+        DB      $04
+        DB      $02
+        DB      $03
+        DB      $05
+        DB      $03
+        ABA
+        DB      $1A
+Z236E   DAA
+        SEV
+        DEX
+        TAP
+Z2372   CLV
+        DB      $00
+        DB      $00
+        DB      $1C
+        TBA
+        BLE     Z2308
+        DB      $55
+        COMB
+        SBCB    M0080
+        EORA    $30,X
+        CPX     M312A
+        INS
+        BPL     Z2305
+        ADCA    $2E,X
+        BLE     Z232B
+        DB      $12
+        BLE     Z234D
+        BLE     Z230E
+        EORA    $30,X
+        CPX     M80A9
+        BLE     Z2318
+        CPX     $38,X
+        CPX     M0B2F
+        SUBA    #$A8
+        DB      $52
+        BLE     Z2323
+        JSR     Z0902
+        BLE     Z2332
+        CPX     M84BD
+        DEX
+        DB      $03
+        BLE     Z232F
+        LDS     M0905
+        BLE     Z23B9
+        NOP
+        BLE     Z2333
+        LDS     M84BD
+        DEX
+        TAP
+        BLE     Z233E
+        CPX     M0905
+        BLE     Z23C8
+        DB      $04
+        BLE     Z2346
+        DB      $42
+        ROLB
+        BITB    #$26
+        LDAA    #$4C
+Z23C8   CLRA
+        DB      $41
+        ANDB    #$28
+        DB      $1D
+        LDAA    #$53
+        DB      $41
+        RORB
+        BITB    #$29
+        DB      $1D
+        SUBA    $80,X
+        JSR     Z3814
+        STX     MFFFF
+        STX     MFFFF
+        STX     MFFFF
+        STX     MFFFF
+        STX     MFFFF
+        STX     MFFFF
+        STX     MFFFF
+        STX     MFFFF
+        STX     MFFFF
+        STX     MFFFF
+        STX     MFFFF
+        STX     MFFFF
+        STX     MFFFF
 
 ;       END

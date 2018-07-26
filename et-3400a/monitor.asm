@@ -112,7 +112,7 @@ RESE1   PSHA
 ;
 ;       HANDLERS RETURN:
 ;               (B) = NUMBER BYTES SUBJECT TO "CHANGE"
-;               (X) = ADDRESS BYTES SUBHECT TO "CHANGE"
+;               (X) = ADDRESS BYTES SUBJECT TO "CHANGE"
 ;               (A) = 0 ENABLES "FORWARD" AND "BACK"
 
 MAIN    STAA    T1
@@ -544,7 +544,7 @@ STKPTR  BSR     OUTSTJ
         LDAA    #1
         RTS
 
-;;      ENCODE - SCAN END ENCODE KEYBOARD
+;;      ENCODE - SCAN AND ENCODE KEYBOARD
 ;
 ;       ENTRY:  NONE
 ;       EXIT:   (A) = HEX VALUE OF KEY PRESSED
@@ -573,7 +573,7 @@ ENCODE  PSHB
 ;       (B4) IS NOW KEYBOARD PATTERN
 
         STX     T0
-        LDX     #HEXTAB-1            ; TABLE OF POSSILE OUTPUTS
+        LDX     #HEXTAB-1            ; TABLE OF POSSIBLE OUTPUTS
         CBA                          ; FIND ACTIVE ACCUMULATOR
         BEQ     ENC3                 ; ILLEGAL OR NO KEY
         BCC     ENC1                 ; A ACTIVE
@@ -702,7 +702,7 @@ OUT1    ROLA                        ; HERE WE MAKE TWO PASSES AT
         PULB
         RTS
 
-;;      OUTSTR--OUTPUT IMBEDDED CHARACTER STRING
+;;      OUTSTR--OUTPUT EMBEDDED CHARACTER STRING
 ;          CALLING CONVENTION:
 ;               JSR     OUTSTR
 ;               FIRST CHARACTER
@@ -804,7 +804,7 @@ STEP3   CLRA                         ; NOW ADD BYTE COUNT TO PC
         STAA    5,X
         STAB    6,X
 
-;;      DOES THE INSTRUCTION INVOLE THE PC? IF SO THEN IT
+;;      DOES THE INSTRUCTION INVOLVE THE PC? IF SO THEN IT
 ;         MUST BE INTERPRETED
 
 SRCHOP  LDX     USERS
@@ -845,7 +845,7 @@ SWIVE1  LDAA    #$7E
 
 ;;      THE FOLLOWING CODE IS EXECUTED AFTER A SINGLE STEP
 ;         OF AN OUT-OF-PLACE INSTRUCTION.  NOW CHECK TO SEE
-;           IF BRANCH OCURRED, MODIFY THE USER PC ACCORDINGL
+;           IF BRANCH OCCURRED, MODIFY THE USER PC ACCORDINGLY
 ;
 
 SSRET   TSX                          ; GET SWI LOCATION INTO X
@@ -863,7 +863,7 @@ SSRET   TSX                          ; GET SWI LOCATION INTO X
         DEX                          ; PREPARE TO FETCH BRANCH OFFSET
         LDAB    0,X
         BPL     PLUS
-        COMA                         ; A IS SIGN EXENSION OF B
+        COMA                         ; A IS SIGN EXTENSION OF B
 PLUS    TSX                          ; LO COST WAY TO POINT TO USERPC
         LDX     5,X
 BCHNTK  ADDB    1,X                  ; ADD BRANCH OFFSET OR ZERO TO PC

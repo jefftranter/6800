@@ -292,7 +292,7 @@ FC17 26FC              109          BNE     RESE1
                        114  ;               (B) = NUMBER BYTES SUB
                 JECT TO "CHANGE"
                        115  ;               (X) = ADDRESS BYTES SU
-                BHECT TO "CHANGE"
+                BJECT TO "CHANGE"
                        116  ;               (A) = 0 ENABLES "FORWA
                 RD" AND "BACK"
                        117  
@@ -847,7 +847,7 @@ FDB6 8D68              543          BSR     OUTBYT
 FDB8 8601              544          LDAA    #1
 FDBA 39                545          RTS
                        546  
-                       547  ;;      ENCODE - SCAN END ENCODE KEYBO
+                       547  ;;      ENCODE - SCAN AND ENCODE KEYBO
  ARD
                        548  ;
                        549  ;       ENTRY:  NONE
@@ -883,7 +883,7 @@ FDD3 53                571          COMB
                        574  
 FDD4 DFEC              575          STX     T0
 FDD6 CEFFA5            576          LDX     #HEXTAB-1            ;
-                                      TABLE OF POSSILE OUTPUTS
+                                      TABLE OF POSSIBLE OUTPUTS
 FDD9 11                577          CBA                          ;
                                       FIND ACTIVE ACCUMULATOR
 FDDA 2711              578          BEQ     ENC3                 ;
@@ -1070,7 +1070,7 @@ FE4C DEEC              701          LDX     T0                  ;
 FE4E 33                702          PULB
 FE4F 39                703          RTS
                        704  
-                       705  ;;      OUTSTR--OUTPUT IMBEDDED CHARAC
+                       705  ;;      OUTSTR--OUTPUT EMBEDDED CHARAC
  TER STRING
                        706  ;          CALLING CONVENTION:
                        707  ;               JSR     OUTSTR
@@ -1210,8 +1210,8 @@ FECB A905              803          ADCA    5,X
 FECD A705              804          STAA    5,X
 FECF E706              805          STAB    6,X
                        806  
-                       807  ;;      DOES THE INSTRUCTION INVOLE TH
- E PC? IF SO THEN IT
+                       807  ;;      DOES THE INSTRUCTION INVOLVE T
+ HE PC? IF SO THEN IT
                        808  ;         MUST BE INTERPRETED
                        809  
 FED1 DEF2              810  SRCHOP  LDX     USERS
@@ -1265,8 +1265,8 @@ FF04 3B                844          RTI
  AFTER A SINGLE STEP
                        847  ;         OF AN OUT-OF-PLACE INSTRUCTI
           ON.  NOW CHECK TO SEE
-                       848  ;           IF BRANCH OCURRED, MODIFY 
-            THE USER PC ACCORDINGL
+                       848  ;           IF BRANCH OCCURRED, MODIFY
+            THE USER PC ACCORDINGLY
                        849  ;
                        850  
 FF05 30                851  SSRET   TSX                          ;
@@ -1291,7 +1291,7 @@ FF12 09                863          DEX                          ;
 FF13 E600              864          LDAB    0,X
 FF15 2A01              865          BPL     PLUS
 FF17 43                866          COMA                         ;
-                                      A IS SIGN EXENSION OF B
+                                      A IS SIGN EXTENSION OF B
 FF18 30                867  PLUS    TSX                          ;
                                       LO COST WAY TO POINT TO USER
                                       PC

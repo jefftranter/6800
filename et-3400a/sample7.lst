@@ -1,0 +1,264 @@
+Crasm 1.8:                 Heathkit SAMPLE7        page  1
+
+                         1          NAM Heathkit SAMPLE7
+                         2          PAGE 132,66
+                         3  
+                         4  ;                  SAMPLE 7
+                         5  ;      THIS PROGRAM CALCULATES THE OP 
+       CODE VALUE
+                         6  ;      FOR BRANCH INSTRUCTIONS USING T
+       HE LAST TWO
+                         7  ;      DIGITS OF THE BRANCH AND DESTIN
+       ATION ADDRESSES.
+                         8  ;      THE BRANCH ADDRESS IS ENTERED F
+       IRST AND
+                         9  ;      DISPLAYED AT "H" AND "I". THE D
+       ESTINATION
+                        10  ;      ADDRESS IS THEN ENTERED AND DIS
+       PLAYED AT
+                        11  ;      "N" AND "Z". THE OP CODE IS THE
+       N CALCULATED
+                        12  ;      AND DISPLAYED AT "V" AND "C". T
+       HE DISPLAY
+                        13  ;      IS HELD UNTIL NEW INFORMATION I
+       S ENTERED.
+                        14  ;      SINCE ONLY TWO BYTES ARE ENTERE
+       D, IT IS
+                        15  ;      NECESSARY TO MAKE AN ADJUSTMENT
+       IF THE
+                        16  ;      HUNDREDS DIGIT IN THE TWO ADDRE
+       SSES IS NOT
+                        17  ;      THE SAME. FOR EXAMPLE TO CALCUL
+       ATE THE
+                        18  ;      OFFSET OF A BRANCH FROM 00CD TO
+       011B.
+                        19  ;      SUBTRACT A NUMBER FROM BOTH ADD
+       RESSES THAT
+                        20  ;      WILL MAKE THE CALCULATION ADDRE
+       SS LESS THAN 100.
+                        21  ;      FOR EASE OF CALCULATION IN THIS
+       CASE,
+                        22  ;      SUBTRACT C0 FROM BOTH ADDRESSES
+       AND ENTER
+                        23  ;      THE RESULTS 0D AND 5B IN THE PR
+       OGRAM.
+                        24  ;      SINCE THE DIFFERENCES BETWEEN T
+       HE ADDRESSES
+                        25  ;      IS UNCHANGED THE CORRECT OPCODE
+       (4C) WILL
+                        26  ;      BE DISPLAYED. IF THE DISTANCE I
+       S TOO GREAT
+                        27  ;      FOR BRANCHING NO. WILL APPEAR A
+       T "V" AND "C".
+                        28  ;      USES MONITOR SUB ROUTINES
+                        29  ;      REDIS IHB OUTBYT OUTSTR
+                        30  
+                        31  ; Entered from listing in ET-3400A man
+  ual by Jeff Tranter <tranter@pobox.com>
+                        32  ; Add definitions to get it to assembl
+  e and adapted to the crasm
+                        33  ; assembler (https://github.com/colinb
+  ourassa/crasm).
+                        34  
+                        35          CPU 6800
+                        36  
+  FCBC                  37          REDIS   EQU $FCBC
+  FE09                  38          IHB     EQU $FE09
+  FE20                  39          OUTBYT  EQU $FE20
+  FE52                  40          OUTSTR  EQU $FE52
+                        41  
+  0000                  42          * = $0000
+                        43  
+0000 BDFCBC             44  START   JSR     REDIS           ; FIRS
+                                  T DISPLAY AT "H"
+0003 BDFE09             45          JSR     IHB             ; INPU
+                                  T BRANCH ADDRESS
+0006 16                 46          TAB                     ; PUT 
+                                  IT IN B
+0007 BDFE09             47          JSR     IHB             ; INPU
+                                  T DESTINATION ADDRESS
+000A 11                 48          CBA                     ; FORW
+                                  ARD OR BACK?
+000B 250C               49          BCS     BACK            ; IF B
+                                  ACK
+000D CB02               50  FRWD    ADDB    #$02            ; ADJU
+                                  ST 2 BYTES
+000F 10                 51          SBA                     ; FIND
+                                  DIFFERENCE
+0010 8180               52          CMPA    #$80            ; IS I
+                                  T LEGAL?
+0012 2412               53          BCC     NO              ; IF N
+                                  OT
+0014 BDFE20             54  OUT     JSR     OUTBYT          ; OUTP
+                                  UT BRANCH OPCODE
+0017 20E7               55          BRA     START           ; LOOK
+                                  FOR NEW ENTRY
+0019 40                 56  BACK    NEGA                    ; MAKE
+                                  A MINUS
+001A 1B                 57          ABA                     ; ADD 
+                                  A AND B
+001B 8B02               58          ADDA    #$02            ; ADJU
+                                  ST 2 BYTES
+001D 43                 59          COMA                    ; GET 
+                                  COMPLEMENT
+001E 8B01               60          ADDA    #$01            ; MAKE
+                                  IT TWO'S
+0020 8180               61          CMPA    #$80            ; IS I
+                                  T LEGAL?
+0022 2502               62          BCS     NO              ; IF N
+                                  OT
+0024 20EE               63          BRA     OUT             ; OUTP
+                                  UT BRANCH OP CODE
+0026 BDFE52             64  NO      JSR     OUTSTR          ; OUTP
+                                  UT STRING
+0029 159D               65          DB      $15,$9D         ; NO.
+002B 20D3               66          BRA     START           ; LOOK
+                                  FOR NEW ENTRY
+                        67  
+
+ERRORS:       0
+WARNINGS:     0
+
+Successful assembly...
+ Last address       2c (44)
+ Code length        5a (90)
+
+
+
+
+
+
+
+
+Crasm 1.8:                 Heathkit SAMPLE7        page  2
+
+^0019   Abs BACK                                             
+?000D   Abs FRWD                                             
+ FE09   Abs IHB                                              
+^0026   Abs NO                                               
+ 0014   Abs OUT                                              
+ FE20   Abs OUTBYT                                           
+ FE52   Abs OUTSTR                                           
+ FCBC   Abs REDIS                                            
+ 0000   Abs START                                            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

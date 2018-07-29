@@ -1,0 +1,264 @@
+Crasm 1.8:                 Heathkit SAMPLE1        page  1
+
+                         1          NAM Heathkit SAMPLE1
+                         2          PAGE 132,66
+                         3  
+                         4  ;                   SAMPLE 1
+                         5  ;      TURNS ON AND OFF EACH SEGMENT I
+       N
+                         6  ;      SEQUENCE BEGINNING AT H DISPLAY
+                         7  ;      USES MONITOR SUBROUTINES REDIS 
+       AND OUTCH
+                         8  ;      NOTE: ONE DP IN EACH DISPLAY IS
+       ACTIVE
+                         9  
+                        10  ; Entered from listing in ET-3400A man
+  ual by Jeff Tranter <tranter@pobox.com>
+                        11  ; Add definitions to get it to assembl
+  e and adapted to the crasm
+                        12  ; assembler (https://github.com/colinb
+  ourassa/crasm).
+                        13  
+                        14          CPU 6800
+                        15  
+  FCBC                  16          REDIS   EQU $FCBC
+  00F0                  17          DIGADD  EQU $F0
+  FE3A                  18          OUTCH   EQU $FE3A
+                        19  
+  0000                  20          * = $0000
+                        21  
+0000 BDFCBC             22  START   JSR     REDIS           ; SET 
+                                  UP FIRST DISPLAY ADDRESS
+0003 8601               23          LDAA    #$01            ; FIRS
+                                  T SEGMENT CODE
+0005 2007               24          BRA     OUT
+0007 D6F1               25  SAME    LDAB    DIGADD+1        ; FIX 
+                                  DISPLAY ADDRESS
+0009 CB10               26          ADDB    #$10            ; FOR 
+                                  NEXT ADDRESS
+000B D7F1               27          STAB    DIGADD+1
+000D 48                 28          ASLA                    ; NEXT
+                                  SEGMENT CODE
+000E BDFE3A             29  OUT     JSR     OUTCH           ; OUTP
+                                  UT SEGMENT
+0011 CE2F00             30          LDX     #$2F00          ; TIME
+                                  TO WAIT
+0014 09                 31  WAIT    DEX
+0015 26FD               32          BNE     WAIT            ; TIME
+                                  OUT YET?
+0017 16                 33          TAB
+0018 5D                 34          TSTB                    ; LAST
+                                  SEGMENT THIS DISPLAY?
+0019 26EC               35          BNE     SAME            ; NEXT
+                                  SEGMENT
+001B 8601               36          LDAA    #$01            ; RESE
+                                  T SEGMENT CODE
+001D DEF0               37          LDX     DIGADD          ; NEXT
+                                  DISPLAY
+001F 8CC10F             38          CPX     #$C10F          ; LAST
+                                  DISPLAY YET?
+0022 26EA               39          BNE     OUT
+0024 20DA               40          BRA     START           ; DO A
+                                  GAIN
+                        41  
+
+ERRORS:       0
+WARNINGS:     0
+
+Successful assembly...
+ Last address       25 (37)
+ Code length        4c (76)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Crasm 1.8:                 Heathkit SAMPLE1        page  2
+
+ 00F0   Abs DIGADD                                           
+^000E   Abs OUT                                              
+ FE3A   Abs OUTCH                                            
+ FCBC   Abs REDIS                                            
+ 0007   Abs SAME                                             
+ 0000   Abs START                                            
+ 0014   Abs WAIT                                             
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

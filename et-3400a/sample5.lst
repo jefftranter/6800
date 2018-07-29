@@ -1,0 +1,396 @@
+Crasm 1.8:                 Heathkit SAMPLE5        page  1
+
+                         1          NAM Heathkit SAMPLE5
+                         2          PAGE 132,66
+                         3  
+                         4  ;                  SAMPLE 5
+                         5  ;      THIS PROGRAM CONTINOUSLY CHANGE
+       S THE HEX
+                         6  ;      VALUE STORED AT KEY+1 UNTIL ANY
+       HEX
+                         7  ;      KEY IS DEPRESSED. THE RIGHT DP 
+       IS LIT
+                         8  ;      TO INDICATE A VALUE HAS BEEN SE
+       T.
+                         9  ;      THE USER THEN DEPRESSES THE VAR
+       IOUS
+                        10  ;      HEX KEYS TO LOOK FOR THE SELECT
+       ED VALUE.
+                        11  ;      THE RELATIONSHIP OF DEPRESSED T
+       O CORRECT KEY
+                        12  ;      IS MOMENTARILY DISPLAYED AS HI 
+       OR LO.
+                        13  ;      DP AGAIN LIGHTS INDICATING TRY 
+       AGAIN.
+                        14  ;      DEPRESSING THE CORRECT KEY DISP
+       LAYS YES!
+                        15  ;      WHICH REMAINS UNTIL ANY KEY DEP
+       RESSED
+                        16  ;      SETTING A NEW VALUE TO FIND.
+                        17  ;      USES MONITOR SUB ROUTINES ENCOD
+       E,OUTSTO,INCH
+                        18  
+                        19  ; Entered from listing in ET-3400A man
+  ual by Jeff Tranter <tranter@pobox.com>
+                        20  ; Add definitions to get it to assembl
+  e and adapted to the crasm
+                        21  ; assembler (https://github.com/colinb
+  ourassa/crasm).
+                        22  
+                        23          CPU 6800
+                        24  
+  FDBB                  25          ENCODE  EQU $FDBB
+  FD8D                  26          OUTSTO  EQU $FD8D
+  FDF4                  27          INCH    EQU $FDF4
+  0085                  28          KEY     EQU $0085       ; MUST
+                                  MATCH ADDRESS OF LKEY BELOW
+                        29  
+  0060                  30          * = $0060
+                        31  
+0060 7F0086             32  START   CLR     KEY+1           ; CLEA
+                                  R KEY POINTER
+0063 C620               33  ILL     LDAB    #$20            ; VIOL
+                                  ATION COUNT
+0065 BDFDBB             34  ILL1    JSR     ENCODE          ; WAIT
+                                  FOR ILLEGAL INTERVAL
+0068 25F9               35          BCS     ILL             ; STIL
+                                  L LEGAL?
+006A 5A                 36          DECB
+006B 26F8               37          BNE     ILL1            ; NOT 
+                                  A FELONY
+006D C620               38  LEGAL   LDAB    #$20            ; TIME
+                                  UNTIL PAROLE
+006F 8D38               39          BSR     LCODE           ; CHAN
+                                  GE KEY TO FIND
+0071 BDFDBB             40  LEGAL1  JSR     ENCODE          ; SET 
+                                  KEY TO FIND
+0074 24F7               41          BCC     LEGAL           ; KEY 
+                                  TO FIND SET?
+0076 5A                 42          DECB
+0077 26F8               43          BNE     LEGAL1          ; GOOD
+                                  KEY?
+0079 BDFD8D             44  OUTDP   JSR     OUTSTO          ; OUTP
+                                  UT STRING
+007C 000000000080       45          DB      $00,$00,$00,$00,$00,$8
+                0 ; DP TO "C"
+                        46  
+                        47  ; DP LIT FIND SELECTED KEY
+0082 BDFDF4             48          JSR     INCH            ; LOOK
+                                  FOR KEY
+0085 C686               49  LKEY    LDAB    #KEY+1          ; GET 
+                                  KEY VALUE
+0087 11                 50          CBA                     ; IS I
+                                  T RIGHT KEY?
+0088 2714               51          BEQ     YES             ; IF C
+                                  ORRECT
+008A 222A               52          BHI     HIGH            ; IF G
+                                  REATER THAN KEY+1 VALUE
+008C BDFD8D             53          JSR     OUTSTO          ; OUTP
+                                  UT STRING
+008F 000000000E7E80     54          DB      $00,$00,$00,$00,$0E,$7
+                E,$80 ; LO
+0096 CE6000             55  HOLD    LDX     #$6000          ; TIME
+                                  TO HOLD DISPLAY
+0099 09                 56  WAIT    DEX
+009A 26FD               57          BNE     WAIT            ; LONG
+                                  ENOUGH YET?
+009C 20DB               58          BRA     OUTDP           ; TRY 
+                                  AGAIN
+009E BDFD8D             59  YES     JSR     OUTSTO          ; OUTP
+                                  UT STRING
+00A1 00003B4F5BA0       60          DB      $00,$00,$3B,$4F,$5B,$A
+                0 ; YES!
+00A7 20B7               61  BRA     START                   ; DO A
+                                  GAIN
+00A9 9686               62  LCODE   LDAA    KEY+1           ; CURR
+                                  ENT KEY VALUE
+00AB 4C                 63          INCA                    ; NEXT
+                                  KEY
+00AC 9786               64          STAA    KEY+1           ; KEY 
+                                  TO FIND
+00AE 8110               65          CMPA    #$10            ; CAN'
+                                  T BE GREATER THAN F
+00B0 2603               66          BNE     GOOD
+00B2 7F0086             67          CLR     KEY+1           ; MAKE
+                                  IT 0
+00B5 39                 68  GOOD    RTS
+00B6 BDFD8D             69  HIGH    JSR     OUTSTO          ; OUTP
+                                  UT STRING
+00B9 37300000000080     70          DB      $37,$30,$00,$00,$00,$0
+                0,$80 ; HI
+00C0 7E0096             71          JMP     HOLD
+                        72  
+                        73  
+
+
+
+
+
+
+
+
+
+Crasm 1.8:                 Heathkit SAMPLE5        page  2
+
+
+
+
+ERRORS:       0
+WARNINGS:     0
+
+Successful assembly...
+ Last address       c2 (194)
+ Code length        c6 (198)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Crasm 1.8:                 Heathkit SAMPLE5        page  3
+
+ FDBB   Abs ENCODE                                           
+^00B5   Abs GOOD                                             
+^00B6   Abs HIGH                                             
+ 0096   Abs HOLD                                             
+ 0063   Abs ILL                                              
+ 0065   Abs ILL1                                             
+ FDF4   Abs INCH                                             
+ 0085   Abs KEY                                              
+^00A9   Abs LCODE                                            
+ 006D   Abs LEGAL                                            
+ 0071   Abs LEGAL1                                           
+?0085   Abs LKEY                                             
+ 0079   Abs OUTDP                                            
+ FD8D   Abs OUTSTO                                           
+ 0060   Abs START                                            
+ 0099   Abs WAIT                                             
+^009E   Abs YES                                              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

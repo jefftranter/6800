@@ -1,0 +1,396 @@
+Crasm 1.8:                 Heathkit SAMPLE6        page  1
+
+                         1          NAM Heathkit SAMPLE6
+                         2          PAGE 132,66
+                         3  
+                         4  ;                  SAMPLE 6
+                         5  ;      THIS IS A TWELVE HOUR CLOCK PRO
+       GRAM
+                         6  ;      THE ACCURACY IS DEPENDENT UPON 
+       THE MPU CLOCK
+                         7  ;      FREQUENCY AND THE TIMING LOOP A
+       T START.
+                         8  ;      CHANGING THE VALUE AT 0005/6 BY
+       HEX 100
+                         9  ;      CHANGES THE ACCURACY APPROXIMAT
+       ELY 1 SEC/MIN.
+                        10  ;      HOURS.MINUTE.SECOND RMB 0001/2/
+       3 ARE LOADED
+                        11  ;      WITH THE STARTING TIME. THE FIR
+       ST DISPLAY
+                        12  ;      IS ONE SECOND AFTER START OF TH
+       E PROGRAM.
+                        13  ;      SECONDS WILL BE CONTENT OF SECO
+       ND RMB +1.
+                        14  ;      USES MONITOR SUBROUTINES REDIS,
+       DISPLAY.
+                        15  ;      NOTE:START THE PROGRAM AT 0004.
+                        16  
+                        17  ; Entered from listing in ET-3400A man
+  ual by Jeff Tranter <tranter@pobox.com>
+                        18  ; Add definitions to get it to assembl
+  e and adapted to the crasm
+                        19  ; assembler (https://github.com/colinb
+  ourassa/crasm).
+                        20  
+                        21          CPU 6800
+                        22  
+  FCBC                  23          REDIS   EQU $FCBC
+  FD7B                  24          DSPLAY  EQU $FD7B
+                        25  
+                        26  ; Different code is used depending on 
+  whether running on an ET-3400 or
+                        27  ; ET-3400A (due to different clock spe
+  eds). Define one of the two
+                        28  ; symbols below to 1 depending on your
+  system. Use ET3400A if running
+                        29  ; on an ET-3400 modified for a 4 MHz c
+  rystal clock (e.g. for use with
+                        30  ; the ETA-3400.
+                        31  
+  0001                  32          ET3400 EQU 1
+  0000                  33          ET3400A EQU 0
+                        34  
+  0001                  35          * = $0001
+                        36  
+0001 00                 37  HOURS   DS  1
+0002 00                 38  MINUTE  DS  1
+0003 00                 39  SECOND  DS  1
+                        40  
+                        41          if ET3400
+0004 CEB500             42  START   LDX     #$B500          ; ADJU
+                                  ST FOR ACCURACY
+                        43          endc
+                        44  
+                        45          if ET3400A
+                         C  START   LDX     #$CEB3          ; ADJU
+                                  ST FOR ACCURACY
+                        47          endc
+                        48  
+0007 09                 49  DELAY   DEX
+0008 26FD               50          BNE     DELAY           ; WAIT
+                                  ONE SECOND
+                        51  
+                        52          if ET3400A
+                         C          LDX     #$FFFF          ; SET 
+                                  FIXED DELAY
+                         C  SETDEL  DEX
+                         C          BNE     SETDEL
+                        56          endc
+                        57  
+000A C660               58          LDAB    #$60            ; SIXT
+                                  Y SECONDS.SIXTY MINUTES
+000C 0D                 59          SEC                     ; ALWA
+                                  YS INCREMENT SECONDS
+000D 8D0F               60          BSR     INCS            ; INCR
+                                  EMENT SECONDS
+000F 8D10               61          BSR     INCMH           ; INCR
+                                  EMENT MINUTES IF NEEDED
+0011 C613               62          LDAB    #$13            ; TWEL
+                                  VE HOUR CLOCK
+0013 8D0C               63          BSR     INCMH           ; INCR
+                                  EMENT HOURS IS NEEDED
+0015 BDFCBC             64          JSR     REDIS           ; RESE
+                                  T DISPLAY ADDRESS
+0018 C603               65          LDAB    #3              ; NUMB
+                                  ER OF BYTES TO DISPLAY
+001A 8D16               66          BSR     PRINT           ; DISP
+                                  LAY HOURS.MINUTES.SECONDS
+001C 20E6               67          BRA     START           ; DO A
+                                  GAIN
+                        68  
+001E CE0003             69  INCS    LDX     #SECOND         ; POIN
+                                  T X AT TIME RMB
+0021 A600               70  INCMH   LDAA    0,X             ; GET 
+                                  CURRENT TIME
+0023 8900               71          ADCA    #0              ; INCR
+                                  EMENT IF NECESSARY
+0025 19                 72          DAA                     ; FIX 
+                                  TO DECIMAL
+0026 11                 73          CBA                     ; TIME
+                                  TO CLEAR?
+0027 2501               74          BCS     STORE           ; NO
+0029 4F                 75          CLRA
+002A A700               76  STORE   STAA    0,X             ; STOR
+                                  E NEW TIME
+002C 09                 77          DEX                     ; GET 
+                                  NEXT TIME
+002D 07                 78          TPA
+002E 8801               79          EORA    #1              ; COMP
+                                  LEMENT CARRY BIT
+0030 06                 80          TAP
+0031 39                 81          RTS
+                        82  
+0032 9601               83  PRINT   LDAA    HOURS           ; WHAT
+                                  'S IN HOURS?
+0034 2603               84          BNE     CONTIN          ; IF N
+                                  OT ZERO
+0036 7C0001             85          INC     HOURS           ; MAKE
+                                  HOURS ONE
+0039 08                 86  CONTIN  INX                     ; POIN
+
+
+Crasm 1.8:                 Heathkit SAMPLE6        page  2
+
+                                  T X AT HOURS
+003A 7EFD7B             87          JMP     DSPLAY          ; OUTP
+                                  UT TO DISPLAYS
+                        88  
+                        89  
+
+ERRORS:       0
+WARNINGS:     0
+
+Successful assembly...
+ Last address       3c (60)
+ Code length        78 (120)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Crasm 1.8:                 Heathkit SAMPLE6        page  3
+
+^0039   Abs CONTIN                                           
+ 0007   Abs DELAY                                            
+ FD7B   Abs DSPLAY                                           
+ 0001   Abs ET3400                                           
+ 0000   Abs ET3400A                                          
+ 0001   Abs HOURS                                            
+^0021   Abs INCMH                                            
+^001E   Abs INCS                                             
+?0002   Abs MINUTE                                           
+^0032   Abs PRINT                                            
+ FCBC   Abs REDIS                                            
+ 0003   Abs SECOND                                           
+ 0004   Abs START                                            
+^002A   Abs STORE                                            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

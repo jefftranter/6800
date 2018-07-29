@@ -1,4 +1,4 @@
-all:	monitor.run sample1.run sample2.run sample3.run sample4.run sample5.run
+all:	monitor.run sample1.run sample2.run sample3.run sample4.run sample5.run sample6.run
 
 monitor.run: monitor.asm
 	crasm -o monitor.run monitor.asm >monitor.lst

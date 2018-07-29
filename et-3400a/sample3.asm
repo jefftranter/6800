@@ -41,7 +41,7 @@ START   JSR     OUTSTO          ; LEFT DISPLAY  OUT WORD
 
         BSR     HOLD            ; HOLD DISPLAY
         JSR     OUTSTO          ; LEFT DISPLAY  OUT WORD
-        DB      $05,$1C,$15,$15, $10,$15,$80     ; RUNNIN
+        DB      $05,$1C,$15,$15,$10,$15,$80 ; RUNNIN
 
         BSR     HOLD            ; HOLD DISPLAY
         JMP     START           ; DO AGAIN

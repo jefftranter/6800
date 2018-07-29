@@ -1,11 +1,11 @@
         NAM Heathkit SAMPLE3
         PAGE 132,66
 
-;                   SAMPLE 3
+;                  SAMPLE 3
 ;      OUTPUTS MESSAGE BY DISPLAYING UP TO SIX
 ;      CHARACTER WORD ONE WORD AT A TIME
 ;      USES MONITOR SUB ROUTINE OUTSTO
-;      NOTE: DP MUST BE LIT TO ENDICATE END OF STRING
+;      NOTE: DP MUST BE LIT TO INDICATE END OF STRING
 ;      TO EXIT OUTSTR. DP IS PLACED IN THE
 ;      SEVENTH DISPLAY POSITION TO FULFILL THIS
 ;      REQUIREMENT WITHOUT ACTUALLY BEING DISPLAYED.
@@ -41,11 +41,11 @@ START   JSR     OUTSTO          ; LEFT DISPLAY  OUT WORD
 
         BSR     HOLD            ; HOLD DISPLAY
         JSR     OUTSTO          ; LEFT DISPLAY  OUT WORD
-        DB      $05,$1C,$15,$10,$15,$8D     ; RUNNIN
+        DB      $05,$1C,$15,$15, $10,$15,$80     ; RUNNIN
 
         BSR     HOLD            ; HOLD DISPLAY
         JMP     START           ; DO AGAIN
-HOLD    LDX     #$FF0D          ; TIME TO WAIT
+HOLD    LDX     #$FF00          ; TIME TO WAIT
 WAIT    DEX
         BNE     WAIT            ; TIME OUT YET?
         RTS

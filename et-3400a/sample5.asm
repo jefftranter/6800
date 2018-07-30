@@ -69,4 +69,3 @@ GOOD    RTS
 HIGH    JSR     OUTSTO          ; OUTPUT STRING
         DB      $37,$30,$00,$00,$00,$00,$80 ; HI
         JMP     HOLD
-

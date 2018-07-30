@@ -6,7 +6,6 @@
 ;      IN TICKER TAPE FASHION
 ;      USES MONITOR SUB ROUTINES REDIS and OUTSTR
 
-
 ; Entered from listing in ET-3400A manual by Jeff Tranter <tranter@pobox.com>
 ; Add definitions to get it to assemble and adapted to the crasm
 ; assembler (https://github.com/colinbourassa/crasm).

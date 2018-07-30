@@ -38,4 +38,3 @@ HOLD    LDX     #$FF00          ; TIME TO WAIT
 WAIT    DEX
         BNE     WAIT            ; TIME OUT YET?
         RTS
-

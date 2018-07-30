@@ -120,20 +120,6 @@ Crasm 1.8:                 Heathkit SAMPLE5        page  1
                 0,$80 ; HI
 00C0 7E0096             71          JMP     HOLD
                         72  
-                        73  
-
-
-
-
-
-
-
-
-
-Crasm 1.8:                 Heathkit SAMPLE5        page  2
-
-
-
 
 ERRORS:       0
 WARNINGS:     0
@@ -144,125 +130,7 @@ Successful assembly...
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Crasm 1.8:                 Heathkit SAMPLE5        page  3
+Crasm 1.8:                 Heathkit SAMPLE5        page  2
 
  FDBB   Abs ENCODE                                           
 ^00B5   Abs GOOD                                             

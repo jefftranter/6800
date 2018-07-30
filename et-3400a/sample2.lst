@@ -57,7 +57,6 @@ Crasm 1.8:                 Heathkit SAMPLE2        page  1
                                   OUT YET?
 0059 39                 40          RTS
                         41  
-                        42  
 
 ERRORS:       0
 WARNINGS:     0
@@ -65,6 +64,7 @@ WARNINGS:     0
 Successful assembly...
  Last address       59 (89)
  Code length        54 (84)
+
 
 
 

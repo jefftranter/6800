@@ -30,1280 +30,1318 @@ Crasm 1.8:                                                   page  1
                         19  ;
                         20  ; Jeff Tranter <tranter@pobox.com>
                         21  
-                        22          CPU     6800
-                        23  
-                        24  ;***********************************************
- *****
-                        25  ;* Used Labels                                  
- *
-                        26  ;***********************************************
- *****
-                        27  
-  0000                  28  M0000   EQU     $0000
-  001C                  29  M001C   EQU     $001C
-  001D                  30  M001D   EQU     $001D
-  0020                  31  M0020   EQU     $0020
-  0021                  32  M0021   EQU     $0021
-  0022                  33  M0022   EQU     $0022
-  0024                  34  M0024   EQU     $0024
-  0025                  35  M0025   EQU     $0025
-  0026                  36  M0026   EQU     $0026
-  0027                  37  M0027   EQU     $0027
-  0028                  38  M0028   EQU     $0028
-  0029                  39  M0029   EQU     $0029
-  002A                  40  M002A   EQU     $002A
-  002B                  41  M002B   EQU     $002B
-  002C                  42  M002C   EQU     $002C
-  002D                  43  M002D   EQU     $002D
-  002E                  44  M002E   EQU     $002E
-  002F                  45  M002F   EQU     $002F
-  0030                  46  M0030   EQU     $0030
-  0047                  47  M0047   EQU     $0047
-  0049                  48  M0049   EQU     $0049
-  0050                  49  M0050   EQU     $0050
-  0080                  50  M0080   EQU     $0080
+                        22  ; LOCATION   SIGNIFICANCE
+                        23  ; 0000-000F  Not used by Tiny BASIC.
+                        24  ; 0010-001F  Temporaries.
+                        25  ; 0020-0021  Lowest address of user program spac
+  e.
+                        26  ; 0022-0023  Highest address of user program spa
+  ce.
+                        27  ; 0024-0025  Program end + stack reserve.
+                        28  ; 0026-0027  Top of GOSUB stack.
+                        29  ; 0028-002F  Interpreter parameters.
+                        30  ; 0030-007F  Input line buffer and Computation s
+  tack.
+                        31  ; 0080-0081  Random Number generator workspace.
+                        32  ; 0082-00B5  Variables A,B,...Z.
+                        33  ; 00B6-00C7  Interpreter temporaries.
+                        34  ; 0100-0FFF  Tiny BASIC user program space.
+                        35  
+                        36  ; 1C00       Cold start entry point.
+                        37  ; 1C03       Warm start entry point.
+                        38  ; 1C06       Character input routine.
+                        39  ; 1C09       Character output routine.
+                        40  ; 1C0C       Break test.
+                        41  ; 1C0F       Backspace code.
+                        42  ; 1C10       Line cancel code.
+                        43  ; 1C11       Pad character.
+                        44  ; 1C12       Tape mode enable flag. (HEX 80 = en
+  abled)
+                        45  ; 1C13       Spare stack size.
+                        46  ; 1C14       Subroutine (PEEK) to read ony byte 
+  from RAM to B and A.
+                        47  ;            (address in X)
+                        48  ; 1C18       Subroutine (POKE) to store A and B 
 
 
 Crasm 1.8:                                                   page  2
 
-  0083                  51  M0083   EQU     $0083
-  0099                  52  M0099   EQU     $0099
-  00A0                  53  M00A0   EQU     $00A0
-  00B6                  54  M00B6   EQU     $00B6
-  00B7                  55  M00B7   EQU     $00B7
-  00B8                  56  M00B8   EQU     $00B8
-  00B9                  57  M00B9   EQU     $00B9
-  00BA                  58  M00BA   EQU     $00BA
-  00BC                  59  M00BC   EQU     $00BC
-  00BD                  60  M00BD   EQU     $00BD
-  00BE                  61  M00BE   EQU     $00BE
-  00BF                  62  M00BF   EQU     $00BF
-  00C0                  63  M00C0   EQU     $00C0
-  00C1                  64  M00C1   EQU     $00C1
-  00C2                  65  M00C2   EQU     $00C2
-  00C3                  66  M00C3   EQU     $00C3
-  00C4                  67  M00C4   EQU     $00C4
-  00E5                  68  M00E5   EQU     $00E5
-  00EC                  69  M00EC   EQU     $00EC
-  0100                  70  M0100   EQU     $0100
-  0905                  71  M0905   EQU     $0905
-  0B02                  72  M0B02   EQU     $0B02
-  0B2F                  73  M0B2F   EQU     $0B2F
-  1311                  74  M1311   EQU     $1311
-  1C13                  75  M1C13   EQU     $1C13
-  1C1D                  76  M1C1D   EQU     $1C1D
-  1CFF                  77  M1CFF   EQU     $1CFF
-  2048                  78  M2048   EQU     $2048
-  2493                  79  M2493   EQU     $2493
-  312A                  80  M312A   EQU     $312A
-  3134                  81  M3134   EQU     $3134
-  380A                  82  M380A   EQU     $380A
-  80A9                  83  M80A9   EQU     $80A9
-  8454                  84  M8454   EQU     $8454
-  84BD                  85  M84BD   EQU     $84BD
-  E010                  86  ME010   EQU     $E010
-  E013                  87  ME013   EQU     $E013
-  E014                  88  ME014   EQU     $E014
-  E015                  89  ME015   EQU     $E015
-  E150                  90  ME150   EQU     $E150
-  FFFF                  91  MFFFF   EQU     $FFFF
-  0902                  92  Z0902   EQU     $0902
-  1618                  93  Z1618   EQU     $1618
-  1865                  94  Z1865   EQU     $1865
-  18E1                  95  Z18E1   EQU     $18E1
-  1A80                  96  Z1A80   EQU     $1A80
-  1B1F                  97  Z1B1F   EQU     $1B1F
-  1C15                  98  Z1C15   EQU     $1C15
-  1C1F                  99  Z1C1F   EQU     $1C1F
-  1C71                 100  Z1C71   EQU     $1C71
-  1D18                 101  Z1D18   EQU     $1D18
-  1DD6                 102  Z1DD6   EQU     $1DD6
-  2203                 103  Z2203   EQU     $2203
-  2269                 104  Z2269   EQU     $2269
-  2299                 105  Z2299   EQU     $2299
-  2305                 106  Z2305   EQU     $2305
-  2346                 107  Z2346   EQU     $2346
-  23B9                 108  Z23B9   EQU     $23B9
-  3814                 109  Z3814   EQU     $3814
-                       110  
-                       111  ;***********************************************
+  into RAM at addess X.
+                        49  
+                        50          CPU     6800
+                        51  
+                        52  ;***********************************************
  *****
+                        53  ;* Used Labels                                  
+ *
+                        54  ;***********************************************
+ *****
+                        55  
+  0000                  56  M0000   EQU     $0000
+  001C                  57  M001C   EQU     $001C
+  001D                  58  M001D   EQU     $001D
+  0020                  59  M0020   EQU     $0020
+  0021                  60  M0021   EQU     $0021
+  0022                  61  M0022   EQU     $0022
+  0024                  62  M0024   EQU     $0024
+  0025                  63  M0025   EQU     $0025
+  0026                  64  M0026   EQU     $0026
+  0027                  65  M0027   EQU     $0027
+  0028                  66  M0028   EQU     $0028
+  0029                  67  M0029   EQU     $0029
+  002A                  68  M002A   EQU     $002A
+  002B                  69  M002B   EQU     $002B
+  002C                  70  M002C   EQU     $002C
+  002D                  71  M002D   EQU     $002D
+  002E                  72  M002E   EQU     $002E
+  002F                  73  M002F   EQU     $002F
+  0030                  74  M0030   EQU     $0030
+  0047                  75  M0047   EQU     $0047
+  0049                  76  M0049   EQU     $0049
+  0050                  77  M0050   EQU     $0050
+  0080                  78  M0080   EQU     $0080
+  0083                  79  M0083   EQU     $0083
+  0099                  80  M0099   EQU     $0099
+  00A0                  81  M00A0   EQU     $00A0
+  00B6                  82  M00B6   EQU     $00B6
+  00B7                  83  M00B7   EQU     $00B7
+  00B8                  84  M00B8   EQU     $00B8
+  00B9                  85  M00B9   EQU     $00B9
+  00BA                  86  M00BA   EQU     $00BA
+  00BC                  87  M00BC   EQU     $00BC
+  00BD                  88  M00BD   EQU     $00BD
+  00BE                  89  M00BE   EQU     $00BE
+  00BF                  90  M00BF   EQU     $00BF
+  00C0                  91  M00C0   EQU     $00C0
+  00C1                  92  M00C1   EQU     $00C1
+  00C2                  93  M00C2   EQU     $00C2
+  00C3                  94  M00C3   EQU     $00C3
+  00C4                  95  M00C4   EQU     $00C4
+  00E5                  96  M00E5   EQU     $00E5
+  00EC                  97  M00EC   EQU     $00EC
+  0100                  98  M0100   EQU     $0100
+  0905                  99  M0905   EQU     $0905
+  0B02                 100  M0B02   EQU     $0B02
+  0B2F                 101  M0B2F   EQU     $0B2F
+  1311                 102  M1311   EQU     $1311
+  1C13                 103  M1C13   EQU     $1C13
+  1C1D                 104  M1C1D   EQU     $1C1D
+  1CFF                 105  M1CFF   EQU     $1CFF
+  2048                 106  M2048   EQU     $2048
 
 
 Crasm 1.8:                                                   page  3
 
-                       112  ;* Program Code / Data Areas                    
- *
-                       113  ;***********************************************
+  2493                 107  M2493   EQU     $2493
+  312A                 108  M312A   EQU     $312A
+  3134                 109  M3134   EQU     $3134
+  380A                 110  M380A   EQU     $380A
+  80A9                 111  M80A9   EQU     $80A9
+  8454                 112  M8454   EQU     $8454
+  84BD                 113  M84BD   EQU     $84BD
+  E010                 114  ME010   EQU     $E010
+  E013                 115  ME013   EQU     $E013
+  E014                 116  ME014   EQU     $E014
+  E015                 117  ME015   EQU     $E015
+  E150                 118  ME150   EQU     $E150
+  FFFF                 119  MFFFF   EQU     $FFFF
+  0902                 120  Z0902   EQU     $0902
+  1618                 121  Z1618   EQU     $1618
+  1865                 122  Z1865   EQU     $1865
+  18E1                 123  Z18E1   EQU     $18E1
+  1A80                 124  Z1A80   EQU     $1A80
+  1B1F                 125  Z1B1F   EQU     $1B1F
+  1C15                 126  Z1C15   EQU     $1C15
+  1C1F                 127  Z1C1F   EQU     $1C1F
+  1C71                 128  Z1C71   EQU     $1C71
+  1D18                 129  Z1D18   EQU     $1D18
+  1DD6                 130  Z1DD6   EQU     $1DD6
+  2203                 131  Z2203   EQU     $2203
+  2269                 132  Z2269   EQU     $2269
+  2299                 133  Z2299   EQU     $2299
+  2305                 134  Z2305   EQU     $2305
+  2346                 135  Z2346   EQU     $2346
+  23B9                 136  Z23B9   EQU     $23B9
+  3814                 137  Z3814   EQU     $3814
+                       138  
+                       139  ;***********************************************
  *****
-                       114  
-  1C00                 115          * =     $1C00
-                       116  
-1C00 7E1D00            117          JMP     Z1D00
-1C03 7E1D25            118          JMP     Z1D25           ; BASIC warm sta
+                       140  ;* Program Code / Data Areas                    
+ *
+                       141  ;***********************************************
+ *****
+                       142  
+  1C00                 143          * =     $1C00
+                       144  
+1C00 7E1D00            145          JMP     Z1D00
+1C03 7E1D25            146          JMP     Z1D25           ; BASIC warm sta
                                   rt entry point
-1C06 7E18E1            119  Z1C06   JMP     Z18E1
-1C09 7E1865            120  Z1C09   JMP     Z1865
-1C0C 7E1B1F            121  Z1C0C   JMP     Z1B1F
-1C0F 08                122  M1C0F   INX
-1C10 15                123  M1C10   DB      $15
-1C11 83                124  M1C11   DB      $83
-1C12 8020              125  M1C12   SUBA    #$20
-1C14 A600              126          LDAA    ,X
-1C16 5F                127          CLRB
-1C17 39                128  M1C17   RTS
-1C18 A700              129          STAA    ,X
-1C1A 39                130          RTS
-1C1B 1D                131          DB      $1D
-1C1C 981D              132          EORA    M001D
-1C1E 9B1D              133          ADDA    M001D
-1C20 EE1E              134          LDX     $1E,X
-1C22 12                135          DB      $12
-1C23 1E                136          DB      $1E
-1C24 3B                137          RTI
-1C25 1E                138          DB      $1E
-1C26 0B                139          SEV
-1C27 1C                140          DB      $1C
-1C28 FC                141          DB      $FC
-1C29 1C                142          DB      $1C
-1C2A D71C              143          STAB    M001C
-1C2C DB1C              144          ADDB    M001C
-1C2E 891C              145  Z1C2E   ADCA    #$1C
-1C30 A61C              146          LDAA    $1C,X
-1C32 A91C              147          ADCA    $1C,X
-1C34 771C80            148          ASR     Z1C80
-1C37 1F                149          DB      $1F
-1C38 AB1F              150          ADDA    $1F,X
-1C3A B01F00            151          SUBA    M1F00
-1C3D 1F                152          DB      $1F
-1C3E 10                153          SBA
-1C3F 1F                154          DB      $1F
-1C40 CE1F99            155          LDX     #M1F99
-1C43 1F                156          DB      $1F
-1C44 8E1EC2            157          LDS     #Z1EC2
-1C47 1E                158          DB      $1E
-1C48 CF                159          DB      $CF
-1C49 1E                160          DB      $1E
-1C4A CD                161          DB      $CD
-1C4B 1E                162          DB      $1E
-1C4C E51E              163          BITB    $1E,X
-1C4E 6B                164          DB      $6B
-1C4F 1F                165          DB      $1F
-1C50 231F              166          BLS     Z1C71
-1C52 49                167          ROLA
-1C53 1C                168          DB      $1C
-1C54 FC                169          DB      $FC
-1C55 20D7              170          BRA     Z1C2E
+1C06 7E18E1            147  Z1C06   JMP     Z18E1
+1C09 7E1865            148  Z1C09   JMP     Z1865
+1C0C 7E1B1F            149  Z1C0C   JMP     Z1B1F
+1C0F 08                150  M1C0F   INX
+1C10 15                151  M1C10   DB      $15
+1C11 83                152  M1C11   DB      $83
+1C12 8020              153  M1C12   SUBA    #$20
+1C14 A600              154          LDAA    ,X
+1C16 5F                155          CLRB
+1C17 39                156  M1C17   RTS
+1C18 A700              157          STAA    ,X
+1C1A 39                158          RTS
+1C1B 1D                159          DB      $1D
+1C1C 981D              160          EORA    M001D
+1C1E 9B1D              161          ADDA    M001D
+1C20 EE1E              162          LDX     $1E,X
+1C22 12                163          DB      $12
+1C23 1E                164          DB      $1E
 
 
 Crasm 1.8:                                                   page  4
 
-1C57 2045              171          BRA     Z1C9E
-1C59 20BA              172          BRA     Z1C15
-1C5B 20C2              173          BRA     Z1C1F
-1C5D 21                174          DB      $21
-1C5E 2820              175          BVC     Z1C80
-1C60 AD20              176          JSR     $20,X
-1C62 CB14              177          ADDB    #$14
-1C64 00                178          DB      $00
-1C65 21                179          DB      $21
-1C66 59                180          ROLB
-1C67 1B                181          ABA
-1C68 2D1B              182          BLT     Z1C85
-1C6A 38                183          DB      $38
-1C6B 21                184          DB      $21
-1C6C B11D12            185          CMPA    M1D12
-1C6F 1F                186          DB      $1F
-1C70 7E1D25            187          JMP     Z1D25
-1C73 1C                188          DB      $1C
-1C74 B91FA6            189          ADCA    M1FA6
-1C77 8D2D              190          BSR     Z1CA6
-1C79 97BC              191          STAA    M00BC
-1C7B D7BD              192          STAB    M00BD
-1C7D 7E1FD7            193          JMP     Z1FD7
-1C80 BD1FFC            194  Z1C80   JSR     Z1FFC
-1C83 96BC              195          LDAA    M00BC
-1C85 D6BD              196  Z1C85   LDAB    M00BD
-1C87 2004              197          BRA     Z1C8D
-1C89 8D1B              198          BSR     Z1CA6
-1C8B 8D00              199          BSR     Z1C8D
-1C8D DEC2              200  Z1C8D   LDX     M00C2
-1C8F 09                201          DEX
-1C90 E700              202          STAB    ,X
-1C92 2002              203          BRA     Z1C96
-1C94 DEC2              204  Z1C94   LDX     M00C2
-1C96 09                205  Z1C96   DEX
-1C97 A700              206          STAA    ,X
-1C99 DFC2              207          STX     M00C2
-1C9B 36                208          PSHA
-1C9C 96C1              209          LDAA    M00C1
-1C9E 91C3              210  Z1C9E   CMPA    M00C3
-1CA0 32                211          PULA
-1CA1 2559              212          BCS     Z1CFC
-1CA3 7E1D5C            213  Z1CA3   JMP     Z1D5C
-1CA6 8D01              214  Z1CA6   BSR     Z1CA9
-1CA8 17                215          TBA
-1CA9 C601              216  Z1CA9   LDAB    #$01
-1CAB DBC3              217  Z1CAB   ADDB    M00C3
-1CAD C180              218          CMPB    #$80
-1CAF 22F2              219          BHI     Z1CA3
-1CB1 DEC2              220          LDX     M00C2
-1CB3 7C00C3            221          INC     M00C3
-1CB6 E600              222          LDAB    ,X
-1CB8 39                223          RTS
-1CB9 8D05              224          BSR     Z1CC0
-1CBB 8DD7              225          BSR     Z1C94
-1CBD 17                226          TBA
-1CBE 20D4              227          BRA     Z1C94
-1CC0 8606              228  Z1CC0   LDAA    #$06
-1CC2 16                229          TAB
-1CC3 9BC3              230          ADDA    M00C3
-1CC5 8180              231          CMPA    #$80
-1CC7 22DA              232          BHI     Z1CA3
+1C24 3B                165          RTI
+1C25 1E                166          DB      $1E
+1C26 0B                167          SEV
+1C27 1C                168          DB      $1C
+1C28 FC                169          DB      $FC
+1C29 1C                170          DB      $1C
+1C2A D71C              171          STAB    M001C
+1C2C DB1C              172          ADDB    M001C
+1C2E 891C              173  Z1C2E   ADCA    #$1C
+1C30 A61C              174          LDAA    $1C,X
+1C32 A91C              175          ADCA    $1C,X
+1C34 771C80            176          ASR     Z1C80
+1C37 1F                177          DB      $1F
+1C38 AB1F              178          ADDA    $1F,X
+1C3A B01F00            179          SUBA    M1F00
+1C3D 1F                180          DB      $1F
+1C3E 10                181          SBA
+1C3F 1F                182          DB      $1F
+1C40 CE1F99            183          LDX     #M1F99
+1C43 1F                184          DB      $1F
+1C44 8E1EC2            185          LDS     #Z1EC2
+1C47 1E                186          DB      $1E
+1C48 CF                187          DB      $CF
+1C49 1E                188          DB      $1E
+1C4A CD                189          DB      $CD
+1C4B 1E                190          DB      $1E
+1C4C E51E              191          BITB    $1E,X
+1C4E 6B                192          DB      $6B
+1C4F 1F                193          DB      $1F
+1C50 231F              194          BLS     Z1C71
+1C52 49                195          ROLA
+1C53 1C                196          DB      $1C
+1C54 FC                197          DB      $FC
+1C55 20D7              198          BRA     Z1C2E
+1C57 2045              199          BRA     Z1C9E
+1C59 20BA              200          BRA     Z1C15
+1C5B 20C2              201          BRA     Z1C1F
+1C5D 21                202          DB      $21
+1C5E 2820              203          BVC     Z1C80
+1C60 AD20              204          JSR     $20,X
+1C62 CB14              205          ADDB    #$14
+1C64 00                206          DB      $00
+1C65 21                207          DB      $21
+1C66 59                208          ROLB
+1C67 1B                209          ABA
+1C68 2D1B              210          BLT     Z1C85
+1C6A 38                211          DB      $38
+1C6B 21                212          DB      $21
+1C6C B11D12            213          CMPA    M1D12
+1C6F 1F                214          DB      $1F
+1C70 7E1D25            215          JMP     Z1D25
+1C73 1C                216          DB      $1C
+1C74 B91FA6            217          ADCA    M1FA6
+1C77 8D2D              218          BSR     Z1CA6
+1C79 97BC              219          STAA    M00BC
+1C7B D7BD              220          STAB    M00BD
+1C7D 7E1FD7            221          JMP     Z1FD7
+1C80 BD1FFC            222  Z1C80   JSR     Z1FFC
+1C83 96BC              223          LDAA    M00BC
+1C85 D6BD              224  Z1C85   LDAB    M00BD
+1C87 2004              225          BRA     Z1C8D
+1C89 8D1B              226          BSR     Z1CA6
 
 
 Crasm 1.8:                                                   page  5
 
-1CC9 DEC2              233          LDX     M00C2
-1CCB 97C3              234          STAA    M00C3
-1CCD A605              235  Z1CCD   LDAA    $05,X
-1CCF 36                236          PSHA
-1CD0 09                237          DEX
-1CD1 5A                238          DECB
-1CD2 26F9              239          BNE     Z1CCD
-1CD4 07                240          TPA
-1CD5 36                241          PSHA
-1CD6 3B                242          RTI
-1CD7 8D1C              243          BSR     Z1CF5
-1CD9 20B9              244          BRA     Z1C94
-1CDB 8D18              245          BSR     Z1CF5
-1CDD 36                246          PSHA
-1CDE 8D15              247          BSR     Z1CF5
-1CE0 16                248          TAB
-1CE1 32                249          PULA
-1CE2 20A9              250          BRA     Z1C8D
-1CE4 9BC3              251  Z1CE4   ADDA    M00C3
-1CE6 97BD              252          STAA    M00BD
-1CE8 7F00BC            253          CLR     M00BC
-1CEB 8DBC              254          BSR     Z1CA9
-1CED DEBC              255          LDX     M00BC
-1CEF A600              256          LDAA    ,X
-1CF1 E700              257          STAB    ,X
-1CF3 209F              258          BRA     Z1C94
-1CF5 DE2A              259  Z1CF5   LDX     M002A
-1CF7 A600              260          LDAA    ,X
-1CF9 08                261          INX
-1CFA DF2A              262          STX     M002A
-1CFC 4D                263  Z1CFC   TSTA
-1CFD 39                264          RTS
-1CFE 226A              265  M1CFE   BHI     Z1D6A
-1D00 CE0100            266  Z1D00   LDX     #M0100
-1D03 DF20              267          STX     M0020
-1D05 BD1A80            268          JSR     Z1A80
-1D08 DF22              269          STX     M0022
-1D0A BD1618            270          JSR     Z1618
-1D0D 48                271          ASLA
-1D0E 54                272          LSRB
-1D0F 42                273          DB      $42
-1D10 31                274          INS
-1D11 00                275          DB      $00
-1D12 9620              276  M1D12   LDAA    M0020
-1D14 D621              277          LDAB    M0021
-1D16 FB1C13            278          ADDB    M1C13
-1D19 8900              279          ADCA    #$00
-1D1B 9724              280          STAA    M0024
-1D1D D725              281          STAB    M0025
-1D1F DE20              282          LDX     M0020
-1D21 6F00              283          CLR     ,X
-1D23 6F01              284          CLR     $01,X
-1D25 9E22              285  Z1D25   LDS     M0022
-1D27 BD212C            286  Z1D27   JSR     Z212C
-1D2A FE1CFE            287  Z1D2A   LDX     M1CFE
-1D2D DF2A              288          STX     M002A
-1D2F CE0080            289          LDX     #M0080
-1D32 DFC2              290          STX     M00C2
-1D34 CE0030            291          LDX     #M0030
-1D37 DFC0              292          STX     M00C0
-1D39 9F26              293  Z1D39   STS     M0026
-1D3B 8DB8              294  Z1D3B   BSR     Z1CF5
+1C8B 8D00              227          BSR     Z1C8D
+1C8D DEC2              228  Z1C8D   LDX     M00C2
+1C8F 09                229          DEX
+1C90 E700              230          STAB    ,X
+1C92 2002              231          BRA     Z1C96
+1C94 DEC2              232  Z1C94   LDX     M00C2
+1C96 09                233  Z1C96   DEX
+1C97 A700              234          STAA    ,X
+1C99 DFC2              235          STX     M00C2
+1C9B 36                236          PSHA
+1C9C 96C1              237          LDAA    M00C1
+1C9E 91C3              238  Z1C9E   CMPA    M00C3
+1CA0 32                239          PULA
+1CA1 2559              240          BCS     Z1CFC
+1CA3 7E1D5C            241  Z1CA3   JMP     Z1D5C
+1CA6 8D01              242  Z1CA6   BSR     Z1CA9
+1CA8 17                243          TBA
+1CA9 C601              244  Z1CA9   LDAB    #$01
+1CAB DBC3              245  Z1CAB   ADDB    M00C3
+1CAD C180              246          CMPB    #$80
+1CAF 22F2              247          BHI     Z1CA3
+1CB1 DEC2              248          LDX     M00C2
+1CB3 7C00C3            249          INC     M00C3
+1CB6 E600              250          LDAB    ,X
+1CB8 39                251          RTS
+1CB9 8D05              252          BSR     Z1CC0
+1CBB 8DD7              253          BSR     Z1C94
+1CBD 17                254          TBA
+1CBE 20D4              255          BRA     Z1C94
+1CC0 8606              256  Z1CC0   LDAA    #$06
+1CC2 16                257          TAB
+1CC3 9BC3              258          ADDA    M00C3
+1CC5 8180              259          CMPA    #$80
+1CC7 22DA              260          BHI     Z1CA3
+1CC9 DEC2              261          LDX     M00C2
+1CCB 97C3              262          STAA    M00C3
+1CCD A605              263  Z1CCD   LDAA    $05,X
+1CCF 36                264          PSHA
+1CD0 09                265          DEX
+1CD1 5A                266          DECB
+1CD2 26F9              267          BNE     Z1CCD
+1CD4 07                268          TPA
+1CD5 36                269          PSHA
+1CD6 3B                270          RTI
+1CD7 8D1C              271          BSR     Z1CF5
+1CD9 20B9              272          BRA     Z1C94
+1CDB 8D18              273          BSR     Z1CF5
+1CDD 36                274          PSHA
+1CDE 8D15              275          BSR     Z1CF5
+1CE0 16                276          TAB
+1CE1 32                277          PULA
+1CE2 20A9              278          BRA     Z1C8D
+1CE4 9BC3              279  Z1CE4   ADDA    M00C3
+1CE6 97BD              280          STAA    M00BD
+1CE8 7F00BC            281          CLR     M00BC
+1CEB 8DBC              282          BSR     Z1CA9
+1CED DEBC              283          LDX     M00BC
+1CEF A600              284          LDAA    ,X
+1CF1 E700              285          STAB    ,X
+1CF3 209F              286          BRA     Z1C94
+1CF5 DE2A              287  Z1CF5   LDX     M002A
+1CF7 A600              288          LDAA    ,X
 
 
 Crasm 1.8:                                                   page  6
 
-1D3D 8D07              295          BSR     Z1D46
-1D3F 20FA              296          BRA     Z1D3B
-1D41 8C0099            297          CPX     #M0099
-1D44 20F3              298          BRA     Z1D39
-1D46 CE1C17            299  Z1D46   LDX     #M1C17
-1D49 DFBC              300          STX     M00BC
-1D4B 8130              301          CMPA    #$30
-1D4D 2456              302          BCC     Z1DA5
-1D4F 8108              303          CMPA    #$08
-1D51 2591              304          BCS     Z1CE4
-1D53 48                305          ASLA
-1D54 97BD              306          STAA    M00BD
-1D56 DEBC              307          LDX     M00BC
-1D58 EE17              308          LDX     $17,X
-1D5A 6E00              309          JMP     ,X
-1D5C BD212C            310  Z1D5C   JSR     Z212C
-1D5F 8621              311          LDAA    #$21
-1D61 97C1              312          STAA    M00C1
-1D63 BD1C09            313          JSR     Z1C09
-1D66 8680              314          LDAA    #$80
-1D68 97C3              315          STAA    M00C3
-1D6A D62B              316  Z1D6A   LDAB    M002B
-1D6C 962A              317          LDAA    M002A
-1D6E F01CFF            318          SUBB    M1CFF
-1D71 B21CFE            319          SBCA    M1CFE
-1D74 BD2042            320          JSR     Z2042
-1D77 96C0              321          LDAA    M00C0
-1D79 270F              322          BEQ     Z1D8A
-1D7B CE1D93            323          LDX     #M1D93
-1D7E DF2A              324          STX     M002A
-1D80 BD20AD            325          JSR     Z20AD
-1D83 9628              326          LDAA    M0028
-1D85 D629              327          LDAB    M0029
-1D87 BD2042            328          JSR     Z2042
-1D8A 8607              329  Z1D8A   LDAA    #$07
-1D8C BD1C09            330          JSR     Z1C09
-1D8F 9E26              331          LDS     M0026
-1D91 2094              332          BRA     Z1D27
-1D93 2041              333  M1D93   BRA     Z1DD6
-1D95 54                334          LSRB
-1D96 2080              335          BRA     Z1D18
-1D98 7A00BC            336          DEC     M00BC
-1D9B 7D00BC            337  Z1D9B   TST     M00BC
-1D9E 27BC              338          BEQ     Z1D5C
-1DA0 DEBC              339  Z1DA0   LDX     M00BC
-1DA2 DF2A              340          STX     M002A
-1DA4 39                341          RTS
-1DA5 8140              342  Z1DA5   CMPA    #$40
-1DA7 2423              343          BCC     Z1DCC
-1DA9 36                344          PSHA
-1DAA BD1CF5            345          JSR     Z1CF5
-1DAD BB1CFF            346          ADDA    M1CFF
-1DB0 97BD              347          STAA    M00BD
-1DB2 32                348          PULA
-1DB3 16                349          TAB
-1DB4 8407              350          ANDA    #$07
-1DB6 B91CFE            351          ADCA    M1CFE
-1DB9 97BC              352          STAA    M00BC
-1DBB C408              353          ANDB    #$08
-1DBD 26E1              354          BNE     Z1DA0
-1DBF DE2A              355          LDX     M002A
-1DC1 972A              356          STAA    M002A
+1CF9 08                289          INX
+1CFA DF2A              290          STX     M002A
+1CFC 4D                291  Z1CFC   TSTA
+1CFD 39                292          RTS
+1CFE 226A              293  M1CFE   BHI     Z1D6A
+1D00 CE0100            294  Z1D00   LDX     #M0100
+1D03 DF20              295          STX     M0020
+1D05 BD1A80            296          JSR     Z1A80
+1D08 DF22              297          STX     M0022
+1D0A BD1618            298          JSR     Z1618
+1D0D 48                299          ASLA
+1D0E 54                300          LSRB
+1D0F 42                301          DB      $42
+1D10 31                302          INS
+1D11 00                303          DB      $00
+1D12 9620              304  M1D12   LDAA    M0020
+1D14 D621              305          LDAB    M0021
+1D16 FB1C13            306          ADDB    M1C13
+1D19 8900              307          ADCA    #$00
+1D1B 9724              308          STAA    M0024
+1D1D D725              309          STAB    M0025
+1D1F DE20              310          LDX     M0020
+1D21 6F00              311          CLR     ,X
+1D23 6F01              312          CLR     $01,X
+1D25 9E22              313  Z1D25   LDS     M0022
+1D27 BD212C            314  Z1D27   JSR     Z212C
+1D2A FE1CFE            315  Z1D2A   LDX     M1CFE
+1D2D DF2A              316          STX     M002A
+1D2F CE0080            317          LDX     #M0080
+1D32 DFC2              318          STX     M00C2
+1D34 CE0030            319          LDX     #M0030
+1D37 DFC0              320          STX     M00C0
+1D39 9F26              321  Z1D39   STS     M0026
+1D3B 8DB8              322  Z1D3B   BSR     Z1CF5
+1D3D 8D07              323          BSR     Z1D46
+1D3F 20FA              324          BRA     Z1D3B
+1D41 8C0099            325          CPX     #M0099
+1D44 20F3              326          BRA     Z1D39
+1D46 CE1C17            327  Z1D46   LDX     #M1C17
+1D49 DFBC              328          STX     M00BC
+1D4B 8130              329          CMPA    #$30
+1D4D 2456              330          BCC     Z1DA5
+1D4F 8108              331          CMPA    #$08
+1D51 2591              332          BCS     Z1CE4
+1D53 48                333          ASLA
+1D54 97BD              334          STAA    M00BD
+1D56 DEBC              335          LDX     M00BC
+1D58 EE17              336          LDX     $17,X
+1D5A 6E00              337          JMP     ,X
+1D5C BD212C            338  Z1D5C   JSR     Z212C
+1D5F 8621              339          LDAA    #$21
+1D61 97C1              340          STAA    M00C1
+1D63 BD1C09            341          JSR     Z1C09
+1D66 8680              342          LDAA    #$80
+1D68 97C3              343          STAA    M00C3
+1D6A D62B              344  Z1D6A   LDAB    M002B
+1D6C 962A              345          LDAA    M002A
+1D6E F01CFF            346          SUBB    M1CFF
+1D71 B21CFE            347          SBCA    M1CFE
+1D74 BD2042            348          JSR     Z2042
+1D77 96C0              349          LDAA    M00C0
+1D79 270F              350          BEQ     Z1D8A
 
 
 Crasm 1.8:                                                   page  7
 
-1DC3 D6BD              357          LDAB    M00BD
-1DC5 D72B              358          STAB    M002B
-1DC7 DFBC              359          STX     M00BC
-1DC9 7E1FD7            360          JMP     Z1FD7
-1DCC 16                361  Z1DCC   TAB
-1DCD 44                362          LSRA
-1DCE 44                363          LSRA
-1DCF 44                364          LSRA
-1DD0 44                365          LSRA
-1DD1 840E              366          ANDA    #$0E
-1DD3 97BD              367          STAA    M00BD
-1DD5 DEBC              368          LDX     M00BC
-1DD7 EE17              369          LDX     $17,X
-1DD9 4F                370          CLRA
-1DDA C160              371          CMPB    #$60
-1DDC C41F              372          ANDB    #$1F
-1DDE 2402              373          BCC     Z1DE2
-1DE0 CAE0              374          ORAB    #$E0
-1DE2 2706              375  Z1DE2   BEQ     Z1DEA
-1DE4 DB2B              376          ADDB    M002B
-1DE6 D7BD              377          STAB    M00BD
-1DE8 992A              378          ADCA    M002A
-1DEA 97BC              379  Z1DEA   STAA    M00BC
-1DEC 6E00              380          JMP     ,X
-1DEE DE2C              381          LDX     M002C
-1DF0 DFB8              382          STX     M00B8
-1DF2 8D36              383  Z1DF2   BSR     Z1E2A
-1DF4 8D2A              384          BSR     Z1E20
-1DF6 16                385          TAB
-1DF7 BD1CF5            386          JSR     Z1CF5
-1DFA 2A02              387          BPL     Z1DFE
-1DFC CA80              388          ORAB    #$80
-1DFE 11                389  Z1DFE   CBA
-1DFF 2604              390          BNE     Z1E05
-1E01 4D                391          TSTA
-1E02 2AEE              392          BPL     Z1DF2
-1E04 39                393          RTS
-1E05 DEB8              394  Z1E05   LDX     M00B8
-1E07 DF2C              395          STX     M002C
-1E09 2090              396  Z1E09   BRA     Z1D9B
-1E0B 8D1D              397          BSR     Z1E2A
-1E0D 810D              398          CMPA    #$0D
-1E0F 26F8              399          BNE     Z1E09
-1E11 39                400          RTS
-1E12 8D16              401          BSR     Z1E2A
-1E14 815A              402          CMPA    #$5A
-1E16 2EF1              403          BGT     Z1E09
-1E18 8141              404          CMPA    #$41
-1E1A 2DED              405          BLT     Z1E09
-1E1C 48                406          ASLA
-1E1D BD1C94            407          JSR     Z1C94
-1E20 DE2C              408  Z1E20   LDX     M002C
-1E22 A600              409          LDAA    ,X
-1E24 08                410          INX
-1E25 DF2C              411          STX     M002C
-1E27 810D              412          CMPA    #$0D
-1E29 39                413          RTS
-1E2A 8DF4              414  Z1E2A   BSR     Z1E20
-1E2C 8120              415          CMPA    #$20
-1E2E 27FA              416          BEQ     Z1E2A
-1E30 09                417          DEX
-1E31 DF2C              418          STX     M002C
+1D7B CE1D93            351          LDX     #M1D93
+1D7E DF2A              352          STX     M002A
+1D80 BD20AD            353          JSR     Z20AD
+1D83 9628              354          LDAA    M0028
+1D85 D629              355          LDAB    M0029
+1D87 BD2042            356          JSR     Z2042
+1D8A 8607              357  Z1D8A   LDAA    #$07
+1D8C BD1C09            358          JSR     Z1C09
+1D8F 9E26              359          LDS     M0026
+1D91 2094              360          BRA     Z1D27
+1D93 2041              361  M1D93   BRA     Z1DD6
+1D95 54                362          LSRB
+1D96 2080              363          BRA     Z1D18
+1D98 7A00BC            364          DEC     M00BC
+1D9B 7D00BC            365  Z1D9B   TST     M00BC
+1D9E 27BC              366          BEQ     Z1D5C
+1DA0 DEBC              367  Z1DA0   LDX     M00BC
+1DA2 DF2A              368          STX     M002A
+1DA4 39                369          RTS
+1DA5 8140              370  Z1DA5   CMPA    #$40
+1DA7 2423              371          BCC     Z1DCC
+1DA9 36                372          PSHA
+1DAA BD1CF5            373          JSR     Z1CF5
+1DAD BB1CFF            374          ADDA    M1CFF
+1DB0 97BD              375          STAA    M00BD
+1DB2 32                376          PULA
+1DB3 16                377          TAB
+1DB4 8407              378          ANDA    #$07
+1DB6 B91CFE            379          ADCA    M1CFE
+1DB9 97BC              380          STAA    M00BC
+1DBB C408              381          ANDB    #$08
+1DBD 26E1              382          BNE     Z1DA0
+1DBF DE2A              383          LDX     M002A
+1DC1 972A              384          STAA    M002A
+1DC3 D6BD              385          LDAB    M00BD
+1DC5 D72B              386          STAB    M002B
+1DC7 DFBC              387          STX     M00BC
+1DC9 7E1FD7            388          JMP     Z1FD7
+1DCC 16                389  Z1DCC   TAB
+1DCD 44                390          LSRA
+1DCE 44                391          LSRA
+1DCF 44                392          LSRA
+1DD0 44                393          LSRA
+1DD1 840E              394          ANDA    #$0E
+1DD3 97BD              395          STAA    M00BD
+1DD5 DEBC              396          LDX     M00BC
+1DD7 EE17              397          LDX     $17,X
+1DD9 4F                398          CLRA
+1DDA C160              399          CMPB    #$60
+1DDC C41F              400          ANDB    #$1F
+1DDE 2402              401          BCC     Z1DE2
+1DE0 CAE0              402          ORAB    #$E0
+1DE2 2706              403  Z1DE2   BEQ     Z1DEA
+1DE4 DB2B              404          ADDB    M002B
+1DE6 D7BD              405          STAB    M00BD
+1DE8 992A              406          ADCA    M002A
+1DEA 97BC              407  Z1DEA   STAA    M00BC
+1DEC 6E00              408          JMP     ,X
+1DEE DE2C              409          LDX     M002C
+1DF0 DFB8              410          STX     M00B8
+1DF2 8D36              411  Z1DF2   BSR     Z1E2A
+1DF4 8D2A              412          BSR     Z1E20
 
 
 Crasm 1.8:                                                   page  8
 
-1E33 8130              419          CMPA    #$30
-1E35 0C                420          CLC
-1E36 2D02              421          BLT     Z1E3A
-1E38 813A              422          CMPA    #$3A
-1E3A 39                423  Z1E3A   RTS
-1E3B 8DED              424          BSR     Z1E2A
-1E3D 24CA              425          BCC     Z1E09
-1E3F CE0000            426          LDX     #M0000
-1E42 DFBC              427          STX     M00BC
-1E44 8DDA              428  Z1E44   BSR     Z1E20
-1E46 36                429          PSHA
-1E47 96BC              430          LDAA    M00BC
-1E49 D6BD              431          LDAB    M00BD
-1E4B 58                432          ASLB
-1E4C 49                433          ROLA
-1E4D 58                434          ASLB
-1E4E 49                435          ROLA
-1E4F DBBD              436          ADDB    M00BD
-1E51 99BC              437          ADCA    M00BC
-1E53 58                438          ASLB
-1E54 49                439          ROLA
-1E55 D7BD              440          STAB    M00BD
-1E57 33                441          PULB
-1E58 C40F              442          ANDB    #$0F
-1E5A DBBD              443          ADDB    M00BD
-1E5C 8900              444          ADCA    #$00
-1E5E 97BC              445          STAA    M00BC
-1E60 D7BD              446          STAB    M00BD
-1E62 8DC6              447          BSR     Z1E2A
-1E64 25DE              448          BCS     Z1E44
-1E66 96BC              449          LDAA    M00BC
-1E68 7E1C8D            450          JMP     Z1C8D
-1E6B 8D73              451          BSR     Z1EE0
-1E6D A602              452          LDAA    $02,X
-1E6F 47                453          ASRA
-1E70 49                454          ROLA
-1E71 A202              455          SBCA    $02,X
-1E73 97BC              456          STAA    M00BC
-1E75 97BD              457          STAA    M00BD
-1E77 16                458          TAB
-1E78 EB03              459          ADDB    $03,X
-1E7A E703              460          STAB    $03,X
-1E7C 16                461          TAB
-1E7D E902              462          ADCB    $02,X
-1E7F E702              463          STAB    $02,X
-1E81 A800              464          EORA    ,X
-1E83 97BE              465          STAA    M00BE
-1E85 2A02              466          BPL     Z1E89
-1E87 8D3B              467          BSR     Z1EC4
-1E89 C611              468  Z1E89   LDAB    #$11
-1E8B A600              469          LDAA    ,X
-1E8D AA01              470          ORAA    $01,X
-1E8F 2603              471          BNE     Z1E94
-1E91 7E1D5C            472          JMP     Z1D5C
-1E94 96BD              473  Z1E94   LDAA    M00BD
-1E96 A001              474          SUBA    $01,X
-1E98 36                475          PSHA
-1E99 96BC              476          LDAA    M00BC
-1E9B A200              477          SBCA    ,X
-1E9D 36                478          PSHA
-1E9E 98BC              479          EORA    M00BC
-1EA0 2B09              480          BMI     Z1EAB
+1DF6 16                413          TAB
+1DF7 BD1CF5            414          JSR     Z1CF5
+1DFA 2A02              415          BPL     Z1DFE
+1DFC CA80              416          ORAB    #$80
+1DFE 11                417  Z1DFE   CBA
+1DFF 2604              418          BNE     Z1E05
+1E01 4D                419          TSTA
+1E02 2AEE              420          BPL     Z1DF2
+1E04 39                421          RTS
+1E05 DEB8              422  Z1E05   LDX     M00B8
+1E07 DF2C              423          STX     M002C
+1E09 2090              424  Z1E09   BRA     Z1D9B
+1E0B 8D1D              425          BSR     Z1E2A
+1E0D 810D              426          CMPA    #$0D
+1E0F 26F8              427          BNE     Z1E09
+1E11 39                428          RTS
+1E12 8D16              429          BSR     Z1E2A
+1E14 815A              430          CMPA    #$5A
+1E16 2EF1              431          BGT     Z1E09
+1E18 8141              432          CMPA    #$41
+1E1A 2DED              433          BLT     Z1E09
+1E1C 48                434          ASLA
+1E1D BD1C94            435          JSR     Z1C94
+1E20 DE2C              436  Z1E20   LDX     M002C
+1E22 A600              437          LDAA    ,X
+1E24 08                438          INX
+1E25 DF2C              439          STX     M002C
+1E27 810D              440          CMPA    #$0D
+1E29 39                441          RTS
+1E2A 8DF4              442  Z1E2A   BSR     Z1E20
+1E2C 8120              443          CMPA    #$20
+1E2E 27FA              444          BEQ     Z1E2A
+1E30 09                445          DEX
+1E31 DF2C              446          STX     M002C
+1E33 8130              447          CMPA    #$30
+1E35 0C                448          CLC
+1E36 2D02              449          BLT     Z1E3A
+1E38 813A              450          CMPA    #$3A
+1E3A 39                451  Z1E3A   RTS
+1E3B 8DED              452          BSR     Z1E2A
+1E3D 24CA              453          BCC     Z1E09
+1E3F CE0000            454          LDX     #M0000
+1E42 DFBC              455          STX     M00BC
+1E44 8DDA              456  Z1E44   BSR     Z1E20
+1E46 36                457          PSHA
+1E47 96BC              458          LDAA    M00BC
+1E49 D6BD              459          LDAB    M00BD
+1E4B 58                460          ASLB
+1E4C 49                461          ROLA
+1E4D 58                462          ASLB
+1E4E 49                463          ROLA
+1E4F DBBD              464          ADDB    M00BD
+1E51 99BC              465          ADCA    M00BC
+1E53 58                466          ASLB
+1E54 49                467          ROLA
+1E55 D7BD              468          STAB    M00BD
+1E57 33                469          PULB
+1E58 C40F              470          ANDB    #$0F
+1E5A DBBD              471          ADDB    M00BD
+1E5C 8900              472          ADCA    #$00
+1E5E 97BC              473          STAA    M00BC
+1E60 D7BD              474          STAB    M00BD
 
 
 Crasm 1.8:                                                   page  9
 
-1EA2 32                481          PULA
-1EA3 97BC              482          STAA    M00BC
-1EA5 32                483          PULA
-1EA6 97BD              484          STAA    M00BD
-1EA8 0D                485          SEC
-1EA9 2003              486          BRA     Z1EAE
-1EAB 32                487  Z1EAB   PULA
-1EAC 32                488          PULA
-1EAD 0C                489          CLC
-1EAE 6903              490  Z1EAE   ROL     $03,X
-1EB0 6902              491          ROL     $02,X
-1EB2 7900BD            492          ROL     M00BD
-1EB5 7900BC            493          ROL     M00BC
-1EB8 5A                494          DECB
-1EB9 26D9              495          BNE     Z1E94
-1EBB 8D20              496          BSR     Z1EDD
-1EBD 7D00BE            497          TST     M00BE
-1EC0 2A0A              498          BPL     Z1ECC
-1EC2 DEC2              499  Z1EC2   LDX     M00C2
-1EC4 6001              500  Z1EC4   NEG     $01,X
-1EC6 2602              501          BNE     Z1ECA
-1EC8 6A00              502          DEC     ,X
-1ECA 6300              503  Z1ECA   COM     ,X
-1ECC 39                504  Z1ECC   RTS
-1ECD 8DF3              505          BSR     Z1EC2
-1ECF 8D0F              506          BSR     Z1EE0
-1ED1 E603              507          LDAB    $03,X
-1ED3 EB01              508          ADDB    $01,X
-1ED5 A602              509          LDAA    $02,X
-1ED7 A900              510          ADCA    ,X
-1ED9 A702              511  Z1ED9   STAA    $02,X
-1EDB E703              512          STAB    $03,X
-1EDD 7E1CA9            513  Z1EDD   JMP     Z1CA9
-1EE0 C604              514  Z1EE0   LDAB    #$04
-1EE2 7E1CAB            515  Z1EE2   JMP     Z1CAB
-1EE5 8DF9              516          BSR     Z1EE0
-1EE7 8610              517          LDAA    #$10
-1EE9 97BC              518          STAA    M00BC
-1EEB 4F                519          CLRA
-1EEC 5F                520          CLRB
-1EED 58                521  Z1EED   ASLB
-1EEE 49                522          ROLA
-1EEF 6801              523          ASL     $01,X
-1EF1 6900              524          ROL     ,X
-1EF3 2404              525          BCC     Z1EF9
-1EF5 EB03              526          ADDB    $03,X
-1EF7 A902              527          ADCA    $02,X
-1EF9 7A00BC            528  Z1EF9   DEC     M00BC
-1EFC 26EF              529          BNE     Z1EED
-1EFE 20D9              530          BRA     Z1ED9
-1F00 8DDB              531  M1F00   BSR     Z1EDD
-1F02 D7BD              532          STAB    M00BD
-1F04 7F00BC            533          CLR     M00BC
-1F07 DEBC              534          LDX     M00BC
-1F09 A600              535          LDAA    ,X
-1F0B E601              536          LDAB    $01,X
-1F0D 7E1C8D            537          JMP     Z1C8D
-1F10 C603              538          LDAB    #$03
-1F12 8DCE              539          BSR     Z1EE2
-1F14 E601              540          LDAB    $01,X
-1F16 6F01              541          CLR     $01,X
-1F18 A600              542          LDAA    ,X
+1E62 8DC6              475          BSR     Z1E2A
+1E64 25DE              476          BCS     Z1E44
+1E66 96BC              477          LDAA    M00BC
+1E68 7E1C8D            478          JMP     Z1C8D
+1E6B 8D73              479          BSR     Z1EE0
+1E6D A602              480          LDAA    $02,X
+1E6F 47                481          ASRA
+1E70 49                482          ROLA
+1E71 A202              483          SBCA    $02,X
+1E73 97BC              484          STAA    M00BC
+1E75 97BD              485          STAA    M00BD
+1E77 16                486          TAB
+1E78 EB03              487          ADDB    $03,X
+1E7A E703              488          STAB    $03,X
+1E7C 16                489          TAB
+1E7D E902              490          ADCB    $02,X
+1E7F E702              491          STAB    $02,X
+1E81 A800              492          EORA    ,X
+1E83 97BE              493          STAA    M00BE
+1E85 2A02              494          BPL     Z1E89
+1E87 8D3B              495          BSR     Z1EC4
+1E89 C611              496  Z1E89   LDAB    #$11
+1E8B A600              497          LDAA    ,X
+1E8D AA01              498          ORAA    $01,X
+1E8F 2603              499          BNE     Z1E94
+1E91 7E1D5C            500          JMP     Z1D5C
+1E94 96BD              501  Z1E94   LDAA    M00BD
+1E96 A001              502          SUBA    $01,X
+1E98 36                503          PSHA
+1E99 96BC              504          LDAA    M00BC
+1E9B A200              505          SBCA    ,X
+1E9D 36                506          PSHA
+1E9E 98BC              507          EORA    M00BC
+1EA0 2B09              508          BMI     Z1EAB
+1EA2 32                509          PULA
+1EA3 97BC              510          STAA    M00BC
+1EA5 32                511          PULA
+1EA6 97BD              512          STAA    M00BD
+1EA8 0D                513          SEC
+1EA9 2003              514          BRA     Z1EAE
+1EAB 32                515  Z1EAB   PULA
+1EAC 32                516          PULA
+1EAD 0C                517          CLC
+1EAE 6903              518  Z1EAE   ROL     $03,X
+1EB0 6902              519          ROL     $02,X
+1EB2 7900BD            520          ROL     M00BD
+1EB5 7900BC            521          ROL     M00BC
+1EB8 5A                522          DECB
+1EB9 26D9              523          BNE     Z1E94
+1EBB 8D20              524          BSR     Z1EDD
+1EBD 7D00BE            525          TST     M00BE
+1EC0 2A0A              526          BPL     Z1ECC
+1EC2 DEC2              527  Z1EC2   LDX     M00C2
+1EC4 6001              528  Z1EC4   NEG     $01,X
+1EC6 2602              529          BNE     Z1ECA
+1EC8 6A00              530          DEC     ,X
+1ECA 6300              531  Z1ECA   COM     ,X
+1ECC 39                532  Z1ECC   RTS
+1ECD 8DF3              533          BSR     Z1EC2
+1ECF 8D0F              534          BSR     Z1EE0
+1ED1 E603              535          LDAB    $03,X
+1ED3 EB01              536          ADDB    $01,X
 
 
 Crasm 1.8:                                                   page 10
 
-1F1A EE01              543          LDX     $01,X
-1F1C A700              544          STAA    ,X
-1F1E E701              545          STAB    $01,X
-1F20 7E1CA6            546  Z1F20   JMP     Z1CA6
-1F23 8DFB              547          BSR     Z1F20
-1F25 37                548          PSHB
-1F26 C603              549          LDAB    #$03
-1F28 8DB8              550          BSR     Z1EE2
-1F2A 7C00C3            551          INC     M00C3
-1F2D 7C00C3            552          INC     M00C3
-1F30 33                553          PULB
-1F31 E002              554          SUBB    $02,X
-1F33 A201              555          SBCA    $01,X
-1F35 2E0B              556          BGT     Z1F42
-1F37 2D05              557          BLT     Z1F3E
-1F39 5D                558          TSTB
-1F3A 2704              559          BEQ     Z1F40
-1F3C 2004              560          BRA     Z1F42
-1F3E 6700              561  Z1F3E   ASR     ,X
-1F40 6700              562  Z1F40   ASR     ,X
-1F42 6700              563  Z1F42   ASR     ,X
-1F44 241B              564          BCC     Z1F61
-1F46 7E1CF5            565          JMP     Z1CF5
-1F49 96C0              566          LDAA    M00C0
-1F4B 271D              567          BEQ     Z1F6A
-1F4D BD1E20            568  Z1F4D   JSR     Z1E20
-1F50 26FB              569          BNE     Z1F4D
-1F52 8D1D              570          BSR     Z1F71
-1F54 2711              571          BEQ     Z1F67
-1F56 8D32              572  Z1F56   BSR     Z1F8A
-1F58 BD1C0C            573          JSR     Z1C0C
-1F5B 2505              574          BCS     Z1F62
-1F5D DEC4              575          LDX     M00C4
-1F5F DF2A              576          STX     M002A
-1F61 39                577  Z1F61   RTS
-1F62 FE1CFE            578  Z1F62   LDX     M1CFE
-1F65 DF2A              579          STX     M002A
-1F67 7E1D5C            580  Z1F67   JMP     Z1D5C
-1F6A 9E26              581  Z1F6A   LDS     M0026
-1F6C 97BF              582          STAA    M00BF
-1F6E 7E1D2A            583          JMP     Z1D2A
-1F71 BD1E20            584  Z1F71   JSR     Z1E20
-1F74 9728              585          STAA    M0028
-1F76 BD1E20            586          JSR     Z1E20
-1F79 9729              587          STAA    M0029
-1F7B DE28              588          LDX     M0028
-1F7D 39                589          RTS
-1F7E DE20              590          LDX     M0020
-1F80 DF2C              591          STX     M002C
-1F82 8DED              592          BSR     Z1F71
-1F84 27E1              593          BEQ     Z1F67
-1F86 DE2A              594          LDX     M002A
-1F88 DFC4              595          STX     M00C4
-1F8A 07                596  Z1F8A   TPA
-1F8B 97C0              597          STAA    M00C0
-1F8D 39                598          RTS
-1F8E BD201A            599          JSR     Z201A
-1F91 27C3              600          BEQ     Z1F56
-1F93 DEBC              601  Z1F93   LDX     M00BC
-1F95 DF28              602          STX     M0028
-1F97 20CE              603          BRA     Z1F67
-1F99 8D61              604  M1F99   BSR     Z1FFC
+1ED5 A602              537          LDAA    $02,X
+1ED7 A900              538          ADCA    ,X
+1ED9 A702              539  Z1ED9   STAA    $02,X
+1EDB E703              540          STAB    $03,X
+1EDD 7E1CA9            541  Z1EDD   JMP     Z1CA9
+1EE0 C604              542  Z1EE0   LDAB    #$04
+1EE2 7E1CAB            543  Z1EE2   JMP     Z1CAB
+1EE5 8DF9              544          BSR     Z1EE0
+1EE7 8610              545          LDAA    #$10
+1EE9 97BC              546          STAA    M00BC
+1EEB 4F                547          CLRA
+1EEC 5F                548          CLRB
+1EED 58                549  Z1EED   ASLB
+1EEE 49                550          ROLA
+1EEF 6801              551          ASL     $01,X
+1EF1 6900              552          ROL     ,X
+1EF3 2404              553          BCC     Z1EF9
+1EF5 EB03              554          ADDB    $03,X
+1EF7 A902              555          ADCA    $02,X
+1EF9 7A00BC            556  Z1EF9   DEC     M00BC
+1EFC 26EF              557          BNE     Z1EED
+1EFE 20D9              558          BRA     Z1ED9
+1F00 8DDB              559  M1F00   BSR     Z1EDD
+1F02 D7BD              560          STAB    M00BD
+1F04 7F00BC            561          CLR     M00BC
+1F07 DEBC              562          LDX     M00BC
+1F09 A600              563          LDAA    ,X
+1F0B E601              564          LDAB    $01,X
+1F0D 7E1C8D            565          JMP     Z1C8D
+1F10 C603              566          LDAB    #$03
+1F12 8DCE              567          BSR     Z1EE2
+1F14 E601              568          LDAB    $01,X
+1F16 6F01              569          CLR     $01,X
+1F18 A600              570          LDAA    ,X
+1F1A EE01              571          LDX     $01,X
+1F1C A700              572          STAA    ,X
+1F1E E701              573          STAB    $01,X
+1F20 7E1CA6            574  Z1F20   JMP     Z1CA6
+1F23 8DFB              575          BSR     Z1F20
+1F25 37                576          PSHB
+1F26 C603              577          LDAB    #$03
+1F28 8DB8              578          BSR     Z1EE2
+1F2A 7C00C3            579          INC     M00C3
+1F2D 7C00C3            580          INC     M00C3
+1F30 33                581          PULB
+1F31 E002              582          SUBB    $02,X
+1F33 A201              583          SBCA    $01,X
+1F35 2E0B              584          BGT     Z1F42
+1F37 2D05              585          BLT     Z1F3E
+1F39 5D                586          TSTB
+1F3A 2704              587          BEQ     Z1F40
+1F3C 2004              588          BRA     Z1F42
+1F3E 6700              589  Z1F3E   ASR     ,X
+1F40 6700              590  Z1F40   ASR     ,X
+1F42 6700              591  Z1F42   ASR     ,X
+1F44 241B              592          BCC     Z1F61
+1F46 7E1CF5            593          JMP     Z1CF5
+1F49 96C0              594          LDAA    M00C0
+1F4B 271D              595          BEQ     Z1F6A
+1F4D BD1E20            596  Z1F4D   JSR     Z1E20
+1F50 26FB              597          BNE     Z1F4D
+1F52 8D1D              598          BSR     Z1F71
 
 
 Crasm 1.8:                                                   page 11
 
-1F9B 30                605          TSX
-1F9C 6C01              606          INC     $01,X
-1F9E 6C01              607          INC     $01,X
-1FA0 BD2025            608          JSR     Z2025
-1FA3 26EE              609          BNE     Z1F93
-1FA5 39                610          RTS
-1FA6 8D54              611  M1FA6   BSR     Z1FFC
-1FA8 DF2A              612          STX     M002A
-1FAA 39                613          RTS
-1FAB CE002C            614          LDX     #M002C
-1FAE 2003              615          BRA     Z1FB3
-1FB0 CE002E            616          LDX     #M002E
-1FB3 A601              617  Z1FB3   LDAA    $01,X
-1FB5 8180              618          CMPA    #$80
-1FB7 2408              619          BCC     Z1FC1
-1FB9 A600              620          LDAA    ,X
-1FBB 2604              621          BNE     Z1FC1
-1FBD DE2C              622          LDX     M002C
-1FBF 200A              623          BRA     Z1DB
-1FC1 DE2C              624  Z1FC1   LDX     M002C
-1FC3 962E              625          LDAA    M002E
-1FC5 972C              626          STAA    M002C
-1FC7 962F              627          LDAA    M002F
-1FC9 972D              628          STAA    M002D
-1FCB DF2E              629  Z1DB    STX     M002E
-1FCD 39                630          RTS
-1FCE 30                631          TSX
-1FCF 6C01              632          INC     $01,X
-1FD1 6C01              633          INC     $01,X
-1FD3 DE28              634          LDX     M0028
-1FD5 DFBC              635          STX     M00BC
-1FD7 34                636  Z1FD7   DES
-1FD8 34                637          DES
-1FD9 30                638          TSX
-1FDA A602              639          LDAA    $02,X
-1FDC A700              640          STAA    ,X
-1FDE A603              641          LDAA    $03,X
-1FE0 A701              642          STAA    $01,X
-1FE2 96BC              643          LDAA    M00BC
-1FE4 A702              644          STAA    $02,X
-1FE6 96BD              645          LDAA    M00BD
-1FE8 A703              646          STAA    $03,X
-1FEA CE0024            647          LDX     #M0024
-1FED 9FBC              648          STS     M00BC
-1FEF A601              649          LDAA    $01,X
-1FF1 90BD              650          SUBA    M00BD
-1FF3 A600              651          LDAA    ,X
-1FF5 92BC              652          SBCA    M00BC
-1FF7 2520              653          BCS     Z2019
-1FF9 7E1D5C            654  Z1FF9   JMP     Z1D5C
-1FFC 30                655  Z1FFC   TSX
-1FFD 08                656          INX
-1FFE 08                657          INX
-1FFF 08                658          INX
-2000 9C22              659          CPX     M0022
-2002 27F5              660          BEQ     Z1FF9
-2004 EE01              661          LDX     $01,X
-2006 DFBC              662          STX     M00BC
-2008 30                663          TSX
-2009 37                664          PSHB
-200A C604              665          LDAB    #$04
-200C A603              666  Z200C   LDAA    $03,X
+1F54 2711              599          BEQ     Z1F67
+1F56 8D32              600  Z1F56   BSR     Z1F8A
+1F58 BD1C0C            601          JSR     Z1C0C
+1F5B 2505              602          BCS     Z1F62
+1F5D DEC4              603          LDX     M00C4
+1F5F DF2A              604          STX     M002A
+1F61 39                605  Z1F61   RTS
+1F62 FE1CFE            606  Z1F62   LDX     M1CFE
+1F65 DF2A              607          STX     M002A
+1F67 7E1D5C            608  Z1F67   JMP     Z1D5C
+1F6A 9E26              609  Z1F6A   LDS     M0026
+1F6C 97BF              610          STAA    M00BF
+1F6E 7E1D2A            611          JMP     Z1D2A
+1F71 BD1E20            612  Z1F71   JSR     Z1E20
+1F74 9728              613          STAA    M0028
+1F76 BD1E20            614          JSR     Z1E20
+1F79 9729              615          STAA    M0029
+1F7B DE28              616          LDX     M0028
+1F7D 39                617          RTS
+1F7E DE20              618          LDX     M0020
+1F80 DF2C              619          STX     M002C
+1F82 8DED              620          BSR     Z1F71
+1F84 27E1              621          BEQ     Z1F67
+1F86 DE2A              622          LDX     M002A
+1F88 DFC4              623          STX     M00C4
+1F8A 07                624  Z1F8A   TPA
+1F8B 97C0              625          STAA    M00C0
+1F8D 39                626          RTS
+1F8E BD201A            627          JSR     Z201A
+1F91 27C3              628          BEQ     Z1F56
+1F93 DEBC              629  Z1F93   LDX     M00BC
+1F95 DF28              630          STX     M0028
+1F97 20CE              631          BRA     Z1F67
+1F99 8D61              632  M1F99   BSR     Z1FFC
+1F9B 30                633          TSX
+1F9C 6C01              634          INC     $01,X
+1F9E 6C01              635          INC     $01,X
+1FA0 BD2025            636          JSR     Z2025
+1FA3 26EE              637          BNE     Z1F93
+1FA5 39                638          RTS
+1FA6 8D54              639  M1FA6   BSR     Z1FFC
+1FA8 DF2A              640          STX     M002A
+1FAA 39                641          RTS
+1FAB CE002C            642          LDX     #M002C
+1FAE 2003              643          BRA     Z1FB3
+1FB0 CE002E            644          LDX     #M002E
+1FB3 A601              645  Z1FB3   LDAA    $01,X
+1FB5 8180              646          CMPA    #$80
+1FB7 2408              647          BCC     Z1FC1
+1FB9 A600              648          LDAA    ,X
+1FBB 2604              649          BNE     Z1FC1
+1FBD DE2C              650          LDX     M002C
+1FBF 200A              651          BRA     Z1DB
+1FC1 DE2C              652  Z1FC1   LDX     M002C
+1FC3 962E              653          LDAA    M002E
+1FC5 972C              654          STAA    M002C
+1FC7 962F              655          LDAA    M002F
+1FC9 972D              656          STAA    M002D
+1FCB DF2E              657  Z1DB    STX     M002E
+1FCD 39                658          RTS
+1FCE 30                659          TSX
+1FCF 6C01              660          INC     $01,X
 
 
 Crasm 1.8:                                                   page 12
 
-200E A705              667          STAA    $05,X
-2010 09                668          DEX
-2011 5A                669          DECB
-2012 26F8              670          BNE     Z200C
-2014 33                671          PULB
-2015 31                672          INS
-2016 31                673          INS
-2017 DEBC              674          LDX     M00BC
-2019 39                675  Z2019   RTS
-201A BD1CA6            676  Z201A   JSR     Z1CA6
-201D D7BD              677          STAB    M00BD
-201F 97BC              678          STAA    M00BC
-2021 9ABD              679          ORAA    M00BD
-2023 27D4              680          BEQ     Z1FF9
-2025 DE20              681  Z2025   LDX     M0020
-2027 DF2C              682          STX     M002C
-2029 BD1F71            683  Z2029   JSR     Z1F71
-202C 2711              684          BEQ     Z203F
-202E D629              685          LDAB    M0029
-2030 9628              686          LDAA    M0028
-2032 D0BD              687          SUBB    M00BD
-2034 92BC              688          SBCA    M00BC
-2036 2407              689          BCC     Z203F
-2038 BD1E20            690  Z2038   JSR     Z1E20
-203B 26FB              691          BNE     Z2038
-203D 20EA              692          BRA     Z2029
-203F 9CBC              693  Z203F   CPX     M00BC
-2041 39                694          RTS
-2042 BD1C8D            695  Z2042   JSR     Z1C8D
-2045 DEC2              696          LDX     M00C2
-2047 6D00              697          TST     ,X
-2049 2A07              698          BPL     Z2052
-204B BD1EC2            699          JSR     Z1EC2
-204E 862D              700          LDAA    #$2D
-2050 8D46              701          BSR     Z2098
-2052 4F                702  Z2052   CLRA
-2053 36                703          PSHA
-2054 C60F              704          LDAB    #$0F
-2056 861A              705          LDAA    #$1A
-2058 36                706          PSHA
-2059 37                707          PSHB
-205A 36                708          PSHA
-205B 37                709          PSHB
-205C BD1CA6            710          JSR     Z1CA6
-205F 30                711          TSX
-2060 6C00              712  Z2060   INC     ,X
-2062 C010              713          SUBB    #$10
-2064 8227              714          SBCA    #$27
-2066 24F8              715          BCC     Z2060
-2068 6A01              716  Z2068   DEC     $01,X
-206A CBE8              717          ADDB    #$E8
-206C 8903              718          ADCA    #$03
-206E 24F8              719          BCC     Z2068
-2070 6C02              720  Z2070   INC     $02,X
-2072 C064              721          SUBB    #$64
-2074 8200              722          SBCA    #$00
-2076 24F8              723          BCC     Z2070
-2078 6A03              724  Z2078   DEC     $03,X
-207A CB0A              725          ADDB    #$0A
-207C 24FA              726          BCC     Z2078
-207E 7F00BE            727          CLR     M00BE
-2081 32                728  Z2081   PULA
+1FD1 6C01              661          INC     $01,X
+1FD3 DE28              662          LDX     M0028
+1FD5 DFBC              663          STX     M00BC
+1FD7 34                664  Z1FD7   DES
+1FD8 34                665          DES
+1FD9 30                666          TSX
+1FDA A602              667          LDAA    $02,X
+1FDC A700              668          STAA    ,X
+1FDE A603              669          LDAA    $03,X
+1FE0 A701              670          STAA    $01,X
+1FE2 96BC              671          LDAA    M00BC
+1FE4 A702              672          STAA    $02,X
+1FE6 96BD              673          LDAA    M00BD
+1FE8 A703              674          STAA    $03,X
+1FEA CE0024            675          LDX     #M0024
+1FED 9FBC              676          STS     M00BC
+1FEF A601              677          LDAA    $01,X
+1FF1 90BD              678          SUBA    M00BD
+1FF3 A600              679          LDAA    ,X
+1FF5 92BC              680          SBCA    M00BC
+1FF7 2520              681          BCS     Z2019
+1FF9 7E1D5C            682  Z1FF9   JMP     Z1D5C
+1FFC 30                683  Z1FFC   TSX
+1FFD 08                684          INX
+1FFE 08                685          INX
+1FFF 08                686          INX
+2000 9C22              687          CPX     M0022
+2002 27F5              688          BEQ     Z1FF9
+2004 EE01              689          LDX     $01,X
+2006 DFBC              690          STX     M00BC
+2008 30                691          TSX
+2009 37                692          PSHB
+200A C604              693          LDAB    #$04
+200C A603              694  Z200C   LDAA    $03,X
+200E A705              695          STAA    $05,X
+2010 09                696          DEX
+2011 5A                697          DECB
+2012 26F8              698          BNE     Z200C
+2014 33                699          PULB
+2015 31                700          INS
+2016 31                701          INS
+2017 DEBC              702          LDX     M00BC
+2019 39                703  Z2019   RTS
+201A BD1CA6            704  Z201A   JSR     Z1CA6
+201D D7BD              705          STAB    M00BD
+201F 97BC              706          STAA    M00BC
+2021 9ABD              707          ORAA    M00BD
+2023 27D4              708          BEQ     Z1FF9
+2025 DE20              709  Z2025   LDX     M0020
+2027 DF2C              710          STX     M002C
+2029 BD1F71            711  Z2029   JSR     Z1F71
+202C 2711              712          BEQ     Z203F
+202E D629              713          LDAB    M0029
+2030 9628              714          LDAA    M0028
+2032 D0BD              715          SUBB    M00BD
+2034 92BC              716          SBCA    M00BC
+2036 2407              717          BCC     Z203F
+2038 BD1E20            718  Z2038   JSR     Z1E20
+203B 26FB              719          BNE     Z2038
+203D 20EA              720          BRA     Z2029
+203F 9CBC              721  Z203F   CPX     M00BC
+2041 39                722          RTS
 
 
 Crasm 1.8:                                                   page 13
 
-2082 4D                729          TSTA
-2083 2704              730          BEQ     Z2089
-2085 8D03              731          BSR     Z208A
-2087 20F8              732          BRA     Z2081
-2089 17                733  Z2089   TBA
-208A 8110              734  Z208A   CMPA    #$10
-208C 2605              735          BNE     Z2093
-208E 7D00BE            736          TST     M00BE
-2091 2717              737          BEQ     Z20AA
-2093 7C00BE            738  Z2093   INC     M00BE
-2096 8A30              739          ORAA    #$30
-2098 7C00BF            740  Z2098   INC     M00BF
-209B 2B0A              741          BMI     Z20A7
-209D DFBA              742          STX     M00BA
-209F 37                743          PSHB
-20A0 BD1C09            744          JSR     Z1C09
-20A3 33                745          PULB
-20A4 DEBA              746          LDX     M00BA
-20A6 39                747          RTS
-20A7 7A00BF            748  Z20A7   DEC     M00BF
-20AA 39                749  Z20AA   RTS
-20AB 8DEB              750  Z20AB   BSR     Z2098
-20AD BD1CF5            751  Z20AD   JSR     Z1CF5
-20B0 2AF9              752          BPL     Z20AB
-20B2 20E4              753          BRA     Z2098
-20B4 8122              754  Z20B4   CMPA    #$22
-20B6 27F2              755          BEQ     Z20AA
-20B8 8DDE              756          BSR     Z2098
-20BA BD1E20            757          JSR     Z1E20
-20BD 26F5              758          BNE     Z20B4
-20BF 7E1D5C            759          JMP     Z1D5C
-20C2 D6BF              760          LDAB    M00BF
-20C4 2BE4              761          BMI     Z20AA
-20C6 CAF8              762          ORAB    #$F8
-20C8 50                763          NEGB
-20C9 2003              764          BRA     Z20CE
-20CB BD1CA6            765          JSR     Z1CA6
-20CE 5A                766  Z20CE   DECB
-20CF 2DD9              767          BLT     Z20AA
-20D1 8620              768          LDAA    #$20
-20D3 8DC3              769          BSR     Z2098
-20D5 20F7              770          BRA     Z20CE
-20D7 DE2C              771          LDX     M002C
-20D9 DFB8              772          STX     M00B8
-20DB DE20              773          LDX     M0020
-20DD DF2C              774          STX     M002C
-20DF DE24              775          LDX     M0024
-20E1 8D2C              776          BSR     Z210F
-20E3 2702              777          BEQ     Z20E7
-20E5 8D28              778          BSR     Z210F
-20E7 962C              779  Z20E7   LDAA    M002C
-20E9 D62D              780          LDAB    M002D
-20EB D0B7              781          SUBB    M00B7
-20ED 92B6              782          SBCA    M00B6
-20EF 2432              783          BCC     Z2123
-20F1 BD1F71            784          JSR     Z1F71
-20F4 272D              785          BEQ     Z2123
-20F6 9628              786          LDAA    M0028
-20F8 D629              787          LDAB    M0029
-20FA BD2042            788          JSR     Z2042
-20FD 8620              789          LDAA    #$20
-20FF 8D4B              790  Z20FF   BSR     Z214C
+2042 BD1C8D            723  Z2042   JSR     Z1C8D
+2045 DEC2              724          LDX     M00C2
+2047 6D00              725          TST     ,X
+2049 2A07              726          BPL     Z2052
+204B BD1EC2            727          JSR     Z1EC2
+204E 862D              728          LDAA    #$2D
+2050 8D46              729          BSR     Z2098
+2052 4F                730  Z2052   CLRA
+2053 36                731          PSHA
+2054 C60F              732          LDAB    #$0F
+2056 861A              733          LDAA    #$1A
+2058 36                734          PSHA
+2059 37                735          PSHB
+205A 36                736          PSHA
+205B 37                737          PSHB
+205C BD1CA6            738          JSR     Z1CA6
+205F 30                739          TSX
+2060 6C00              740  Z2060   INC     ,X
+2062 C010              741          SUBB    #$10
+2064 8227              742          SBCA    #$27
+2066 24F8              743          BCC     Z2060
+2068 6A01              744  Z2068   DEC     $01,X
+206A CBE8              745          ADDB    #$E8
+206C 8903              746          ADCA    #$03
+206E 24F8              747          BCC     Z2068
+2070 6C02              748  Z2070   INC     $02,X
+2072 C064              749          SUBB    #$64
+2074 8200              750          SBCA    #$00
+2076 24F8              751          BCC     Z2070
+2078 6A03              752  Z2078   DEC     $03,X
+207A CB0A              753          ADDB    #$0A
+207C 24FA              754          BCC     Z2078
+207E 7F00BE            755          CLR     M00BE
+2081 32                756  Z2081   PULA
+2082 4D                757          TSTA
+2083 2704              758          BEQ     Z2089
+2085 8D03              759          BSR     Z208A
+2087 20F8              760          BRA     Z2081
+2089 17                761  Z2089   TBA
+208A 8110              762  Z208A   CMPA    #$10
+208C 2605              763          BNE     Z2093
+208E 7D00BE            764          TST     M00BE
+2091 2717              765          BEQ     Z20AA
+2093 7C00BE            766  Z2093   INC     M00BE
+2096 8A30              767          ORAA    #$30
+2098 7C00BF            768  Z2098   INC     M00BF
+209B 2B0A              769          BMI     Z20A7
+209D DFBA              770          STX     M00BA
+209F 37                771          PSHB
+20A0 BD1C09            772          JSR     Z1C09
+20A3 33                773          PULB
+20A4 DEBA              774          LDX     M00BA
+20A6 39                775          RTS
+20A7 7A00BF            776  Z20A7   DEC     M00BF
+20AA 39                777  Z20AA   RTS
+20AB 8DEB              778  Z20AB   BSR     Z2098
+20AD BD1CF5            779  Z20AD   JSR     Z1CF5
+20B0 2AF9              780          BPL     Z20AB
+20B2 20E4              781          BRA     Z2098
+20B4 8122              782  Z20B4   CMPA    #$22
+20B6 27F2              783          BEQ     Z20AA
+20B8 8DDE              784          BSR     Z2098
 
 
 Crasm 1.8:                                                   page 14
 
-2101 BD1C0C            791          JSR     Z1C0C
-2104 251D              792          BCS     Z2123
-2106 BD1E20            793          JSR     Z1E20
-2109 26F4              794          BNE     Z20FF
-210B 8D1B              795          BSR     Z2128
-210D 20D8              796          BRA     Z20E7
-210F 08                797  Z210F   INX
-2110 DFB6              798          STX     M00B6
-2112 DEC2              799          LDX     M00C2
-2114 8C0080            800          CPX     #M0080
-2117 2709              801          BEQ     Z2122
-2119 BD201A            802          JSR     Z201A
-211C DE2C              803  Z211C   LDX     M002C
-211E 09                804          DEX
-211F 09                805          DEX
-2120 DF2C              806          STX     M002C
-2122 39                807  Z2122   RTS
-2123 DEB8              808  Z2123   LDX     M00B8
-2125 DF2C              809          STX     M002C
-2127 39                810          RTS
-2128 96BF              811  Z2128   LDAA    M00BF
-212A 2BF6              812          BMI     Z2122
-212C 860D              813  Z212C   LDAA    #$0D
-212E 8D19              814          BSR     Z2149
-2130 F61C11            815          LDAB    M1C11
-2133 58                816          ASLB
-2134 2708              817          BEQ     Z213E
-2136 37                818  Z2136   PSHB
-2137 8D09              819          BSR     Z2142
-2139 33                820          PULB
-213A 5A                821          DECB
-213B 5A                822          DECB
-213C 26F8              823          BNE     Z2136
-213E 860A              824  Z213E   LDAA    #$0A
-2140 8D0A              825          BSR     Z214C
-2142 4F                826  Z2142   CLRA
-2143 7D1C11            827          TST     M1C11
-2146 2A01              828          BPL     Z2149
-2148 43                829          COMA
-2149 7F00BF            830  Z2149   CLR     M00BF
-214C 7E2098            831  Z214C   JMP     Z2098
-214F B61C12            832  Z214F   LDAA    M1C12
-2152 2001              833          BRA     Z2155
-2154 4F                834  Z2154   CLRA
-2155 97BF              835  Z2155   STAA    M00BF
-2157 200A              836          BRA     Z2163
-2159 CE0030            837          LDX     #M0030
-215C DF2C              838          STX     M002C
-215E DFBC              839          STX     M00BC
-2160 BD1C8D            840          JSR     Z1C8D
-2163 9880              841  Z2163   EORA    M0080
-2165 9780              842          STAA    M0080
-2167 BD1C06            843          JSR     Z1C06
-216A 847F              844          ANDA    #$7F
-216C 27F5              845          BEQ     Z2163
-216E 817F              846          CMPA    #$7F
-2170 27F1              847          BEQ     Z2163
-2172 810A              848          CMPA    #$0A
-2174 27D9              849          BEQ     Z214F
-2176 8113              850          CMPA    #$13
-2178 27DA              851          BEQ     Z2154
-217A DEBC              852          LDX     M00BC
+20BA BD1E20            785          JSR     Z1E20
+20BD 26F5              786          BNE     Z20B4
+20BF 7E1D5C            787          JMP     Z1D5C
+20C2 D6BF              788          LDAB    M00BF
+20C4 2BE4              789          BMI     Z20AA
+20C6 CAF8              790          ORAB    #$F8
+20C8 50                791          NEGB
+20C9 2003              792          BRA     Z20CE
+20CB BD1CA6            793          JSR     Z1CA6
+20CE 5A                794  Z20CE   DECB
+20CF 2DD9              795          BLT     Z20AA
+20D1 8620              796          LDAA    #$20
+20D3 8DC3              797          BSR     Z2098
+20D5 20F7              798          BRA     Z20CE
+20D7 DE2C              799          LDX     M002C
+20D9 DFB8              800          STX     M00B8
+20DB DE20              801          LDX     M0020
+20DD DF2C              802          STX     M002C
+20DF DE24              803          LDX     M0024
+20E1 8D2C              804          BSR     Z210F
+20E3 2702              805          BEQ     Z20E7
+20E5 8D28              806          BSR     Z210F
+20E7 962C              807  Z20E7   LDAA    M002C
+20E9 D62D              808          LDAB    M002D
+20EB D0B7              809          SUBB    M00B7
+20ED 92B6              810          SBCA    M00B6
+20EF 2432              811          BCC     Z2123
+20F1 BD1F71            812          JSR     Z1F71
+20F4 272D              813          BEQ     Z2123
+20F6 9628              814          LDAA    M0028
+20F8 D629              815          LDAB    M0029
+20FA BD2042            816          JSR     Z2042
+20FD 8620              817          LDAA    #$20
+20FF 8D4B              818  Z20FF   BSR     Z214C
+2101 BD1C0C            819          JSR     Z1C0C
+2104 251D              820          BCS     Z2123
+2106 BD1E20            821          JSR     Z1E20
+2109 26F4              822          BNE     Z20FF
+210B 8D1B              823          BSR     Z2128
+210D 20D8              824          BRA     Z20E7
+210F 08                825  Z210F   INX
+2110 DFB6              826          STX     M00B6
+2112 DEC2              827          LDX     M00C2
+2114 8C0080            828          CPX     #M0080
+2117 2709              829          BEQ     Z2122
+2119 BD201A            830          JSR     Z201A
+211C DE2C              831  Z211C   LDX     M002C
+211E 09                832          DEX
+211F 09                833          DEX
+2120 DF2C              834          STX     M002C
+2122 39                835  Z2122   RTS
+2123 DEB8              836  Z2123   LDX     M00B8
+2125 DF2C              837          STX     M002C
+2127 39                838          RTS
+2128 96BF              839  Z2128   LDAA    M00BF
+212A 2BF6              840          BMI     Z2122
+212C 860D              841  Z212C   LDAA    #$0D
+212E 8D19              842          BSR     Z2149
+2130 F61C11            843          LDAB    M1C11
+2133 58                844          ASLB
+2134 2708              845          BEQ     Z213E
+2136 37                846  Z2136   PSHB
 
 
 Crasm 1.8:                                                   page 15
 
-217C B11C10            853          CMPA    M1C10
-217F 270A              854          BEQ     Z218B
-2181 B11C0F            855          CMPA    M1C0F
-2184 260C              856          BNE     Z2192
-2186 8C0030            857          CPX     #M0030
-2189 2615              858          BNE     Z21A0
-218B DE2C              859  Z218B   LDX     M002C
-218D 860D              860          LDAA    #$0D
-218F 7F00BF            861          CLR     M00BF
-2192 9CC2              862  Z2192   CPX     M00C2
-2194 2606              863          BNE     Z219C
-2196 8607              864          LDAA    #$07
-2198 8DB2              865          BSR     Z214C
-219A 20C7              866          BRA     Z2163
-219C A700              867  Z219C   STAA    ,X
-219E 08                868          INX
-219F 08                869          INX
-21A0 09                870  Z21A0   DEX
-21A1 DFBC              871          STX     M00BC
-21A3 810D              872          CMPA    #$0D
-21A5 26BC              873          BNE     Z2163
-21A7 BD2128            874          JSR     Z2128
-21AA 96BD              875          LDAA    M00BD
-21AC 97C1              876          STAA    M00C1
-21AE 7E1CA6            877          JMP     Z1CA6
-21B1 BD1FC1            878          JSR     Z1FC1
-21B4 BD201A            879          JSR     Z201A
-21B7 07                880          TPA
-21B8 BD211C            881          JSR     Z211C
-21BB DFB8              882          STX     M00B8
-21BD DEBC              883          LDX     M00BC
-21BF DFB6              884          STX     M00B6
-21C1 5F                885          CLRB
-21C2 06                886          TAP
-21C3 260B              887          BNE     Z21D0
-21C5 BD1F71            888          JSR     Z1F71
-21C8 C6FE              889          LDAB    #$FE
-21CA 5A                890  Z21CA   DECB
-21CB BD1E20            891          JSR     Z1E20
-21CE 26FA              892          BNE     Z21CA
-21D0 CE0000            893  Z21D0   LDX     #M0000
-21D3 DF28              894          STX     M0028
-21D5 BD1FC1            895          JSR     Z1FC1
-21D8 860D              896          LDAA    #$0D
-21DA DE2C              897          LDX     M002C
-21DC A100              898          CMPA    ,X
-21DE 270C              899          BEQ     Z21EC
-21E0 CB03              900          ADDB    #$03
-21E2 5C                901  Z21E2   INCB
-21E3 08                902          INX
-21E4 A100              903          CMPA    ,X
-21E6 26FA              904          BNE     Z21E2
-21E8 DEB6              905          LDX     M00B6
-21EA DF28              906          STX     M0028
-21EC DEB8              907  Z21EC   LDX     M00B8
-21EE DFBC              908          STX     M00BC
-21F0 5D                909          TSTB
-21F1 2755              910          BEQ     Z2248
-21F3 2A23              911          BPL     Z2218
-21F5 962F              912          LDAA    M002F
-21F7 1B                913          ABA
-21F8 97B9              914          STAA    M00B9
+2137 8D09              847          BSR     Z2142
+2139 33                848          PULB
+213A 5A                849          DECB
+213B 5A                850          DECB
+213C 26F8              851          BNE     Z2136
+213E 860A              852  Z213E   LDAA    #$0A
+2140 8D0A              853          BSR     Z214C
+2142 4F                854  Z2142   CLRA
+2143 7D1C11            855          TST     M1C11
+2146 2A01              856          BPL     Z2149
+2148 43                857          COMA
+2149 7F00BF            858  Z2149   CLR     M00BF
+214C 7E2098            859  Z214C   JMP     Z2098
+214F B61C12            860  Z214F   LDAA    M1C12
+2152 2001              861          BRA     Z2155
+2154 4F                862  Z2154   CLRA
+2155 97BF              863  Z2155   STAA    M00BF
+2157 200A              864          BRA     Z2163
+2159 CE0030            865          LDX     #M0030
+215C DF2C              866          STX     M002C
+215E DFBC              867          STX     M00BC
+2160 BD1C8D            868          JSR     Z1C8D
+2163 9880              869  Z2163   EORA    M0080
+2165 9780              870          STAA    M0080
+2167 BD1C06            871          JSR     Z1C06
+216A 847F              872          ANDA    #$7F
+216C 27F5              873          BEQ     Z2163
+216E 817F              874          CMPA    #$7F
+2170 27F1              875          BEQ     Z2163
+2172 810A              876          CMPA    #$0A
+2174 27D9              877          BEQ     Z214F
+2176 8113              878          CMPA    #$13
+2178 27DA              879          BEQ     Z2154
+217A DEBC              880          LDX     M00BC
+217C B11C10            881          CMPA    M1C10
+217F 270A              882          BEQ     Z218B
+2181 B11C0F            883          CMPA    M1C0F
+2184 260C              884          BNE     Z2192
+2186 8C0030            885          CPX     #M0030
+2189 2615              886          BNE     Z21A0
+218B DE2C              887  Z218B   LDX     M002C
+218D 860D              888          LDAA    #$0D
+218F 7F00BF            889          CLR     M00BF
+2192 9CC2              890  Z2192   CPX     M00C2
+2194 2606              891          BNE     Z219C
+2196 8607              892          LDAA    #$07
+2198 8DB2              893          BSR     Z214C
+219A 20C7              894          BRA     Z2163
+219C A700              895  Z219C   STAA    ,X
+219E 08                896          INX
+219F 08                897          INX
+21A0 09                898  Z21A0   DEX
+21A1 DFBC              899          STX     M00BC
+21A3 810D              900          CMPA    #$0D
+21A5 26BC              901          BNE     Z2163
+21A7 BD2128            902          JSR     Z2128
+21AA 96BD              903          LDAA    M00BD
+21AC 97C1              904          STAA    M00C1
+21AE 7E1CA6            905          JMP     Z1CA6
+21B1 BD1FC1            906          JSR     Z1FC1
+21B4 BD201A            907          JSR     Z201A
+21B7 07                908          TPA
 
 
 Crasm 1.8:                                                   page 16
 
-21FA 962E              915          LDAA    M002E
-21FC 89FF              916          ADCA    #$FF
-21FE 97B8              917          STAA    M00B8
-2200 DE2E              918  Z2200   LDX     M002E
-2202 E600              919          LDAB    ,X
-2204 9C24              920          CPX     M0024
-2206 273C              921          BEQ     Z2244
-2208 9C26              922          CPX     M0026
-220A 2738              923          BEQ     Z2244
-220C 08                924          INX
-220D DF2E              925          STX     M002E
-220F DEB8              926          LDX     M00B8
-2211 E700              927          STAB    ,X
-2213 08                928          INX
-2214 DFB8              929          STX     M00B8
-2216 20E8              930          BRA     Z2200
-2218 DB25              931  Z2218   ADDB    M0025
-221A D72F              932          STAB    M002F
-221C 8600              933          LDAA    #$00
-221E 9924              934          ADCA    M0024
-2220 972E              935          STAA    M002E
-2222 D027              936          SUBB    M0027
-2224 9226              937          SBCA    M0026
-2226 2506              938          BCS     Z222E
-2228 7A002B            939          DEC     M002B
-222B 7E1D5C            940          JMP     Z1D5C
-222E DE2E              941  Z222E   LDX     M002E
-2230 DFB8              942          STX     M00B8
-2232 DE24              943  Z2232   LDX     M0024
-2234 A600              944          LDAA    ,X
-2236 09                945          DEX
-2237 DF24              946          STX     M0024
-2239 DE2E              947          LDX     M002E
-223B A700              948          STAA    ,X
-223D 09                949          DEX
-223E DF2E              950          STX     M002E
-2240 9CBC              951          CPX     M00BC
-2242 26EE              952          BNE     Z2232
-2244 DEB8              953  Z2244   LDX     M00B8
-2246 DF24              954          STX     M0024
-2248 DE28              955  Z2248   LDX     M0028
-224A 2719              956          BEQ     Z2265
-224C DEBC              957          LDX     M00BC
-224E 9628              958          LDAA    M0028
-2250 D629              959          LDAB    M0029
-2252 A700              960          STAA    ,X
-2254 08                961          INX
-2255 E700              962          STAB    ,X
-2257 08                963  Z2257   INX
-2258 DFBC              964          STX     M00BC
-225A BD1E20            965          JSR     Z1E20
-225D DEBC              966          LDX     M00BC
-225F A700              967          STAA    ,X
-2261 810D              968          CMPA    #$0D
-2263 26F2              969          BNE     Z2257
-2265 9E26              970  Z2265   LDS     M0026
-2267 7E1D2A            971          JMP     Z1D2A
-226A 243A              972          BCC     Z22A6
-226C 9127              973          CMPA    M0027
-226E 10                974          SBA
-226F E159              975          CMPB    $59,X
-2271 C52A              976          BITB    #$2A
+21B8 BD211C            909          JSR     Z211C
+21BB DFB8              910          STX     M00B8
+21BD DEBC              911          LDX     M00BC
+21BF DFB6              912          STX     M00B6
+21C1 5F                913          CLRB
+21C2 06                914          TAP
+21C3 260B              915          BNE     Z21D0
+21C5 BD1F71            916          JSR     Z1F71
+21C8 C6FE              917          LDAB    #$FE
+21CA 5A                918  Z21CA   DECB
+21CB BD1E20            919          JSR     Z1E20
+21CE 26FA              920          BNE     Z21CA
+21D0 CE0000            921  Z21D0   LDX     #M0000
+21D3 DF28              922          STX     M0028
+21D5 BD1FC1            923          JSR     Z1FC1
+21D8 860D              924          LDAA    #$0D
+21DA DE2C              925          LDX     M002C
+21DC A100              926          CMPA    ,X
+21DE 270C              927          BEQ     Z21EC
+21E0 CB03              928          ADDB    #$03
+21E2 5C                929  Z21E2   INCB
+21E3 08                930          INX
+21E4 A100              931          CMPA    ,X
+21E6 26FA              932          BNE     Z21E2
+21E8 DEB6              933          LDX     M00B6
+21EA DF28              934          STX     M0028
+21EC DEB8              935  Z21EC   LDX     M00B8
+21EE DFBC              936          STX     M00BC
+21F0 5D                937          TSTB
+21F1 2755              938          BEQ     Z2248
+21F3 2A23              939          BPL     Z2218
+21F5 962F              940          LDAA    M002F
+21F7 1B                941          ABA
+21F8 97B9              942          STAA    M00B9
+21FA 962E              943          LDAA    M002E
+21FC 89FF              944          ADCA    #$FF
+21FE 97B8              945          STAA    M00B8
+2200 DE2E              946  Z2200   LDX     M002E
+2202 E600              947          LDAB    ,X
+2204 9C24              948          CPX     M0024
+2206 273C              949          BEQ     Z2244
+2208 9C26              950          CPX     M0026
+220A 2738              951          BEQ     Z2244
+220C 08                952          INX
+220D DF2E              953          STX     M002E
+220F DEB8              954          LDX     M00B8
+2211 E700              955          STAB    ,X
+2213 08                956          INX
+2214 DFB8              957          STX     M00B8
+2216 20E8              958          BRA     Z2200
+2218 DB25              959  Z2218   ADDB    M0025
+221A D72F              960          STAB    M002F
+221C 8600              961          LDAA    #$00
+221E 9924              962          ADCA    M0024
+2220 972E              963          STAA    M002E
+2222 D027              964          SUBB    M0027
+2224 9226              965          SBCA    M0026
+2226 2506              966          BCS     Z222E
+2228 7A002B            967          DEC     M002B
+222B 7E1D5C            968          JMP     Z1D5C
+222E DE2E              969  Z222E   LDX     M002E
+2230 DFB8              970          STX     M00B8
 
 
 Crasm 1.8:                                                   page 17
 
-2273 56                977          RORB
-2274 10                978          SBA
-2275 11                979          CBA
-2276 2C8B              980          BGE     Z2203
-2278 4C                981          INCA
-2279 45                982          DB      $45
-227A D4A0              983          ANDB    M00A0
-227C 80BD              984          SUBA    #$BD
-227E 30                985          TSX
-227F BCE013            986          CPX     ME013
-2282 1D                987          DB      $1D
-2283 9447              988          ANDA    M0047
-2285 CF                989          DB      $CF
-2286 8854              990          EORA    #$54
-2288 CF                991          DB      $CF
-2289 30                992          TSX
-228A BCE010            993          CPX     ME010
-228D 11                994          CBA
-228E 16                995          TAB
-228F 8053              996  Z228F   SUBA    #$53
-2291 55                997          DB      $55
-2292 C230              998          SBCB    #$30
-2294 BCE014            999          CPX     ME014
-2297 16               1000          TAB
-2298 9050             1001          SUBA    M0050
-229A D283             1002          SBCB    M0083
-229C 49               1003          ROLA
-229D 4E               1004          DB      $4E
-229E D4E5             1005          ANDB    M00E5
-22A0 71               1006          DB      $71
-22A1 88BB             1007          EORA    #$BB
-22A3 E11D             1008          CMPB    $1D,X
-22A5 8F               1009          DB      $8F
-22A6 A221             1010  Z22A6   SBCA    $21,X
-22A8 58               1011          ASLB
-22A9 6F83             1012          CLR     $83,X
-22AB AC22             1013          CPX     $22,X
-22AD 55               1014          DB      $55
-22AE 83               1015          DB      $83
-22AF BA2493           1016          ORAA    M2493
-22B2 E023             1017          SUBB    $23,X
-22B4 1D               1018          DB      $1D
-22B5 30               1019          TSX
-22B6 BC2048           1020          CPX     M2048
-22B9 9149             1021          CMPA    M0049
-22BB C630             1022  Z22BB   LDAB    #$30
-22BD BC3134           1023          CPX     M3134
-22C0 30               1024          TSX
-22C1 BC8454           1025          CPX     M8454
-22C4 48               1026          ASLA
-22C5 45               1027          DB      $45
-22C6 CE1C1D           1028          LDX     #M1C1D
-22C9 38               1029          DB      $38
-22CA 0D               1030          SEC
-22CB 9A49             1031          ORAA    M0049
-22CD 4E               1032          DB      $4E
-22CE 50               1033          NEGB
-22CF 55               1034          DB      $55
-22D0 D4A0             1035          ANDB    M00A0
-22D2 10               1036          SBA
-22D3 E724             1037          STAB    $24,X
-22D5 3F               1038          SWI
+2232 DE24              971  Z2232   LDX     M0024
+2234 A600              972          LDAA    ,X
+2236 09                973          DEX
+2237 DF24              974          STX     M0024
+2239 DE2E              975          LDX     M002E
+223B A700              976          STAA    ,X
+223D 09                977          DEX
+223E DF2E              978          STX     M002E
+2240 9CBC              979          CPX     M00BC
+2242 26EE              980          BNE     Z2232
+2244 DEB8              981  Z2244   LDX     M00B8
+2246 DF24              982          STX     M0024
+2248 DE28              983  Z2248   LDX     M0028
+224A 2719              984          BEQ     Z2265
+224C DEBC              985          LDX     M00BC
+224E 9628              986          LDAA    M0028
+2250 D629              987          LDAB    M0029
+2252 A700              988          STAA    ,X
+2254 08                989          INX
+2255 E700              990          STAB    ,X
+2257 08                991  Z2257   INX
+2258 DFBC              992          STX     M00BC
+225A BD1E20            993          JSR     Z1E20
+225D DEBC              994          LDX     M00BC
+225F A700              995          STAA    ,X
+2261 810D              996          CMPA    #$0D
+2263 26F2              997          BNE     Z2257
+2265 9E26              998  Z2265   LDS     M0026
+2267 7E1D2A            999          JMP     Z1D2A
+226A 243A             1000          BCC     Z22A6
+226C 9127             1001          CMPA    M0027
+226E 10               1002          SBA
+226F E159             1003          CMPB    $59,X
+2271 C52A             1004          BITB    #$2A
+2273 56               1005          RORB
+2274 10               1006          SBA
+2275 11               1007          CBA
+2276 2C8B             1008          BGE     Z2203
+2278 4C               1009          INCA
+2279 45               1010          DB      $45
+227A D4A0             1011          ANDB    M00A0
+227C 80BD             1012          SUBA    #$BD
+227E 30               1013          TSX
+227F BCE013           1014          CPX     ME013
+2282 1D               1015          DB      $1D
+2283 9447             1016          ANDA    M0047
+2285 CF               1017          DB      $CF
+2286 8854             1018          EORA    #$54
+2288 CF               1019          DB      $CF
+2289 30               1020          TSX
+228A BCE010           1021          CPX     ME010
+228D 11               1022          CBA
+228E 16               1023          TAB
+228F 8053             1024  Z228F   SUBA    #$53
+2291 55               1025          DB      $55
+2292 C230             1026          SBCB    #$30
+2294 BCE014           1027          CPX     ME014
+2297 16               1028          TAB
+2298 9050             1029          SUBA    M0050
+229A D283             1030          SBCB    M0083
+229C 49               1031          ROLA
+229D 4E               1032          DB      $4E
 
 
 Crasm 1.8:                                                   page 18
 
-22D6 2091             1039          BRA     Z2269
-22D8 27E1             1040          BEQ     Z22BB
-22DA 59               1041          ROLB
-22DB 81AC             1042          CMPA    #$AC
-22DD 30               1043          TSX
-22DE BC1311           1044          CPX     M1311
-22E1 82AC             1045          SBCA    #$AC
-22E3 4D               1046          TSTA
-22E4 E01D             1047  Z22E4   SUBB    $1D,X
-22E6 8952             1048          ADCA    #$52
-22E8 45               1049          DB      $45
-22E9 54               1050          LSRB
-22EA 55               1051          DB      $55
-22EB 52               1052          DB      $52
-22EC CEE015           1053          LDX     #ME015
-22EF 1D               1054          DB      $1D
-22F0 8545             1055          BITA    #$45
-22F2 4E               1056          DB      $4E
-22F3 C4E0             1057          ANDB    #$E0
-22F5 2D98             1058          BLT     Z228F
-22F7 4C               1059          INCA
-22F8 49               1060          ROLA
-22F9 53               1061          COMB
-22FA D4EC             1062          ANDB    M00EC
-22FC 2400             1063          BCC     Z22FE
-22FE 00               1064  Z22FE   DB      $00
-22FF 00               1065          DB      $00
-2300 00               1066          DB      $00
-2301 0A               1067          CLV
-2302 801F             1068          SUBA    #$1F
-2304 2493             1069          BCC     Z2299
-2306 231D             1070          BLS     Z2325
-2308 30               1071  Z2308   TSX
-2309 BCE150           1072          CPX     ME150
-230C 80AC             1073          SUBA    #$AC
-230E 59               1074  Z230E   ROLB
-230F 8552             1075          BITA    #$52
-2311 55               1076          DB      $55
-2312 CE380A           1077          LDX     #M380A
-2315 8643             1078          LDAA    #$43
-2317 4C               1079          INCA
-2318 45               1080  Z2318   DB      $45
-2319 41               1081          DB      $41
-231A D22B             1082          SBCB    M002B
-231C 8452             1083          ANDA    #$52
-231E 45               1084          DB      $45
-231F CD               1085          DB      $CD
-2320 1D               1086          DB      $1D
-2321 39               1087          RTS
-2322 57               1088          ASRB
-2323 00               1089  Z2323   DB      $00
-2324 00               1090          DB      $00
-2325 00               1091  Z2325   DB      $00
-2326 85AD             1092          BITA    #$AD
-2328 30               1093          TSX
-2329 D3               1094          DB      $D3
-232A 17               1095          TBA
-232B 6481             1096  Z232B   LSR     $81,X
-232D AB30             1097          ADDA    $30,X
-232F D3               1098  Z232F   DB      $D3
-2330 85AB             1099          BITA    #$AB
-2332 30               1100  Z2332   TSX
+229E D4E5             1033          ANDB    M00E5
+22A0 71               1034          DB      $71
+22A1 88BB             1035          EORA    #$BB
+22A3 E11D             1036          CMPB    $1D,X
+22A5 8F               1037          DB      $8F
+22A6 A221             1038  Z22A6   SBCA    $21,X
+22A8 58               1039          ASLB
+22A9 6F83             1040          CLR     $83,X
+22AB AC22             1041          CPX     $22,X
+22AD 55               1042          DB      $55
+22AE 83               1043          DB      $83
+22AF BA2493           1044          ORAA    M2493
+22B2 E023             1045          SUBB    $23,X
+22B4 1D               1046          DB      $1D
+22B5 30               1047          TSX
+22B6 BC2048           1048          CPX     M2048
+22B9 9149             1049          CMPA    M0049
+22BB C630             1050  Z22BB   LDAB    #$30
+22BD BC3134           1051          CPX     M3134
+22C0 30               1052          TSX
+22C1 BC8454           1053          CPX     M8454
+22C4 48               1054          ASLA
+22C5 45               1055          DB      $45
+22C6 CE1C1D           1056          LDX     #M1C1D
+22C9 38               1057          DB      $38
+22CA 0D               1058          SEC
+22CB 9A49             1059          ORAA    M0049
+22CD 4E               1060          DB      $4E
+22CE 50               1061          NEGB
+22CF 55               1062          DB      $55
+22D0 D4A0             1063          ANDB    M00A0
+22D2 10               1064          SBA
+22D3 E724             1065          STAB    $24,X
+22D5 3F               1066          SWI
+22D6 2091             1067          BRA     Z2269
+22D8 27E1             1068          BEQ     Z22BB
+22DA 59               1069          ROLB
+22DB 81AC             1070          CMPA    #$AC
+22DD 30               1071          TSX
+22DE BC1311           1072          CPX     M1311
+22E1 82AC             1073          SBCA    #$AC
+22E3 4D               1074          TSTA
+22E4 E01D             1075  Z22E4   SUBB    $1D,X
+22E6 8952             1076          ADCA    #$52
+22E8 45               1077          DB      $45
+22E9 54               1078          LSRB
+22EA 55               1079          DB      $55
+22EB 52               1080          DB      $52
+22EC CEE015           1081          LDX     #ME015
+22EF 1D               1082          DB      $1D
+22F0 8545             1083          BITA    #$45
+22F2 4E               1084          DB      $4E
+22F3 C4E0             1085          ANDB    #$E0
+22F5 2D98             1086          BLT     Z228F
+22F7 4C               1087          INCA
+22F8 49               1088          ROLA
+22F9 53               1089          COMB
+22FA D4EC             1090          ANDB    M00EC
+22FC 2400             1091          BCC     Z22FE
+22FE 00               1092  Z22FE   DB      $00
+22FF 00               1093          DB      $00
+2300 00               1094          DB      $00
 
 
 Crasm 1.8:                                                   page 19
 
-2333 D3               1101  Z2333   DB      $D3
-2334 18               1102          DB      $18
-2335 5A               1103          DECB
-2336 85AD             1104          BITA    #$AD
-2338 30               1105          TSX
-2339 D3               1106          DB      $D3
-233A 19               1107          DAA
-233B 54               1108          LSRB
-233C 2F30             1109          BLE     Z236E
-233E E285             1110  Z233E   SBCB    $85,X
-2340 AA30             1111          ORAA    $30,X
-2342 E21A             1112          SBCB    $1A,X
-2344 5A               1113          DECB
-2345 85AF             1114          BITA    #$AF
-2347 30               1115          TSX
-2348 E21B             1116          SBCB    $1B,X
-234A 54               1117          LSRB
-234B 2F97             1118          BLE     Z22E4
-234D 52               1119  Z234D   DB      $52
-234E 4E               1120          DB      $4E
-234F C40A             1121          ANDB    #$0A
-2351 8080             1122          SUBA    #$80
-2353 12               1123          DB      $12
-2354 0A               1124          CLV
-2355 09               1125          DEX
-2356 291A             1126          BVS     Z2372
-2358 0A               1127          CLV
-2359 1A               1128          DB      $1A
-235A 8518             1129          BITA    #$18
-235C 13               1130          DB      $13
-235D 09               1131          DEX
-235E 8012             1132          SUBA    #$12
-2360 0B               1133          SEV
-2361 31               1134          INS
-2362 30               1135          TSX
-2363 61               1136          DB      $61
-2364 730B02           1137          COM     M0B02
-2367 04               1138          DB      $04
-2368 02               1139          DB      $02
-2369 03               1140          DB      $03
-236A 05               1141          DB      $05
-236B 03               1142          DB      $03
-236C 1B               1143          ABA
-236D 1A               1144          DB      $1A
-236E 19               1145  Z236E   DAA
-236F 0B               1146          SEV
-2370 09               1147          DEX
-2371 06               1148          TAP
-2372 0A               1149  Z2372   CLV
-2373 00               1150          DB      $00
-2374 00               1151          DB      $00
-2375 1C               1152          DB      $1C
-2376 17               1153          TBA
-2377 2F8F             1154          BLE     Z2308
-2379 55               1155          DB      $55
-237A 53               1156          COMB
-237B D280             1157          SBCB    M0080
-237D A830             1158          EORA    $30,X
-237F BC312A           1159          CPX     M312A
-2382 31               1160          INS
-2383 2A80             1161          BPL     Z2305
-2385 A92E             1162          ADCA    $2E,X
+2301 0A               1095          CLV
+2302 801F             1096          SUBA    #$1F
+2304 2493             1097          BCC     Z2299
+2306 231D             1098          BLS     Z2325
+2308 30               1099  Z2308   TSX
+2309 BCE150           1100          CPX     ME150
+230C 80AC             1101          SUBA    #$AC
+230E 59               1102  Z230E   ROLB
+230F 8552             1103          BITA    #$52
+2311 55               1104          DB      $55
+2312 CE380A           1105          LDX     #M380A
+2315 8643             1106          LDAA    #$43
+2317 4C               1107          INCA
+2318 45               1108  Z2318   DB      $45
+2319 41               1109          DB      $41
+231A D22B             1110          SBCB    M002B
+231C 8452             1111          ANDA    #$52
+231E 45               1112          DB      $45
+231F CD               1113          DB      $CD
+2320 1D               1114          DB      $1D
+2321 39               1115          RTS
+2322 57               1116          ASRB
+2323 00               1117  Z2323   DB      $00
+2324 00               1118          DB      $00
+2325 00               1119  Z2325   DB      $00
+2326 85AD             1120          BITA    #$AD
+2328 30               1121          TSX
+2329 D3               1122          DB      $D3
+232A 17               1123          TBA
+232B 6481             1124  Z232B   LSR     $81,X
+232D AB30             1125          ADDA    $30,X
+232F D3               1126  Z232F   DB      $D3
+2330 85AB             1127          BITA    #$AB
+2332 30               1128  Z2332   TSX
+2333 D3               1129  Z2333   DB      $D3
+2334 18               1130          DB      $18
+2335 5A               1131          DECB
+2336 85AD             1132          BITA    #$AD
+2338 30               1133          TSX
+2339 D3               1134          DB      $D3
+233A 19               1135          DAA
+233B 54               1136          LSRB
+233C 2F30             1137          BLE     Z236E
+233E E285             1138  Z233E   SBCB    $85,X
+2340 AA30             1139          ORAA    $30,X
+2342 E21A             1140          SBCB    $1A,X
+2344 5A               1141          DECB
+2345 85AF             1142          BITA    #$AF
+2347 30               1143          TSX
+2348 E21B             1144          SBCB    $1B,X
+234A 54               1145          LSRB
+234B 2F97             1146          BLE     Z22E4
+234D 52               1147  Z234D   DB      $52
+234E 4E               1148          DB      $4E
+234F C40A             1149          ANDB    #$0A
+2351 8080             1150          SUBA    #$80
+2353 12               1151          DB      $12
+2354 0A               1152          CLV
+2355 09               1153          DEX
+2356 291A             1154          BVS     Z2372
+2358 0A               1155          CLV
+2359 1A               1156          DB      $1A
 
 
 Crasm 1.8:                                                   page 20
 
-2387 2FA2             1163          BLE     Z232B
-2389 12               1164          DB      $12
-238A 2FC1             1165          BLE     Z234D
-238C 2F80             1166          BLE     Z230E
-238E A830             1167          EORA    $30,X
-2390 BC80A9           1168          CPX     M80A9
-2393 2F83             1169          BLE     Z2318
-2395 AC38             1170          CPX     $38,X
-2397 BC0B2F           1171          CPX     M0B2F
-239A 80A8             1172          SUBA    #$A8
-239C 52               1173          DB      $52
-239D 2F84             1174          BLE     Z2323
-239F BD0902           1175          JSR     Z0902
-23A2 2F8E             1176          BLE     Z2332
-23A4 BC84BD           1177          CPX     M84BD
-23A7 09               1178          DEX
-23A8 03               1179          DB      $03
-23A9 2F84             1180          BLE     Z232F
-23AB BE0905           1181          LDS     M0905
-23AE 2F09             1182          BLE     Z23B9
-23B0 01               1183          NOP
-23B1 2F80             1184          BLE     Z2333
-23B3 BE84BD           1185          LDS     M84BD
-23B6 09               1186          DEX
-23B7 06               1187          TAP
-23B8 2F84             1188          BLE     Z233E
-23BA BC0905           1189          CPX     M0905
-23BD 2F09             1190          BLE     Z23C8
-23BF 04               1191          DB      $04
-23C0 2F84             1192          BLE     Z2346
-23C2 42               1193          DB      $42
-23C3 59               1194          ROLB
-23C4 C526             1195          BITB    #$26
-23C6 864C             1196          LDAA    #$4C
-23C8 4F               1197  Z23C8   CLRA
-23C9 41               1198          DB      $41
-23CA C428             1199          ANDB    #$28
-23CC 1D               1200          DB      $1D
-23CD 8653             1201          LDAA    #$53
-23CF 41               1202          DB      $41
-23D0 56               1203          RORB
-23D1 C529             1204          BITB    #$29
-23D3 1D               1205          DB      $1D
-23D4 A080             1206          SUBA    $80,X
-23D6 BD3814           1207          JSR     Z3814
+235A 8518             1157          BITA    #$18
+235C 13               1158          DB      $13
+235D 09               1159          DEX
+235E 8012             1160          SUBA    #$12
+2360 0B               1161          SEV
+2361 31               1162          INS
+2362 30               1163          TSX
+2363 61               1164          DB      $61
+2364 730B02           1165          COM     M0B02
+2367 04               1166          DB      $04
+2368 02               1167          DB      $02
+2369 03               1168          DB      $03
+236A 05               1169          DB      $05
+236B 03               1170          DB      $03
+236C 1B               1171          ABA
+236D 1A               1172          DB      $1A
+236E 19               1173  Z236E   DAA
+236F 0B               1174          SEV
+2370 09               1175          DEX
+2371 06               1176          TAP
+2372 0A               1177  Z2372   CLV
+2373 00               1178          DB      $00
+2374 00               1179          DB      $00
+2375 1C               1180          DB      $1C
+2376 17               1181          TBA
+2377 2F8F             1182          BLE     Z2308
+2379 55               1183          DB      $55
+237A 53               1184          COMB
+237B D280             1185          SBCB    M0080
+237D A830             1186          EORA    $30,X
+237F BC312A           1187          CPX     M312A
+2382 31               1188          INS
+2383 2A80             1189          BPL     Z2305
+2385 A92E             1190          ADCA    $2E,X
+2387 2FA2             1191          BLE     Z232B
+2389 12               1192          DB      $12
+238A 2FC1             1193          BLE     Z234D
+238C 2F80             1194          BLE     Z230E
+238E A830             1195          EORA    $30,X
+2390 BC80A9           1196          CPX     M80A9
+2393 2F83             1197          BLE     Z2318
+2395 AC38             1198          CPX     $38,X
+2397 BC0B2F           1199          CPX     M0B2F
+239A 80A8             1200          SUBA    #$A8
+239C 52               1201          DB      $52
+239D 2F84             1202          BLE     Z2323
+239F BD0902           1203          JSR     Z0902
+23A2 2F8E             1204          BLE     Z2332
+23A4 BC84BD           1205          CPX     M84BD
+23A7 09               1206          DEX
+23A8 03               1207          DB      $03
+23A9 2F84             1208          BLE     Z232F
+23AB BE0905           1209          LDS     M0905
+23AE 2F09             1210          BLE     Z23B9
+23B0 01               1211          NOP
+23B1 2F80             1212          BLE     Z2333
+23B3 BE84BD           1213          LDS     M84BD
+23B6 09               1214          DEX
+23B7 06               1215          TAP
+23B8 2F84             1216          BLE     Z233E
+23BA BC0905           1217          CPX     M0905
+23BD 2F09             1218          BLE     Z23C8
+
+
+Crasm 1.8:                                                   page 21
+
+23BF 04               1219          DB      $04
+23C0 2F84             1220          BLE     Z2346
+23C2 42               1221          DB      $42
+23C3 59               1222          ROLB
+23C4 C526             1223          BITB    #$26
+23C6 864C             1224          LDAA    #$4C
+23C8 4F               1225  Z23C8   CLRA
+23C9 41               1226          DB      $41
+23CA C428             1227          ANDB    #$28
+23CC 1D               1228          DB      $1D
+23CD 8653             1229          LDAA    #$53
+23CF 41               1230          DB      $41
+23D0 56               1231          RORB
+23D1 C529             1232          BITB    #$29
+23D3 1D               1233          DB      $1D
+23D4 A080             1234          SUBA    $80,X
+23D6 BD3814           1235          JSR     Z3814
 23D9 FFFFFFFFFFFFFF
 23E0 FFFFFFFFFFFFFF
-23E7 FFFFFFFFFFFFFF   1208          DS      $2400-*,$FF
-                      1209  ;       END
-                      1210  
+23E7 FFFFFFFFFFFFFF   1236          DS      $2400-*,$FF
+                      1237  ;       END
+                      1238  
 
 ERRORS:       0
 WARNINGS:     0
@@ -1318,7 +1356,35 @@ Successful assembly...
 
 
 
-Crasm 1.8:                                                   page 21
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Crasm 1.8:                                                   page 22
 
  0000   Abs M0000                                            
  001C   Abs M001C                                            
@@ -1384,7 +1450,7 @@ Crasm 1.8:                                                   page 21
  2048   Abs M2048                                            
 
 
-Crasm 1.8:                                                   page 22
+Crasm 1.8:                                                   page 23
 
  2493   Abs M2493                                            
  312A   Abs M312A                                            
@@ -1450,7 +1516,7 @@ Crasm 1.8:                                                   page 22
 ^1DFE   Abs Z1DFE                                            
 
 
-Crasm 1.8:                                                   page 23
+Crasm 1.8:                                                   page 24
 
 ^1E05   Abs Z1E05                                            
  1E09   Abs Z1E09                                            
@@ -1516,7 +1582,7 @@ Crasm 1.8:                                                   page 23
 ^20CE   Abs Z20CE                                            
 
 
-Crasm 1.8:                                                   page 24
+Crasm 1.8:                                                   page 25
 
 ^20E7   Abs Z20E7                                            
  20FF   Abs Z20FF                                            

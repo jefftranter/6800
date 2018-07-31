@@ -19,6 +19,34 @@
 ;
 ; Jeff Tranter <tranter@pobox.com>
 
+; LOCATION   SIGNIFICANCE
+; 0000-000F  Not used by Tiny BASIC.
+; 0010-001F  Temporaries.
+; 0020-0021  Lowest address of user program space.
+; 0022-0023  Highest address of user program space.
+; 0024-0025  Program end + stack reserve.
+; 0026-0027  Top of GOSUB stack.
+; 0028-002F  Interpreter parameters.
+; 0030-007F  Input line buffer and Computation stack.
+; 0080-0081  Random Number generator workspace.
+; 0082-00B5  Variables A,B,...Z.
+; 00B6-00C7  Interpreter temporaries.
+; 0100-0FFF  Tiny BASIC user program space.
+
+; 1C00       Cold start entry point.
+; 1C03       Warm start entry point.
+; 1C06       Character input routine.
+; 1C09       Character output routine.
+; 1C0C       Break test.
+; 1C0F       Backspace code.
+; 1C10       Line cancel code.
+; 1C11       Pad character.
+; 1C12       Tape mode enable flag. (HEX 80 = enabled)
+; 1C13       Spare stack size.
+; 1C14       Subroutine (PEEK) to read ony byte from RAM to B and A.
+;            (address in X)
+; 1C18       Subroutine (POKE) to store A and B into RAM at addess X.
+
         CPU     6800
 
 ;****************************************************

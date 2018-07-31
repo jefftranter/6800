@@ -1,4 +1,4 @@
-all:	monitor.run tinybasic.run
+all:	monitor.run tinybasic.run sample.run
 
 monitor.run: monitor.asm
 	crasm -o monitor.run monitor.asm >monitor.lst
@@ -6,5 +6,8 @@ monitor.run: monitor.asm
 tinybasic.run: tinybasic.asm
 	crasm -o tinybasic.run tinybasic.asm >tinybasic.lst
 
+sample.run: sample.asm
+	crasm -o sample.run sample.asm >sample.lst
+
 clean:
-	$(RM) monitor.run monitor.lst tinybasic.run tinybasic.lst
+	$(RM) *.run *.lst

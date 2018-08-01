@@ -203,33 +203,33 @@ POKE    STAA    0,X
 ;         .word  IL__GO               ; ($16) GOTO
         DW      $1F8E
 ;         .word  IL__NE               ; ($17) Negate
-;        DW      $1EC2
+        DW      $1EC2
 ;         .word  IL__AD               ; ($18) Add
-;        DW      $1ECF    
+        DW      $1ECF
 ;         .word  IL__SU               ; ($19) Subtract
-;        DW      $1ECD    
+        DW      $1ECD
 ;         .word  IL__MP               ; ($1A) Multiply
-;        DW      $1EE5
+        DW      $1EE5
 ;         .word  IL__DV               ; ($1B) Divide
-;        DW      $1E6B    
+        DW      $1E6B
 ;         .word  IL__CP               ; ($1C) Compare
-;        DW      $1F23
+        DW      $1F23
 ;         .word  IL__NX               ; ($1D) Next BASIC statement
-;        DW      $1F49    
+        DW      $1F49
 ;         .word  IL__NO               ; ($1E) (Reserved)
-;        DW      $1CFC    
+        DW      $1CFC
 ;         .word  IL__LS               ; ($1F) List the program
-;        DW      $20D7  
+        DW      $20D7
 ;         .word  IL__PN               ; ($20) Print Number
-;        DW      $2045  
+        DW      $2045
 ;         .word  IL__PQ               ; ($21) Print BASIC string
-;        DW      $20BA  
+        DW      $20BA
 ;         .word  IL__PT               ; ($22) Print Tab
-;        DW      $20C2  
+        DW      $20C2
 ;         .word  IL__NL               ; ($23) New Line
-;        DW      $2128
+        DW      $2128
 ;         .word  IL__PC               ; ($24) Print Literal String
-;        DW      $20AD
+        DW      $20AD
 ;         .word  IL__NO               ; ($25) (Reserved)
 
 ;         .word  IL__NO               ; ($26) (Reserved)
@@ -267,28 +267,9 @@ POKE    STAA    0,X
 ;
 
 
-SRVT    DB      $1E
-        DB      $C2
-        DB      $1E
-        DB      $CF
-        DB      $1E
-        DB      $CD
-        DB      $1E
-        BITB    $1E,X
-        DB      $6B
-        DB      $1F
-        BLS     $1C71
-        ROLA
-        DB      $1C
-        DB      $FC
-        BRA     $1C2E
-        BRA     $1C9E
-        BRA     $1C15
-        BRA     $1C1F
-        DB      $21
-        BVC     $1C80
-        JSR     $20,X
-        ADDB    #$14
+SRVT    DB      $20
+        DB      $CB
+        DB      $14
         DB      $00
         DB      $21
         ROLB

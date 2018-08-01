@@ -1045,241 +1045,35 @@ Z2257   INX
         BNE     Z2257
 Z2265   LDS     M0026
         JMP     $1D2A
-        BCC     Z22A6
-        CMPA    M0027
-        SBA
-        CMPB    $59,X
-        BITB    #$2A
-        RORB
-        SBA
-        CBA
-        BGE     Z2203
-        INCA
-        DB      $45
-        ANDB    M00A0
-        SUBA    #$BD
-        TSX
-        CPX     ME013
-        DB      $1D
-        ANDA    M0047
-        DB      $CF
-        EORA    #$54
-        DB      $CF
-        TSX
-        CPX     ME010
-        CBA
-        TAB
-Z228F   SUBA    #$53
-        DB      $55
-        SBCB    #$30
-        CPX     ME014
-        TAB
-        SUBA    M0050
-        SBCB    M0083
-        ROLA
-        DB      $4E
-        ANDB    M00E5
-        DB      $71
-        EORA    #$BB
-        CMPB    $1D,X
-        DB      $8F
-Z22A6   SBCA    $21,X
-        ASLB
-        CLR     $83,X
-        CPX     $22,X
-        DB      $55
-        DB      $83
-        ORAA    M2493
-        SUBB    $23,X
-        DB      $1D
-        TSX
-        CPX     M2048
-        CMPA    M0049
-Z22BB   LDAB    #$30
-        CPX     M3134
-        TSX
-        CPX     M8454
-        ASLA
-        DB      $45
-        LDX     #M1C1D
-        DB      $38
-        SEC
-        ORAA    M0049
-        DB      $4E
-        NEGB
-        DB      $55
-        ANDB    M00A0
-        SBA
-        STAB    $24,X
-        SWI
-        BRA     Z2269
-        BEQ     Z22BB
-        ROLB
-        CMPA    #$AC
-        TSX
-        CPX     M1311
-        SBCA    #$AC
-        TSTA
-Z22E4   SUBB    $1D,X
-        ADCA    #$52
-        DB      $45
-        LSRB
-        DB      $55
-        DB      $52
-        LDX     #ME015
-        DB      $1D
-        BITA    #$45
-        DB      $4E
-        ANDB    #$E0
-        BLT     Z228F
-        INCA
-        ROLA
-        COMB
-        ANDB    M00EC
-        BCC     Z22FE
-Z22FE   DB      $00
-        DB      $00
-        DB      $00
-        CLV
-        SUBA    #$1F
-        BCC     Z2299
-        BLS     Z2325
-Z2308   TSX
-        CPX     ME150
-        SUBA    #$AC
-Z230E   ROLB
-        BITA    #$52
-        DB      $55
-        LDX     #M380A
-        LDAA    #$43
-        INCA
-Z2318   DB      $45
-        DB      $41
-        SBCB    M002B
-        ANDA    #$52
-        DB      $45
-        DB      $CD
-        DB      $1D
-        RTS
-        ASRB
-Z2323   DB      $00
-        DB      $00
-Z2325   DB      $00
-        BITA    #$AD
-        TSX
-        DB      $D3
-        TBA
-Z232B   LSR     $81,X
-        ADDA    $30,X
-Z232F   DB      $D3
-        BITA    #$AB
-Z2332   TSX
-Z2333   DB      $D3
-        DB      $18
-        DECB
-        BITA    #$AD
-        TSX
-        DB      $D3
-        DAA
-        LSRB
-        BLE     Z236E
-Z233E   SBCB    $85,X
-        ORAA    $30,X
-        SBCB    $1A,X
-        DECB
-        BITA    #$AF
-        TSX
-        SBCB    $1B,X
-        LSRB
-        BLE     Z22E4
-Z234D   DB      $52
-        DB      $4E
-        ANDB    #$0A
-        SUBA    #$80
-        DB      $12
-        CLV
-        DEX
-        BVS     Z2372
-        CLV
-        DB      $1A
-        BITA    #$18
-        DB      $13
-        DEX
-        SUBA    #$12
-        SEV
-        INS
-        TSX
-        DB      $61
-        COM     M0B02
-        DB      $04
-        DB      $02
-        DB      $03
-        DB      $05
-        DB      $03
-        ABA
-        DB      $1A
-Z236E   DAA
-        SEV
-        DEX
-        TAP
-Z2372   CLV
-        DB      $00
-        DB      $00
-        DB      $1C
-        TBA
-        BLE     Z2308
-        DB      $55
-        COMB
-        SBCB    M0080
-        EORA    $30,X
-        CPX     M312A
-        INS
-        BPL     Z2305
-        ADCA    $2E,X
-        BLE     Z232B
-        DB      $12
-        BLE     Z234D
-        BLE     Z230E
-        EORA    $30,X
-        CPX     M80A9
-        BLE     Z2318
-        CPX     $38,X
-        CPX     M0B2F
-        SUBA    #$A8
-        DB      $52
-        BLE     Z2323
-        JSR     Z0902
-        BLE     Z2332
-        CPX     M84BD
-        DEX
-        DB      $03
-        BLE     Z232F
-        LDS     M0905
-        BLE     Z23B9
-        NOP
-        BLE     Z2333
-        LDS     M84BD
-        DEX
-        TAP
-        BLE     Z233E
-        CPX     M0905
-        BLE     Z23C8
-        DB      $04
-        BLE     Z2346
-        DB      $42
-        ROLB
-        BITB    #$26
-        LDAA    #$4C
-Z23C8   CLRA
-        DB      $41
-        ANDB    #$28
-        DB      $1D
-        LDAA    #$53
-        DB      $41
-        RORB
-        BITB    #$29
-        DB      $1D
-        SUBA    $80,X
-        JSR     Z3814
+
+;
+; TBIL program table
+;
+ILTBL   DB      $24, $3A, $91, $27, $10, $E1, $59, $C5, $2A, $56, $10, $11, $2C, $8B, $4C
+        DB      $45, $D4, $A0, $80, $BD, $30, $BC, $E0, $13, $1D, $94, $47, $CF, $88, $54
+        DB      $CF, $30, $BC, $E0, $10, $11, $16, $80, $53, $55, $C2, $30, $BC, $E0, $14
+        DB      $16, $90, $50, $D2, $83, $49, $4E, $D4, $E5, $71, $88, $BB, $E1, $1D, $8F
+        DB      $A2, $21, $58, $6F, $83, $AC, $22, $55, $83, $BA, $24, $93, $E0, $23, $1D
+        DB      $30, $BC, $20, $48, $91, $49, $C6, $30, $BC, $31, $34, $30, $BC, $84, $54
+        DB      $48, $45, $CE, $1C, $1D, $38, $0D, $9A, $49, $4E, $50, $55, $D4, $A0, $10
+        DB      $E7, $24, $3F, $20, $91, $27, $E1, $59, $81, $AC, $30, $BC, $13, $11, $82
+        DB      $AC, $4D, $E0, $1D, $89, $52, $45, $54, $55, $52, $CE, $E0, $15, $1D, $85
+        DB      $45, $4E, $C4, $E0, $2D, $98, $4C, $49, $53, $D4, $EC, $24, $00, $00, $00
+        DB      $00, $0A, $80, $1F, $24, $93, $23, $1D, $30, $BC, $E1, $50, $80, $AC, $59
+        DB      $85, $52, $55, $CE, $38, $0A, $86, $43, $4C, $45, $41, $D2, $2B, $84, $52
+        DB      $45, $CD, $1D, $39, $57, $00, $00, $00, $85, $AD, $30, $D3, $17, $64, $81
+        DB      $AB, $30, $D3, $85, $AB, $30, $D3, $18, $5A, $85, $AD, $30, $D3, $19, $54
+        DB      $2F, $30, $E2, $85, $AA, $30, $E2, $1A, $5A, $85, $AF, $30, $E2, $1B, $54
+        DB      $2F, $97, $52, $4E, $C4, $0A, $80, $80, $12, $0A, $09, $29, $1A, $0A, $1A
+        DB      $85, $18, $13, $09, $80, $12, $0B, $31, $30, $61, $73, $0B, $02, $04, $02
+        DB      $03, $05, $03, $1B, $1A, $19, $0B, $09, $06, $0A, $00, $00, $1C, $17, $2F
+        DB      $8F, $55, $53, $D2, $80, $A8, $30, $BC, $31, $2A, $31, $2A, $80, $A9, $2E
+        DB      $2F, $A2, $12, $2F, $C1, $2F, $80, $A8, $30, $BC, $80, $A9, $2F, $83, $AC
+        DB      $38, $BC, $0B, $2F, $80, $A8, $52, $2F, $84, $BD, $09, $02, $2F, $8E, $BC
+        DB      $84, $BD, $09, $03, $2F, $84, $BE, $09, $05, $2F, $09, $01, $2F, $80, $BE
+        DB      $84, $BD, $09, $06, $2F, $84, $BC, $09, $05, $2F, $09, $04, $2F, $84, $42
+        DB      $59, $C5, $26, $86, $4C, $4F, $41, $C4, $28, $1D, $86, $53, $41, $56, $C5
+        DB      $29, $1D, $A0, $80, $BD, $38, $14
+
         DS      $2400-*,$FF
 ;       END

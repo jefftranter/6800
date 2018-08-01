@@ -10,7 +10,8 @@
 ; code here does not reflect this and is not particularly meaningful
 ; (e.g. many of the instructions are actually data). Apparently the
 ; original source for for the 6800 version of Tiny BASIC has been
-; lost.
+; lost. Some of the source has been reverse engineered using the
+; source code for the 6502 version of Tiny BASIC.
 ;
 ; See:
 ;   http://www.ittybittycomputers.com/IttyBitty/TinyBasic
@@ -124,101 +125,94 @@ POKE    STAA    0,X
 ;
 ; The following table contains the addresses for the ML handlers for the IL opcodes.
 ;
-;SRVT     .word  IL_BBR               ; ($40-$5F) Backward Branch Relative
-        DW      $1D98
-;         .word  IL_FBR               ; ($60-$7F) Forward Branch Relative
-        DW      $1D9B
-;         .word  IL__BC               ; ($80-$9F) String Match Branch
-        DW      $1DEE
-;        .word  IL__BV               ; ($A0-$BF) Branch if not Variable
-        DW      $1E12
-;         .word  IL__BN               ; ($C0-$DF) Branch if not a Number
+SRVT    DW      IL_BBR                ; ($40-$5F) Backward Branch Relative
+        DW      IL_FBR                ; ($60-$7F) Forward Branch Relative
+        DW      IL__BC                ; ($80-$9F) String Match Branch
+        DW      IL__BV                ; ($A0-$BF) Branch if not Variable
+;       DW      IL__BN                ; ($C0-$DF) Branch if not a Number
         DW      $1E3B
-;         .word  IL__BE               ; ($E0-$FF) Branch if not End of line
+;       DW       IL__BE               ; ($E0-$FF) Branch if not End of line
         DW      $1E0B
-;         .word  IL__NO               ; ($08) No Operation
+;       DW       IL__NO               ; ($08) No Operation
         DW      $1CFC
-;         .word  IL__LB               ; ($09) Push Literal Byte onto Stack
+;       DW       IL__LB               ; ($09) Push Literal Byte onto Stack
         DW      $1CD7
-;         .word  IL__LN               ; ($0A) Push Literal Number
+;       DW       IL__LN               ; ($0A) Push Literal Number
         DW      $1CDB
-;         .word  IL__DS               ; ($0B) Duplicate Top two bytes on Stack
+;       DW       IL__DS               ; ($0B) Duplicate Top two bytes on Stack
         DW      $1C89
-;         .word  IL__SP               ; ($0C) Stack Pop
+;       DW       IL__SP               ; ($0C) Stack Pop
         DW      $1CA6
-;         .word  IL__NO               ; ($0D) (Reserved)
+;       DW       IL__NO               ; ($0D) (Reserved)
         DW      $1CA9
-;         .word  IL__NO               ; ($0E) (Reserved)
+;       DW       IL__NO               ; ($0E) (Reserved)
         DW      $1C77
-;         .word  IL__NO               ; ($0F) (Reserved)
+;       DW       IL__NO               ; ($0F) (Reserved)
         DW      $1C80
-;         .word  IL__SB               ; ($10) Save Basic Pointer
+;       DW       IL__SB               ; ($10) Save Basic Pointer
         DW      $1FAB
-;         .word  IL__RB               ; ($11) Restore Basic Pointer
+;       DW       IL__RB               ; ($11) Restore Basic Pointer
         DW      $1FB0
-;         .word  IL__FV               ; ($12) Fetch Variable
+;       DW       IL__FV               ; ($12) Fetch Variable
         DW      $1F00
-;         .word  IL__SV               ; ($13) Store Variable
+;       DW       IL__SV               ; ($13) Store Variable
         DW      $1F10
-;         .word  IL__GS               ; ($14) Save GOSUB line
+;       DW       IL__GS               ; ($14) Save GOSUB line
         DW      $1FCE
-;         .word  IL__RS               ; ($15) Restore saved line
+;       DW       IL__RS               ; ($15) Restore saved line
         DW      $1F99
-;         .word  IL__GO               ; ($16) GOTO
+;       DW       IL__GO               ; ($16) GOTO
         DW      $1F8E
-;         .word  IL__NE               ; ($17) Negate
+;       DW       IL__NE               ; ($17) Negate
         DW      $1EC2
-;         .word  IL__AD               ; ($18) Add
+;       DW       IL__AD               ; ($18) Add
         DW      $1ECF
-;         .word  IL__SU               ; ($19) Subtract
+;       DW       IL__SU               ; ($19) Subtract
         DW      $1ECD
-;         .word  IL__MP               ; ($1A) Multiply
+;       DW       IL__MP               ; ($1A) Multiply
         DW      $1EE5
-;         .word  IL__DV               ; ($1B) Divide
+;       DW       IL__DV               ; ($1B) Divide
         DW      $1E6B
-;         .word  IL__CP               ; ($1C) Compare
+;       DW       IL__CP               ; ($1C) Compare
         DW      $1F23
-;         .word  IL__NX               ; ($1D) Next BASIC statement
+;       DW       IL__NX               ; ($1D) Next BASIC statement
         DW      $1F49
-;         .word  IL__NO               ; ($1E) (Reserved)
+;       DW       IL__NO               ; ($1E) (Reserved)
         DW      $1CFC
-;         .word  IL__LS               ; ($1F) List the program
+;       DW       IL__LS               ; ($1F) List the program
         DW      $20D7
-;         .word  IL__PN               ; ($20) Print Number
+;       DW       IL__PN               ; ($20) Print Number
         DW      $2045
-;         .word  IL__PQ               ; ($21) Print BASIC string
+;       DW       IL__PQ               ; ($21) Print BASIC string
         DW      $20BA
-;         .word  IL__PT               ; ($22) Print Tab
+;       DW       IL__PT               ; ($22) Print Tab
         DW      $20C2
-;         .word  IL__NL               ; ($23) New Line
+;       DW       IL__NL               ; ($23) New Line
         DW      $2128
-;         .word  IL__PC               ; ($24) Print Literal String
+;       DW       IL__PC               ; ($24) Print Literal String
         DW      $20AD
-;         .word  IL__NO               ; ($25) (Reserved)
+;       DW       IL__NO               ; ($25) (Reserved)
         DW      $20CB
-;         .word  IL__NO               ; ($26) (Reserved)
+;       DW       IL__NO               ; ($26) (Reserved)
         DW      $1400
-;         .word  IL__GL               ; ($27) Get input Line
+;       DW       IL__GL               ; ($27) Get input Line
         DW      $2159
-;         .word  ILRES1               ; ($28) (Seems to be reserved - No IL opcode calls this)
+;       DW       ILRES1               ; ($28) (Seems to be reserved - No IL opcode calls this)
         DW      $1B2D
-;         .word  ILRES2               ; ($29) (Seems to be reserved - No IL opcode calls this)
+;       DW       ILRES2               ; ($29) (Seems to be reserved - No IL opcode calls this)
         DW      $1B38
-;         .word  IL__IL               ; ($2A) Insert BASIC Line
+;       DW       IL__IL               ; ($2A) Insert BASIC Line
         DW      $21B1
-;         .word  IL__MT               ; ($2B) Mark the BASIC program space Empty
+;       DW       IL__MT               ; ($2B) Mark the BASIC program space Empty
         DW      $1D12
-;         .word  IL__XQ               ; ($2C) Execute
+;       DW       IL__XQ               ; ($2C) Execute
         DW      $1F7E
-;         .word  WARM_S               ; ($2D) Stop (Warm Start)
+;       DW       WARM_S               ; ($2D) Stop (Warm Start)
         DW      $1D25
-;         .word  IL__US               ; ($2E) Machine Language Subroutine Call
+;       DW       IL__US               ; ($2E) Machine Language Subroutine Call
         DW      $1CB9
-;         .word  IL__RT               ; ($2F) IL subroutine return
+;       DW       IL__RT               ; ($2F) IL subroutine return
         DW      $1FA6
-;ERRSTR   .byte " AT "                ; " AT " string used in error reporting.  Tom was right about this.
-;         .byte $80                   ; String terminator
-;LBL002   .word  ILTBL                ; Address of IL program table
 
 ;
 ; Begin Cold Start
@@ -227,7 +221,7 @@ POKE    STAA    0,X
 ; and initialize the address for end of free ram ($22 & $23)
 ;
 
-SRVT    BSR     $1CA6
+        BSR     $1CA6
         STAA    M00BC
         STAB    M00BD
         JMP     $1FD7
@@ -373,8 +367,8 @@ WARM_S  LDS     M0022
 M1D93   BRA     $1DD6
         LSRB
         BRA     $1D18
-        DEC     M00BC
-        TST     M00BC
+IL_BBR  DEC     M00BC
+IL_FBR  TST     M00BC
         BEQ     $1D5C
         LDX     M00BC
         STX     M002A
@@ -418,7 +412,7 @@ M1D93   BRA     $1DD6
         ADCA    M002A
         STAA    M00BC
         JMP     ,X
-        LDX     M002C
+IL__BC  LDX     M002C
         STX     M00B8
         BSR     $1E2A
         BSR     $1E20
@@ -438,7 +432,7 @@ M1D93   BRA     $1DD6
         CMPA    #$0D
         BNE     $1E09
         RTS
-        BSR     $1E2A
+IL__BV  BSR     $1E2A
         CMPA    #$5A
         BGT     $1E09
         CMPA    #$41

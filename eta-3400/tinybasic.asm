@@ -129,20 +129,13 @@ SRVT    DW      IL_BBR                ; ($40-$5F) Backward Branch Relative
         DW      IL_FBR                ; ($60-$7F) Forward Branch Relative
         DW      IL__BC                ; ($80-$9F) String Match Branch
         DW      IL__BV                ; ($A0-$BF) Branch if not Variable
-;       DW      IL__BN                ; ($C0-$DF) Branch if not a Number
-        DW      $1E3B
-;       DW       IL__BE               ; ($E0-$FF) Branch if not End of line
-        DW      $1E0B
-;       DW       IL__NO               ; ($08) No Operation
-        DW      $1CFC
-;       DW       IL__LB               ; ($09) Push Literal Byte onto Stack
-        DW      $1CD7
-;       DW       IL__LN               ; ($0A) Push Literal Number
-        DW      $1CDB
-;       DW       IL__DS               ; ($0B) Duplicate Top two bytes on Stack
-        DW      $1C89
-;       DW       IL__SP               ; ($0C) Stack Pop
-        DW      $1CA6
+        DW      IL__BN                ; ($C0-$DF) Branch if not a Number
+        DW      IL__BE                ; ($E0-$FF) Branch if not End of line
+        DW      IL__NO                ; ($08) No Operation
+        DW      IL__LB                ; ($09) Push Literal Byte onto Stack
+        DW      IL__LN                ; ($0A) Push Literal Number
+        DW      IL__DS                ; ($0B) Duplicate Top two bytes on Stack
+        DW      IL__SP                ; ($0C) Stack Pop
 ;       DW       IL__NO               ; ($0D) (Reserved)
         DW      $1CA9
 ;       DW       IL__NO               ; ($0E) (Reserved)
@@ -229,7 +222,7 @@ SRVT    DW      IL_BBR                ; ($40-$5F) Backward Branch Relative
         LDAA    M00BC
         LDAB    M00BD
         BRA     $1C8D
-        BSR     $1CA6
+IL__DS  BSR     $1CA6
         BSR     $1C8D
         LDX     M00C2
         DEX
@@ -245,7 +238,7 @@ SRVT    DW      IL_BBR                ; ($40-$5F) Backward Branch Relative
         PULA
         BCS     $1CFC
         JMP     $1D5C
-        BSR     $1CA9
+IL__SP  BSR     $1CA9
         TBA
         LDAB    #$01
         ADDB    M00C3
@@ -274,9 +267,9 @@ SRVT    DW      IL_BBR                ; ($40-$5F) Backward Branch Relative
         TPA
         PSHA
         RTI
-        BSR     $1CF5
+IL__LB  BSR     $1CF5
         BRA     $1C94
-        BSR     $1CF5
+IL__LN  BSR     $1CF5
         PSHA
         BSR     $1CF5
         TAB
@@ -294,7 +287,7 @@ SRVT    DW      IL_BBR                ; ($40-$5F) Backward Branch Relative
         LDAA    ,X
         INX
         STX     M002A
-        TSTA
+IL__NO  TSTA
         RTS
 M1CFE   BHI     $1D6A
 COLD_S  LDX     #M0100
@@ -428,7 +421,7 @@ IL__BC  LDX     M002C
         LDX     M00B8
         STX     M002C
         BRA     $1D9B
-        BSR     $1E2A
+IL__BE  BSR     $1E2A
         CMPA    #$0D
         BNE     $1E09
         RTS
@@ -455,7 +448,7 @@ IL__BV  BSR     $1E2A
         BLT     $1E3A
         CMPA    #$3A
         RTS
-        BSR     $1E2A
+IL__BN  BSR     $1E2A
         BCC     $1E09
         LDX     #0
         STX     M00BC

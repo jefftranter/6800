@@ -119,10 +119,10 @@ ME150   EQU     $E150
 MFFFF   EQU     $FFFF
 Z0902   EQU     $0902
 Z1618   EQU     $1618
-Z1865   EQU     $1865
-Z18E1   EQU     $18E1
+SNDCHR  EQU     $1865
+RCCHR   EQU     $18E1
 Z1A80   EQU     $1A80
-Z1B1F   EQU     $1B1F
+BREAK   EQU     $1B1F
 Z1C15   EQU     $1C15
 Z1C1F   EQU     $1C1F
 Z1C71   EQU     $1C71
@@ -142,24 +142,142 @@ Z3814   EQU     $3814
 
         * =     $1C00
 
-        JMP     Z1D00
-        JMP     Z1D25           ; BASIC warm start entry point
-Z1C06   JMP     Z18E1
-Z1C09   JMP     Z1865
-Z1C0C   JMP     Z1B1F
-M1C0F   INX
-M1C10   DB      $15
-M1C11   DB      $83
-M1C12   SUBA    #$20
-        LDAA    ,X
+CV      JMP     COLD_S          ; Cold start vector
+WV      JMP     WARM_S          ; Warm start vector
+Z1C06   JMP     RCCHR           ; Input routine address
+Z1C09   JMP     SNDCHR          ; Output routine address
+Z1C0C   JMP     BREAK           ; Begin break routine
+
+;
+; Some codes
+;
+BSC     DB      $08             ; Backspace code
+LSC     DB      $15             ; Line cancel code
+PCC     DB      $83             ; Pad character
+TMC     DB      $80             ; Tape mode control
+        DB      $20             ; Spare Stack size.
+;
+; Code fragment for 'PEEK' and 'POKE'
+;
+PEEK    LDAA    0,X
         CLRB
 M1C17   RTS
-        STAA    ,X
+
+POKE    STAA    0,X
         RTS
-        DB      $1D
-        EORA    M001D
-        ADDA    M001D
-        LDX     $1E,X
+;
+; The following table contains the addresses for the ML handlers for the IL opcodes.
+;
+;SRVT     .word  IL_BBR               ; ($40-$5F) Backward Branch Relative
+        DW      $1D98
+;         .word  IL_FBR               ; ($60-$7F) Forward Branch Relative
+        DW      $1D9B
+;         .word  IL__BC               ; ($80-$9F) String Match Branch
+;        DW      $1DEE
+;         .word  IL__BV               ; ($A0-$BF) Branch if not Variable
+;        DW      $1E12
+;         .word  IL__BN               ; ($C0-$DF) Branch if not a Number
+;        DW      $1E3B
+;         .word  IL__BE               ; ($E0-$FF) Branch if not End of line
+;        DW      $1E0B
+;         .word  IL__NO               ; ($08) No Operation
+;        DW      $1CFC
+;         .word  IL__LB               ; ($09) Push Literal Byte onto Stack
+;        DW      $1CD7
+;         .word  IL__LN               ; ($0A) Push Literal Number
+;        DW      $1CDB
+;         .word  IL__DS               ; ($0B) Duplicate Top two bytes on Stack
+;        DW      $1C89
+;         .word  IL__SP               ; ($0C) Stack Pop
+;        DW      $1CA6
+;         .word  IL__NO               ; ($0D) (Reserved)
+;        DW      $1CA9
+;         .word  IL__NO               ; ($0E) (Reserved)
+;        DW      $1C77
+;         .word  IL__NO               ; ($0F) (Reserved)
+;        DW      $1C80
+;         .word  IL__SB               ; ($10) Save Basic Pointer
+;        DW      $1FAB
+;         .word  IL__RB               ; ($11) Restore Basic Pointer
+;        DW      $1FB0
+;         .word  IL__FV               ; ($12) Fetch Variable
+;        DW      $1F00
+;         .word  IL__SV               ; ($13) Store Variable
+;        DW      $1F10    
+;         .word  IL__GS               ; ($14) Save GOSUB line
+;        DW      $1FCE
+;         .word  IL__RS               ; ($15) Restore saved line
+;        DW      $1F99
+;         .word  IL__GO               ; ($16) GOTO
+;        DW      $1F8E
+;         .word  IL__NE               ; ($17) Negate
+;        DW      $1EC2
+;         .word  IL__AD               ; ($18) Add
+;        DW      $1ECF    
+;         .word  IL__SU               ; ($19) Subtract
+;        DW      $1ECD    
+;         .word  IL__MP               ; ($1A) Multiply
+;        DW      $1EE5
+;         .word  IL__DV               ; ($1B) Divide
+;        DW      $1E6B    
+;         .word  IL__CP               ; ($1C) Compare
+;        DW      $1F23
+;         .word  IL__NX               ; ($1D) Next BASIC statement
+;        DW      $1F49    
+;         .word  IL__NO               ; ($1E) (Reserved)
+;        DW      $1CFC    
+;         .word  IL__LS               ; ($1F) List the program
+;        DW      $20D7  
+;         .word  IL__PN               ; ($20) Print Number
+;        DW      $2045  
+;         .word  IL__PQ               ; ($21) Print BASIC string
+;        DW      $20BA  
+;         .word  IL__PT               ; ($22) Print Tab
+;        DW      $20C2  
+;         .word  IL__NL               ; ($23) New Line
+;        DW      $2128
+;         .word  IL__PC               ; ($24) Print Literal String
+;        DW      $20AD
+;         .word  IL__NO               ; ($25) (Reserved)
+
+;         .word  IL__NO               ; ($26) (Reserved)
+
+;         .word  IL__GL               ; ($27) Get input Line
+
+;         .word  ILRES1               ; ($28) (Seems to be reserved - No IL opcode calls this)
+
+;         .word  ILRES2               ; ($29) (Seems to be reserved - No IL opcode calls this)
+
+;         .word  IL__IL               ; ($2A) Insert BASIC Line
+
+;         .word  IL__MT               ; ($2B) Mark the BASIC program space Empty
+
+;         .word  IL__XQ               ; ($2C) Execute
+
+;         .word  WARM_S               ; ($2D) Stop (Warm Start)
+
+;         .word  IL__US               ; ($2E) Machine Language Subroutine Call
+
+;         .word  IL__RT               ; ($2F) IL subroutine return
+
+;ERRSTR   .byte " AT "                ; " AT " string used in error reporting.  Tom was right about this.
+;         .byte $80                   ; String terminator
+         
+;LBL002   .word  ILTBL                ; Address of IL program table
+
+
+
+;
+; Begin Cold Start
+;
+; Load start of free ram ($0200) into locations $20 and $21
+; and initialize the address for end of free ram ($22 & $23)
+;
+
+
+SRVT    DB      $1D
+        DB      $EE
+        DB      $1E
         DB      $12
         DB      $1E
         RTI
@@ -212,7 +330,7 @@ Z1C2E   ADCA    #$1C
         DB      $21
         CMPA    M1D12
         DB      $1F
-        JMP     Z1D25
+        JMP     WARM_S
         DB      $1C
         ADCA    M1FA6
         BSR     Z1CA6
@@ -291,7 +409,7 @@ Z1CF5   LDX     M002A
 Z1CFC   TSTA
         RTS
 M1CFE   BHI     Z1D6A
-Z1D00   LDX     #M0100
+COLD_S  LDX     #M0100
         STX     M0020
         JSR     Z1A80
         STX     M0022
@@ -310,7 +428,7 @@ M1D12   LDAA    M0020
         LDX     M0020
         CLR     ,X
         CLR     $01,X
-Z1D25   LDS     M0022
+WARM_S  LDS     M0022
 Z1D27   JSR     Z212C
 Z1D2A   LDX     M1CFE
         STX     M002A
@@ -840,7 +958,7 @@ Z2128   LDAA    M00BF
         BMI     Z2122
 Z212C   LDAA    #$0D
         BSR     Z2149
-        LDAB    M1C11
+        LDAB    PCC
         ASLB
         BEQ     Z213E
 Z2136   PSHB
@@ -852,12 +970,12 @@ Z2136   PSHB
 Z213E   LDAA    #$0A
         BSR     Z214C
 Z2142   CLRA
-        TST     M1C11
+        TST     PCC
         BPL     Z2149
         COMA
 Z2149   CLR     M00BF
 Z214C   JMP     Z2098
-Z214F   LDAA    M1C12
+Z214F   LDAA    TMC
         BRA     Z2155
 Z2154   CLRA
 Z2155   STAA    M00BF
@@ -878,9 +996,9 @@ Z2163   EORA    M0080
         CMPA    #$13
         BEQ     Z2154
         LDX     M00BC
-        CMPA    M1C10
+        CMPA    LSC
         BEQ     Z218B
-        CMPA    M1C0F
+        CMPA    BSC
         BNE     Z2192
         CPX     #M0030
         BNE     Z21A0

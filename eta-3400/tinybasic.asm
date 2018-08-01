@@ -231,33 +231,30 @@ POKE    STAA    0,X
 ;         .word  IL__PC               ; ($24) Print Literal String
         DW      $20AD
 ;         .word  IL__NO               ; ($25) (Reserved)
-
+        DW      $20CB
 ;         .word  IL__NO               ; ($26) (Reserved)
-
+        DW      $1400
 ;         .word  IL__GL               ; ($27) Get input Line
-
+        DW      $2159
 ;         .word  ILRES1               ; ($28) (Seems to be reserved - No IL opcode calls this)
-
+        DW      $1B2D
 ;         .word  ILRES2               ; ($29) (Seems to be reserved - No IL opcode calls this)
-
+        DW      $1B38
 ;         .word  IL__IL               ; ($2A) Insert BASIC Line
-
+        DW      $21B1
 ;         .word  IL__MT               ; ($2B) Mark the BASIC program space Empty
-
+        DW      $1D12
 ;         .word  IL__XQ               ; ($2C) Execute
-
+        DW      $1F7E
 ;         .word  WARM_S               ; ($2D) Stop (Warm Start)
-
+        DW      $1D25
 ;         .word  IL__US               ; ($2E) Machine Language Subroutine Call
-
+        DW      $1CB9
 ;         .word  IL__RT               ; ($2F) IL subroutine return
-
+        DW      $1FA6
 ;ERRSTR   .byte " AT "                ; " AT " string used in error reporting.  Tom was right about this.
 ;         .byte $80                   ; String terminator
-         
 ;LBL002   .word  ILTBL                ; Address of IL program table
-
-
 
 ;
 ; Begin Cold Start
@@ -266,23 +263,7 @@ POKE    STAA    0,X
 ; and initialize the address for end of free ram ($22 & $23)
 ;
 
-
-SRVT    DB      $20
-        DB      $CB
-        DB      $14
-        DB      $00
-        DB      $21
-        ROLB
-        ABA
-        BLT     $1C85
-        DB      $38
-        DB      $21
-        CMPA    M1D12
-        DB      $1F
-        JMP     WARM_S
-        DB      $1C
-        ADCA    $1FA6
-        BSR     $1CA6
+SRVT    BSR     $1CA6
         STAA    M00BC
         STAB    M00BD
         JMP     $1FD7

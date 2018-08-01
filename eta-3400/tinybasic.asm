@@ -53,9 +53,6 @@
 ;* Used Labels                                      *
 ;****************************************************
 
-M0000   EQU     $0000
-M001C   EQU     $001C
-M001D   EQU     $001D
 M0020   EQU     $0020
 M0021   EQU     $0021
 M0022   EQU     $0022
@@ -72,13 +69,8 @@ M002D   EQU     $002D
 M002E   EQU     $002E
 M002F   EQU     $002F
 M0030   EQU     $0030
-M0047   EQU     $0047
-M0049   EQU     $0049
-M0050   EQU     $0050
 M0080   EQU     $0080
-M0083   EQU     $0083
 M0099   EQU     $0099
-M00A0   EQU     $00A0
 M00B6   EQU     $00B6
 M00B7   EQU     $00B7
 M00B8   EQU     $00B8
@@ -93,40 +85,12 @@ M00C1   EQU     $00C1
 M00C2   EQU     $00C2
 M00C3   EQU     $00C3
 M00C4   EQU     $00C4
-M00E5   EQU     $00E5
-M00EC   EQU     $00EC
 M0100   EQU     $0100
-M0905   EQU     $0905
-M0B02   EQU     $0B02
-M0B2F   EQU     $0B2F
-M1311   EQU     $1311
 M1C13   EQU     $1C13
-M1C1D   EQU     $1C1D
 M1CFF   EQU     $1CFF
-M2048   EQU     $2048
-M2493   EQU     $2493
-M312A   EQU     $312A
-M3134   EQU     $3134
-M380A   EQU     $380A
-M80A9   EQU     $80A9
-M8454   EQU     $8454
-M84BD   EQU     $84BD
-ME010   EQU     $E010
-ME013   EQU     $E013
-ME014   EQU     $E014
-ME015   EQU     $E015
-ME150   EQU     $E150
-Z0902   EQU     $0902
 SNDCHR  EQU     $1865
 RCCHR   EQU     $18E1
 BREAK   EQU     $1B1F
-Z2203   EQU     $2203
-Z2269   EQU     $2269
-Z2299   EQU     $2299
-Z2305   EQU     $2305
-Z2346   EQU     $2346
-Z23B9   EQU     $23B9
-Z3814   EQU     $3814
 
 ;****************************************************
 ;* Program Code / Data Areas                        *
@@ -349,7 +313,7 @@ COLD_S  LDX     #M0100
         DB      $42
         INS
         DB      $00
-M1D12   LDAA    M0020
+        LDAA    M0020
         LDAB    M0021
         ADDB    M1C13
         ADCA    #$00
@@ -499,7 +463,7 @@ M1D93   BRA     $1DD6
         RTS
         BSR     $1E2A
         BCC     $1E09
-        LDX     #M0000
+        LDX     #0
         STX     M00BC
         BSR     $1E20
         PSHA
@@ -886,7 +850,7 @@ Z2123   LDX     M00B8
         RTS
 Z2128   LDAA    M00BF
         BMI     Z2122
-Z212C   LDAA    #$0D
+        LDAA    #$0D
         BSR     Z2149
         LDAB    PCC
         ASLB
@@ -966,7 +930,7 @@ Z21A0   DEX
 Z21CA   DECB
         JSR     $1E20
         BNE     Z21CA
-Z21D0   LDX     #M0000
+Z21D0   LDX     #0
         STX     M0028
         JSR     $1FC1
         LDAA    #$0D

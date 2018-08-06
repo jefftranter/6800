@@ -1,0 +1,528 @@
+Crasm 1.8:                           MIKBUG                  page  1
+
+                         1  ; This is the source to MikBug, Motorola's monit
+  or program for their
+                         2  ; 6800 development board and offered on some ear
+  ly 6800-based systems
+                         3  ; like the SWTPC system.
+                         4  ;
+                         5  ; This version was ported to the crasm assembler
+  and modified to run
+                         6  ; on the Heathkit ET-3400/ET-3400A training with
+  ETA-3400 Memory and
+                         7  ; Input/Output Accessory. It has not been tested
+  .
+                         8  ;
+                         9  ; The original source code came from here:
+                        10  ;  https://gist.github.com/vintagechips
+                        11  
+                        12          CPU     6800
+                        13          NAM    MIKBUG
+                        14  ;       REV 009
+                        15  ;       COPYRIGHT 1974 BY MOTOROLA INC
+                        16  ;
+                        17  ;       MIKBUG (TM)
+                        18  ;
+                        19  ;       L  LOAD
+                        20  ;       G  GO TO TARGET PROGRAM
+                        21  ;       M  MEMORY CHANGE
+                        22  ;       P  PRINT/PUNCH DUMP
+                        23  ;       R  DISPLAY CONTENTS OF TARGET STACK
+                        24  ;               CC   B   A   X   P   S
+                        25  ;
+                        26  ;       ADDRESS
+  1000                  27  ACIACS  EQU     $1000
+  1001                  28  ACIADA  EQU     $1001
+  0000                  29  VAR     EQU     $0000   ; START OF MONITOR RAM
+                        30  ;
+                        31  ;       OPT     MEMORY
+  FC00                  32          * =     $FC00   ; START OF MONITOR ROM
+                        33  ;
+                        34  ;       I/O INTERRUPT SEQUENCE
+FC00 FE0000             35  IO      LDX     IOV
+FC03 6E00               36          JMP     0,X
+                        37  ;
+                        38  ;       NMI SEQUENCE
+FC05 FE0006             39  POWDWN  LDX     NIO     ; GET NMI VECTOR
+FC08 6E00               40          JMP     0,X
+                        41  ;
+                        42  ;       L COMMAND
+  FC0A                  43  LOAD    EQU     *
+FC0A 860D               44          LDAA    #$0D
+FC0C 8D67               45          BSR     OUTCH
+FC0E 01                 46          NOP
+FC0F 860A               47          LDAA    #$0A
+FC11 8D62               48          BSR     OUTCH
+                        49  ;
+                        50  ;       CHECK TYPE
+FC13 8D63               51  LOAD3   BSR     INCH
+FC15 8153               52          CMPA    #'S'
+FC17 26FA               53          BNE     LOAD3   ; 1ST CHAR NOT (S)
+FC19 8D5D               54          BSR     INCH    ; READ CHAR
+FC1B 8139               55          CMPA    #'9'
+FC1D 2725               56          BEQ     LOAD21  ; START ADDRESS
+FC1F 8131               57          CMPA    #'1'
+
+
+Crasm 1.8:                           MIKBUG                  page  2
+
+FC21 26F0               58          BNE     LOAD3   ; 2ND CHAR NOT (1)
+FC23 7F000A             59          CLR     CKSM    ; ZERO CHECKSUM
+FC26 8D2D               60          BSR     BYTE    ; READ BYTE
+FC28 8002               61          SUBA    #2
+FC2A B7000B             62          STAA    BYTECT  ; BYTE COUNT
+                        63  ;
+                        64  ;       BUILD ADDRESS
+FC2D 8D18               65          BSR     BADDR
+                        66  ;
+                        67  ;       STORE DATA
+FC2F 8D24               68  LOAD11  BSR     BYTE
+FC31 7A000B             69          DEC     BYTECT
+FC34 2705               70          BEQ     LOAD15  ; ZERO BYTE COUNT
+FC36 A700               71          STAA    0,X     ; STORE DATA
+FC38 08                 72          INX
+FC39 20F4               73          BRA     LOAD11
+                        74  ;
+                        75  ;       ZERO BYTE COUNT
+FC3B 7C000A             76  LOAD15  INC     CKSM
+FC3E 27D3               77          BEQ     LOAD3
+FC40 863F               78  LOAD19  LDAA    #'?'    ; PRINT QUESTION MARK
+FC42 8D31               79          BSR     OUTCH
+  FC44                  80  LOAD21  EQU     *
+FC44 7EFCE3             81  C1      JMP     CONTRL
+                        82  ;
+                        83  ;       BUILD ADDRESS
+FC47 8D0C               84  BADDR   BSR     BYTE    ; READ 2 FRAMES
+FC49 B7000C             85          STAA    XHI
+FC4C 8D07               86          BSR     BYTE
+FC4E B7000D             87          STAA    XLOW
+FC51 FE000C             88          LDX     XHI     ; (X) ADDRESS WE BUILT
+FC54 39                 89          RTS
+                        90  ;
+                        91  ;       INPUT BYTE (TWO FRAMES)
+FC55 8D53               92  BYTE    BSR     INHEX   ; GET HEX CHAR
+FC57 48                 93          ASLA
+FC58 48                 94          ASLA
+FC59 48                 95          ASLA
+FC5A 48                 96          ASLA
+FC5B 16                 97          TAB
+FC5C 8D4C               98          BSR     INHEX
+FC5E 1B                 99          ABA
+FC5F 16                100          TAB
+FC60 FB000A            101          ADDB    CKSM
+FC63 F7000A            102          STAB    CKSM
+FC66 39                103          RTS
+                       104  ;
+                       105  ;       OUT HEX BCD DIGIT
+FC67 44                106  OUTHL   LSRA    ; OUT HEX LEFT BCD DIGIT
+FC68 44                107          LSRA
+FC69 44                108          LSRA
+FC6A 44                109          LSRA
+FC6B 840F              110  OUTHR   ANDA    #$F     ; OUT HEX RIGHT BCD DIGI
+                          T
+FC6D 8B30              111          ADDA    #$30
+FC6F 8139              112          CMPA    #$39
+FC71 2302              113          BLS     OUTCH
+FC73 8B07              114          ADDA    #$7
+                       115  ;
+                       116  ;       OUTPUT ONE CHAR
+FC75 7EFDD1            117  OUTCH   JMP     OUTEEE
+FC78 7EFDAC            118  INCH    JMP     INEEE
+
+
+Crasm 1.8:                           MIKBUG                  page  3
+
+                       119  ;
+                       120  ;       PRINT DATA POINTED AT BY X-REG
+FC7B 8DF8              121  PDATA2  BSR     OUTCH
+FC7D 08                122          INX
+FC7E A600              123  PDATA1  LDAA    0,X
+FC80 8104              124          CMPA    #4
+FC82 26F7              125          BNE     PDATA2
+FC84 39                126          RTS             ; STOP ON EOT
+                       127  ;
+                       128  ;       CHANGE MEMORY (M AAAA DD NN)
+FC85 8DC0              129  CHANGE  BSR     BADDR   ; BUILD ADDRESS
+FC87 CEFD9D            130  CHA51   LDX     #MCL
+FC8A 8DF2              131          BSR     PDATA1  ; C/R L/F
+FC8C CE000C            132          LDX     #XHI
+FC8F 8D37              133          BSR     OUT4HS  ; PRINT ADDRESS
+FC91 FE000C            134          LDX     XHI
+FC94 8D34              135          BSR     OUT2HS  ; PRINT DATA (OLD)
+FC96 FF000C            136          STX     XHI     ; SAVE DATA ADDRESS
+FC99 8DDD              137          BSR     INCH    ; INPUT ONE CHAR
+FC9B 8120              138          CMPA    #$20
+FC9D 26E8              139          BNE     CHA51   ; NOT SPACE
+FC9F 8DB4              140          BSR     BYTE    ; INPUT NEW DATA
+FCA1 09                141          DEX
+FCA2 A700              142          STAA    0,X     ; CHANGE MEMORY
+FCA4 A100              143          CMPA    0,X
+FCA6 27DF              144          BEQ     CHA51   ; DID CHANGE
+FCA8 2096              145          BRA     LOAD19  ; NOT CHANGED
+                       146  ;
+                       147  ;       INPUT HEX CHAR
+FCAA 8DCC              148  INHEX   BSR     INCH
+FCAC 8030              149          SUBA    #$30
+FCAE 2B94              150          BMI     C1      ; NOT HEX
+FCB0 8109              151          CMPA    #$09
+FCB2 2F0A              152          BLE     IN1HG
+FCB4 8111              153          CMPA    #$11
+FCB6 2B8C              154          BMI     C1      ; NOT HEX
+FCB8 8116              155          CMPA    #$16
+FCBA 2E88              156          BGT     C1      ; NOT HEX
+FCBC 8007              157          SUBA    #7
+FCBE 39                158  IN1HG   RTS
+                       159  ;
+                       160  ;       OUTPUT 2 HEX CHAR
+FCBF A600              161  OUT2H   LDAA    0,X     ; OUTPUT 2 HEX CHAR
+FCC1 8DA4              162  OUT2HA  BSR     OUTHL   ; OUT LEFT HEX CHAR
+FCC3 A600              163          LDAA    0,X
+FCC5 08                164          INX
+FCC6 20A3              165          BRA     OUTHR   ; OUTPUT RIGHT HEX CHAR 
+                          AND R
+                       166  ;
+                       167  ;       OUTPUT 2-4 HEX CHAR + SPACE
+FCC8 8DF5              168  OUT4HS  BSR     OUT2H   ; OUTPUT 4 HEX CHAR + SP
+                          ACE
+FCCA 8DF3              169  OUT2HS  BSR     OUT2H   ; OUTPUT 2 HEX CHAR + SP
+                          ACE
+                       170  ;
+                       171  ;       OUTPUT SPACE
+FCCC 8620              172  OUTS    LDAA    #$20    ; SPACE
+FCCE 20A5              173          BRA     OUTCH   ; (BSR & RTS)
+                       174  ;
+                       175  ;       ENTER POWER  ON SEQUENCE
+  FCD0                 176  START   EQU     *
+FCD0 8E0042            177          LDS     #STACK
+
+
+Crasm 1.8:                           MIKBUG                  page  4
+
+FCD3 BF0008            178          STS     SP      ; INZ TARGET'S STACK PNT
+                          R
+                       179  ;
+                       180  ;       ACIA INITIALIZE
+FCD6 8603              181          LDAA    #$03    ; RESET CODE
+FCD8 B71000            182          STAA    ACIACS
+FCDB 01                183          NOP
+FCDC 01                184          NOP
+FCDD 01                185          NOP
+FCDE 8615              186          LDAA    #$15    ; 8N1 NON-INTERRUPT
+FCE0 B71000            187          STAA    ACIACS
+                       188  ;
+                       189  ;       COMMAND CONTROL
+FCE3 8E0042            190  CONTRL  LDS     #STACK  ; SET CONTRL STACK POINT
+                          ER
+FCE6 CEFD9D            191          LDX     #MCL
+FCE9 8D93              192          BSR     PDATA1  ; PRINT DATA STRING
+FCEB 8D8B              193          BSR     INCH    ; READ CHARACTER
+FCED 16                194          TAB
+FCEE 8DDC              195          BSR     OUTS    ; PRINT SPACE
+FCF0 C14C              196          CMPB    #'L'
+FCF2 2603              197          BNE     *+5
+FCF4 7EFC0A            198          JMP     LOAD
+FCF7 C14D              199          CMPB    #'M'
+FCF9 278A              200          BEQ     CHANGE
+FCFB C152              201          CMPB    #'R'
+FCFD 2720              202          BEQ     PRINT   ; STACK
+FCFF C150              203          CMPB    #'P'
+FD01 273A              204          BEQ     PUNCH   ; PRINT/PUNCH
+FD03 C147              205          CMPB    #'G'
+FD05 26DC              206          BNE     CONTRL
+FD07 BE0008            207          LDS     SP      ; RESTORE PGM'S STACK PT
+                          R
+FD0A 3B                208          RTI             ; GO
+FD0B 01010101010101
+FD12 01                209          DB      1,1,1,1,1,1,1,1 ; GRUE
+                       210  ;
+                       211  ;       ENTER FROM SOFTWARE INTERRUPT
+  FD13                 212  SFE     EQU     *
+FD13 BF0008            213          STS     SP      ; SAVE TARGET'S STACK PO
+                          INTER
+                       214  ;
+                       215  ;       DECREMENT P-COUNTER
+FD16 30                216          TSX
+FD17 6D06              217          TST     6,X
+FD19 2602              218          BNE     *+4
+FD1B 6A05              219          DEC     5,X
+FD1D 6A06              220          DEC     6,X
+                       221  ;
+                       222  ;       PRINT CONTENTS OF STACK
+FD1F FE0008            223  PRINT   LDX     SP
+FD22 08                224          INX
+FD23 8DA5              225          BSR     OUT2HS  ; CONDITION CODES
+FD25 8DA3              226          BSR     OUT2HS  ; ACC-B
+FD27 8DA1              227          BSR     OUT2HS  ; ACC-A
+FD29 8D9D              228          BSR     OUT4HS  ; X-REG
+FD2B 8D9B              229          BSR     OUT4HS  ; P-COUNTER
+FD2D CE0008            230          LDX     #SP
+FD30 8D96              231          BSR     OUT4HS  ; STACK POINTER
+FD32 20AF              232  C2      BRA     CONTRL
+                       233  ;
+                       234  ;       PUNCH DUMP
+
+
+Crasm 1.8:                           MIKBUG                  page  5
+
+                       235  ;       PUNCH FROM BEGINNING ADDRESS (BEGA) THRU
+        ENDI
+                       236  ;       ADDRESS (ENDA)
+FD34 0D0A533104        237  MTAPE1  DB      $D,$A,'S','1',4 ; PUNCH FORMAT
+FD39 01010101          238          DB      1,1,1,1 ; GRUE
+  FD3D                 239  PUNCH   EQU     *
+FD3D FE0002            240          LDX     BEGA
+FD40 FF000F            241          STX     TW      ; TEMP BEGINNING ADDRESS
+FD43 B60005            242  PUN11   LDAA    ENDA+1
+FD46 B00010            243          SUBA    TW+1
+FD49 F60004            244          LDAB    ENDA
+FD4C F2000F            245          SBCB    TW
+FD4F 2604              246          BNE     PUN22
+FD51 8110              247          CMPA    #16
+FD53 2502              248          BCS     PUN23
+FD55 860F              249  PUN22   LDAA    #15
+FD57 8B04              250  PUN23   ADDA    #4
+FD59 B70011            251          STAA    MCONT   ; FRAME COUNT THIS RECOR
+                          D
+FD5C 8003              252          SUBA    #3
+FD5E B7000E            253          STAA    TEMP    ; BYTE COUNT THIS RECORD
+                       254  ;
+                       255  ;       PUNCH C/R,L/F,NULL,S,1
+FD61 CEFD34            256          LDX     #MTAPE1
+FD64 BDFC7E            257          JSR     PDATA1
+FD67 5F                258          CLRB            ; ZERO CHECKSUM
+                       259  ;
+                       260  ;       PUNCH FRAME COUNT
+FD68 CE0011            261          LDX     #MCONT
+FD6B 8D25              262          BSR     PUNT2   ; PUNCH 2 HEX CHAR
+                       263  ;
+                       264  ;       PUNCH ADDRESS
+FD6D CE000F            265          LDX     #TW
+FD70 8D20              266          BSR     PUNT2
+FD72 8D1E              267          BSR     PUNT2
+                       268  ;
+                       269  ;       PUNCH DATA
+FD74 FE000F            270          LDX     TW
+FD77 8D19              271  PUN32   BSR     PUNT2   ; PUNCH ONE BYTE (2 FRAM
+                          ES)
+FD79 7A000E            272          DEC     TEMP    ; DEC BYTE COUNT
+FD7C 26F9              273          BNE     PUN32
+FD7E FF000F            274          STX     TW
+FD81 53                275          COMB
+FD82 37                276          PSHB
+FD83 30                277          TSX
+FD84 8D0C              278          BSR     PUNT2   ; PUNCH CHECKSUM
+FD86 33                279          PULB            ; RESTORE STACK
+FD87 FE000F            280          LDX     TW
+FD8A 09                281          DEX
+FD8B BC0004            282          CPX     ENDA
+FD8E 26B3              283          BNE     PUN11
+FD90 20A0              284          BRA     C2      ; JMP TO CONTRL
+                       285  ;
+                       286  ;       PUNCH 2 HEX CHAR UPDATE CHECKSUM
+FD92 EB00              287  PUNT2   ADDB    0,X     ; UPDATE CHECKSUM
+FD94 7EFCBF            288          JMP     OUT2H   ; OUTPUT TWO HEX CHAR AN
+                          D RTS
+                       289  ;
+FD97 010101010101      290          DB      1,1,1,1,1,1     ; GRUE
+FD9D 0D0A2A04          291  MCL     DB      $D,$A,'*',4
+FDA1 01010101          292          DB      1,1,1,1 ; GRUE
+
+
+Crasm 1.8:                           MIKBUG                  page  6
+
+                       293  ;
+                       294  ;       SAVE X REGISTER
+FDA5 FF0012            295  SAV     STX     XTEMP
+FDA8 39                296          RTS
+FDA9 010101            297          DB      1,1,1   ; GRUE
+                       298  ;
+                       299  ;       INPUT ONE CHAR INTO A-REGISTER
+FDAC 8DF7              300  INEEE   BSR     SAV
+FDAE B61000            301  IN1     LDAA    ACIACS
+FDB1 47                302          ASRA
+FDB2 24FA              303          BCC     IN1     ; RECEIVE NOT READY
+FDB4 B61001            304          LDAA    ACIADA  ; INPUT CHARACTER
+FDB7 847F              305          ANDA    #$7F    ; RESET PARITY BIT
+FDB9 817F              306          CMPA    #$7F
+FDBB 27F1              307          BEQ     IN1     ; IF RUBOUT, GET NEXT CH
+                          AR
+FDBD 8D12              308          BSR     OUTEEE
+FDBF 39                309          RTS
+FDC0 01010101010101
+FDC7 01                310          DB      1,1,1,1,1,1,1,1 ; GRUE
+FDC8 01010101010101
+FDCF 01                311          DB      1,1,1,1,1,1,1,1 ; GRUE
+FDD0 01                312          DB      1       ; GRUE
+                       313  ;
+                       314  ;       OUTPUT ONE CHAR 
+FDD1 36                315  OUTEEE  PSHA
+FDD2 B61000            316  OUTEEE1 LDAA    ACIACS
+FDD5 47                317          ASRA
+FDD6 47                318          ASRA
+FDD7 24F9              319          BCC     OUTEEE1
+FDD9 32                320          PULA
+FDDA B71001            321          STAA    ACIADA
+FDDD 39                322          RTS
+                       323  ;
+                       324  ;       VECTOR
+  FFF8                 325          * =     $FFF8
+FFF8 FC00              326          DW      IO
+FFFA FD13              327          DW      SFE
+FFFC FC05              328          DW      POWDWN
+FFFE FCD0              329          DW      START
+                       330  
+  0000                 331          * =    VAR
+                       332          DUMMY
+  0000                 333  IOV     DS     2         ; IO INTERRUPT POINTER
+  0002                 334  BEGA    DS     2         ; BEGINNING ADDR PRINT/
+                           PUNCH
+  0004                 335  ENDA    DS     2         ; ENDING ADDR PRINT/PUN
+                           CH
+  0006                 336  NIO     DS     2         ; NMI INTERRUPT POINTER
+  0008                 337  SP      DS     1         ; S-HIGH
+                       338          DS     1         ; S-LOW
+  000A                 339  CKSM    DS     1         ; CHECKSUM
+                       340  
+  000B                 341  BYTECT  DS     1         ; BYTE COUNT
+  000C                 342  XHI     DS     1         ; XREG HIGH
+  000D                 343  XLOW    DS     1         ; XREG LOW
+  000E                 344  TEMP    DS     1         ; CHAR COUNT (INADD)
+  000F                 345  TW      DS     2         ; TEMP
+  0011                 346  MCONT   DS     1         ; TEMP
+  0012                 347  XTEMP   DS     2         ; X-REG TEMP STORAGE
+                       348          DS     46
+  0042                 349  STACK   DS     1         ; STACK POINTER
+
+
+Crasm 1.8:                           MIKBUG                  page  7
+
+                       350  
+                       351  ;       END
+                       352  
+
+ERRORS:       0
+WARNINGS:     0
+
+Successful assembly...
+ Last address       42 (66)
+ Code length       3cc (972)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Crasm 1.8:                           MIKBUG                  page  8
+
+ 1000   Abs ACIACS                                           
+ 1001   Abs ACIADA                                           
+^FC47   Abs BADDR                                            
+^0002   Abs BEGA                                             
+^FC55   Abs BYTE                                             
+^000B   Abs BYTECT                                           
+ FC44   Abs C1                                               
+ FD32   Abs C2                                               
+ FC87   Abs CHA51                                            
+ FC85   Abs CHANGE                                           
+^000A   Abs CKSM                                             
+^FCE3   Abs CONTRL                                           
+^0004   Abs ENDA                                             
+ FDAE   Abs IN1                                              
+^FCBE   Abs IN1HG                                            
+^FC78   Abs INCH                                             
+^FDAC   Abs INEEE                                            
+^FCAA   Abs INHEX                                            
+ FC00   Abs IO                                               
+^0000   Abs IOV                                              
+ FC0A   Abs LOAD                                             
+ FC2F   Abs LOAD11                                           
+^FC3B   Abs LOAD15                                           
+ FC40   Abs LOAD19                                           
+^FC44   Abs LOAD21                                           
+ FC13   Abs LOAD3                                            
+^FD9D   Abs MCL                                              
+^0011   Abs MCONT                                            
+ FD34   Abs MTAPE1                                           
+^0006   Abs NIO                                              
+ FCBF   Abs OUT2H                                            
+?FCC1   Abs OUT2HA                                           
+^FCCA   Abs OUT2HS                                           
+^FCC8   Abs OUT4HS                                           
+^FC75   Abs OUTCH                                            
+^FDD1   Abs OUTEEE                                           
+ FDD2   Abs OUTEEE1                                          
+ FC67   Abs OUTHL                                            
+ FC6B   Abs OUTHR                                            
+ FCCC   Abs OUTS                                             
+ FC7E   Abs PDATA1                                           
+ FC7B   Abs PDATA2                                           
+ FC05   Abs POWDWN                                           
+^FD1F   Abs PRINT                                            
+ FD43   Abs PUN11                                            
+^FD55   Abs PUN22                                            
+^FD57   Abs PUN23                                            
+ FD77   Abs PUN32                                            
+^FD3D   Abs PUNCH                                            
+^FD92   Abs PUNT2                                            
+ FDA5   Abs SAV                                              
+ FD13   Abs SFE                                              
+^0008   Abs SP                                               
+^0042   Abs STACK                                            
+ FCD0   Abs START                                            
+^000E   Abs TEMP                                             
+^000F   Abs TW                                               
+ 0000   Abs VAR                                              
+^000C   Abs XHI                                              
+^000D   Abs XLOW                                             
+^0012   Abs XTEMP                                            
+
+
+

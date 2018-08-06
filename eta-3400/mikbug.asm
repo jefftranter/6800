@@ -9,7 +9,7 @@
 ; The original source code came from here:
 ;  https://gist.github.com/vintagechips
 
-        CPU     6800
+	CPU     6800
 	NAM    MIKBUG
 ;	REV 009
 ;	COPYRIGHT 1974 BY MOTOROLA INC
@@ -184,7 +184,7 @@ START	EQU	*
 	NOP
 	NOP
 	LDAA	#$15	; 8N1 NON-INTERRUPT
-        STAA	ACIACS
+	STAA	ACIACS
 ;
 ;	COMMAND CONTROL
 CONTRL	LDS	#STACK	; SET CONTRL STACK POINTER
@@ -328,24 +328,24 @@ OUTEEE1	LDAA	ACIACS
 	DW	POWDWN
 	DW	START
 
-        * =    VAR
-        DUMMY
-IOV     DS     2         ; IO INTERRUPT POINTER
-BEGA    DS     2         ; BEGINNING ADDR PRINT/PUNCH
-ENDA    DS     2         ; ENDING ADDR PRINT/PUNCH
-NIO     DS     2         ; NMI INTERRUPT POINTER
-SP      DS     1         ; S-HIGH
-        DS     1         ; S-LOW
-CKSM    DS     1         ; CHECKSUM
+	* =    VAR
+	DUMMY
+IOV     DS     2	 ; IO INTERRUPT POINTER
+BEGA    DS     2	 ; BEGINNING ADDR PRINT/PUNCH
+ENDA    DS     2	 ; ENDING ADDR PRINT/PUNCH
+NIO     DS     2	 ; NMI INTERRUPT POINTER
+SP      DS     1	 ; S-HIGH
+	DS     1	 ; S-LOW
+CKSM    DS     1	 ; CHECKSUM
 
-BYTECT  DS     1         ; BYTE COUNT
-XHI     DS     1         ; XREG HIGH
-XLOW    DS     1         ; XREG LOW
-TEMP    DS     1         ; CHAR COUNT (INADD)
-TW      DS     2         ; TEMP
-MCONT   DS     1         ; TEMP
-XTEMP   DS     2         ; X-REG TEMP STORAGE
-        DS     46
-STACK   DS     1         ; STACK POINTER
+BYTECT  DS     1	 ; BYTE COUNT
+XHI     DS     1	 ; XREG HIGH
+XLOW    DS     1	 ; XREG LOW
+TEMP    DS     1	 ; CHAR COUNT (INADD)
+TW      DS     2	 ; TEMP
+MCONT   DS     1	 ; TEMP
+XTEMP   DS     2	 ; X-REG TEMP STORAGE
+	DS     46
+STACK   DS     1	 ; STACK POINTER
 
 ;       END

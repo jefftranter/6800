@@ -27,7 +27,7 @@ PIADB   =      $8003     ; B DATA
 PIAS    =      $8002     ; PIA STATUS
 PIAD    =      $8001     ; PIA DATA
 ;       OPT    MEMORY
-        * =    $FC00     ; START OF MONITOR ROM
+        * =    $FE00     ; START OF MONITOR ROM
 
 ;     I/O INTERRUPT SEQUENCE
 IO      LDX    IOV

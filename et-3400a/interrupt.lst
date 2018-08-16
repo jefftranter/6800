@@ -1,0 +1,264 @@
+Crasm 1.8:                Interrupt Example        page  1
+
+                         1          NAM Interrupt Example
+                         2          PAGE 132,66
+                         3  
+                         4  ;      Interrupt Example
+                         5  
+                         6  ; This program demonstrates interrupt 
+  handling. Do the following using
+                         7  ; the ET-3400 keyboard:
+                         8  
+                         9  ; - Enter the code starting at address
+  $0010 and at $00FD
+                        10  ; - write $00 to addresses $0000 and $
+  0001
+                        11  ; - connect a jumper wire from the 1Hz
+  signal to the NMI* signal
+                        12  
+                        13  ; An NMI interrupt will be performed o
+  nce every second.
+                        14  ; Examine the contents of addresses $0
+  000 and $0001 and observe
+                        15  ; that the value is increasing one per
+  second.
+                        16  
+                        17  ; Now connect the jumper from the LINE
+  signal to the NMI* signal
+                        18  ; Now the counter value should be incr
+  emented 60 times per second.
+                        19  
+                        20  ; Note that there is no need to execut
+  e the program from the monitor.
+                        21  ;
+                        22  ; Written by Jeff Tranter <tranter@pob
+  ox.com>
+                        23  
+                        24          CPU 6800
+                        25  
+  0000                  26  COUNT   = $0000         ; Count of int
+                          errupts
+                        27  
+  0010                  28          * = $0010
+                        29  
+                        30  ; Interrupt handler routine
+                        31  
+0010 DE00               32  INT     LDX COUNT       ; Get current 
+                          count (16-bit)
+0012 08                 33          INX             ; Increment it
+0013 DF00               34          STX COUNT       ; Save it
+0015 3B                 35          RTI             ; Return from 
+                          interrupt
+                        36  
+                        37  ; Note that in the Monitor ROM the NMI
+  vector at $FFFC,D points to
+                        38  ; $00FD, which is in RAM.
+                        39  
+  00FD                  40          * = $00FD       ; Address of H
+                          MI handler
+00FD 7E0010             41          JMP INT         ; Call interru
+                          pt handler
+                        42  
+
+ERRORS:       0
+WARNINGS:     0
+
+Successful assembly...
+ Last address       ff (255)
+ Code length        12 (18)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Crasm 1.8:                Interrupt Example        page  2
+
+ 0000   Abs COUNT                                            
+ 0010   Abs INT                                              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

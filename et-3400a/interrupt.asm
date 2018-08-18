@@ -18,6 +18,15 @@
 ; Now the counter value should be incremented 60 times per second.
 
 ; Note that there is no need to execute the program from the monitor.
+
+; You could try using IRQ* rather than NMI*, but it does not work well
+; because IRQ* is level sensitive (NMI* is edge sensitive), so you
+; will get interrupts contantly whenever the 1Hz or LINE signal is
+; low. To work properly you would need some circuitry that could clear
+; the interrupt line once the interrupt was acknowledged. You would
+; also need to enable interrupts in the status register and call the
+; interrupt handler from the IRQ* handler address in RAM ($00F7).
+
 ;
 ; Written by Jeff Tranter <tranter@pobox.com>
 

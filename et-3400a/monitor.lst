@@ -3,83 +3,83 @@ Crasm 1.8:        Heathkit ET-3400A Monitor        page  1
                          1          NAM Heathkit ET-3400A Monitor
                          2          PAGE 132,66
                          3  
-                         4  ; Entered from listing in ET-3400A man
-  ual by Jeff Tranter <tranter@pobox.com>.
+                         4  ; Entered from listing in ET-3400/ET-3
+  400A manuals by Jeff Tranter <tranter@pobox.com>.
                          5  ; Fixed some small errors in the listi
   ng.
                          6  ; Adapted to the crasm assembler (http
   s://github.com/colinbourassa/crasm).
-                         7  ; Note that I do not own an ET-3400A a
-  nd have no way of testing it but I
-                         8  ; have confirmed that it produces the 
-  same binary output as the Heathkit
-                         9  ; ROMs.
-                        10  
-                        11          CPU 6800
-                        12  
-                        13  ;;      ASSEMBLY CONSTANT TABLE
-                        14  
-                        15  ;;      KEYBOARD LOCATIONS
-                        16  
-  C003                  17          COL1  EQU $C003              ;
+                         7  ; I have confirmed that it produces th
+  e same binary output as the
+                         8  ; Heathkit ROMs and that it works on a
+  n ET-3400.
+                         9  
+                        10          CPU 6800
+                        11  
+                        12  ;;      ASSEMBLY CONSTANT TABLE
+                        13  
+                        14  ;;      KEYBOARD LOCATIONS
+                        15  
+  C003                  16          COL1  EQU $C003              ;
                                       RIGHTMOST COLUMN
-  C005                  18          COL2  EQU $C005
-  C006                  19          COL3  EQU $C006              ;
+  C005                  17          COL2  EQU $C005
+  C006                  18          COL3  EQU $C006              ;
                                       LEFTMOST COLUMN
-                        20  
-                        21  ;;      MISC CONSTANTS
-                        22  
-  0020                  23          TIME EQU 32
-  0004                  24          NBR  EQU 4                   ;
+                        19  
+                        20  ;;      MISC CONSTANTS
+                        21  
+  0020                  22          TIME EQU 32
+  0004                  23          NBR  EQU 4                   ;
                                       NUMBER BREAKPOINTS
-                        25  
-                        26  ;;      DISPLAY ADDRESSES
-                        27  
-  C16F                  28          DG6ADD EQU $C16F             ;
+                        24  
+                        25  ;;      DISPLAY ADDRESSES
+                        26  
+  C16F                  27          DG6ADD EQU $C16F             ;
                                       LEFTMOST DIGIT
-  C15F                  29          DG5ADD EQU $C15F
-  C14F                  30          DG4ADD EQU $C14F
-  C13F                  31          DG3ADD EQU $C13F
-  C12F                  32          DG2ADD EQU $C12F
-  C11F                  33          DG1ADD EQU $C11F             ;
+  C15F                  28          DG5ADD EQU $C15F
+  C14F                  29          DG4ADD EQU $C14F
+  C13F                  30          DG3ADD EQU $C13F
+  C12F                  31          DG2ADD EQU $C12F
+  C11F                  32          DG1ADD EQU $C11F             ;
                                       RIGHTMOST DIGIT
-                        34  
-                        35  
-                        36  ;;      DISPLAYED CHARACTER SEGMENT CO
+                        33  
+                        34  ;;      DISPLAYED CHARACTER SEGMENT CO
  DES
-                        37  
-  007E                  38          HEX0 EQU $7E
-  0030                  39          HEX1 EQU $30
-  006D                  40          HEX2 EQU $6D
-  0079                  41          HEX3 EQU $79
-  0033                  42          HEX4 EQU $33
-  005B                  43          HEX5 EQU $5B
-  005F                  44          HEX6 EQU $5F
-  0070                  45          HEX7 EQU $70
-  007F                  46          HEX8 EQU $7F
-  007B                  47          HEX9 EQU $7B
-  0077                  48          HEXA EQU $77
-  001F                  49          HEXB EQU $1F
-  004E                  50          HEXC EQU $4E
-  003D                  51          HEXD EQU $3D
-  004F                  52          HEXE EQU $4F
-  0047                  53          HEXF EQU $47
-  007D                  54          LTRA EQU $7D
-  001F                  55          LTRB EQU $1F
-  000D                  56          LTRC EQU $0D
-  0047                  57          LTRF EQU $47
-  0015                  58          LTRN EQU $15
-  0030                  59          LTRI EQU $30
-  0067                  60          LTRP EQU $67
-  000E                  61          LTRL EQU $0E
-  003D                  62          LTRD EQU $3D
-  001D                  63          LTRO EQU $1D
-  0005                  64          LTRR EQU $05
-  003E                  65          LTRU EQU $3E
-  003B                  66          LTRY EQU $3B
-  005B                  67          LTRS EQU $5B
-  0008                  68          DASH EQU $08
-                        69  
+                        35  
+  007E                  36          HEX0 EQU $7E
+  0030                  37          HEX1 EQU $30
+  006D                  38          HEX2 EQU $6D
+  0079                  39          HEX3 EQU $79
+  0033                  40          HEX4 EQU $33
+  005B                  41          HEX5 EQU $5B
+  005F                  42          HEX6 EQU $5F
+  0070                  43          HEX7 EQU $70
+  007F                  44          HEX8 EQU $7F
+  007B                  45          HEX9 EQU $7B
+  0077                  46          HEXA EQU $77
+  001F                  47          HEXB EQU $1F
+  004E                  48          HEXC EQU $4E
+  003D                  49          HEXD EQU $3D
+  004F                  50          HEXE EQU $4F
+  0047                  51          HEXF EQU $47
+  007D                  52          LTRA EQU $7D
+  001F                  53          LTRB EQU $1F
+  000D                  54          LTRC EQU $0D
+  0047                  55          LTRF EQU $47
+  0015                  56          LTRN EQU $15
+  0030                  57          LTRI EQU $30
+  0067                  58          LTRP EQU $67
+  000E                  59          LTRL EQU $0E
+  003D                  60          LTRD EQU $3D
+  001D                  61          LTRO EQU $1D
+  0005                  62          LTRR EQU $05
+  003E                  63          LTRU EQU $3E
+  003B                  64          LTRY EQU $3B
+  005B                  65          LTRS EQU $5B
+  0008                  66          DASH EQU $08
+                        67  
+
+
 
 
 
@@ -132,35 +132,35 @@ Crasm 1.8:        Heathkit ET-3400A Monitor        page  1
 
 Crasm 1.8:        Heathkit ET-3400A Monitor        page  2
 
-                        70          PAGE
+                        68          PAGE
+                        69  
+                        70  ;;      RESERVED MEMORY BYTES IN RAM
                         71  
-                        72  ;;      RESERVED MEMORY BYTES IN RAM
-                        73  
-                        74          DUMMY
-  00D1                  75          * EQU $00D1
-                        76  
-  00CB                  77  USRSTK  EQU *-6
-                        78          DS 19
-  00E3                  79  MONSTK  EQU *-1
-  00E4                  80  BKTBL   DS 2*NBR
-  00EC                  81  T0      DS 2                         ;
+                        72          DUMMY
+  00D1                  73          * EQU $00D1
+                        74  
+  00CB                  75  USRSTK  EQU *-6
+                        76          DS 19
+  00E3                  77  MONSTK  EQU *-1
+  00E4                  78  BKTBL   DS 2*NBR
+  00EC                  79  T0      DS 2                         ;
                                       TEMPORARY
-  00EE                  82  TEMP    DS 2                         ;
+  00EE                  80  TEMP    DS 2                         ;
                                       JSRD BY SINGLE STEPPER
-  00F0                  83  DIGADD  DS 2                         ;
+  00F0                  81  DIGADD  DS 2                         ;
                                       DISPLAY POINTER
-  00F2                  84  USERS   DS 2                         ;
+  00F2                  82  USERS   DS 2                         ;
                                       USER STACK POINTER
-  00EE                  85  T1      EQU TEMP
-  00F4                  86  SYSSWI  DS 3                         ;
+  00EE                  83  T1      EQU TEMP
+  00F4                  84  SYSSWI  DS 3                         ;
                                       SYSTEM SWI VECTOR
-  00F7                  87  UIRQ    DS 3                         ;
+  00F7                  85  UIRQ    DS 3                         ;
                                       USER IRQ VECTOR
-  00FA                  88  USWI    DS 3                         ;
+  00FA                  86  USWI    DS 3                         ;
                                       USER SWI VECTOR
-  00FD                  89  UNMI    DS 3                         ;
+  00FD                  87  UNMI    DS 3                         ;
                                       USER NMI VECTOR
-                        90  
+                        88  
 
 
 
@@ -264,1199 +264,1199 @@ Crasm 1.8:        Heathkit ET-3400A Monitor        page  2
 
 Crasm 1.8:        Heathkit ET-3400A Monitor        page  3
 
-                        91          PAGE
+                        89          PAGE
+                        90  
+                        91  ;;      MONITOR CODE
                         92  
-                        93  ;;      MONITOR CODE
-                        94  
-                        95          CODE
-  FC00                  96          * EQU $FC00
-                        97  
-                        98  ;;      RESET - CLEAR BREAKPOINT TABLE
+                        93          CODE
+  FC00                  94          * EQU $FC00
+                        95  
+                        96  ;;      RESET - CLEAR BREAKPOINT TABLE
  AND INITIALIZE STACK
-                        99  
-FC00 8E00EB            100  RESET   LDS     #2*NBR+BKTBL-1
-FC03 BDFD8D            101          JSR     OUTSTO
-FC06 4E673E003EE7      102          DB      HEXC,LTRP,LTRU,0,LTRU,
+                        97  
+FC00 8E00EB             98  RESET   LDS     #2*NBR+BKTBL-1
+FC03 BDFD8D             99          JSR     OUTSTO
+FC06 4E673E003EE7      100          DB      HEXC,LTRP,LTRU,0,LTRU,
                 LTRP+$80
-FC0C CE00CB            103          LDX     #USRSTK
-FC0F DFF2              104          STX     USERS
-FC11 86FF              105          LDAA    #$FF
-FC13 C608              106          LDAB    #2*NBR
-FC15 36                107  RESE1   PSHA
-FC16 5A                108          DECB
-FC17 26FC              109          BNE     RESE1
-                       110  
-                       111  ;;      MAIN - MAIN MONITOR LOOP
-                       112  ;
-                       113  ;       HANDLERS RETURN:
-                       114  ;               (B) = NUMBER BYTES SUB
+FC0C CE00CB            101          LDX     #USRSTK
+FC0F DFF2              102          STX     USERS
+FC11 86FF              103          LDAA    #$FF
+FC13 C608              104          LDAB    #2*NBR
+FC15 36                105  RESE1   PSHA
+FC16 5A                106          DECB
+FC17 26FC              107          BNE     RESE1
+                       108  
+                       109  ;;      MAIN - MAIN MONITOR LOOP
+                       110  ;
+                       111  ;       HANDLERS RETURN:
+                       112  ;               (B) = NUMBER BYTES SUB
                 JECT TO "CHANGE"
-                       115  ;               (X) = ADDRESS BYTES SU
+                       113  ;               (X) = ADDRESS BYTES SU
                 BJECT TO "CHANGE"
-                       116  ;               (A) = 0 ENABLES "FORWA
+                       114  ;               (A) = 0 ENABLES "FORWA
                 RD" AND "BACK"
-                       117  
-FC19 97EE              118  MAIN    STAA    T1
-FC1B 8619              119          LDAA    #-MAIN/256*256+MAIN  ;
+                       115  
+FC19 97EE              116  MAIN    STAA    T1
+FC1B 8619              117          LDAA    #-MAIN/256*256+MAIN  ;
                                       LO ORDER RET.ADDR.
-FC1D 36                120          PSHA
-FC1E 86FC              121          LDAA    #MAIN/256            ;
+FC1D 36                118          PSHA
+FC1E 86FC              119          LDAA    #MAIN/256            ;
                                       HI ORDER BYTE RET. ADDR.
-FC20 36                122          PSHA                         ;
+FC20 36                120          PSHA                         ;
                                       RETURN ONTO STACK
-FC21 BDFDF4            123  MAIN1   JSR     INCH                 ;
+FC21 BDFDF4            121  MAIN1   JSR     INCH                 ;
                                       GET COMMAND
-FC24 7D00EE            124          TST     T1
-FC27 2708              125          BEQ     MAIN2                ;
+FC24 7D00EE            122          TST     T1
+FC27 2708              123          BEQ     MAIN2                ;
                                       FORWARD OR BACK OK
-FC29 810F              126          CMPA    #$F
-FC2B 27F4              127          BEQ     MAIN1                ;
+FC29 810F              124          CMPA    #$F
+FC2B 27F4              125          BEQ     MAIN1                ;
                                       ILLEGAL NOW
-FC2D 810B              128          CMPA    #$B
-FC2F 27F0              129          BEQ     MAIN1                ;
+FC2D 810B              126          CMPA    #$B
+FC2F 27F0              127          BEQ     MAIN1                ;
                                       ALSO ILLEGAL NOW
-FC31 DFEC              130  MAIN2   STX     T0
-FC33 CEFFB4            131          LDX     #CMDTAB-2
-FC36 08                132  MAIN3   INX
-FC37 08                133          INX                          ;
+FC31 DFEC              128  MAIN2   STX     T0
+FC33 CEFFB4            129          LDX     #CMDTAB-2
+FC36 08                130  MAIN3   INX
+FC37 08                131          INX                          ;
                                       GET HANDLER ADDRESS
-FC38 4A                134          DECA
-FC39 2AFB              135          BPL     MAIN3
-FC3B A601              136          LDAA    1,X                  ;
+FC38 4A                132          DECA
+FC39 2AFB              133          BPL     MAIN3
+FC3B A601              134          LDAA    1,X                  ;
                                       TARGET ADDRESS ONTO STACK
-FC3D 36                137          PSHA
-FC3E A600              138          LDAA    0,X
-FC40 36                139          PSHA
-FC41 DEEC              140          LDX     T0                   ;
+FC3D 36                135          PSHA
+FC3E A600              136          LDAA    0,X
+FC40 36                137          PSHA
+FC41 DEEC              138          LDX     T0                   ;
                                       RESTORE X
-FC43 96EE              141          LDAA    T1
-FC45 39                142  ZERO    RTS                          ;
+FC43 96EE              139          LDAA    T1
+FC45 39                140  ZERO    RTS                          ;
                                       JUMP TO HANDLER
-                       143  
-                       144  
-                       145  ;;      RESET - ENTRY FOR BREAKPOINT T
+                       141  
+                       142  
+                       143  ;;      RESET - ENTRY FOR BREAKPOINT T
  ABLE
-                       146  ;
-                       147  ;       ENTRY:  NONE
-                       148  ;       EXIT    (B) = 2
-                       149  ;               (X) = ADDRESS IN TABLE
-                       150  ;       USES: ALL,TO,11
-                       151  
-FC46 CE00E2            152  BKSET   LDX     #BKTBL-2
-FC49 86FF              153          LDAA    #$FF
-FC4B C604              154          LDAB    #NBR                 ;
+                       144  ;
+                       145  ;       ENTRY:  NONE
+                       146  ;       EXIT    (B) = 2
+                       147  ;               (X) = ADDRESS IN TABLE
+                       148  ;       USES: ALL,TO,11
+                       149  
+FC46 CE00E2            150  BKSET   LDX     #BKTBL-2
+FC49 86FF              151          LDAA    #$FF
+FC4B C604              152          LDAB    #NBR                 ;
                                       FIND SPOT IN TABLE
-FC4D 08                155  BKSE1   INX
-FC4E 08                156          INX
-FC4F A100              157          CMPA    0,X
-FC51 2604              158          BNE     BKSE2
-FC53 A101              159          CMPA    1,X
-FC55 270E              160          BEQ     BKSE3                ;
+FC4D 08                153  BKSE1   INX
+FC4E 08                154          INX
+FC4F A100              155          CMPA    0,X
+FC51 2604              156          BNE     BKSE2
+FC53 A101              157          CMPA    1,X
+FC55 270E              158          BEQ     BKSE3                ;
                                       EMPTY SPOT
-FC57 5A                161  BKSE2   DECB
-FC58 26F3              162          BNE     BKSE1                ;
+FC57 5A                159  BKSE2   DECB
+FC58 26F3              160          BNE     BKSE1                ;
                                       STILL HOPE
+                       161  
+                       162  ;       FULL UP
                        163  
-                       164  ;       FULL UP
-                       165  
-FC5A BDFD8D            166          JSR     OUTSTO
-FC5D 00473E0E0EA0      167          DB      0,LTRF,LTRU,LTRL,LTRL,
+FC5A BDFD8D            164          JSR     OUTSTO
+FC5D 00473E0E0EA0      165          DB      0,LTRF,LTRU,LTRL,LTRL,
                 $A0
-FC63 4C                168          INCA
-FC64 39                169          RTS
-                       170  
-FC65 DFEE              171  BKSE3   STX     T1
-FC67 8D1D              172          BSR     OUTSTA
-FC69 1F85              173          DB      LTRB,LTRR+$80
-FC6B 8D08              174          BSR     DOPM1
-FC6D 4C                175          INCA                         ;
+FC63 4C                166          INCA
+FC64 39                167          RTS
+                       168  
+FC65 DFEE              169  BKSE3   STX     T1
+FC67 8D1D              170          BSR     OUTSTA
+FC69 1F85              171          DB      LTRB,LTRR+$80
+FC6B 8D08              172          BSR     DOPM1
+FC6D 4C                173          INCA                         ;
                                       (A) = 1
-FC6E 39                176          RTS
-                       177  
-                       178  ;;      DOPPMT - ACCEPT ADDRESS VALUE 
+FC6E 39                174          RTS
+                       175  
+                       176  ;;      DOPPMT - ACCEPT ADDRESS VALUE 
  WITH "DO" PROMPT
-                       179  ;
-                       180  ;       ENTRY:   (X) = ADDRESS TO STOR
+                       177  ;
+                       178  ;       ENTRY:   (X) = ADDRESS TO STOR
         E INPUTTED VALUE
-                       181  ;       EXIT:    (B) = 2
-                       182  ;                (X) UNCHANGED
-                       183  ;       USES:    ALL,TO,T1
-                       184  
-FC6F DFEE              185  DOPMT   STX      T1
-FC71 8D13              186          BSR      OUTSTA              ;
+                       179  ;       EXIT:    (B) = 2
+                       180  ;                (X) UNCHANGED
+                       181  ;       USES:    ALL,TO,T1
+                       182  
+FC6F DFEE              183  DOPMT   STX      T1
+FC71 8D13              184          BSR      OUTSTA              ;
                                       OUTPUT PROMPT "DO"
-FC73 3D9D              187          DB       LTRD,LTRO+$80
-FC75 8D45              188  DOPM1   BSR      REDIS               ;
+FC73 3D9D              185          DB       LTRD,LTRO+$80
+FC75 8D45              186  DOPM1   BSR      REDIS               ;
                                       RESET DISPLAY
-FC77 DEEE              189          LDX      T1                  ;
+FC77 DEEE              187          LDX      T1                  ;
                                       RESTORE X
-FC79 C602              190          LDAB     #2
-FC7B 7EFD25            191          JMP      PROMPT              ;
+FC79 C602              188          LDAB     #2
+FC7B 7EFD25            189          JMP      PROMPT              ;
 
 
 Crasm 1.8:        Heathkit ET-3400A Monitor        page  4
 
                                       INPUT NEW VALUE
-                       192  
-                       193  ;;      ADDR - ACCEPT ADDRESS VALUE WI
+                       190  
+                       191  ;;      ADDR - ACCEPT ADDRESS VALUE WI
  TH 'AD' PROMPT
-                       194  ;
-                       195  ;       ENTRY, EXIT -- SEE 'DOPMT'
-                       196  
-FC7E DFEE              197  ADDR    STX      T1
-FC80 8D04              198          BSR      OUTSTA
-FC82 77BD              199          DB       HEXA,LTRD+$80
-FC84 20EF              200          BRA      DOPM1
-                       201  
-                       202  ;;      OUTSTA - OUTPUT STRING FOR ADD
+                       192  ;
+                       193  ;       ENTRY, EXIT -- SEE 'DOPMT'
+                       194  
+FC7E DFEE              195  ADDR    STX      T1
+FC80 8D04              196          BSR      OUTSTA
+FC82 77BD              197          DB       HEXA,LTRD+$80
+FC84 20EF              198          BRA      DOPM1
+                       199  
+                       200  ;;      OUTSTA - OUTPUT STRING FOR ADD
  RESS PROMPT
-                       203  ;
-                       204  
-FC86 CEC12F            205  OUTSTA  LDX      #DG2ADD
-FC89 7EFE50            206          JMP      OUTST1
-                       207  
-                       208  ;;      DO - RESET USER PC AND RESUME
-                       209  ;
-                       210  ;       ENTRY:  NONE
-                       211  ;       EXIT:   TO 'RESUME'
-                       212  ;       U:      ALL
-                       213  
-FC8C DEF2              214  DO      LDX     USERS
-FC8E 08                215          INX
-FC8F 08                216          INX
-FC90 08                217          INX
-FC91 08                218          INX
-FC92 08                219          INX
-FC93 08                220          INX                          ;
+                       201  ;
+                       202  
+FC86 CEC12F            203  OUTSTA  LDX      #DG2ADD
+FC89 7EFE50            204          JMP      OUTST1
+                       205  
+                       206  ;;      DO - RESET USER PC AND RESUME
+                       207  ;
+                       208  ;       ENTRY:  NONE
+                       209  ;       EXIT:   TO 'RESUME'
+                       210  ;       U:      ALL
+                       211  
+FC8C DEF2              212  DO      LDX     USERS
+FC8E 08                213          INX
+FC8F 08                214          INX
+FC90 08                215          INX
+FC91 08                216          INX
+FC92 08                217          INX
+FC93 08                218          INX                          ;
                                       X TO USER PC
-FC94 8DD9              221          BSR     DOPMT
-                       222  
-                       223  ;;      RESUME - RESUME USER PROGRAM
-                       224  ;
-                       225  ;       1) BLANKS ALL DISPLAYS
-                       226  ;       2) INITIALIZES (DIGADD)
-                       227  ;       3) STEPS USER CODE PAST BREAKP
+FC94 8DD9              219          BSR     DOPMT
+                       220  
+                       221  ;;      RESUME - RESUME USER PROGRAM
+                       222  ;
+                       223  ;       1) BLANKS ALL DISPLAYS
+                       224  ;       2) INITIALIZES (DIGADD)
+                       225  ;       3) STEPS USER CODE PAST BREAKP
         OINT
-                       228  ;       4) INSERTS BREAKPOINTS
-                       229  ;       5) PRINTS INSTRUCTION UPON RET
+                       226  ;       4) INSERTS BREAKPOINTS
+                       227  ;       5) PRINTS INSTRUCTION UPON RET
         URN
-                       230  ;       ENTRY:NONE
-                       231  ;       EXIT: (B) = 1
-                       232  ;             (X) = USERPC
-                       233  ;       USES  ALL,TO,T1
-                       234  
-FC96 8D24              235  RESUME  BSR     REDIS                ;
+                       228  ;       ENTRY:NONE
+                       229  ;       EXIT: (B) = 1
+                       230  ;             (X) = USERPC
+                       231  ;       USES  ALL,TO,T1
+                       232  
+FC96 8D24              233  RESUME  BSR     REDIS                ;
                                       RESET DISPLAY
-FC98 4F                236          CLRA
-FC99 C606              237          LDAB    #6
-FC9B BDFE3A            238  RES1    JSR     OUTCH                ;
+FC98 4F                234          CLRA
+FC99 C606              235          LDAB    #6
+FC9B BDFE3A            236  RES1    JSR     OUTCH                ;
                                       CLEAR DISPLAYS
-FC9E 5A                239          DECB
-FC9F 26FA              240          BNE     RES1
-FCA1 8D19              241          BSR     REDIS                ;
+FC9E 5A                237          DECB
+FC9F 26FA              238          BNE     RES1
+FCA1 8D19              239          BSR     REDIS                ;
                                       RESET DISPLAY
-FCA3 BDFE6B            242  RES2    JSR     SSTEP                ;
+FCA3 BDFE6B            240  RES2    JSR     SSTEP                ;
                                       STEP PAST BREAKPOINT
-FCA6 C604              243          LDAB    #NBR                 ;
+FCA6 C604              241          LDAB    #NBR                 ;
                                       SET BREAKPOINTS
-FCA8 30                244  RES3    TSX
-FCA9 EE08              245          LDX     2*NBR,X              ;
+FCA8 30                242  RES3    TSX
+FCA9 EE08              243          LDX     2*NBR,X              ;
                                       GET BREAKPOINT ADDRESS
-                       246  
-FCAB A600              247          LDAA    0,X
-FCAD 36                248          PSHA
-FCAE 36                249          PSHA
-FCAF 863F              250          LDAA    #$3F                 ;
+                       244  
+FCAB A600              245          LDAA    0,X
+FCAD 36                246          PSHA
+FCAE 36                247          PSHA
+FCAF 863F              248          LDAA    #$3F                 ;
                                       REPLACE WITH SWI
-FCB1 A700              251          STAA    0,X
-FCB3 5A                252          DECB
-FCB4 26F2              253          BNE     RES3
-FCB6 CEFCCE            254          LDX     #BKPT
-FCB9 7EFEFC            255          JMP     SWIVE1               ;
+FCB1 A700              249          STAA    0,X
+FCB3 5A                250          DECB
+FCB4 26F2              251          BNE     RES3
+FCB6 CEFCCE            252          LDX     #BKPT
+FCB9 7EFEFC            253          JMP     SWIVE1               ;
                                       GO TO USER CODE
-                       256  
-                       257  ;;      REDIS - RESET DISPLAYS
-                       258  ;
-                       259  ;       ENTRY:  NONE
-                       260  ;       EXIT:   DIGADD SET TO LEFTMOST
+                       254  
+                       255  ;;      REDIS - RESET DISPLAYS
+                       256  ;
+                       257  ;       ENTRY:  NONE
+                       258  ;       EXIT:   DIGADD SET TO LEFTMOST
         DIGIT
-                       261  ;       USES:   T0
-                       262  
-FCBC DFEC              263  REDIS   STX     T0
-FCBE CEC16F            264          LDX     #DG6ADD
-FCC1 DFF0              265          STX     DIGADD
-FCC3 DEEC              266          LDX     T0
-FCC5 39                267          RTS
-                       268  
-                       269  ;;      BADDR - BUILD ADDRESS
-                       270  ;
-                       271  ;       ENTRY:  NONE
-                       272  ;       EXIT    (X) = ADDRESS
-                       273  
-FCC6 CE00EE            274  BADDR   LDX     #T1
-FCC9 8DB3              275          BSR     ADDR
-FCCB DEEE              276          LDX     T1
-FCCD 39                277          RTS
-                       278  
-                       279  ;;      BKPT - BREAK POINT RETURN
-                       280  ;       1) REMOVE BKPTS FROM USER CODE
-                       281  ;       2) CHECK FOR BREAKPOINT HIT AN
+                       259  ;       USES:   T0
+                       260  
+FCBC DFEC              261  REDIS   STX     T0
+FCBE CEC16F            262          LDX     #DG6ADD
+FCC1 DFF0              263          STX     DIGADD
+FCC3 DEEC              264          LDX     T0
+FCC5 39                265          RTS
+                       266  
+                       267  ;;      BADDR - BUILD ADDRESS
+                       268  ;
+                       269  ;       ENTRY:  NONE
+                       270  ;       EXIT    (X) = ADDRESS
+                       271  
+FCC6 CE00EE            272  BADDR   LDX     #T1
+FCC9 8DB3              273          BSR     ADDR
+FCCB DEEE              274          LDX     T1
+FCCD 39                275          RTS
+                       276  
+                       277  ;;      BKPT - BREAK POINT RETURN
+                       278  ;       1) REMOVE BKPTS FROM USER CODE
+                       279  ;       2) CHECK FOR BREAKPOINT HIT AN
         D EITHER
-                       282  ;           A)  RESUME IF NO HIT
-                       283  ;           B)  PRINT INSTRUCTION AND 
+                       280  ;           A)  RESUME IF NO HIT
+                       281  ;           B)  PRINT INSTRUCTION AND 
             RETURN IF HIT
-                       284  
-FCCE 30                285  BKPT    TSX
-FCCF 9FF2              286          STS     USERS
-FCD1 A606              287          LDAA    6,X
-FCD3 2602              288          BNE     BKP1                 ;
+                       282  
+FCCE 30                283  BKPT    TSX
+FCCF 9FF2              284          STS     USERS
+FCD1 A606              285          LDAA    6,X
+FCD3 2602              286          BNE     BKP1                 ;
                                       DECREMENT PC ON USERS STACK
-FCD5 6A05              289          DEC     5,X
-FCD7 4A                290  BKP1    DECA
-FCD8 A706              291          STAA    6,X
-FCDA E605              292          LDAB    5,X
-FCDC D7EC              293          STAB    T0                   ;
+FCD5 6A05              287          DEC     5,X
+FCD7 4A                288  BKP1    DECA
+FCD8 A706              289          STAA    6,X
+FCDA E605              290          LDAB    5,X
+FCDC D7EC              291          STAB    T0                   ;
                                       SAVE FOR COMPARE
-FCDE 97ED              294          STAA    T0+1
+FCDE 97ED              292          STAA    T0+1
+                       293  
+                       294  ;;      NOW CLEAR BREAKPOINTS
                        295  
-                       296  ;;      NOW CLEAR BREAKPOINTS
-                       297  
-FCE0 0C                298          CLC                          ;
+FCE0 0C                296          CLC                          ;
                                       'C' IS HIT FLAG
-FCE1 8E00D9            299  BKP2    LDS     #BKTBL-3-NBR-NBR
+FCE1 8E00D9            297  BKP2    LDS     #BKTBL-3-NBR-NBR
 
 
 Crasm 1.8:        Heathkit ET-3400A Monitor        page  5
 
-                       300  
-FCE4 C604              301          LDAB    #NBR
-FCE6 32                302  BKP3    PULA
-FCE7 32                303          PULA                         ;
+                       298  
+FCE4 C604              299          LDAB    #NBR
+FCE6 32                300  BKP3    PULA
+FCE7 32                301          PULA                         ;
                                       OLD OP CODE INTO A
-FCE8 30                304          TSX
-FCE9 EE08              305          LDX     2*NBR,X
-FCEB 9CEC              306          CPX     T0                   ;
+FCE8 30                302          TSX
+FCE9 EE08              303          LDX     2*NBR,X
+FCEB 9CEC              304          CPX     T0                   ;
                                       DO WE HAVE A HIT?
-FCED 2601              307          BNE     BKP4                 ;
+FCED 2601              305          BNE     BKP4                 ;
                                       NO WE DO NOT
-FCEF 0D                308          SEC                          ;
+FCEF 0D                306          SEC                          ;
                                       YES WE DO - SET FLAG
-  FCF0                 309  BKP4    EQU     *
-FCF0 A700              310          STAA    0,X                  ;
+  FCF0                 307  BKP4    EQU     *
+FCF0 A700              308          STAA    0,X                  ;
                                       FIX USER CODE
-FCF2 5A                311          DECB
-FCF3 26F1              312          BNE     BKP3
-FCF5 24AC              313          BCC     RES2                 ;
+FCF2 5A                309          DECB
+FCF3 26F1              310          BNE     BKP3
+FCF5 24AC              311          BCC     RES2                 ;
                                       BREAKPOINT NOT HIT
-FCF7 DEEC              314          LDX     T0                   ;
+FCF7 DEEC              312          LDX     T0                   ;
                                       = USER PC
-                       315  
-                       316  ;;      MEM - DISPLAY ADDRESS AND DATA
-                       317  ;
-                       318  ;       ENTRY:  (X) = ADDRESS
-                       319  ;       EXIT:   (B) = 1
-                       320  ;       USES: A,B,C,T0,T1
-                       321  
-FCF9 8DC1              322  MEM     BSR   REDIS                  ;
+                       313  
+                       314  ;;      MEM - DISPLAY ADDRESS AND DATA
+                       315  ;
+                       316  ;       ENTRY:  (X) = ADDRESS
+                       317  ;       EXIT:   (B) = 1
+                       318  ;       USES: A,B,C,T0,T1
+                       319  
+FCF9 8DC1              320  MEM     BSR   REDIS                  ;
                                       RESET DISPLAY
-FCFB DFEE              323          STX   T1
-FCFD CE00EE            324          LDX   #T1
-FD00 C602              325          LDAB  #2
-FD02 8D03              326          BSR   MEM2                   ;
+FCFB DFEE              321          STX   T1
+FCFD CE00EE            322          LDX   #T1
+FD00 C602              323          LDAB  #2
+FD02 8D03              324          BSR   MEM2                   ;
                                       DISPLAY ADDRESS
-FD04 EE00              327          LDX   0,X
-FD06 5A                328          DECB
-FD07 7EFD7B            329  MEM2    JMP   DSPLAY                 ;
+FD04 EE00              325          LDX   0,X
+FD06 5A                326          DECB
+FD07 7EFD7B            327  MEM2    JMP   DSPLAY                 ;
                                       OUTPUT DATA
-                       330  
-                       331  ;;      AUTO - AUTO LOAD OF MEMORY
-                       332  ;
-                       333  ;       ENTRY: NONE
-                       334  ;       EXIT:  NO EXIT POSSIBLE
-                       335  ;       USES:  ALL,T0,T1
-                       336  
-FD0A 8DBA              337  AUTO    BSR    BADDR                 ;
+                       328  
+                       329  ;;      AUTO - AUTO LOAD OF MEMORY
+                       330  ;
+                       331  ;       ENTRY: NONE
+                       332  ;       EXIT:  NO EXIT POSSIBLE
+                       333  ;       USES:  ALL,T0,T1
+                       334  
+FD0A 8DBA              335  AUTO    BSR    BADDR                 ;
                                       BUILD ADDRESS
-FD0C 8DEB              338  AUT1    BSR    MEM
-FD0E 8D0B              339          BSR    REPLAC
-FD10 08                340          INX
-FD11 20F9              341          BRA     AUT1                 ;
+FD0C 8DEB              336  AUT1    BSR    MEM
+FD0E 8D0B              337          BSR    REPLAC
+FD10 08                338          INX
+FD11 20F9              339          BRA     AUT1                 ;
                                       NO EXIT
-                       342  
-                       343  ;;      EXAM - EXAMINE MEMORY
-                       344  ;
-                       345  ;       ENTRY:  NONE
-                       346  ;       EXIT:   (X) = ADDRESS
-                       347  ;               (B) = 0
-                       348  ;               (A) = 0
-                       349  ;       USES:   ALL,T0,T1
-                       350  
-FD13 8DB1              351  EXAM    BSR     BADDR                ;
+                       340  
+                       341  ;;      EXAM - EXAMINE MEMORY
+                       342  ;
+                       343  ;       ENTRY:  NONE
+                       344  ;       EXIT:   (X) = ADDRESS
+                       345  ;               (B) = 0
+                       346  ;               (A) = 0
+                       347  ;       USES:   ALL,T0,T1
+                       348  
+FD13 8DB1              349  EXAM    BSR     BADDR                ;
                                       BUILD ADDRESS
-FD15 09                352          DEX
-                       353  
-                       354  ;;      FOWD - DISPLAY NEXT BYTE
-                       355  ;
-                       356  ;       ENTRY:  (X) = OLD ADDRESS
-                       357  ;       EXIT:   (X) = (XOLD) + 1
-                       358  ;               (B) = 1
-                       359  ;               (A) = 0
-                       360  ;       USES:   ALL,T0
-                       361  
-FD16 08                362  FOWD    INX
-FD17 08                363          INX
-                       364  
-                       365  ;;      BACK - DISPLAY PREVIOUS BYTE
-                       366  ;
-                       367  ;       ENTRY:  (X) = ADDRESS
-                       368  ;       EXIT:   (X) = (XOLD) + 1
-                       369  ;               (B) = 1
-                       370  ;               (A) = 0
-                       371  ;       USES:   ALL,T0
-FD18 09                372  BACK    DEX
-FD19 20DE              373          BRA     MEM                  ;
+FD15 09                350          DEX
+                       351  
+                       352  ;;      FOWD - DISPLAY NEXT BYTE
+                       353  ;
+                       354  ;       ENTRY:  (X) = OLD ADDRESS
+                       355  ;       EXIT:   (X) = (XOLD) + 1
+                       356  ;               (B) = 1
+                       357  ;               (A) = 0
+                       358  ;       USES:   ALL,T0
+                       359  
+FD16 08                360  FOWD    INX
+FD17 08                361          INX
+                       362  
+                       363  ;;      BACK - DISPLAY PREVIOUS BYTE
+                       364  ;
+                       365  ;       ENTRY:  (X) = ADDRESS
+                       366  ;       EXIT:   (X) = (XOLD) + 1
+                       367  ;               (B) = 1
+                       368  ;               (A) = 0
+                       369  ;       USES:   ALL,T0
+FD18 09                370  BACK    DEX
+FD19 20DE              371          BRA     MEM                  ;
                                       DISPLAY ADDRESS AND DATA
-                       374  
-                       375  ;;      REPLAC - REPLACE DISPLAYED VAL
+                       372  
+                       373  ;;      REPLAC - REPLACE DISPLAYED VAL
  UE
-                       376  ;
-                       377  ;       'REPLAC' 1) BACKSPACES DISPLAY
+                       374  ;
+                       375  ;       'REPLAC' 1) BACKSPACES DISPLAY
         TO CANCEL DISPLAYED VALUE
-                       378  ;                2) SENDS PROMPT FOR R
+                       376  ;                2) SENDS PROMPT FOR R
                  EPLACEMENT VALUE
-                       379  ;                3) ACCEPTS AND REPLAC
+                       377  ;                3) ACCEPTS AND REPLAC
                  ES DESIGNATED BYTE(S)
-                       380  ;       ENTRY:  (X) = ADDRESS OF BYTE(
+                       378  ;       ENTRY:  (X) = ADDRESS OF BYTE(
         S) TO REPLACE
-                       381  ;               (B) = NUMBER OF BYTES
-                       382  ;               (DIGIADD) = ADDRESS OF
+                       379  ;               (B) = NUMBER OF BYTES
+                       380  ;               (DIGIADD) = ADDRESS OF
                 DIGIT TO RIGHT OF DISPLAYED
-                       383  ;       EXIT:   B,X,DIGADD UNCHANGED
-                       384  ;       USES:   T0,A,C
-                       385  
-FD1B 5D                386  REPLAC  TSTB
-FD1C 2706              387          BEQ     REPL1                ;
+                       381  ;       EXIT:   B,X,DIGADD UNCHANGED
+                       382  ;       USES:   T0,A,C
+                       383  
+FD1B 5D                384  REPLAC  TSTB
+FD1C 2706              385          BEQ     REPL1                ;
                                       NO BYTES
-FD1E 36                388          PSHA
-FD1F 8D22              389          BSR     BKSP                 ;
+FD1E 36                386          PSHA
+FD1F 8D22              387          BSR     BKSP                 ;
                                       BACKSPACE DISPLAYS
-FD21 8D02              390          BSR     PROMPT
-FD23 32                391          PULA
-FD24 39                392  REPL1   RTS
-                       393  
-                       394  
-                       395  ;;      PROMPT - PROMPT AND INPUT BYTE
+FD21 8D02              388          BSR     PROMPT
+FD23 32                389          PULA
+FD24 39                390  REPL1   RTS
+                       391  
+                       392  
+                       393  ;;      PROMPT - PROMPT AND INPUT BYTE
  S
-                       396  ;
-                       397  ;       ENTRY:  (X) = ADDRESS TO STORE
+                       394  ;
+                       395  ;       ENTRY:  (X) = ADDRESS TO STORE
         VALUE
-                       398  ;               (B) = NUMBER OF BYTES
-                       399  ;               (DIGADD) = ADDRESS OF 
+                       396  ;               (B) = NUMBER OF BYTES
+                       397  ;               (DIGADD) = ADDRESS OF 
                 FIRST ECHO CHARACTER
-                       400  ;       EXIT:   B,X UNCHANGED
-                       401  ;               DIGADD UPDATED
-                       402  ;       USES:   T0, DIGADD
+                       398  ;       EXIT:   B,X UNCHANGED
+                       399  ;               DIGADD UPDATED
+                       400  ;       USES:   T0, DIGADD
 
 
 Crasm 1.8:        Heathkit ET-3400A Monitor        page  6
 
-                       403  
-FD25 37                404  PROMPT  PSHB
-FD26 8608              405          LDAA    #DASH                ;
+                       401  
+FD25 37                402  PROMPT  PSHB
+FD26 8608              403          LDAA    #DASH                ;
                                       PROMPT CHARACTER
-FD28 58                406          ASLB
-FD29 BDFE3A            407  PROM1   JSR     OUTCH                ;
+FD28 58                404          ASLB
+FD29 BDFE3A            405  PROM1   JSR     OUTCH                ;
                                       SEND PROMPT
-                       408  
-FD2C 5A                409          DECB
-FD2D 26FA              410          BNE     PROM1
-FD2F 33                411          PULB
-FD30 8D11              412          BSR     BKSP                 ;
+                       406  
+FD2C 5A                407          DECB
+FD2D 26FA              408          BNE     PROM1
+FD2F 33                409          PULB
+FD30 8D11              410          BSR     BKSP                 ;
                                       BACKSPACE DISPLAYS
-FD32 37                413          PSHB                         ;
+FD32 37                411          PSHB                         ;
                                       **ALTERNATE ENTRY**
-FD33 BDFE09            414  PROM2   JSR     IHB                  ;
+FD33 BDFE09            412  PROM2   JSR     IHB                  ;
                                       GET BYTE VALUE
-FD36 A700              415          STAA    0,X                  ;
+FD36 A700              413          STAA    0,X                  ;
                                       PLACE INTO MEMORY
-FD38 08                416          INX                          ;
+FD38 08                414          INX                          ;
                                       BUMP POINTER
-FD39 5A                417          DECB
-FD3A 26F7              418          BNE     PROM2                ;
+FD39 5A                415          DECB
+FD3A 26F7              416          BNE     PROM2                ;
                                       MORE TO GO
-FD3C 33                419          PULB
-FD3D 17                420          TBA                          ;
+FD3C 33                417          PULB
+FD3D 17                418          TBA                          ;
                                       DUPLICATE
-FD3E 09                421  PROM3   DEX                          ;
+FD3E 09                419  PROM3   DEX                          ;
                                       FIX X
-FD3F 4A                422          DECA
-FD40 26FC              423          BNE     PROM3
-FD42 39                424          RTS                          ;
+FD3F 4A                420          DECA
+FD40 26FC              421          BNE     PROM3
+FD42 39                422          RTS                          ;
                                       EXIT
-                       425  
-                       426  
-                       427  ;;      BKSP - BACKSPACE DISPLAYS
-                       428  ;
-                       429  ;       ENTRY: (B) = NUMBER DIGIT PAIR
+                       423  
+                       424  
+                       425  ;;      BKSP - BACKSPACE DISPLAYS
+                       426  ;
+                       427  ;       ENTRY: (B) = NUMBER DIGIT PAIR
         S TO BACKSPACE
-                       430  ;       EXIT:  (DIGADD) = (DIGADD) + 2
+                       428  ;       EXIT:  (DIGADD) = (DIGADD) + 2
         0 * (B)
-                       431  ;       USES:  A,C
-                       432  
-FD43 37                433  BKSP    PSHB
-FD44 96F1              434          LDAA    DIGADD+1             ;
+                       429  ;       USES:  A,C
+                       430  
+FD43 37                431  BKSP    PSHB
+FD44 96F1              432          LDAA    DIGADD+1             ;
                                       L.S. BYTE
-FD46 8B20              435  BKSP1   ADDA    #$20                 ;
+FD46 8B20              433  BKSP1   ADDA    #$20                 ;
                                       BACKSPACE TWO PLACES
-FD48 5A                436          DECB
-FD49 26FB              437          BNE     BKSP1
-FD4B 97F1              438          STAA    DIGADD+1
-FD4D 33                439          PULB
-FD4E 39                440          RTS
-                       441  
-                       442  ;;      REGISTER DISPLAY FUNCTIONS
-                       443  ;
-                       444  ;       ENTRY:  NONE
-                       445  ;       EXIT:   (B) = NUMBER BYTES THI
+FD48 5A                434          DECB
+FD49 26FB              435          BNE     BKSP1
+FD4B 97F1              436          STAA    DIGADD+1
+FD4D 33                437          PULB
+FD4E 39                438          RTS
+                       439  
+                       440  ;;      REGISTER DISPLAY FUNCTIONS
+                       441  ;
+                       442  ;       ENTRY:  NONE
+                       443  ;       EXIT:   (B) = NUMBER BYTES THI
         S REGISTER
-                       446  ;               (X) = REGISTER ADDRESS
+                       444  ;               (X) = REGISTER ADDRESS
                 ON STACK
-                       447  ;               (DIGADD) INITIALIZED T
+                       445  ;               (DIGADD) INITIALIZED T
                 O DIGIT 6
-                       448  ;       USES:   ALL,T0
-                       449  
-FD4F 8D3B              450  REGX    BSR     OUTSTJ               ;
+                       446  ;       USES:   ALL,T0
+                       447  
+FD4F 8D3B              448  REGX    BSR     OUTSTJ               ;
                                       PRINT 'REGX'
-FD51 3095              451          DB      LTRI,LTRN+$80
-FD53 2016              452          BRA     REGX1
-                       453  
-FD55 8D35              454  REGA    BSR     OUTSTJ               ;
+FD51 3095              449          DB      LTRI,LTRN+$80
+FD53 2016              450          BRA     REGX1
+                       451  
+FD55 8D35              452  REGA    BSR     OUTSTJ               ;
                                       PRINT 'ACCA'
-FD57 770D0DFD          455          DB      HEXA,LTRC,LTRC,LTRA+$8
+FD57 770D0DFD          453          DB      HEXA,LTRC,LTRC,LTRA+$8
                 0
-FD5B 2010              456          BRA     REGA1
-                       457  
-FD5D 8D2D              458  REGB    BSR     OUTSTJ               ;
+FD5B 2010              454          BRA     REGA1
+                       455  
+FD5D 8D2D              456  REGB    BSR     OUTSTJ               ;
                                       PRINT 'ACCB'
-FD5F 770D0D9F          459          DB      HEXA,LTRC,LTRC,LTRB+$8
+FD5F 770D0D9F          457          DB      HEXA,LTRC,LTRC,LTRB+$8
                 0
-FD63 2009              460          BRA     REGB1
-                       461  
-FD65 8D25              462  REGP    BSR     OUTSTJ               ;
+FD63 2009              458          BRA     REGB1
+                       459  
+FD65 8D25              460  REGP    BSR     OUTSTJ               ;
                                       PRINT 'PC'
-FD67 678D              463          DB      LTRP,LTRC+$80
-                       464  
-FD69 4C                465          INCA
-FD6A 4C                466          INCA
-FD6B 5C                467  REGX1   INCB
-FD6C 4C                468          INCA
-FD6D 4C                469  REGA1   INCA
-FD6E 5C                470  REGB1   INCB
-FD6F 8B02              471          ADDA    #2
-                       472  
-FD71 DEF2              473          LDX     USERS                ;
+FD67 678D              461          DB      LTRP,LTRC+$80
+                       462  
+FD69 4C                463          INCA
+FD6A 4C                464          INCA
+FD6B 5C                465  REGX1   INCB
+FD6C 4C                466          INCA
+FD6D 4C                467  REGA1   INCA
+FD6E 5C                468  REGB1   INCB
+FD6F 8B02              469          ADDA    #2
+                       470  
+FD71 DEF2              471          LDX     USERS                ;
                                       POINT X TO REGISTER
-FD73 08                474  REG1    INX
-FD74 4A                475          DECA
-FD75 26FC              476          BNE     REG1
-FD77 8D02              477          BSR     DSPLAY
-FD79 4C                478          INCA
-FD7A 39                479          RTS
-                       480  
-                       481  ;;      DISPLAY - DISPLAY INDEXED BYTE
+FD73 08                472  REG1    INX
+FD74 4A                473          DECA
+FD75 26FC              474          BNE     REG1
+FD77 8D02              475          BSR     DSPLAY
+FD79 4C                476          INCA
+FD7A 39                477          RTS
+                       478  
+                       479  ;;      DISPLAY - DISPLAY INDEXED BYTE
  S
-                       482  ;
-                       483  ;       ENTRY:  (X) = ADDRESS OF BYTES
+                       480  ;
+                       481  ;       ENTRY:  (X) = ADDRESS OF BYTES
         TO OUTPUT
-                       484  ;               (B) = NUMBER OF BYTES 
+                       482  ;               (B) = NUMBER OF BYTES 
                 TO DISPLAY
-                       485  ;       EXIT:   X,B UNCHANGED
-                       486  ;               (DIGADD) UPDATED
-                       487  ;       USES:   ALL, T0
-                       488  
-FD7B 37                489  DSPLAY  PSHB
-FD7C A600              490  DIS1    LDAA    0,X                  ;
+                       483  ;       EXIT:   X,B UNCHANGED
+                       484  ;               (DIGADD) UPDATED
+                       485  ;       USES:   ALL, T0
+                       486  
+FD7B 37                487  DSPLAY  PSHB
+FD7C A600              488  DIS1    LDAA    0,X                  ;
                                       GET BYTE
-FD7E BDFE20            491          JSR     OUTBYT               ;
+FD7E BDFE20            489          JSR     OUTBYT               ;
                                       DISPLAY BYTE
-FD81 08                492          INX
-FD82 5A                493          DECB
-FD83 26F7              494          BNE     DIS1
-FD85 33                495          PULB
-FD86 17                496          TBA                          ;
+FD81 08                490          INX
+FD82 5A                491          DECB
+FD83 26F7              492          BNE     DIS1
+FD85 33                493          PULB
+FD86 17                494          TBA                          ;
                                       DUPLICATE BYTE COUNT
-FD87 09                497  DIS2    DEX
-FD88 4A                498          DECA
-FD89 26FC              499          BNE     DIS2
+FD87 09                495  DIS2    DEX
+FD88 4A                496          DECA
+FD89 26FC              497          BNE     DIS2
 
 
 Crasm 1.8:        Heathkit ET-3400A Monitor        page  7
 
-FD8B 39                500          RTS
+FD8B 39                498          RTS
+                       499  
+                       500  ;       CLEAR B AND JUMP TO OUTSTR
                        501  
-                       502  ;       CLEAR B AND JUMP TO OUTSTR
-                       503  
-FD8C 5F                504  OUTSTJ  CLRB
-FD8D CEC16F            505  OUTSTO  LDX     #DG6ADD
-FD90 7EFE50            506          JMP OUTST1
-                       507  
-                       508  ;;      CONDX - DISPLAY CONDITION CODE
+FD8C 5F                502  OUTSTJ  CLRB
+FD8D CEC16F            503  OUTSTO  LDX     #DG6ADD
+FD90 7EFE50            504          JMP OUTST1
+                       505  
+                       506  ;;      CONDX - DISPLAY CONDITION CODE
  S
-                       509  ;
-                       510  ;       ENTRY:  DIGADD INITIALIZED
-                       511  ;       EXIT:   (B) = 0
-                       512  ;       USES:   ALL,T0
-                       513  
-FD93 BDFCBC            514  CONDX   JSR     REDIS                ;
+                       507  ;
+                       508  ;       ENTRY:  DIGADD INITIALIZED
+                       509  ;       EXIT:   (B) = 0
+                       510  ;       USES:   ALL,T0
+                       511  
+FD93 BDFCBC            512  CONDX   JSR     REDIS                ;
                                       RESET DISPLAYS
-FD96 DEF2              515          LDX     USERS
-FD98 C620              516          LDAB    #$20
-FD9A 4F                517  COND0   CLRA
-FD9B E501              518          BITB    1,X                  ;
+FD96 DEF2              513          LDX     USERS
+FD98 C620              514          LDAB    #$20
+FD9A 4F                515  COND0   CLRA
+FD9B E501              516          BITB    1,X                  ;
                                       MASK DESIRED BIT
-                       519  
-FD9D 2701              520          BEQ     COND1                ;
+                       517  
+FD9D 2701              518          BEQ     COND1                ;
                                       IS A ZERO
-FD9F 4C                521          INCA                         ;
+FD9F 4C                519          INCA                         ;
                                       IS A ONE
-FDA0 BDFE28            522  COND1   JSR     OUTHEX
-FDA3 56                523          RORB
-FDA4 26F4              524          BNE     COND0                ;
+FDA0 BDFE28            520  COND1   JSR     OUTHEX
+FDA3 56                521          RORB
+FDA4 26F4              522          BNE     COND0                ;
                                       MORE TO DO
-FDA6 4C                525          INCA
-FDA7 39                526          RTS
-                       527  
-                       528  ;;      STKPTR - OUTPUT USER STACK POI
+FDA6 4C                523          INCA
+FDA7 39                524          RTS
+                       525  
+                       526  ;;      STKPTR - OUTPUT USER STACK POI
  NTER
-                       529  ;
-                       530  ;       ENTRY:  (DIGADD) INITIALIZED
-                       531  ;       EXIT:   (B) = 0
-                       532  ;       USES: ALL, T0
-                       533  
-  FDA8                 534  REGS    EQU     *
-FDA8 8DE2              535  STKPTR  BSR     OUTSTJ
-FDAA 5BE7              536          DB      LTRS,LTRP+$80
-FDAC D6F3              537          LDAB    USERS+1
-FDAE CB07              538          ADDB    #7
-FDB0 99F2              539          ADCA    USERS                ;
+                       527  ;
+                       528  ;       ENTRY:  (DIGADD) INITIALIZED
+                       529  ;       EXIT:   (B) = 0
+                       530  ;       USES: ALL, T0
+                       531  
+  FDA8                 532  REGS    EQU     *
+FDA8 8DE2              533  STKPTR  BSR     OUTSTJ
+FDAA 5BE7              534          DB      LTRS,LTRP+$80
+FDAC D6F3              535          LDAB    USERS+1
+FDAE CB07              536          ADDB    #7
+FDB0 99F2              537          ADCA    USERS                ;
                                       CLEAN UP FOR THE USER
-FDB2 8D6C              540          BSR     OUTBYT
-FDB4 17                541          TBA
-FDB5 5F                542          CLRB
-FDB6 8D68              543          BSR     OUTBYT
-FDB8 8601              544          LDAA    #1
-FDBA 39                545          RTS
-                       546  
-                       547  ;;      ENCODE - SCAN AND ENCODE KEYBO
+FDB2 8D6C              538          BSR     OUTBYT
+FDB4 17                539          TBA
+FDB5 5F                540          CLRB
+FDB6 8D68              541          BSR     OUTBYT
+FDB8 8601              542          LDAA    #1
+FDBA 39                543          RTS
+                       544  
+                       545  ;;      ENCODE - SCAN AND ENCODE KEYBO
  ARD
-                       548  ;
-                       549  ;       ENTRY:  NONE
-                       550  ;       EXIT:   (A) = HEX VALUE OF KEY
+                       546  ;
+                       547  ;       ENTRY:  NONE
+                       548  ;       EXIT:   (A) = HEX VALUE OF KEY
         PRESSED
-                       551  ;               'C' SET FOR VALID COND
+                       549  ;               'C' SET FOR VALID COND
                 ITION
-                       552  ;       USES:   A,T,T0
-                       553  
-FDBB 37                554  ENCODE  PSHB
-FDBC F6C003            555          LDAB    COL1                 ;
+                       550  ;       USES:   A,T,T0
+                       551  
+FDBB 37                552  ENCODE  PSHB
+FDBC F6C003            553          LDAB    COL1                 ;
                                       GET KEYBOARD DATA
-FDBF B6C006            556          LDAA    COL3
-FDC2 48                557          ASLA
-FDC3 48                558          ASLA
-FDC4 48                559          ASLA
-FDC5 59                560          ROLB
-FDC6 48                561          ASLA
-FDC7 59                562          ROLB
-FDC8 48                563          ASLA
-FDC9 59                564          ROLB
-FDCA 37                565          PSHB
-FDCB F6C005            566          LDAB    COL2                 ;
+FDBF B6C006            554          LDAA    COL3
+FDC2 48                555          ASLA
+FDC3 48                556          ASLA
+FDC4 48                557          ASLA
+FDC5 59                558          ROLB
+FDC6 48                559          ASLA
+FDC7 59                560          ROLB
+FDC8 48                561          ASLA
+FDC9 59                562          ROLB
+FDCA 37                563          PSHB
+FDCB F6C005            564          LDAB    COL2                 ;
                                       GET LAST DATA
-FDCE C41F              567          ANDB    #$1F                 ;
+FDCE C41F              565          ANDB    #$1F                 ;
                                       MASK ANY GARBAGE
-FDD0 1B                568          ABA
-FDD1 33                569          PULB
-FDD2 43                570          COMA
-FDD3 53                571          COMB
+FDD0 1B                566          ABA
+FDD1 33                567          PULB
+FDD2 43                568          COMA
+FDD3 53                569          COMB
+                       570  
+                       571  ;       (B4) IS NOW KEYBOARD PATTERN
                        572  
-                       573  ;       (B4) IS NOW KEYBOARD PATTERN
-                       574  
-FDD4 DFEC              575          STX     T0
-FDD6 CEFFA5            576          LDX     #HEXTAB-1            ;
+FDD4 DFEC              573          STX     T0
+FDD6 CEFFA5            574          LDX     #HEXTAB-1            ;
                                       TABLE OF POSSIBLE OUTPUTS
-FDD9 11                577          CBA                          ;
+FDD9 11                575          CBA                          ;
                                       FIND ACTIVE ACCUMULATOR
-FDDA 2711              578          BEQ     ENC3                 ;
+FDDA 2711              576          BEQ     ENC3                 ;
                                       ILLEGAL OR NO KEY
-FDDC 2406              579          BCC     ENC1                 ;
+FDDC 2406              577          BCC     ENC1                 ;
                                       A ACTIVE
-FDDE 36                580          PSHA                         ;
+FDDE 36                578          PSHA                         ;
                                       B ACTIVE
-FDDF 17                581          TBA                          ;
+FDDF 17                579          TBA                          ;
                                       INTERCHANGE B,A
-FDE0 33                582          PULB
-FDE1 CEFFAD            583          LDX     #HEXTAB+7
-FDE4 5D                584  ENC1    TSTB                         ;
+FDE0 33                580          PULB
+FDE1 CEFFAD            581          LDX     #HEXTAB+7
+FDE4 5D                582  ENC1    TSTB                         ;
                                       B SHOULD BE ZERO
-FDE5 2606              585          BNE     ENC3                 ;
+FDE5 2606              583          BNE     ENC3                 ;
                                       ILLEGAL
-FDE7 08                586  ENC2    INX                          ;
+FDE7 08                584  ENC2    INX                          ;
                                       SCAN FOR ACTIVE BIT
-FDE8 48                587          ASLA
-FDE9 22FC              588          BHI     ENC2                 ;
+FDE8 48                585          ASLA
+FDE9 22FC              586          BHI     ENC2                 ;
                                       NOT ACTIVE BIT
-FDEB 2701              589          BEQ     ENC4                 ;
+FDEB 2701              587          BEQ     ENC4                 ;
                                       LEGAL CHARACTER
-FDED 0C                590  ENC3    CLC                          ;
+FDED 0C                588  ENC3    CLC                          ;
                                       ILLEGAL RETURNS 'C' CLEAR
-FDEE A600              591  ENC4    LDAA    0,X                  ;
+FDEE A600              589  ENC4    LDAA    0,X                  ;
                                       GET HEX FROM TABLE
-FDF0 DEEC              592          LDX     T0
-FDF2 33                593          PULB                         ;
+FDF0 DEEC              590          LDX     T0
+FDF2 33                591          PULB                         ;
                                       CLEAN UP
-FDF3 39                594          RTS                          ;
+FDF3 39                592          RTS                          ;
                                       AND RETURN
-                       595  
-                       596  
-                       597  ;;      INCH - INPUT CHARACTER FROM KE
+                       593  
+                       594  
+                       595  ;;      INCH - INPUT CHARACTER FROM KE
  YBOARD
 
 
 Crasm 1.8:        Heathkit ET-3400A Monitor        page  8
 
-                       598  ;
-                       599  ;         'INCH' WAITS FOR A TRANSITIO
+                       596  ;
+                       597  ;         'INCH' WAITS FOR A TRANSITIO
           N BETWEEN ILLEGAL AND
-                       600  ;            LEGAL KEYBOARD CONDITIONS
+                       598  ;            LEGAL KEYBOARD CONDITIONS
              , AND RETURNS HEX VALUE
-                       601  ;               OF KEY DEPRESSED
-                       602  ;
-                       603  ;       ENTRY:  NONE
-                       604  ;       EXIT:   (A) = HEX VALUE
-                       605  ;       USES:   A,T,T0
-                       606  
-FDF4 37                607  INCH    PSHB
-FDF5 C620              608  INC1    LDAB    #TIME                ;
+                       599  ;               OF KEY DEPRESSED
+                       600  ;
+                       601  ;       ENTRY:  NONE
+                       602  ;       EXIT:   (A) = HEX VALUE
+                       603  ;       USES:   A,T,T0
+                       604  
+FDF4 37                605  INCH    PSHB
+FDF5 C620              606  INC1    LDAB    #TIME                ;
                                       VIOLATION COUNT
-FDF7 8DC2              609  INC2    BSR     ENCODE               ;
+FDF7 8DC2              607  INC2    BSR     ENCODE               ;
                                       WAIT FOR ILLEGAL INTERVAL
-FDF9 25FA              610          BCS     INC1                 ;
+FDF9 25FA              608          BCS     INC1                 ;
                                       STILL LEGAL
-FDFB 5A                611          DECB
-FDFC 26F9              612          BNE     INC2                 ;
+FDFB 5A                609          DECB
+FDFC 26F9              610          BNE     INC2                 ;
                                       NOT A FELONY
-                       613  
-                       614  ;       NOW WE'RE SURE WE HAVE AN ILLE
+                       611  
+                       612  ;       NOW WE'RE SURE WE HAVE AN ILLE
         GAL CONDITION AND
-                       615  ;       NOT JUST A RELEASE CONTACT BOU
+                       613  ;       NOT JUST A RELEASE CONTACT BOU
         NCE
-                       616  
-FDFE C620              617  INC3    LDAB    #TIME                ;
+                       614  
+FDFE C620              615  INC3    LDAB    #TIME                ;
                                       TIME UNTIL PAROLE
-FE00 8DB9              618  INC4    BSR     ENCODE
-FE02 24FA              619          BCC     INC3                 ;
+FE00 8DB9              616  INC4    BSR     ENCODE
+FE02 24FA              617          BCC     INC3                 ;
                                       BAD BEHAVIOR
-FE04 5A                620          DECB
-FE05 26F9              621          BNE     INC4                 ;
+FE04 5A                618          DECB
+FE05 26F9              619          BNE     INC4                 ;
                                       BACK IN THE SLAMMER
-FE07 33                622          PULB
-FE08 39                623          RTS
-                       624  
-                       625  ;;      IHB - INPUT HEX BYTE AND DISPL
+FE07 33                620          PULB
+FE08 39                621          RTS
+                       622  
+                       623  ;;      IHB - INPUT HEX BYTE AND DISPL
  AY ON LEDS
-                       626  ;
-                       627  ;       ENTRY: NONE
-                       628  ;       EXIT:  (A) = BYTE VALUE
-                       629  ;              (DIGADD) UPDATED
-                       630  ;       USES: A,T0,C
-                       631  
-FE09 8DE9              632  IHB     BSR     INCH                 ;
+                       624  ;
+                       625  ;       ENTRY: NONE
+                       626  ;       EXIT:  (A) = BYTE VALUE
+                       627  ;              (DIGADD) UPDATED
+                       628  ;       USES: A,T0,C
+                       629  
+FE09 8DE9              630  IHB     BSR     INCH                 ;
                                       GET FIRST HALF
-FE0B 8D1B              633          BSR     OUTHEX               ;
+FE0B 8D1B              631          BSR     OUTHEX               ;
                                       ECHO TO DISPLAYS
-FE0D 48                634          ASLA
-FE0E 48                635          ASLA
-FE0F 48                636          ASLA
-FE10 48                637          ASLA
-FE11 37                638          PSHB
-FE12 16                639          TAB
-FE13 8DDF              640          BSR     INCH                 ;
+FE0D 48                632          ASLA
+FE0E 48                633          ASLA
+FE0F 48                634          ASLA
+FE10 48                635          ASLA
+FE11 37                636          PSHB
+FE12 16                637          TAB
+FE13 8DDF              638          BSR     INCH                 ;
                                       GET NEXT HALF
-FE15 8D11              641          BSR     OUTHEX               ;
+FE15 8D11              639          BSR     OUTHEX               ;
                                       ECHO TO DISPLAYS
-FE17 1B                642          ABA
-FE18 33                643          PULB
-FE19 36                644          PSHA
-FE1A 8D9F              645  IHB1    BSR     ENCODE               ;
+FE17 1B                640          ABA
+FE18 33                641          PULB
+FE19 36                642          PSHA
+FE1A 8D9F              643  IHB1    BSR     ENCODE               ;
                                       WAIT FOR KEY RELEASE
-FE1C 25FC              646          BCS     IHB1
-FE1E 32                647          PULA                         ;
+FE1C 25FC              644          BCS     IHB1
+FE1E 32                645          PULA                         ;
                                       RESTORE LEGAL ENTRY
-FE1F 39                648          RTS
-                       649  
-                       650  ;;      OUTBYT - OUTPUT TWO HEX DIGITS
-                       651  ;
-                       652  ;       ENTRY:  (A) = BYTE VALUE TO OU
+FE1F 39                646          RTS
+                       647  
+                       648  ;;      OUTBYT - OUTPUT TWO HEX DIGITS
+                       649  ;
+                       650  ;       ENTRY:  (A) = BYTE VALUE TO OU
         TPUT
-                       653  ;       EXIT:   (DIGADD) UPDATED
-                       654  ;       USES:   C,T0
-                       655  
-FE20 36                656  OUTBYT  PSHA
-FE21 44                657          LSRA
-FE22 44                658          LSRA
-FE23 44                659          LSRA
-FE24 44                660          LSRA
-FE25 8D01              661          BSR     OUTHEX               ;
+                       651  ;       EXIT:   (DIGADD) UPDATED
+                       652  ;       USES:   C,T0
+                       653  
+FE20 36                654  OUTBYT  PSHA
+FE21 44                655          LSRA
+FE22 44                656          LSRA
+FE23 44                657          LSRA
+FE24 44                658          LSRA
+FE25 8D01              659          BSR     OUTHEX               ;
                                       OUTPUT M.S. FOUR BITS
-FE27 32                662          PULA
-                       663  
-                       664  ;;      OUTHEX - OUTPUT HEX DIGIT
-                       665  ;
-                       666  ;       ENTRY: (A) = HEX VALUE
-                       667  ;       EXIT: (DIGADD UPDATED)
-                       668  ;       USES: C,T0
-                       669  
-FE28 36                670  OUTHEX  PSHA
-FE29 840F              671          ANDA    #$F                 ; 
+FE27 32                660          PULA
+                       661  
+                       662  ;;      OUTHEX - OUTPUT HEX DIGIT
+                       663  ;
+                       664  ;       ENTRY: (A) = HEX VALUE
+                       665  ;       EXIT: (DIGADD UPDATED)
+                       666  ;       USES: C,T0
+                       667  
+FE28 36                668  OUTHEX  PSHA
+FE29 840F              669          ANDA    #$F                 ; 
                                       MASK GARBAGE
-FE2B DFEC              672          STX     T0
-FE2D CEFF95            673          LDX     #DISTAB-1           ; 
+FE2B DFEC              670          STX     T0
+FE2D CEFF95            671          LDX     #DISTAB-1           ; 
                                       DISPLAY CODE TABLE
-FE30 08                674  OUTH1   INX
-FE31 4A                675          DECA
-FE32 2AFC              676          BPL     OUTH1
-FE34 A600              677          LDAA    0,X                 ; 
+FE30 08                672  OUTH1   INX
+FE31 4A                673          DECA
+FE32 2AFC              674          BPL     OUTH1
+FE34 A600              675          LDAA    0,X                 ; 
                                       DISPLAY CODE FOR HEX
-FE36 8D04              678          BSR     OUT0                ; 
+FE36 8D04              676          BSR     OUT0                ; 
                                       ALTERNATE ENTRY FOR 'OUTCH'
-FE38 32                679          PULA
-FE39 39                680          RTS
-                       681  
-                       682  ;;      OUTCH - OUTPUT CHARACTER TO DI
+FE38 32                677          PULA
+FE39 39                678          RTS
+                       679  
+                       680  ;;      OUTCH - OUTPUT CHARACTER TO DI
  SPLAY
-                       683  ;
-                       684  ;       ENTRY: (A) = SEGMENT CODE
-                       685  ;              (DIGADD) = ADDRESS OF D
+                       681  ;
+                       682  ;       ENTRY: (A) = SEGMENT CODE
+                       683  ;              (DIGADD) = ADDRESS OF D
                IGIT TO OUTPUT
-                       686  ;       EXIT:  (DIGADD) UPDATED
-                       687  ;       USES: C,T0
-                       688  
-FE3A DFEC              689  OUTCH   STX     T0
-FE3C DEF0              690  OUT0    LDX     DIGADD              ; 
+                       684  ;       EXIT:  (DIGADD) UPDATED
+                       685  ;       USES: C,T0
+                       686  
+FE3A DFEC              687  OUTCH   STX     T0
+FE3C DEF0              688  OUT0    LDX     DIGADD              ; 
                                       **ALTERNATE ENTRY** FROM 'OU
                                       THEX'
-FE3E 37                691          PSHB
-FE3F 49                692          ROLA
-FE40 49                693          ROLA                        ; 
+FE3E 37                689          PSHB
+FE3F 49                690          ROLA
+FE40 49                691          ROLA                        ; 
                                       PRE-ROTATE A
-FE41 C610              694          LDAB    #$10                ; 
+FE41 C610              692          LDAB    #$10                ; 
                                       TO GET NEXT DIGIT
-FE43 49                695  OUT1    ROLA                        ; 
+FE43 49                693  OUT1    ROLA                        ; 
 
 
 Crasm 1.8:        Heathkit ET-3400A Monitor        page  9
 
                                       HERE WE MAKE TWO PASSES AT
-FE44 A700              696          STAA    0,X                 ; 
+FE44 A700              694          STAA    0,X                 ; 
                                       LIGHTING DIGITS--
-FE46 09                697          DEX                         ; 
+FE46 09                695          DEX                         ; 
                                       KING'S X ON FIRST PASS!!
-FE47 5A                698          DECB
-FE48 26F9              699          BNE     OUT1
-FE4A DFF0              700          STX     DIGADD              ; 
+FE47 5A                696          DECB
+FE48 26F9              697          BNE     OUT1
+FE4A DFF0              698          STX     DIGADD              ; 
                                       UPDATE 'DIGADD'
-FE4C DEEC              701          LDX     T0                  ; 
+FE4C DEEC              699          LDX     T0                  ; 
                                       RESTORES X
-FE4E 33                702          PULB
-FE4F 39                703          RTS
-                       704  
-                       705  ;;      OUTSTR--OUTPUT EMBEDDED CHARAC
+FE4E 33                700          PULB
+FE4F 39                701          RTS
+                       702  
+                       703  ;;      OUTSTR--OUTPUT EMBEDDED CHARAC
  TER STRING
-                       706  ;          CALLING CONVENTION:
-                       707  ;               JSR     OUTSTR
-                       708  ;               FIRST CHARACTER
-                       709  ;                    *
-                       710  ;                    *
-                       711  ;               LAST CHARACTER (AS D.P
+                       704  ;          CALLING CONVENTION:
+                       705  ;               JSR     OUTSTR
+                       706  ;               FIRST CHARACTER
+                       707  ;                    *
+                       708  ;                    *
+                       709  ;               LAST CHARACTER (AS D.P
                 . LIT)
-                       712  ;               NEXT INSTRUCTION
-                       713  ;
-                       714  ;       ENTRY:  NONE
-                       715  ;       EXIT:   TO 'NEXT INSTRUCTION'
-                       716  ;               (A0) = 0
-                       717  ;       USES:   A,X,T0
-                       718  
-FE50 DFF0              719  OUTST1  STX     DIGADD              ; 
+                       710  ;               NEXT INSTRUCTION
+                       711  ;
+                       712  ;       ENTRY:  NONE
+                       713  ;       EXIT:   TO 'NEXT INSTRUCTION'
+                       714  ;               (A0) = 0
+                       715  ;       USES:   A,X,T0
+                       716  
+FE50 DFF0              717  OUTST1  STX     DIGADD              ; 
                                       **ALTERNATE ENTRY** SETS UP 
                                       DIGADD
-FE52 30                720  OUTSTR  TSX                         ; 
+FE52 30                718  OUTSTR  TSX                         ; 
                                       POINT 'X' AT STRING
-FE53 EE00              721          LDX     0,X
-FE55 31                722          INS
-FE56 31                723          INS
-FE57 A600              724  OUTST3  LDAA    0,X                 ; 
+FE53 EE00              719          LDX     0,X
+FE55 31                720          INS
+FE56 31                721          INS
+FE57 A600              722  OUTST3  LDAA    0,X                 ; 
                                       GET CHARACTER
-FE59 8DDF              725          BSR     OUTCH               ; 
+FE59 8DDF              723          BSR     OUTCH               ; 
                                       OUTPUT IT TO DISPLAYS
-FE5B 08                726          INX
-FE5C 4D                727          TSTA                        ; 
+FE5B 08                724          INX
+FE5C 4D                725          TSTA                        ; 
                                       LAST CHARACTER IS NEGATIVE
-FE5D 2AF8              728          BPL     OUTST3
-FE5F 4F                729          CLRA
-FE60 6E00              730          JMP     0,X                 ; 
+FE5D 2AF8              726          BPL     OUTST3
+FE5F 4F                727          CLRA
+FE60 6E00              728          JMP     0,X                 ; 
                                       RETURN TO 'NEXT INST.'
-                       731  
-                       732  ;;      STEP - STEP USER CODE
-                       733  ;
-                       734  ;       ENTRY:  NONE
-                       735  ;       EXIT:   (B) = 1
-                       736  ;               (X) = USER P.C.
-                       737  ;               (A) = 0
-                       738  ;       USES:   ALL,T0,T1
-FE62 8D07              739  STEP    BSR     SSTEP               ; 
+                       729  
+                       730  ;;      STEP - STEP USER CODE
+                       731  ;
+                       732  ;       ENTRY:  NONE
+                       733  ;       EXIT:   (B) = 1
+                       734  ;               (X) = USER P.C.
+                       735  ;               (A) = 0
+                       736  ;       USES:   ALL,T0,T1
+FE62 8D07              737  STEP    BSR     SSTEP               ; 
                                       STEP USER CODE
-FE64 DEF2              740          LDX     USERS               ; 
+FE64 DEF2              738          LDX     USERS               ; 
                                       DISPLAY INSTRUCTION
-FE66 EE06              741          LDX     6,X
-FE68 7EFCF9            742          JMP     MEM
-                       743  
-                       744  ;;      SSET - PERFORM SINGLE STEP.
-                       745  ;
-                       746  
-FE6B 9FEE              747  SSTEP   STS     TEMP                 ;
+FE66 EE06              739          LDX     6,X
+FE68 7EFCF9            740          JMP     MEM
+                       741  
+                       742  ;;      SSET - PERFORM SINGLE STEP.
+                       743  ;
+                       744  
+FE6B 9FEE              745  SSTEP   STS     TEMP                 ;
                                       WE'LL USE THIS WHEN WE RETUR
                                       N
-FE6D DEF2              748          LDX     USERS
-FE6F A607              749          LDAA    7,X                  ;
+FE6D DEF2              746          LDX     USERS
+FE6F A607              747          LDAA    7,X                  ;
                                       PUSHING USER PC ONTO MONITOR
-FE71 36                750          PSHA                         ;
+FE71 36                748          PSHA                         ;
                                       STACK
-FE72 A606              751          LDAA    6,X
-FE74 36                752          PSHA
-FE75 EE06              753          LDX     6,X                  ;
+FE72 A606              749          LDAA    6,X
+FE74 36                750          PSHA
+FE75 EE06              751          LDX     6,X                  ;
                                       NOW GET USER PC INTO X
-FE77 863F              754          LDAA    #$3F                 ;
+FE77 863F              752          LDAA    #$3F                 ;
                                       SWI'S ARE NORMAL EXIT FROM
-FE79 36                755          PSHA                         ;
+FE79 36                753          PSHA                         ;
                                       SCRATCHPAD EXECUTION
-FE7A 36                756          PSHA
-FE7B A602              757          LDAA    2,X                  ;
+FE7A 36                754          PSHA
+FE7B A602              755          LDAA    2,X                  ;
                                       NOW WE ARE COPYING THREE BYT
                                       ES
-FE7D 36                758          PSHA                         ;
+FE7D 36                756          PSHA                         ;
                                       OF INSTRUCTION
-FE7E A601              759          LDAA    1,X
-FE80 36                760          PSHA
-FE81 A600              761          LDAA    0,X                  ;
+FE7E A601              757          LDAA    1,X
+FE80 36                758          PSHA
+FE81 A600              759          LDAA    0,X                  ;
                                       THIS IS THE OP CODE SO
-FE83 36                762  BYTCNT  PSHA                         ;
+FE83 36                760  BYTCNT  PSHA                         ;
                                       SCRUTINIZE CAREFULLY
-FE84 16                763          TAB
-FE85 CEFF75            764          LDX     #OPTAB-1
-FE88 08                765  BYT1    INX
-FE89 C008              766          SUBB    #8
-FE8B 24FB              767          BCC     BYT1
-FE8D A600              768          LDAA    0,X
-FE8F 46                769  BYT2    RORA
-FE90 5C                770          INCB
-FE91 26FC              771          BNE     BYT2
-FE93 32                772          PULA
-FE94 36                773          PSHA
-FE95 251E              774          BCS     BYT7
-FE97 8130              775          CMPA    #$30                 ;
+FE84 16                761          TAB
+FE85 CEFF75            762          LDX     #OPTAB-1
+FE88 08                763  BYT1    INX
+FE89 C008              764          SUBB    #8
+FE8B 24FB              765          BCC     BYT1
+FE8D A600              766          LDAA    0,X
+FE8F 46                767  BYT2    RORA
+FE90 5C                768          INCB
+FE91 26FC              769          BNE     BYT2
+FE93 32                770          PULA
+FE94 36                771          PSHA
+FE95 251E              772          BCS     BYT7
+FE97 8130              773          CMPA    #$30                 ;
                                       CHECK FOR BRANCH
-FE99 2404              776          BCC     BYT3
-FE9B 8120              777          CMPA    #$20
-FE9D 2414              778          BCC     BYT5                 ;
+FE99 2404              774          BCC     BYT3
+FE9B 8120              775          CMPA    #$20
+FE9D 2414              776          BCC     BYT5                 ;
                                       IT IS A BRANCH
-FE9F 8160              779  BYT3    CMPA    #$60
-FEA1 2511              780          BCS     BYT6                 ;
+FE9F 8160              777  BYT3    CMPA    #$60
+FEA1 2511              778          BCS     BYT6                 ;
                                       IT IS ONE BYTE
-FEA3 818D              781          CMPA    #$8d
-FEA5 270C              782          BEQ     BYT5                 ;
+FEA3 818D              779          CMPA    #$8d
+FEA5 270C              780          BEQ     BYT5                 ;
                                       IT IS BSR
-FEA7 84BD              783          ANDA    #$BD
-FEA9 818C              784          CMPA    #$8C
-FEAB 2704              785          BEQ     BYT4                 ;
+FEA7 84BD              781          ANDA    #$BD
+FEA9 818C              782          CMPA    #$8C
+FEAB 2704              783          BEQ     BYT4                 ;
                                       IS X OR SP IMMEDIATE
-FEAD 8430              786          ANDA    #$30                 ;
+FEAD 8430              784          ANDA    #$30                 ;
                                       CHECK FOR THREE BYTES
-FEAF 8130              787          CMPA    #$30
-FEB1 C2FF              788  BYT4    SBCB    #$FF
-FEB3 5C                789  BYT5    INCB
+FEAF 8130              785          CMPA    #$30
+FEB1 C2FF              786  BYT4    SBCB    #$FF
+FEB3 5C                787  BYT5    INCB
 
 
 Crasm 1.8:        Heathkit ET-3400A Monitor        page 10
 
-FEB4 5C                790  BYT6    INCB
-FEB5 2770              791  BYT7    BEQ     BSTRD
-FEB7 30                792          TSX
-FEB8 2502              793          BCS     STEP1
-FEBA E701              794          STAB    1,X                  ;
+FEB4 5C                788  BYT6    INCB
+FEB5 2770              789  BYT7    BEQ     BSTRD
+FEB7 30                790          TSX
+FEB8 2502              791          BCS     STEP1
+FEBA E701              792          STAB    1,X                  ;
                                       BRANCH OFFSET TO 2
-FEBC 8601              795  STEP1   LDAA    #1
-FEBE C102              796          CMPB    #2
-FEC0 2E06              797          BGT     STEP3
-FEC2 2702              798          BEQ     STEP2                ;
+FEBC 8601              793  STEP1   LDAA    #1
+FEBE C102              794          CMPB    #2
+FEC0 2E06              795          BGT     STEP3
+FEC2 2702              796          BEQ     STEP2                ;
                                       TWO BYTES
-FEC4 A701              799          STAA    1,X                  ;
+FEC4 A701              797          STAA    1,X                  ;
                                       FOR ONE BYTERS
-FEC6 A702              800  STEP2   STAA    2,X                  ;
+FEC6 A702              798  STEP2   STAA    2,X                  ;
                                       NOT FOR THREE BYTERS
-FEC8 4F                801  STEP3   CLRA                         ;
+FEC8 4F                799  STEP3   CLRA                         ;
                                       NOW ADD BYTE COUNT TO PC
-FEC9 EB06              802          ADDB    6,X
-FECB A905              803          ADCA    5,X
-FECD A705              804          STAA    5,X
-FECF E706              805          STAB    6,X
-                       806  
-                       807  ;;      DOES THE INSTRUCTION INVOLVE T
+FEC9 EB06              800          ADDB    6,X
+FECB A905              801          ADCA    5,X
+FECD A705              802          STAA    5,X
+FECF E706              803          STAB    6,X
+                       804  
+                       805  ;;      DOES THE INSTRUCTION INVOLVE T
  HE PC? IF SO THEN IT
-                       808  ;         MUST BE INTERPRETED
-                       809  
-FED1 DEF2              810  SRCHOP  LDX     USERS
-FED3 A706              811          STAA    6,X
-FED5 E707              812          STAB    7,X                  ;
+                       806  ;         MUST BE INTERPRETED
+                       807  
+FED1 DEF2              808  SRCHOP  LDX     USERS
+FED3 A706              809          STAA    6,X
+FED5 E707              810          STAB    7,X                  ;
                                       UPDATE PC ON USER STACK
-FED7 C606              813          LDAB    #6
-FED9 32                814          PULA
-FEDA 36                815          PSHA                         ;
+FED7 C606              811          LDAB    #6
+FED9 32                812          PULA
+FEDA 36                813          PSHA                         ;
                                       GET COPY OF OPCODE
-FEDB 84CF              816          ANDA    #$CF                 ;
+FEDB 84CF              814          ANDA    #$CF                 ;
                                       IS THIS A SUBROUTINE CALL?
-FEDD 818D              817          CMPA    #$8D
-FEDF 32                818          PULA
-FEE0 2748              819          BEQ     BSRH
-FEE2 816E              820          CMPA    #$6E                 ;
+FEDD 818D              815          CMPA    #$8D
+FEDF 32                816          PULA
+FEE0 2748              817          BEQ     BSRH
+FEE2 816E              818          CMPA    #$6E                 ;
                                       IT IS INDEXED JUMP
-FEE4 275B              821          BEQ     JPXH
-FEE6 817E              822          CMPA    #$7E
-FEE8 275E              823          BEQ     JMPH                 ;
+FEE4 275B              819          BEQ     JPXH
+FEE6 817E              820          CMPA    #$7E
+FEE8 275E              821          BEQ     JMPH                 ;
                                       IT IS EXTENDED JUMP
-FEEA 8139              824          CMPA    #$39
-FEEC 2762              825          BEQ     RTSH                 ;
+FEEA 8139              822          CMPA    #$39
+FEEC 2762              823          BEQ     RTSH                 ;
                                       IT IS RTS
-FEEE 813B              826          CMPA    #$3B
-FEF0 276C              827          BEQ     RTIH                 ;
+FEEE 813B              824          CMPA    #$3B
+FEF0 276C              825          BEQ     RTIH                 ;
                                       IT IS RTI
-FEF2 813F              828          CMPA    #$3F
-FEF4 276E              829          BEQ     SWIH                 ;
+FEF2 813F              826          CMPA    #$3F
+FEF4 276E              827          BEQ     SWIH                 ;
                                       IT IS SWI
-FEF6 AF06              830          STS     6,X                  ;
+FEF6 AF06              828          STS     6,X                  ;
                                       AIM USER PC AT SCRATCH AREA
-FEF8 36                831          PSHA                         ;
+FEF8 36                829          PSHA                         ;
                                       REPLACE OPCODE
-FEF9 CEFF05            832          LDX     #SSRET
-                       833  
-                       834  ;;      SWIVE1 - SET UP BREAKPOINT RET
+FEF9 CEFF05            830          LDX     #SSRET
+                       831  
+                       832  ;;      SWIVE1 - SET UP BREAKPOINT RET
  URN AND JUMP TO USER CODE
-                       835  ;
-                       836  ;       ENTRY:  (X) = SWI VECTOR
-                       837  ;       EXIT:   TO USER PROGRAM
-                       838  ;
-                       839  
-FEFC 867E              840  SWIVE1  LDAA    #$7E
-FEFE 97F4              841          STAA    SYSSWI
-FF00 DFF5              842          STX     SYSSWI+1
-FF02 9EF2              843          LDS     USERS
-FF04 3B                844          RTI
-                       845  
-                       846  ;;      THE FOLLOWING CODE IS EXECUTED
+                       833  ;
+                       834  ;       ENTRY:  (X) = SWI VECTOR
+                       835  ;       EXIT:   TO USER PROGRAM
+                       836  ;
+                       837  
+FEFC 867E              838  SWIVE1  LDAA    #$7E
+FEFE 97F4              839          STAA    SYSSWI
+FF00 DFF5              840          STX     SYSSWI+1
+FF02 9EF2              841          LDS     USERS
+FF04 3B                842          RTI
+                       843  
+                       844  ;;      THE FOLLOWING CODE IS EXECUTED
  AFTER A SINGLE STEP
-                       847  ;         OF AN OUT-OF-PLACE INSTRUCTI
+                       845  ;         OF AN OUT-OF-PLACE INSTRUCTI
           ON.  NOW CHECK TO SEE
-                       848  ;           IF BRANCH OCCURRED, MODIFY
+                       846  ;           IF BRANCH OCCURRED, MODIFY
             THE USER PC ACCORDINGLY
-                       849  ;
-                       850  
-FF05 30                851  SSRET   TSX                          ;
+                       847  ;
+                       848  
+FF05 30                849  SSRET   TSX                          ;
                                       GET SWI LOCATION INTO X
-FF06 EE05              852          LDX     5,X
-FF08 08                853          INX
-FF09 4F                854          CLRA
-FF0A 5F                855          CLRB
-FF0B 9CEE              856          CPX     TEMP
-FF0D 260C              857          BNE     BCHNTK
-                       858  
-                       859  ;       ADD THE BRANCH OFFSET TO THE U
+FF06 EE05              850          LDX     5,X
+FF08 08                851          INX
+FF09 4F                852          CLRA
+FF0A 5F                853          CLRB
+FF0B 9CEE              854          CPX     TEMP
+FF0D 260C              855          BNE     BCHNTK
+                       856  
+                       857  ;       ADD THE BRANCH OFFSET TO THE U
         SER PC
-                       860  
-FF0F 09                861          DEX                          ;
+                       858  
+FF0F 09                859          DEX                          ;
                                       X WILL NOW POINT AT USERPC
-FF10 EE00              862          LDX     0,X                  ;
+FF10 EE00              860          LDX     0,X                  ;
                                       SAVED VALUE OF PC INTO X
-FF12 09                863          DEX                          ;
+FF12 09                861          DEX                          ;
                                       PREPARE TO FETCH BRANCH OFFS
                                       ET
-FF13 E600              864          LDAB    0,X
-FF15 2A01              865          BPL     PLUS
-FF17 43                866          COMA                         ;
+FF13 E600              862          LDAB    0,X
+FF15 2A01              863          BPL     PLUS
+FF17 43                864          COMA                         ;
                                       A IS SIGN EXTENSION OF B
-FF18 30                867  PLUS    TSX                          ;
+FF18 30                865  PLUS    TSX                          ;
                                       LO COST WAY TO POINT TO USER
                                       PC
-FF19 EE05              868          LDX     5,X
-FF1B EB01              869  BCHNTK  ADDB    1,X                  ;
+FF19 EE05              866          LDX     5,X
+FF1B EB01              867  BCHNTK  ADDB    1,X                  ;
                                       ADD BRANCH OFFSET OR ZERO TO
                                       PC
-FF1D A900              870          ADCA    0,X
-FF1F 30                871          TSX                          ;
+FF1D A900              868          ADCA    0,X
+FF1F 30                869          TSX                          ;
                                       PLACE NEW USERPC ONTO STACK
-FF20 A705              872          STAA    5,X
-FF22 E706              873          STAB    6,X
-FF24 09                874          DEX                          ;
+FF20 A705              870          STAA    5,X
+FF22 E706              871          STAB    6,X
+FF24 09                872          DEX                          ;
                                       NOW X AND SP ARE EQUAL
-FF25 DFF2              875  STOX    STX     USERS
-FF27 9EEE              876  BSTRD   LDS     TEMP                 ;
+FF25 DFF2              873  STOX    STX     USERS
+FF27 9EEE              874  BSTRD   LDS     TEMP                 ;
                                       RETURN TO CALLING ROUTINE
-FF29 39                877          RTS
+FF29 39                875          RTS
+                       876  
+                       877  ;;      SPECIAL HANDLERS
                        878  
-                       879  ;;      SPECIAL HANDLERS
+                       879  ;;      BSR HANDLER
                        880  
-                       881  ;;      BSR HANDLER
-                       882  
-FF2A 818D              883  BSRH    CMPA    #$8D                 ;
+FF2A 818D              881  BSRH    CMPA    #$8D                 ;
 
 
 Crasm 1.8:        Heathkit ET-3400A Monitor        page 11
 
                                       IS IT BSR
-FF2C 2602              884          BNE     JSRH
-FF2E 865F              885          LDAA    #$5F                 ;
+FF2C 2602              882          BNE     JSRH
+FF2E 865F              883          LDAA    #$5F                 ;
                                       THIS CONVERTS BSR'S TO BRA'S
+                       884  
+                       885  ;;      JSR HANDLER
                        886  
-                       887  ;;      JSR HANDLER
-                       888  
-FF30 803F              889  JSRH    SUBA    #$3F                 ;
+FF30 803F              887  JSRH    SUBA    #$3F                 ;
                                       JSR'S TO JUMPS
-FF32 36                890          PSHA                         ;
+FF32 36                888          PSHA                         ;
                                       CORRECTED OPCODE ONTO STACK
-FF33 09                891          DEX
-FF34 09                892          DEX
-FF35 DFF2              893          STX     USERS
-FF37 A603              894  JSRH1   LDAA    3,X
-FF39 A701              895          STAA    1,X                  ;
+FF33 09                889          DEX
+FF34 09                890          DEX
+FF35 DFF2              891          STX     USERS
+FF37 A603              892  JSRH1   LDAA    3,X
+FF39 A701              893          STAA    1,X                  ;
                                       MOVE USER REGISTERS
-FF3B 08                896          INX
-FF3C 5A                897          DECB
-FF3D 2AF8              898          BPL     JSRH1
-FF3F 2090              899          BRA     SRCHOP               ;
+FF3B 08                894          INX
+FF3C 5A                895          DECB
+FF3D 2AF8              896          BPL     JSRH1
+FF3F 2090              897          BRA     SRCHOP               ;
                                       NOW EXECUTE JUMP INSTRUCT
+                       898  
+                       899  ;;      JPXH - INDEXED JUMP HANDLER.
                        900  
-                       901  ;;      JPXH - INDEXED JUMP HANDLER.
-                       902  
-FF41 33                903  JPXH    PULB                         ;
+FF41 33                901  JPXH    PULB                         ;
                                       GET OFFSET
-FF42 4F                904          CLRA
-FF43 EB05              905          ADDB    5,X
-FF45 A904              906          ADCA    4,X
-FF47 8C                907          DB      $8C                  ;
+FF42 4F                902          CLRA
+FF43 EB05              903          ADDB    5,X
+FF45 A904              904          ADCA    4,X
+FF47 8C                905          DB      $8C                  ;
                                       CPX#: ONE BYTE BRA NEWPC
+                       906  
+                       907  ;;      JMP HANDLER
                        908  
-                       909  ;;      JMP HANDLER
-                       910  
-FF48 32                911  JMPH    PULA
-FF49 33                912          PULB
-FF4A A706              913  NEWPC   STAA    6,X
-FF4C E707              914          STAB    7,X
-FF4E 20D5              915          BRA     STOX                 ;
+FF48 32                909  JMPH    PULA
+FF49 33                910          PULB
+FF4A A706              911  NEWPC   STAA    6,X
+FF4C E707              912          STAB    7,X
+FF4E 20D5              913          BRA     STOX                 ;
                                       RETURN TO CALLER
+                       914  
+                       915  ;;      RTS HANDLER
                        916  
-                       917  ;;      RTS HANDLER
-                       918  
-FF50 08                919  RTSH    INX
-FF51 08                920          INX
-FF52 DFF2              921          STX     USERS                ;
+FF50 08                917  RTSH    INX
+FF51 08                918          INX
+FF52 DFF2              919          STX     USERS                ;
                                       NET PULL OF TWO BYTES
-FF54 A603              922  RTS1    LDAA    3,X
-FF56 A705              923          STAA    5,X
-FF58 09                924          DEX
-FF59 5A                925          DECB
-FF5A 2EF8              926          BGT     RTS1
-FF5C 20C9              927          BRA     BSTRD
+FF54 A603              920  RTS1    LDAA    3,X
+FF56 A705              921          STAA    5,X
+FF58 09                922          DEX
+FF59 5A                923          DECB
+FF5A 2EF8              924          BGT     RTS1
+FF5C 20C9              925          BRA     BSTRD
+                       926  
+                       927  ;;      RTI HANDLER
                        928  
-                       929  ;;      RTI HANDLER
-                       930  
-FF5E 08                931  RTIH    INX
-FF5F 5A                932          DECB
-FF60 2AFC              933          BPL     RTIH
-FF62 20C1              934          BRA     STOX
+FF5E 08                929  RTIH    INX
+FF5F 5A                930          DECB
+FF60 2AFC              931          BPL     RTIH
+FF62 20C1              932          BRA     STOX
+                       933  
+                       934  ;;      SWI HANDLER
                        935  
-                       936  ;;      SWI HANDLER
-                       937  
-FF64 A607              938  SWIH    LDAA    7,X
-FF66 A700              939          STAA    0,X
-FF68 09                940          DEX
-FF69 5A                941          DECB
-FF6A 2AF8              942          BPL     SWIH
-FF6C 8A10              943          ORAA    #%00010000           ;
+FF64 A607              936  SWIH    LDAA    7,X
+FF66 A700              937          STAA    0,X
+FF68 09                938          DEX
+FF69 5A                939          DECB
+FF6A 2AF8              940          BPL     SWIH
+FF6C 8A10              941          ORAA    #%00010000           ;
                                       SET INTERRUPT MASK
-FF6E A701              944          STAA    1,X
-FF70 C6FA              945          LDAB    #-USWI/256*256+USWI  ;
+FF6E A701              942          STAA    1,X
+FF70 C6FA              943          LDAB    #-USWI/256*256+USWI  ;
                                       USWI LO ORDER
-FF72 8600              946          LDAA    #USWI/256
-FF74 20D4              947          BRA     NEWPC                ;
+FF72 8600              944          LDAA    #USWI/256
+FF74 20D4              945          BRA     NEWPC                ;
                                       PATCH IN UIRQ
-                       948  
-                       949  ;;      OPTAB - LEGAL OP-CODE LOOKUP T
+                       946  
+                       947  ;;      OPTAB - LEGAL OP-CODE LOOKUP T
  ABLE
-                       950  
+                       948  
 FF76 9C003CAF400000
 FF7D AC641264126410
-FF84 6410              951  OPTAB   DW      $9C00,$3CAF,$4000,$00A
+FF84 6410              949  OPTAB   DW      $9C00,$3CAF,$4000,$00A
                 C,$6412,$6412,$6410,$6410
 FF86 11011004100010
 FF8D 00110D100C100C
-FF94 100C              952          DW      $1101,$1004,$1000,$100
+FF94 100C              950          DW      $1101,$1004,$1000,$100
                 0,$110D,$100C,$100C,$100C
+                       951  
+                       952  ;;      HEX DISPLAY CODE TABLE
                        953  
-                       954  ;;      HEX DISPLAY CODE TABLE
-                       955  
 FF96 7E306D79335B5F
-FF9D 70                956  DISTAB  DB      HEX0,HEX1,HEX2,HEX3,HE
+FF9D 70                954  DISTAB  DB      HEX0,HEX1,HEX2,HEX3,HE
                 X4,HEX5,HEX6,HEX7
 FF9E 7F7B771F4E3D4F
-FFA5 47                957          DB      HEX8,HEX9,HEXA,HEXB,HE
+FFA5 47                955          DB      HEX8,HEX9,HEXA,HEXB,HE
                 XC,HEXD,HEXE,HEXF
+                       956  
+                       957  ;;      KEY VALUE TABLE
                        958  
-                       959  ;;      KEY VALUE TABLE
-                       960  
 FFA6 070A0D0205080B
-FFAD 0E                961  HEXTAB  DB      7,10,13,2,5,8,11,14
+FFAD 0E                959  HEXTAB  DB      7,10,13,2,5,8,11,14
 FFAE 0306090C0F0001
-FFB5 04                962          DB      3,6,9,12,15,0,1,4
-                       963  
-                       964  ;;      COMMAND HANDLER ENTRY POINT TA
+FFB5 04                960          DB      3,6,9,12,15,0,1,4
+                       961  
+                       962  ;;      COMMAND HANDLER ENTRY POINT TA
  BLE
-                       965  
+                       963  
 FFB6 FC45FD55FD5DFD
 FFBD 65FD4FFD93FDA8
-FFC4 FC96FE62          966  CMDTAB  DW      ZERO,REGA,REGB,REGP,RE
+FFC4 FC96FE62          964  CMDTAB  DW      ZERO,REGA,REGB,REGP,RE
                 GX,CONDX,REGS,RESUME,STEP
 FFC8 FC46FD0AFD18FD
-FFCF 1BFC8CFD13FD16    967          DW      BKSET,AUTO,BACK,REPLAC
+FFCF 1BFC8CFD13FD16    965          DW      BKSET,AUTO,BACK,REPLAC
                 ,DO,EXAM,FOWD
+                       966  
+                       967  ;; FILL UNUSED LOCATIONS WITH FF
                        968  
-                       969  ;; FILL UNUSED LOCATIONS WITH FF
-                       970  
 FFD6 FFFFFFFFFFFFFF
 FFDD FFFFFFFFFFFFFF
-FFE4 FFFFFFFFFFFFFF    971          DS      $FFF8-*,$FF
+FFE4 FFFFFFFFFFFFFF    969          DS      $FFF8-*,$FF
+                       970  
+                       971  ;;      INTERRUPT VECTORS.
                        972  
-                       973  ;;      INTERRUPT VECTORS.
-                       974  
-FFF8 00F7              975          DW      UIRQ                 ;
+FFF8 00F7              973          DW      UIRQ                 ;
                                       USER IRQ HANDLER
-FFFA 00F4              976          DW      SYSSWI               ;
+FFFA 00F4              974          DW      SYSSWI               ;
 
 
 Crasm 1.8:        Heathkit ET-3400A Monitor        page 12
 
                                       SYSTEM SWI HANDLER
-FFFC 00FD              977          DW      UNMI                 ;
+FFFC 00FD              975          DW      UNMI                 ;
                                       USER NMI HANDLER
-FFFE FC00              978          DW      RESET
-                       979  
+FFFE FC00              976          DW      RESET
+                       977  
 
 ERRORS:       0
 WARNINGS:     0

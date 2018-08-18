@@ -17,7 +17,7 @@
         CPU 6800
 
         OUTSTO  EQU $FD8D
-        
+
         * = $0060
 
 START   JSR     OUTSTO          ; LEFT DISPLAY  OUT WORD

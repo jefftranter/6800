@@ -16,7 +16,7 @@
         OUTCH   EQU $FE3A
         DIGADD  EQU $F0
         OUTHEX  EQU $FE28
-        
+
         * = $0030
 
 START   JSR     REDIS           ; FIRST DISPLAY ADDRESS

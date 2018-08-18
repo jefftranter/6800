@@ -1,12 +1,11 @@
         NAM Heathkit ET-3400A Monitor
         PAGE 132,66
 
-; Entered from listing in ET-3400A manual by Jeff Tranter <tranter@pobox.com>.
+; Entered from listing in ET-3400/ET-3400A manuals by Jeff Tranter <tranter@pobox.com>.
 ; Fixed some small errors in the listing.
 ; Adapted to the crasm assembler (https://github.com/colinbourassa/crasm).
-; Note that I do not own an ET-3400A and have no way of testing it but I
-; have confirmed that it produces the same binary output as the Heathkit
-; ROMs.
+; I have confirmed that it produces the same binary output as the
+; Heathkit ROMs and that it works on an ET-3400.
 
         CPU 6800
 
@@ -31,7 +30,6 @@
         DG3ADD EQU $C13F
         DG2ADD EQU $C12F
         DG1ADD EQU $C11F             ; RIGHTMOST DIGIT
-        
 
 ;;      DISPLAYED CHARACTER SEGMENT CODES
 
@@ -96,7 +94,7 @@ UNMI    DS 3                         ; USER NMI VECTOR
         * EQU $FC00
 
 ;;      RESET - CLEAR BREAKPOINT TABLE AND INITIALIZE STACK
-       
+
 RESET   LDS     #2*NBR+BKTBL-1
         JSR     OUTSTO
         DB      HEXC,LTRP,LTRU,0,LTRU,LTRP+$80

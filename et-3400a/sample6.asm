@@ -1,5 +1,5 @@
         NAM Heathkit SAMPLE6
-        PAGE 132,66
+        PAGE 66,132
 
 ;                  SAMPLE 6
 ;      THIS IS A TWELVE HOUR CLOCK PROGRAM

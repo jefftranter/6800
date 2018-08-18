@@ -1,29 +1,20 @@
-Crasm 1.8:                 Heathkit SAMPLE3        page  1
+Crasm 1.8:                 Heathkit SAMPLE3                                                                          page  1
 
                          1          NAM Heathkit SAMPLE3
-                         2          PAGE 132,66
+                         2          PAGE 66,132
                          3  
                          4  ;                  SAMPLE 3
-                         5  ;      OUTPUTS MESSAGE BY DISPLAYING U
-       P TO SIX
-                         6  ;      CHARACTER WORD ONE WORD AT A TI
-       ME
+                         5  ;      OUTPUTS MESSAGE BY DISPLAYING UP TO SIX
+                         6  ;      CHARACTER WORD ONE WORD AT A TIME
                          7  ;      USES MONITOR SUB ROUTINE OUTSTO
-                         8  ;      NOTE: DP MUST BE LIT TO INDICAT
-       E END OF STRING
-                         9  ;      TO EXIT OUTSTR. DP IS PLACED IN
-       THE
-                        10  ;      SEVENTH DISPLAY POSITION TO FUL
-       FILL THIS
-                        11  ;      REQUIREMENT WITHOUT ACTUALLY BE
-       ING DISPLAYED.
+                         8  ;      NOTE: DP MUST BE LIT TO INDICATE END OF STRING
+                         9  ;      TO EXIT OUTSTR. DP IS PLACED IN THE
+                        10  ;      SEVENTH DISPLAY POSITION TO FULFILL THIS
+                        11  ;      REQUIREMENT WITHOUT ACTUALLY BEING DISPLAYED.
                         12  
-                        13  ; Entered from listing in ET-3400A man
-  ual by Jeff Tranter <tranter@pobox.com>
-                        14  ; Add definitions to get it to assembl
-  e and adapted to the crasm
-                        15  ; assembler (https://github.com/colinb
-  ourassa/crasm).
+                        13  ; Entered from listing in ET-3400A manual by Jeff Tranter <tranter@pobox.com>
+                        14  ; Add definitions to get it to assemble and adapted to the crasm
+                        15  ; assembler (https://github.com/colinbourassa/crasm).
                         16  
                         17          CPU 6800
                         18  
@@ -31,55 +22,34 @@ Crasm 1.8:                 Heathkit SAMPLE3        page  1
                         20  
   0060                  21          * = $0060
                         22  
-0060 BDFD8D             23  START   JSR     OUTSTO          ; LEFT
-                                  DISPLAY  OUT WORD
-0063 003B7E3E050080     24          DB      $00,$3B,$7E,$3E,$05,$0
-                0,$80 ; YOUR
+0060 BDFD8D             23  START   JSR     OUTSTO          ; LEFT DISPLAY  OUT WORD
+0063 003B7E3E050080     24          DB      $00,$3B,$7E,$3E,$05,$00,$80 ; YOUR
                         25  
-006A 8D3F               26          BSR     HOLD            ; HOLD
-                                  DISPLAY
-006C BDFD8D             27          JSR     OUTSTO          ; LEFT
-                                  DISPLAY  OUT WORD
-006F 0079337E7E0080     28          DB      $00,$79,$33,$7E,$7E,$0
-                0,$80 ; 3400
+006A 8D3F               26          BSR     HOLD            ; HOLD DISPLAY
+006C BDFD8D             27          JSR     OUTSTO          ; LEFT DISPLAY  OUT WORD
+006F 0079337E7E0080     28          DB      $00,$79,$33,$7E,$7E,$00,$80 ; 3400
                         29  
-0076 8D33               30          BSR     HOLD            ; HOLD
-                                  DISPLAY
-0078 BDFD8D             31          JSR     OUTSTO          ; LEFT
-                                  DISPLAY  OUT WORD
-007B 0000305B000080     32          DB      $00,$00,$30,$5B,$00,$0
-                0,$80 ; IS
+0076 8D33               30          BSR     HOLD            ; HOLD DISPLAY
+0078 BDFD8D             31          JSR     OUTSTO          ; LEFT DISPLAY  OUT WORD
+007B 0000305B000080     32          DB      $00,$00,$30,$5B,$00,$00,$80 ; IS
                         33  
-0082 8D27               34          BSR     HOLD            ; HOLD
-                                  DISPLAY
-0084 BDFD8D             35          JSR     OUTSTO          ; LEFT
-                                  DISPLAY  OUT WORD
-0087 00003E67000080     36          DB      $00,$00,$3E,$67,$00,$0
-                0,$80 ; UP
+0082 8D27               34          BSR     HOLD            ; HOLD DISPLAY
+0084 BDFD8D             35          JSR     OUTSTO          ; LEFT DISPLAY  OUT WORD
+0087 00003E67000080     36          DB      $00,$00,$3E,$67,$00,$00,$80 ; UP
                         37  
-008E 8D1B               38          BSR     HOLD            ; HOLD
-                                  DISPLAY
-0090 BDFD8D             39          JSR     OUTSTO          ; LEFT
-                                  DISPLAY  OUT WORD
-0093 00007D153D0080     40          DB      $00,$00,$7D,$15,$3D,$0
-                0,$80 ; AND
+008E 8D1B               38          BSR     HOLD            ; HOLD DISPLAY
+0090 BDFD8D             39          JSR     OUTSTO          ; LEFT DISPLAY  OUT WORD
+0093 00007D153D0080     40          DB      $00,$00,$7D,$15,$3D,$00,$80 ; AND
                         41  
-009A 8D0F               42          BSR     HOLD            ; HOLD
-                                  DISPLAY
-009C BDFD8D             43          JSR     OUTSTO          ; LEFT
-                                  DISPLAY  OUT WORD
-009F 051C1515101580     44          DB      $05,$1C,$15,$15,$10,$1
-                5,$80 ; RUNNIN
+009A 8D0F               42          BSR     HOLD            ; HOLD DISPLAY
+009C BDFD8D             43          JSR     OUTSTO          ; LEFT DISPLAY  OUT WORD
+009F 051C1515101580     44          DB      $05,$1C,$15,$15,$10,$15,$80 ; RUNNIN
                         45  
-00A6 8D03               46          BSR     HOLD            ; HOLD
-                                  DISPLAY
-00A8 7E0060             47          JMP     START           ; DO A
-                                  GAIN
-00AB CEFF00             48  HOLD    LDX     #$FF00          ; TIME
-                                  TO WAIT
+00A6 8D03               46          BSR     HOLD            ; HOLD DISPLAY
+00A8 7E0060             47          JMP     START           ; DO AGAIN
+00AB CEFF00             48  HOLD    LDX     #$FF00          ; TIME TO WAIT
 00AE 09                 49  WAIT    DEX
-00AF 26FD               50          BNE     WAIT            ; TIME
-                                  OUT YET?
+00AF 26FD               50          BNE     WAIT            ; TIME OUT YET?
 00B1 39                 51          RTS
                         52  
 
@@ -94,112 +64,10 @@ Successful assembly...
 
 
 
+Crasm 1.8:                 Heathkit SAMPLE3                                                                          page  2
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Crasm 1.8:                 Heathkit SAMPLE3        page  2
-
-^00AB   Abs HOLD                                             
- FD8D   Abs OUTSTO                                           
- 0060   Abs START                                            
- 00AE   Abs WAIT                                             
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+^00AB   Abs HOLD                                              FD8D   Abs OUTSTO                                           
+ 0060   Abs START                                             00AE   Abs WAIT                                             
 
 
 

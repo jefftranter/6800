@@ -1,4 +1,4 @@
-all:	monitor.run sample1.run sample2.run sample3.run sample4.run sample5.run sample6.run sample7.run interrupt.run
+all:	monitor.run sample1.run sample2.run sample3.run sample4.run sample5.run sample6.run sample7.run interrupt.run intclock.run
 
 monitor.run: monitor.asm
 	crasm -o monitor.run monitor.asm >monitor.lst
@@ -26,6 +26,9 @@ sample7.run: sample7.asm
 
 interrupt.run: interrupt.asm
 	crasm -o interrupt.run interrupt.asm >interrupt.lst
+
+intclock.run: intclock.asm
+	crasm -o intclock.run intclock.asm >intclock.lst
 
 clean:
 	$(RM) *.run *.lst

@@ -1,5 +1,5 @@
         NAM Heathkit SAMPLE1
-        PAGE 132,66
+        PAGE 66,132
 
 ;                   SAMPLE 1
 ;      TURNS ON AND OFF EACH SEGMENT IN

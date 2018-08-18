@@ -1,20 +1,16 @@
-Crasm 1.8:                 Heathkit SAMPLE2        page  1
+Crasm 1.8:                 Heathkit SAMPLE2                                                                          page  1
 
                          1          NAM Heathkit SAMPLE2
-                         2          PAGE 132,66
+                         2          PAGE 66,132
                          3  
                          4  ;                   SAMPLE 2
                          5  ;      TURNS ALL DISPLAYS OFF AND ON
                          6  ;      DISPLAYS HEX VALUE AT 0044
-                         7  ;      USES MONITOR SUBROUTINES REDIS,
-       OUTCH AND OUTHEX
+                         7  ;      USES MONITOR SUBROUTINES REDIS, OUTCH AND OUTHEX
                          8  
-                         9  ; Entered from listing in ET-3400A man
-  ual by Jeff Tranter <tranter@pobox.com>
-                        10  ; Add definitions to get it to assembl
-  e and adapted to the crasm
-                        11  ; assembler (https://github.com/colinb
-  ourassa/crasm).
+                         9  ; Entered from listing in ET-3400A manual by Jeff Tranter <tranter@pobox.com>
+                        10  ; Add definitions to get it to assemble and adapted to the crasm
+                        11  ; assembler (https://github.com/colinbourassa/crasm).
                         12  
                         13          CPU 6800
                         14  
@@ -25,36 +21,24 @@ Crasm 1.8:                 Heathkit SAMPLE2        page  1
                         19  
   0030                  20          * = $0030
                         21  
-0030 BDFCBC             22  START   JSR     REDIS           ; FIRS
-                                  T DISPLAY ADDRESS
+0030 BDFCBC             22  START   JSR     REDIS           ; FIRST DISPLAY ADDRESS
 0033 4F                 23  CLEAR   CLRA
-0034 BDFE3A             24          JSR     OUTCH           ; TURN
-                                  ALL SEGMENTS OFF
-0037 DEF0               25          LDX     DIGADD          ; NEXT
-                                  DISPLAY
-0039 8CC10F             26          CPX     #$C10F          ; LAST
-                                  DISPLAY YET?
+0034 BDFE3A             24          JSR     OUTCH           ; TURN ALL SEGMENTS OFF
+0037 DEF0               25          LDX     DIGADD          ; NEXT DISPLAY
+0039 8CC10F             26          CPX     #$C10F          ; LAST DISPLAY YET?
 003C 26F5               27          BNE     CLEAR
 003E 8D13               28          BSR     HOLD
-0040 BDFCBC             29          JSR     REDIS           ; FIRS
-                                  T DISPLAY ADDRESS
-0043 8608               30          LDAA    #$08            ; HEX 
-                                  VALUE TO DISPLAY
-0045 BDFE28             31  OUT     JSR     OUTHEX          ; OUTP
-                                  UT CHARACTER
-0048 DEF0               32          LDX     DIGADD          ; NEXT
-                                  DISPLAY
-004A 8CC10F             33          CPX     #$C10F          ; LAST
-                                  DISPLAY YET?
+0040 BDFCBC             29          JSR     REDIS           ; FIRST DISPLAY ADDRESS
+0043 8608               30          LDAA    #$08            ; HEX VALUE TO DISPLAY
+0045 BDFE28             31  OUT     JSR     OUTHEX          ; OUTPUT CHARACTER
+0048 DEF0               32          LDX     DIGADD          ; NEXT DISPLAY
+004A 8CC10F             33          CPX     #$C10F          ; LAST DISPLAY YET?
 004D 26F6               34          BNE     OUT
 004F 8D02               35          BSR     HOLD
-0051 20DD               36          BRA     START           ; DO A
-                                  GAIN
-0053 CEFF00             37  HOLD    LDX     #$FF00          ; TIME
-                                  TO WAIT
+0051 20DD               36          BRA     START           ; DO AGAIN
+0053 CEFF00             37  HOLD    LDX     #$FF00          ; TIME TO WAIT
 0056 09                 38  WAIT    DEX
-0057 26FD               39          BNE     WAIT            ; TIME
-                                  OUT YET?
+0057 26FD               39          BNE     WAIT            ; TIME OUT YET?
 0059 39                 40          RTS
                         41  
 
@@ -80,129 +64,13 @@ Successful assembly...
 
 
 
+Crasm 1.8:                 Heathkit SAMPLE2                                                                          page  2
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Crasm 1.8:                 Heathkit SAMPLE2        page  2
-
- 0033   Abs CLEAR                                            
- 00F0   Abs DIGADD                                           
-^0053   Abs HOLD                                             
- 0045   Abs OUT                                              
- FE3A   Abs OUTCH                                            
- FE28   Abs OUTHEX                                           
- FCBC   Abs REDIS                                            
- 0030   Abs START                                            
+ 0033   Abs CLEAR                                             00F0   Abs DIGADD                                           
+^0053   Abs HOLD                                              0045   Abs OUT                                              
+ FE3A   Abs OUTCH                                             FE28   Abs OUTHEX                                           
+ FCBC   Abs REDIS                                             0030   Abs START                                            
  0056   Abs WAIT                                             
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

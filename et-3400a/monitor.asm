@@ -1,5 +1,5 @@
         NAM Heathkit ET-3400A Monitor
-        PAGE 132,66
+        PAGE 66,132
 
 ; Entered from listing in ET-3400/ET-3400A manuals by Jeff Tranter <tranter@pobox.com>.
 ; Fixed some small errors in the listing.

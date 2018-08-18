@@ -1,79 +1,55 @@
-Crasm 1.8:                Interrupt Example        page  1
+Crasm 1.8:                Interrupt Example                                                                          page  1
 
                          1          NAM Interrupt Example
-                         2          PAGE 132,66
+                         2          PAGE 66,132
                          3  
                          4  ;      Interrupt Example
                          5  
-                         6  ; This program demonstrates interrupt 
-  handling. Do the following using
+                         6  ; This program demonstrates interrupt handling. Do the following using
                          7  ; the ET-3400 keyboard:
                          8  
-                         9  ; - Enter the code starting at address
-  $0010 and at $00FD
-                        10  ; - write $00 to addresses $0000 and $
-  0001
-                        11  ; - connect a jumper wire from the 1Hz
-  signal to the NMI* signal
+                         9  ; - Enter the code starting at address $0010 and at $00FD
+                        10  ; - write $00 to addresses $0000 and $0001
+                        11  ; - connect a jumper wire from the 1Hz signal to the NMI* signal
                         12  
-                        13  ; An NMI interrupt will be performed o
-  nce every second.
-                        14  ; Examine the contents of addresses $0
-  000 and $0001 and observe
-                        15  ; that the value is increasing one per
-  second.
+                        13  ; An NMI interrupt will be performed once every second.
+                        14  ; Examine the contents of addresses $0000 and $0001 and observe
+                        15  ; that the value is increasing one per second.
                         16  
-                        17  ; Now connect the jumper from the LINE
-  signal to the NMI* signal
-                        18  ; Now the counter value should be incr
-  emented 60 times per second.
+                        17  ; Now connect the jumper from the LINE signal to the NMI* signal
+                        18  ; Now the counter value should be incremented 60 times per second.
                         19  
-                        20  ; Note that there is no need to execut
-  e the program from the monitor.
+                        20  ; Note that there is no need to execute the program from the monitor.
                         21  
-                        22  ; You could try using IRQ* rather than
-  NMI*, but it does not work well
-                        23  ; because IRQ* is level sensitive (NMI
-  * is edge sensitive), so you
-                        24  ; will get interrupts contantly whenev
-  er the 1Hz or LINE signal is
-                        25  ; low. To work properly you would need
-  some circuitry that could clear
-                        26  ; the interrupt line once the interrup
-  t was acknowledged. You would
-                        27  ; also need to enable interrupts in th
-  e status register and call the
-                        28  ; interrupt handler from the IRQ* hand
-  ler address in RAM ($00F7).
+                        22  ; You could try using IRQ* rather than NMI*, but it does not work well
+                        23  ; because IRQ* is level sensitive (NMI* is edge sensitive), so you
+                        24  ; will get interrupts contantly whenever the 1Hz or LINE signal is
+                        25  ; low. To work properly you would need some circuitry that could clear
+                        26  ; the interrupt line once the interrupt was acknowledged. You would
+                        27  ; also need to enable interrupts in the status register and call the
+                        28  ; interrupt handler from the IRQ* handler address in RAM ($00F7).
                         29  
                         30  ;
-                        31  ; Written by Jeff Tranter <tranter@pob
-  ox.com>
+                        31  ; Written by Jeff Tranter <tranter@pobox.com>
                         32  
                         33          CPU 6800
                         34  
-  0000                  35  COUNT   = $0000         ; Count of int
-                          errupts
+  0000                  35  COUNT   = $0000         ; Count of interrupts
                         36  
   0010                  37          * = $0010
                         38  
                         39  ; Interrupt handler routine
                         40  
-0010 DE00               41  INT     LDX COUNT       ; Get current 
-                          count (16-bit)
+0010 DE00               41  INT     LDX COUNT       ; Get current count (16-bit)
 0012 08                 42          INX             ; Increment it
 0013 DF00               43          STX COUNT       ; Save it
-0015 3B                 44          RTI             ; Return from 
-                          interrupt
+0015 3B                 44          RTI             ; Return from interrupt
                         45  
-                        46  ; Note that in the Monitor ROM the NMI
-  vector at $FFFC,D points to
+                        46  ; Note that in the Monitor ROM the NMI vector at $FFFC,D points to
                         47  ; $00FD, which is in RAM.
                         48  
-  00FD                  49          * = $00FD       ; Address of H
-                          MI handler
-00FD 7E0010             50          JMP INT         ; Call interru
-                          pt handler
+  00FD                  49          * = $00FD       ; Address of NMI handler
+00FD 7E0010             50          JMP INT         ; Call interrupt handler
                         51  
 
 ERRORS:       0
@@ -88,117 +64,9 @@ Successful assembly...
 
 
 
+Crasm 1.8:                Interrupt Example                                                                          page  2
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Crasm 1.8:                Interrupt Example        page  2
-
- 0000   Abs COUNT                                            
- 0010   Abs INT                                              
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 0000   Abs COUNT                                             0010   Abs INT                                              
 
 
 

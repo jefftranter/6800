@@ -1,35 +1,25 @@
-Crasm 1.8:                 Heathkit SAMPLE1        page  1
+Crasm 1.8:                 Heathkit SAMPLE1                                                                          page  1
 
                          1          NAM Heathkit SAMPLE1
-                         2          PAGE 132,66
+                         2          PAGE 66,132
                          3  
                          4  ;                   A SAMPLE PROGRAM
                          5  ;
-                         6  ; The sample program provides you with
-  a routine to test the operation
-                         7  ; of your ETA-3400 Microcomoputer Acce
-  ssory. You can use the routine
-                         8  ; to gain proficiency with the FANTOM 
-  II Monitor. The routine is a
-                         9  ; duplicate (with minor changes) of a 
-  program listed in the ET-3400
+                         6  ; The sample program provides you with a routine to test the operation
+                         7  ; of your ETA-3400 Microcomoputer Accessory. You can use the routine
+                         8  ; to gain proficiency with the FANTOM II Monitor. The routine is a
+                         9  ; duplicate (with minor changes) of a program listed in the ET-3400
                         10  ; Manual.
                         11  ;
-                        12  ; Use FANTOM II when you enter, verify
-  , and execute the sample
-                        13  ; program. When the program is running
-  the LED on the ET-3400 Trainer
-                        14  ; will sequentially turn each segment 
-  on and off and then return to
+                        12  ; Use FANTOM II when you enter, verify, and execute the sample
+                        13  ; program. When the program is running the LED on the ET-3400 Trainer
+                        14  ; will sequentially turn each segment on and off and then return to
                         15  ; the monitor.
                         16  
-                        17  ; Entered from listing on page 22 of E
-  TA-3400 manual by Jeff Tranter
+                        17  ; Entered from listing on page 22 of ETA-3400 manual by Jeff Tranter
                         18  ; <tranter@pobox.com>.
-                        19  ; Added definitions to get it to assem
-  ble and adapted to the crasm
-                        20  ; assembler (https://github.com/colinb
-  ourassa/crasm).
+                        19  ; Added definitions to get it to assemble and adapted to the crasm
+                        20  ; assembler (https://github.com/colinbourassa/crasm).
                         21  
                         22          CPU 6800
                         23  
@@ -40,39 +30,25 @@ Crasm 1.8:                 Heathkit SAMPLE1        page  1
                         28  
   1000                  29          * = $1000
                         30  
-1000 BDFCBC             31  START   JSR     REDIS           ; SET 
-                                  UP FIRST DISPLAY ADDRESS
-1003 8601               32          LDAA    #$01            ; FIRS
-                                  T SEGMENT CODE
+1000 BDFCBC             31  START   JSR     REDIS           ; SET UP FIRST DISPLAY ADDRESS
+1003 8601               32          LDAA    #$01            ; FIRST SEGMENT CODE
 1005 2007               33          BRA     OUT
-1007 D6F1               34  SAME    LDAB    DIGADD+1        ; FIX 
-                                  DISPLAY ADDRESS
-1009 CB10               35          ADDB    #$10            ; FOR 
-                                  NEXT ADDRESS
+1007 D6F1               34  SAME    LDAB    DIGADD+1        ; FIX DISPLAY ADDRESS
+1009 CB10               35          ADDB    #$10            ; FOR NEXT ADDRESS
 100B D7F1               36          STAB    DIGADD+1
-100D 48                 37          ASLA                    ; NEXT
-                                  SEGMENT CODE
-100E BDFE3A             38  OUT     JSR     OUTCH           ; OUTP
-                                  UT SEGMENT
-1011 CE2F00             39          LDX     #$2F00          ; TIME
-                                  TO WAIT
+100D 48                 37          ASLA                    ; NEXT SEGMENT CODE
+100E BDFE3A             38  OUT     JSR     OUTCH           ; OUTPUT SEGMENT
+1011 CE2F00             39          LDX     #$2F00          ; TIME TO WAIT
 1014 09                 40  WAIT    DEX
-1015 26FD               41          BNE     WAIT            ; TIME
-                                  OUT YET?
+1015 26FD               41          BNE     WAIT            ; TIME OUT YET?
 1017 16                 42          TAB
-1018 5D                 43          TSTB                    ; LAST
-                                  SEGMENT THIS DISPLAY?
-1019 26EC               44          BNE     SAME            ; NEXT
-                                  SEGMENT
-101B 8601               45          LDAA    #$01            ; RESE
-                                  T SEGMENT CODE
-101D DEF0               46          LDX     DIGADD          ; NEXT
-                                  DISPLAY
-101F 8CC10F             47          CPX     #$C10F          ; LAST
-                                  DISPLAY YET?
+1018 5D                 43          TSTB                    ; LAST SEGMENT THIS DISPLAY?
+1019 26EC               44          BNE     SAME            ; NEXT SEGMENT
+101B 8601               45          LDAA    #$01            ; RESET SEGMENT CODE
+101D DEF0               46          LDX     DIGADD          ; NEXT DISPLAY
+101F 8CC10F             47          CPX     #$C10F          ; LAST DISPLAY YET?
 1022 26EA               48          BNE     OUT
-1024 BD1400             49          JSR     MAIN            ; Go t
-                                  o monitor
+1024 BD1400             49          JSR     MAIN            ; Go to monitor
                         50  
 
 ERRORS:       0
@@ -88,120 +64,12 @@ Successful assembly...
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Crasm 1.8:                 Heathkit SAMPLE1        page  2
-
- 00F0   Abs DIGADD                                           
- 1400   Abs MAIN                                             
-^100E   Abs OUT                                              
- FE3A   Abs OUTCH                                            
- FCBC   Abs REDIS                                            
- 1007   Abs SAME                                             
-?1000   Abs START                                            
- 1014   Abs WAIT                                             
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Crasm 1.8:                 Heathkit SAMPLE1                                                                          page  2
+
+ 00F0   Abs DIGADD                                            1400   Abs MAIN                                             
+^100E   Abs OUT                                               FE3A   Abs OUTCH                                            
+ FCBC   Abs REDIS                                             1007   Abs SAME                                             
+?1000   Abs START                                             1014   Abs WAIT                                             
 
 
 

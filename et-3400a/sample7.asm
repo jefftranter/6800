@@ -1,5 +1,5 @@
         NAM Heathkit SAMPLE7
-        PAGE 132,66
+        PAGE 66,132
 
 ;                  SAMPLE 7
 ;      THIS PROGRAM CALCULATES THE OP CODE VALUE

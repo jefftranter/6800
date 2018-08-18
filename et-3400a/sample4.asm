@@ -1,5 +1,5 @@
         NAM Heathkit SAMPLE4
-        PAGE 132,66
+        PAGE 66,132
 
 ;                  SAMPLE 4
 ;      OUTPUTS SAME MESSAGE AS PROGRAM 3

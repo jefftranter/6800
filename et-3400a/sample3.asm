@@ -1,5 +1,5 @@
         NAM Heathkit SAMPLE3
-        PAGE 132,66
+        PAGE 66,132
 
 ;                  SAMPLE 3
 ;      OUTPUTS MESSAGE BY DISPLAYING UP TO SIX

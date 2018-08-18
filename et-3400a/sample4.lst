@@ -1,98 +1,73 @@
-Crasm 1.8:                 Heathkit SAMPLE4        page  1
+Crasm 1.8:                 Heathkit SAMPLE4                                                                          page  1
 
                          1          NAM Heathkit SAMPLE4
-                         2          PAGE 132,66
+                         2          PAGE 66,132
                          3  
                          4  ;                  SAMPLE 4
-                         5  ;      OUTPUTS SAME MESSAGE AS PROGRAM
-       3
+                         5  ;      OUTPUTS SAME MESSAGE AS PROGRAM 3
                          6  ;      IN TICKER TAPE FASHION
-                         7  ;      USES MONITOR SUB ROUTINES REDIS
-       and OUTSTR
+                         7  ;      USES MONITOR SUB ROUTINES REDIS and OUTSTR
                          8  
-                         9  ; Entered from listing in ET-3400A man
-  ual by Jeff Tranter <tranter@pobox.com>
-                        10  ; Add definitions to get it to assembl
-  e and adapted to the crasm
-                        11  ; assembler (https://github.com/colinb
-  ourassa/crasm).
+                         9  ; Entered from listing in ET-3400A manual by Jeff Tranter <tranter@pobox.com>
+                        10  ; Add definitions to get it to assemble and adapted to the crasm
+                        11  ; assembler (https://github.com/colinbourassa/crasm).
                         12  
                         13          CPU 6800
                         14  
   FCBC                  15          REDIS   EQU $FCBC
   FE52                  16          OUTSTR  EQU $FE52
-  0006                  17          MORE    EQU $06         ; MUST
-                                  MATCH ADDRESS OF LABEL LMORE BEL
-                                  OW
+  0006                  17          MORE    EQU $06         ; MUST MATCH ADDRESS OF LABEL LMORE BELOW
                         18  
   0000                  19          * = $0000
                         20  
-0000 7F0007             21  START   CLR     MORE+1          ; CLEA
-                                  R POINTER
-0003 CE002A             22  NEXT    LDX     #MESSA          ; MESS
-                                  AGE ADDRESS
-0006 A600               23  LMORE   LDAA    0,X             ; GET 
-                                  CHARACTER
-0008 A72D               24          STAA    OUT+3-MESSA,X   ; STOR
-                                  E CHAR. AT OUT PLUS
-000A 08                 25          INX                     ; NEXT
-                                  CHARACTER
-000B 8C0030             26          CPX     #$30            ; FULL
-                                  STRING YET?
+0000 7F0007             21  START   CLR     MORE+1          ; CLEAR POINTER
+0003 CE002A             22  NEXT    LDX     #MESSA          ; MESSAGE ADDRESS
+0006 A600               23  LMORE   LDAA    0,X             ; GET CHARACTER
+0008 A72D               24          STAA    OUT+3-MESSA,X   ; STORE CHAR. AT OUT PLUS
+000A 08                 25          INX                     ; NEXT CHARACTER
+000B 8C0030             26          CPX     #$30            ; FULL STRING YET?
 000E 26F6               27          BNE     MORE
-0010 8D11               28          BSR     HOLD            ; HOLD
-                                  DISPLAY
-0012 BDFCBC             29          JSR     REDIS           ; FIRS
-                                  T CHAR TO "H" DISPLAY
+0010 8D11               28          BSR     HOLD            ; HOLD DISPLAY
+0012 BDFCBC             29          JSR     REDIS           ; FIRST CHAR TO "H" DISPLAY
 0015 BD0054             30          JSR     OUT
-0018 9607               31          LDAA    MORE+1          ; FIRS
-                                  T CHARACTER NUMBER
-001A 4C                 32          INCA                    ; MOVE
-                                  STRING UP ONE CHARACTER
-001B 9707               33          STAA    MORE+1          ; NEW 
-                                  FIRST CHARACTER
-001D 8125               34          CMPA    #$25            ; LAST
-                                  CHARACTER TO "H" YET?
-001F 26E2               35          BNE     NEXT            ; BUIL
-                                  D NEXT STRING
-0021 20DD               36          BRA     START           ; DO A
-                                  GAIN
-0023 CE6000             37  HOLD    LDX     #$6000          ; TIME
-                                  TO WAIT
+0018 9607               31          LDAA    MORE+1          ; FIRST CHARACTER NUMBER
+001A 4C                 32          INCA                    ; MOVE STRING UP ONE CHARACTER
+001B 9707               33          STAA    MORE+1          ; NEW FIRST CHARACTER
+001D 8125               34          CMPA    #$25            ; LAST CHARACTER TO "H" YET?
+001F 26E2               35          BNE     NEXT            ; BUILD NEXT STRING
+0021 20DD               36          BRA     START           ; DO AGAIN
+0023 CE6000             37  HOLD    LDX     #$6000          ; TIME TO WAIT
 0026 09                 38  WAIT    DEX
-0027 26FD               39          BNE     WAIT            ; TIME
-                                  OUT YET?
+0027 26FD               39          BNE     WAIT            ; TIME OUT YET?
 0029 39                 40          RTS
                         41  
-002A 080808080808       42  MESSA   DB      $08,$08,$08,$08,$08,$0
-                8     ; ---
+002A 080808080808       42  MESSA   DB      $08,$08,$08,$08,$08,$08     ; ---
                         43  
-0030 3B7E3E050000       44          DB      $3B,$7E,$3E,$05,$00,$0
-                0     ; YOUR
+0030 3B7E3E050000       44          DB      $3B,$7E,$3E,$05,$00,$00     ; YOUR
                         45  
-0036 79337E7E0000       46          DB      $79,$33,$7E,$7E,$00,$0
-                0     ; 3400
+0036 79337E7E0000       46          DB      $79,$33,$7E,$7E,$00,$00     ; 3400
                         47  
-003C 305B00003E67       48          DB      $30,$5B,$00,$00,$3E,$6
-                7     ; IS UP
+003C 305B00003E67       48          DB      $30,$5B,$00,$00,$3E,$67     ; IS UP
                         49  
-0042 00007D153D0000     50          DB      $00,$00,$7D,$15,$3D,$0
-                0,$00 ; AND
+0042 00007D153D0000     50          DB      $00,$00,$7D,$15,$3D,$00,$00 ; AND
                         51  
-0049 051C15151015       52          DB      $05,$1C,$15,$15,$10,$1
-                5     ; RUNNIN
+0049 051C15151015       52          DB      $05,$1C,$15,$15,$10,$15     ; RUNNIN
                         53  
-004F 0808080808         54          DB      $08,$08,$08,$08,$08   
-                            ; ---
+004F 0808080808         54          DB      $08,$08,$08,$08,$08         ; ---
                         55  
-0054 BDFE52             56  OUT     JSR     OUTSTR          ; OUTP
-                                  UT CHARACTER STRING
+0054 BDFE52             56  OUT     JSR     OUTSTR          ; OUTPUT CHARACTER STRING
                         57          ; OUTPUT STRING STORED HERE
-0057 00000000000080     58          DB      $00,$00,$00,$00,$00,$0
-                0,$80
-005E 39                 59          RTS                     ; NOTE
-                                  : MISSING FROM LISTING IN MANUAL
+0057 00000000000080     58          DB      $00,$00,$00,$00,$00,$00,$80
+005E 39                 59          RTS                     ; NOTE: MISSING FROM LISTING IN MANUAL
                         60  
+
+
+
+
+Crasm 1.8:                 Heathkit SAMPLE4                                                                          page  2
+
+
+
 
 ERRORS:       0
 WARNINGS:     0
@@ -130,18 +105,6 @@ Successful assembly...
 
 
 
-Crasm 1.8:                 Heathkit SAMPLE4        page  2
-
-^0023   Abs HOLD                                             
-?0006   Abs LMORE                                            
-^002A   Abs MESSA                                            
- 0006   Abs MORE                                             
- 0003   Abs NEXT                                             
-^0054   Abs OUT                                              
- FE52   Abs OUTSTR                                           
- FCBC   Abs REDIS                                            
- 0000   Abs START                                            
- 0026   Abs WAIT                                             
 
 
 
@@ -167,42 +130,13 @@ Crasm 1.8:                 Heathkit SAMPLE4        page  2
 
 
 
+Crasm 1.8:                 Heathkit SAMPLE4                                                                          page  3
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+^0023   Abs HOLD                                             ?0006   Abs LMORE                                            
+^002A   Abs MESSA                                             0006   Abs MORE                                             
+ 0003   Abs NEXT                                             ^0054   Abs OUT                                              
+ FE52   Abs OUTSTR                                            FCBC   Abs REDIS                                            
+ 0000   Abs START                                             0026   Abs WAIT                                             
 
 
 

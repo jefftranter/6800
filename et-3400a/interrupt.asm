@@ -1,5 +1,5 @@
         NAM Interrupt Example
-        PAGE 132,66
+        PAGE 66,132
 
 ;      Interrupt Example
 
@@ -46,5 +46,5 @@ INT     LDX COUNT       ; Get current count (16-bit)
 ; Note that in the Monitor ROM the NMI vector at $FFFC,D points to
 ; $00FD, which is in RAM.
 
-        * = $00FD       ; Address of HMI handler
+        * = $00FD       ; Address of NMI handler
         JMP INT         ; Call interrupt handler

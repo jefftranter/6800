@@ -1,5 +1,5 @@
         NAM Heathkit SAMPLE2
-        PAGE 132,66
+        PAGE 66,132
 
 ;                   SAMPLE 2
 ;      TURNS ALL DISPLAYS OFF AND ON

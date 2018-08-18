@@ -1,5 +1,5 @@
         NAM Heathkit SAMPLE5
-        PAGE 132,66
+        PAGE 66,132
 
 ;                  SAMPLE 5
 ;      THIS PROGRAM CONTINOUSLY CHANGES THE HEX

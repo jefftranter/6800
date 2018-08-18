@@ -1,5 +1,5 @@
         NAM HEATH KEYBOARD MONITOR
-        PAGE 132,66
+        PAGE 66,132
 
 ; Entered from listing in ETA-340A manual by Jeff Tranter <tranter@pobox.com>.
 ; Fixed some small errors in the listing.

@@ -1,0 +1,198 @@
+Crasm 1.8:                         Intclock                                                                          page  1
+
+                         1          NAM Intclock
+                         2          PAGE 66,132
+                         3  
+                         4  ;      Interrupt-Driven Clock Example
+                         5  
+                         6  ; This program implements an interrupt-driven clock program. It uses
+                         7  ; the NMI interrupt connected to the LINE signal to count time. This
+                         8  ; makes it much more accurate than a timing delay loop (like Example
+                         9  ; 6), as the line frequency is very accurate over long periods of
+                        10  ; time. In order for this to work you need to connect a jumper wire
+                        11  ; from the LINE signal to the NMI* signal. The causes an interrupt to
+                        12  ; occur every 60th of a second. Note that we could use the 1Hz signal,
+                        13  ; but it is driven by an RC oscillator which is not very stable or
+                        14  ; accurate.
+                        15  
+                        16  ; Set the initial time by writing the current hours, minutes, and
+                        17  ; seconds (in BCD) to addresses $0000, $0001, $0002 repectively.
+                        18  ; Then run from address $004.
+                        19  
+                        20  ; Written by Jeff Tranter <tranter@pobox.com>
+                        21  
+                        22          CPU 6800
+                        23  
+  FCBC                  24          REDIS   EQU $FCBC
+  FD7B                  25          DSPLAY  EQU $FD7B
+                        26  
+  0000                  27          * = $0000
+                        28  
+0000 00                 29  HOUR    DS      1       ; Hour (1-12) in BCD
+0001 00                 30  MINUTE  DS      1       ; Minute (0-59) in BCD
+0002 00                 31  SECOND  DS      1       ; Second (0-59) in BCD
+0003 00                 32  JIFFY   DS      1       ; 60ths of a second (in BCD)
+                        33  
+                        34  ; TODO: Add options for 12 or 24 hour time.
+                        35  
+                        36  ; Main program. Simply displays the hours, minutes and seconds that
+                        37  ; are updated by the interrupt handler routine.
+                        38  
+                        39  ; TODO: Prompt user to enter the current time on startup.
+                        40  
+0004 BDFCBC             41  START   JSR    REDIS   ; Reset display address
+0007 C603               42          LDAB   #3      ; Number of bytes to display
+0009 CE0000             43          LDX    #HOUR   ; Address of bytes to output
+000C BDFD7B             44          JSR    DSPLAY  ; Display time
+                        45  
+                        46  ; TODO: Delay or wait for time to change.
+                        47  
+000F 20F3               48          BRA    START   ; Repeat forever
+                        49  
+                        50  ; NMI Interrupt handler routine. Called 60 times per second. It
+                        51  ; increments the jiffies, seconds, minutes, and hours, clearing and
+                        52  ; rolling over as needed.
+                        53  
+0011 9603               54  INT     LDAA    JIFFY   ; Get 60ths of a second
+0013 8B01               55          ADDA    #1      ; Add one
+0015 19                 56          DAA             ; Convert to BCD
+0016 9703               57          STAA    JIFFY   ; Save it
+0018 8160               58          CMPA    #$60    ; Did we reach 60?
+001A 2F2E               59          BLE     RET     ; No, then done
+001C 7F0003             60          CLR     JIFFY   ; Set jiffies to zero
+001F 9602               61          LDAA    SECOND  ; Get Seconds
+0021 8B01               62          ADDA    #1      ; Add one
+
+
+Crasm 1.8:                         Intclock                                                                          page  2
+
+0023 19                 63          DAA             ; Convert to BCD
+0024 9702               64          STAA    SECOND  ; Save it
+0026 8160               65          CMPA    #$60    ; Did we reach 60?
+0028 2F20               66          BLE     RET     ; No, then done
+002A 7F0002             67          CLR     SECOND  ; Set seconds to zero
+002D 9601               68          LDAA    MINUTE  ; Get minutes
+002F 8B01               69          ADDA    #1      ; Add one
+0031 19                 70          DAA             ; Convert to BCD
+0032 9701               71          STAA    MINUTE  ; Save it
+0034 8160               72          CMPA    #$60    ; Did we reach 60?
+0036 2F12               73          BLE     RET     ; No, then done
+0038 7F0001             74          CLR     MINUTE  ; Set minutes to zero
+003B 9600               75          LDAA    HOUR    ; Get hours
+003D 8B01               76          ADDA    #1      ; Add one
+003F 19                 77          DAA             ; Convert to BCD
+0040 9700               78          STAA    HOUR    ; Save it
+0042 8113               79          CMPA    #$13    ; Did we reach 13?
+0044 2F04               80          BLE     RET     ; No, then done
+0046 8601               81          LDAA    #1      ; Reset hour to 1
+0048 9700               82          STAA    HOUR    ; Save it
+004A 3B                 83  RET     RTI             ; Return from interrupt
+                        84  
+                        85  ; Note that in the Monitor ROM the NMI vector at $FFFC,D points to
+                        86  ; $00FD, which is in RAM. We add a jump there to the interrupt
+                        87  ; handler.
+                        88  
+  00FD                  89          * = $00FD       ; Address of NMI handler
+00FD 7E0011             90          JMP INT         ; Call interrupt handler
+                        91  
+
+ERRORS:       0
+WARNINGS:     0
+
+Successful assembly...
+ Last address       ff (255)
+ Code length        9c (156)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Crasm 1.8:                         Intclock                                                                          page  3
+
+ FD7B   Abs DSPLAY                                            0000   Abs HOUR                                             
+ 0011   Abs INT                                               0003   Abs JIFFY                                            
+ 0001   Abs MINUTE                                            FCBC   Abs REDIS                                            
+^004A   Abs RET                                               0002   Abs SECOND                                           
+ 0004   Abs START                                            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

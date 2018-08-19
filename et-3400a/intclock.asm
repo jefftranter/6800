@@ -25,14 +25,16 @@
         REDIS   EQU $FCBC
         DSPLAY  EQU $FD7B
 
+; Set this to one this if you want a 24-hour clock (0-24 hours).
+; Leave it set to zero for 12-hour time (1-12).
+        TWENTYFOURHOUR = 0
+
         * = $0000
 
-HOUR    DS      1       ; Hour (1-12) in BCD
+HOUR    DS      1       ; Hour (1-12) in BCD (0-23 in 24-hour mode)
 MINUTE  DS      1       ; Minute (0-59) in BCD
 SECOND  DS      1       ; Second (0-59) in BCD
 JIFFY   DS      1       ; 60ths of a second (in BCD)
-
-; TODO: Add options for 12 or 24 hour time.
 
 ; Main program. Simply displays the hours, minutes and seconds that
 ; are updated by the interrupt handler routine.
@@ -82,9 +84,17 @@ INT     LDAA    JIFFY   ; Get 60ths of a second
         ADDA    #1      ; Add one
         DAA             ; Convert to BCD
         STAA    HOUR    ; Save it
+        if TWENTYFOURHOUR
+        CMPA    #$24    ; Did we reach 24?
+        else
         CMPA    #$13    ; Did we reach 13?
+        endc
         BLT     RET     ; No, then done
+        if TWENTYFOURHOUR
+        LDAA    #0      ; Reset hour to 0
+        else
         LDAA    #1      ; Reset hour to 1
+        endc
         STAA    HOUR    ; Save it
 RET     RTI             ; Return from interrupt
 

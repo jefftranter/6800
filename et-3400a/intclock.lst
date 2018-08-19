@@ -27,80 +27,90 @@ Crasm 1.8:                         Intclock                                     
   FCBC                  25          REDIS   EQU $FCBC
   FD7B                  26          DSPLAY  EQU $FD7B
                         27  
-  0000                  28          * = $0000
-                        29  
-0000 00                 30  HOUR    DS      1       ; Hour (1-12) in BCD
-0001 00                 31  MINUTE  DS      1       ; Minute (0-59) in BCD
-0002 00                 32  SECOND  DS      1       ; Second (0-59) in BCD
-0003 00                 33  JIFFY   DS      1       ; 60ths of a second (in BCD)
-                        34  
-                        35  ; TODO: Add options for 12 or 24 hour time.
-                        36  
-                        37  ; Main program. Simply displays the hours, minutes and seconds that
-                        38  ; are updated by the interrupt handler routine.
-                        39  
-                        40  ; TODO: Prompt user to enter the current time on startup.
+                        28  ; Set this to one this if you want a 24-hour clock (0-24 hours).
+                        29  ; Leave it set to zero for 12-hour time (1-12).
+  0000                  30          TWENTYFOURHOUR = 0
+                        31  
+  0000                  32          * = $0000
+                        33  
+0000 00                 34  HOUR    DS      1       ; Hour (1-12) in BCD (0-23 in 24-hour mode)
+0001 00                 35  MINUTE  DS      1       ; Minute (0-59) in BCD
+0002 00                 36  SECOND  DS      1       ; Second (0-59) in BCD
+0003 00                 37  JIFFY   DS      1       ; 60ths of a second (in BCD)
+                        38  
+                        39  ; Main program. Simply displays the hours, minutes and seconds that
+                        40  ; are updated by the interrupt handler routine.
                         41  
-0004 BDFCBC             42  START   JSR    REDIS   ; Reset display address
-0007 C603               43          LDAB   #3      ; Number of bytes to display
-0009 CE0000             44          LDX    #HOUR   ; Address of bytes to output
-000C 9602               45          LDAA   SECOND  ; Get current seconds
-000E 36                 46          PSHA           ; Save it on stack
-000F BDFD7B             47          JSR    DSPLAY  ; Display time
-0012 32                 48          PULA           ; Restore seconds
-                        49  
-                        50  ; Wait for seconds to change before updating display again.
+                        42  ; TODO: Prompt user to enter the current time on startup.
+                        43  
+0004 BDFCBC             44  START   JSR    REDIS   ; Reset display address
+0007 C603               45          LDAB   #3      ; Number of bytes to display
+0009 CE0000             46          LDX    #HOUR   ; Address of bytes to output
+000C 9602               47          LDAA   SECOND  ; Get current seconds
+000E 36                 48          PSHA           ; Save it on stack
+000F BDFD7B             49          JSR    DSPLAY  ; Display time
+0012 32                 50          PULA           ; Restore seconds
                         51  
-0013 9102               52  WAIT    CMPA   SECOND  ; Did seconds change from last value?
-0015 27FC               53          BEQ    WAIT    ; If not, keep waiting
-0017 20EB               54          BRA    START   ; Repeat forever
-                        55  
-                        56  ; NMI Interrupt handler routine. Called 60 times per second. It
-                        57  ; increments the jiffies, seconds, minutes, and hours, clearing and
-                        58  ; rolling over as needed.
-                        59  
-0019 9603               60  INT     LDAA    JIFFY   ; Get 60ths of a second
-001B 8B01               61          ADDA    #1      ; Add one
-001D 19                 62          DAA             ; Convert to BCD
+                        52  ; Wait for seconds to change before updating display again.
+                        53  
+0013 9102               54  WAIT    CMPA   SECOND  ; Did seconds change from last value?
+0015 27FC               55          BEQ    WAIT    ; If not, keep waiting
+0017 20EB               56          BRA    START   ; Repeat forever
+                        57  
+                        58  ; NMI Interrupt handler routine. Called 60 times per second. It
+                        59  ; increments the jiffies, seconds, minutes, and hours, clearing and
+                        60  ; rolling over as needed.
+                        61  
+0019 9603               62  INT     LDAA    JIFFY   ; Get 60ths of a second
 
 
 Crasm 1.8:                         Intclock                                                                          page  2
 
-001E 9703               63          STAA    JIFFY   ; Save it
-0020 8160               64          CMPA    #$60    ; Did we reach 60?
-0022 2D2E               65          BLT     RET     ; No, then done
-0024 7F0003             66          CLR     JIFFY   ; Set jiffies to zero
-0027 9602               67          LDAA    SECOND  ; Get Seconds
-0029 8B01               68          ADDA    #1      ; Add one
-002B 19                 69          DAA             ; Convert to BCD
-002C 9702               70          STAA    SECOND  ; Save it
-002E 8160               71          CMPA    #$60    ; Did we reach 60?
-0030 2D20               72          BLT     RET     ; No, then done
-0032 7F0002             73          CLR     SECOND  ; Set seconds to zero
-0035 9601               74          LDAA    MINUTE  ; Get minutes
-0037 8B01               75          ADDA    #1      ; Add one
-0039 19                 76          DAA             ; Convert to BCD
-003A 9701               77          STAA    MINUTE  ; Save it
-003C 8160               78          CMPA    #$60    ; Did we reach 60?
-003E 2D12               79          BLT     RET     ; No, then done
-0040 7F0001             80          CLR     MINUTE  ; Set minutes to zero
-0043 9600               81          LDAA    HOUR    ; Get hours
-0045 8B01               82          ADDA    #1      ; Add one
-0047 19                 83          DAA             ; Convert to BCD
-0048 9700               84          STAA    HOUR    ; Save it
-004A 8113               85          CMPA    #$13    ; Did we reach 13?
-004C 2D04               86          BLT     RET     ; No, then done
-004E 8601               87          LDAA    #1      ; Reset hour to 1
-0050 9700               88          STAA    HOUR    ; Save it
-0052 3B                 89  RET     RTI             ; Return from interrupt
-                        90  
-                        91  ; Note that in the Monitor ROM the NMI vector at $FFFC,D points to
-                        92  ; $00FD, which is in RAM. We add a jump there to the interrupt
-                        93  ; handler.
-                        94  
-  00FD                  95          * = $00FD       ; Address of NMI handler
-00FD 7E0019             96          JMP INT         ; Call interrupt handler
-                        97  
+001B 8B01               63          ADDA    #1      ; Add one
+001D 19                 64          DAA             ; Convert to BCD
+001E 9703               65          STAA    JIFFY   ; Save it
+0020 8160               66          CMPA    #$60    ; Did we reach 60?
+0022 2D2E               67          BLT     RET     ; No, then done
+0024 7F0003             68          CLR     JIFFY   ; Set jiffies to zero
+0027 9602               69          LDAA    SECOND  ; Get Seconds
+0029 8B01               70          ADDA    #1      ; Add one
+002B 19                 71          DAA             ; Convert to BCD
+002C 9702               72          STAA    SECOND  ; Save it
+002E 8160               73          CMPA    #$60    ; Did we reach 60?
+0030 2D20               74          BLT     RET     ; No, then done
+0032 7F0002             75          CLR     SECOND  ; Set seconds to zero
+0035 9601               76          LDAA    MINUTE  ; Get minutes
+0037 8B01               77          ADDA    #1      ; Add one
+0039 19                 78          DAA             ; Convert to BCD
+003A 9701               79          STAA    MINUTE  ; Save it
+003C 8160               80          CMPA    #$60    ; Did we reach 60?
+003E 2D12               81          BLT     RET     ; No, then done
+0040 7F0001             82          CLR     MINUTE  ; Set minutes to zero
+0043 9600               83          LDAA    HOUR    ; Get hours
+0045 8B01               84          ADDA    #1      ; Add one
+0047 19                 85          DAA             ; Convert to BCD
+0048 9700               86          STAA    HOUR    ; Save it
+                        87          if TWENTYFOURHOUR
+                         C          CMPA    #$24    ; Did we reach 24?
+                        89          else
+004A 8113               90          CMPA    #$13    ; Did we reach 13?
+                        91          endc
+004C 2D04               92          BLT     RET     ; No, then done
+                        93          if TWENTYFOURHOUR
+                         C          LDAA    #0      ; Reset hour to 0
+                        95          else
+004E 8601               96          LDAA    #1      ; Reset hour to 1
+                        97          endc
+0050 9700               98          STAA    HOUR    ; Save it
+0052 3B                 99  RET     RTI             ; Return from interrupt
+                       100  
+                       101  ; Note that in the Monitor ROM the NMI vector at $FFFC,D points to
+                       102  ; $00FD, which is in RAM. We add a jump there to the interrupt
+                       103  ; handler.
+                       104  
+  00FD                 105          * = $00FD       ; Address of NMI handler
+00FD 7E0019            106          JMP INT         ; Call interrupt handler
+                       107  
 
 ERRORS:       0
 WARNINGS:     0
@@ -120,24 +130,14 @@ Successful assembly...
 
 
 
-
-
-
-
-
-
-
-
-
-
 Crasm 1.8:                         Intclock                                                                          page  3
 
  FD7B   Abs DSPLAY                                            0000   Abs HOUR                                             
  0019   Abs INT                                               0003   Abs JIFFY                                            
  0001   Abs MINUTE                                            FCBC   Abs REDIS                                            
 ^0052   Abs RET                                               0002   Abs SECOND                                           
- 0004   Abs START                                             0013   Abs WAIT                                             
-
+ 0004   Abs START                                             0000   Abs TWENTYFOURHOUR                                   
+ 0013   Abs WAIT                                             
 
 
 

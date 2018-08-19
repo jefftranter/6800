@@ -14,8 +14,9 @@
 ; accurate.
 
 ; Set the initial time by writing the current hours, minutes, and
-; seconds (in BCD) to addresses $0000, $0001, $0002 repectively.
-; Then run from address $004.
+; seconds (in BCD) to addresses $0000, $0001, $0002 repectively. Then
+; run from address $004. Don't connect the jumper wire until you have
+; entered the program.
 
 ; Written by Jeff Tranter <tranter@pobox.com>
 
@@ -41,10 +42,15 @@ JIFFY   DS      1       ; 60ths of a second (in BCD)
 START   JSR    REDIS   ; Reset display address
         LDAB   #3      ; Number of bytes to display
         LDX    #HOUR   ; Address of bytes to output
+        LDAA   SECOND  ; Get current seconds
+        PSHA           ; Save it on stack
         JSR    DSPLAY  ; Display time
+        PULA           ; Restore seconds
 
-; TODO: Delay or wait for time to change.
+; Wait for seconds to change before updating display again.
 
+WAIT    CMPA   SECOND  ; Did seconds change from last value?
+        BEQ    WAIT    ; If not, keep waiting
         BRA    START   ; Repeat forever
 
 ; NMI Interrupt handler routine. Called 60 times per second. It
@@ -56,28 +62,28 @@ INT     LDAA    JIFFY   ; Get 60ths of a second
         DAA             ; Convert to BCD
         STAA    JIFFY   ; Save it
         CMPA    #$60    ; Did we reach 60?
-        BLE     RET     ; No, then done
+        BLT     RET     ; No, then done
         CLR     JIFFY   ; Set jiffies to zero
         LDAA    SECOND  ; Get Seconds
         ADDA    #1      ; Add one
         DAA             ; Convert to BCD
         STAA    SECOND  ; Save it
         CMPA    #$60    ; Did we reach 60?
-        BLE     RET     ; No, then done
+        BLT     RET     ; No, then done
         CLR     SECOND  ; Set seconds to zero
         LDAA    MINUTE  ; Get minutes
         ADDA    #1      ; Add one
         DAA             ; Convert to BCD
         STAA    MINUTE  ; Save it
         CMPA    #$60    ; Did we reach 60?
-        BLE     RET     ; No, then done
+        BLT     RET     ; No, then done
         CLR     MINUTE  ; Set minutes to zero
         LDAA    HOUR    ; Get hours
         ADDA    #1      ; Add one
         DAA             ; Convert to BCD
         STAA    HOUR    ; Save it
         CMPA    #$13    ; Did we reach 13?
-        BLE     RET     ; No, then done
+        BLT     RET     ; No, then done
         LDAA    #1      ; Reset hour to 1
         STAA    HOUR    ; Save it
 RET     RTI             ; Return from interrupt

@@ -1,0 +1,160 @@
+                     ET-3400/ET-3400A Memory Map
+                     ===========================
+                   Jeff Tranter <tranter@pobox.com>
+
+Overall Memory Map:
++---------------------------------------+---------------+
+| Monitor ROM (1K)                      | $FC00 - $FFFF |
++---------------------------------------+---------------+
+|                                       |               |
++---------------------------------------+---------------+
+| Not Usable                            | $C170 - $C1FF |
++---------------------------------------+---------------+
+| Display                               | $C110 - $C16F |
++---------------------------------------+---------------+
+| Not Usable                            | $C00F - $C10F |
++---------------------------------------+---------------+
+| Keyboard                              | $C003 - $C00E |
++---------------------------------------+---------------+
+| Not Usable                            | $C000 - $C002 |
++---------------------------------------+---------------+
+|                                       |               |
++---------------------------------------+---------------+
+| User RAM (256 bytes)                  | $0100 - $01FF |
+|                                       |               |
+| Available for user code               |               |
+| (Optional on ET-3400)                 |               |
++---------------------------------------+---------------+
+| User RAM (256 bytes)                  | $0000 - $00FF |
+|                                       |               |
+| $00C5 - $00FF reserved for monitor    |               |
+| $0000 - $00C4 available for user code |               |
++---------------------------------------+---------------+
+
+Display Memory Map:
+
+       LED segments:      LED addresses:
+
+              a              E/6
+             ---             ---
+           f|   |b       9/1|   |D/5
+            |   |           |   |
+             ---             ---
+           e| g |c       A/2|8/0|C/4
+            |   |           |   |
+             --- . DP        --- . F/7
+              d               B/3
+
+Write data $01 to turn segment on, $00 to turn off.
+
++--------------+--------+  +--------------+--------+
+| LED          |Address |  | LED          |Address |
++--------------+--------+  +--------------+--------+
+| Leftmost (H) | $C16X  |  |   Second (I) | $C15X  |
+|    Segment g | $C160,8|  |    Segment g | $C150,8|
+|    Segment f | $C161,9|  |    Segment f | $C151,9|
+|    Segment e | $C162,A|  |    Segment e | $C152,A|
+|    Segment d | $C163,B|  |    Segment d | $C153,B|
+|    Segment c | $C164,C|  |    Segment c | $C154,C|
+|    Segment b | $C165,D|  |    Segment b | $C155,D|
+|    Segment a | $C166,E|  |    Segment a | $C156,E|
+|Decimal Point | $C167,F|  |Decimal Point | $C157,F|
++--------------+--------+  +--------------+--------+
+|    Third (N) | $C14X  |  |   Fourth (Z) | $C13X  |
+|    Segment g | $C140,8|  |    Segment g | $C130,8|
+|    Segment f | $C141,9|  |    Segment f | $C131,9|
+|    Segment e | $C142,A|  |    Segment e | $C132,A|
+|    Segment d | $C143,B|  |    Segment d | $C133,B|
+|    Segment c | $C144,C|  |    Segment c | $C134,C|
+|    Segment b | $C145,D|  |    Segment b | $C135,D|
+|    Segment a | $C146,E|  |    Segment a | $C136,E| 
+|Decimal Point | $C147,F|  |Decimal Point | $C137,F|
++--------------+--------+  +--------------+--------+ 
+|    Fifth (V) | $C12X  |  |Rightmost (C) | $C11X  |
+|    Segment g | $C130,8|  |    Segment g | $C110,8|
+|    Segment f | $C131,9|  |    Segment f | $C111,9|
+|    Segment e | $C132,A|  |    Segment e | $C112,A|
+|    Segment d | $C133,B|  |    Segment d | $C113,B|
+|    Segment c | $C134,C|  |    Segment c | $C114,C|
+|    Segment b | $C135,D|  |    Segment b | $C115,D|
+|    Segment a | $C136,E|  |    Segment a | $C116,E|
+|Decimal Point | $C137,F|  |Decimal Point | $C117,F|
++---------------+-------+  +--------------+--------+
+
+Keyboard Memory Map:
++--------+---------------+-------+
+| Key    |    Key Data   | Read  |
+| Column |7|6|5|4|3|2|1|0| Addr. |
++--------+-+-+-+-+-+-+-+-+-------+
+|   3    |- - - 3 6 9 C F| $C003 |
+|   2    |- - - 2 5 8 B E| $C005 |
+|   1    |- - 0 1 4 7 A D| $C006 |
++--------+-+-+-+-+-+-+-+-+-------+
+
+Example: Read $C005 = $02 -> Key 'B' pressed.
+
+
+Important ROM Locations:
++-------------------------------------------+---------+
+| Description                               | Address |
++-------------------------------------------+---------+
+| RESET (reset entry point)                 | $FC00   |
++-------------------------------------------+---------+
+| REDIS (reset displays)                    | $FCBC   |
++-------------------------------------------+---------+
+| DSPLAY (display indexed bytes)            | $FD7B   |
++-------------------------------------------+---------+
+| ENCODE (scan and encode keyboard)         | $FDBB   |
++-------------------------------------------+---------+
+| INCH (input character from keyboard)      | $FDF4   |
++-------------------------------------------+---------+
+| IHB (input hex byte and display on LEDs)  | $FE09   |
++-------------------------------------------+---------+
+| OUTBYT (output two hex digits)            | $FE20   |
++-------------------------------------------+---------+
+| OUTHEX (output hex digit)                 | $FE28   |
++-------------------------------------------+---------+
+| OUTCH (output character to display)       | $FE3A   |
++-------------------------------------------+---------+
+| OUTSTR (output embedded character string) | $FE52   |
++-------------------------------------------+---------+
+| IRQ Vector (points to $00F7)              | $FFF8,9 |
++-------------------------------------------+---------+
+| SWI Vector (points to $00F7               | $FFFA,B |
++-------------------------------------------+---------+
+| NMI Vector (points to $00FD)              | $FFFC,D |
++-------------------------------------------+---------+
+| Reset Vector (points to $FC00)            | $FFFE,F |
++-------------------------------------------+---------+
+
+------------------------------------------------------------------------
+
+ETA-3400 Memory Map (in addition to ET-3400 or ET-3400A):
+
++---------------------------------------+---------------+
+| Terminal Monitor ROM (2K)             | $1400 - $1BFF |
++---------------------------------------+---------------+
++---------------------------------------+---------------+
+| Tiny BASIC ROM (2K)                   | $1C00 - $23FF |
+| (only first half used, $1C00 - $1CFF) |               |
++---------------------------------------+---------------+
++---------------------------------------+---------------+
+| 6820 PIA                              | $1000 - $1003 |
+| Decoded as $1000 - $13FF              |               |
++---------------------------------------+---------------+
++---------------------------------------+---------------+
+| RAM (4K bytes)                        | $0000 - $0FFF |
+|                                       |               |
++---------------------------------------+---------------+
+
+6820 PIA:
+
+$1000  port A (terminal serial port) peripheral interface register
+$1001  Port A control register
+$1002  Port B (cassette tape port) peripheral interface register
+$1003  Port B control register
+
+Port A Control Register:
+
+|  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+|IRQA1|IRQA2|   CA2 Control   |DDRA |CA1 Control|

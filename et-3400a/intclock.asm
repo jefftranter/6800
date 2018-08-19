@@ -13,17 +13,22 @@
 ; but it is driven by an RC oscillator which is not very stable or
 ; accurate.
 
-; Set the initial time by writing the current hours, minutes, and
-; seconds (in BCD) to addresses $0000, $0001, $0002 repectively. Then
-; run from address $004. Don't connect the jumper wire until you have
-; entered the program.
+; Run the program from address START. It will first wait for you to
+; enter the current hours and minutes (as two digit numbers). Then the
+; time will be displayed. Don't connect the jumper wire until you have
+; entered the program. You can start (or restart) the program at entry
+; point LOOP if you want to use the current time values and not prompt
+; the user for the time.
 
 ; Written by Jeff Tranter <tranter@pobox.com>
 
         CPU 6800
 
+; Monitor routines
+
         REDIS   EQU $FCBC
         DSPLAY  EQU $FD7B
+        IHB     EQU $FE09
 
 ; Set this to one this if you want a 24-hour clock (0-24 hours).
 ; Leave it set to zero for 12-hour time (1-12).
@@ -39,9 +44,13 @@ JIFFY   DS      1       ; 60ths of a second (in BCD)
 ; Main program. Simply displays the hours, minutes and seconds that
 ; are updated by the interrupt handler routine.
 
-; TODO: Prompt user to enter the current time on startup.
-
 START   JSR    REDIS   ; Reset display address
+        JSR    IHB     ; Get hours from user (assume it is in range)
+        STAA   HOUR    ; Save it
+        JSR    IHB     ; Get minutes from user (assume it is in range)
+        STAA   MINUTE  ; Save it
+        CLR    SECOND  ; Set seconds to zero
+LOOP    JSR    REDIS   ; Reset display address
         LDAB   #3      ; Number of bytes to display
         LDX    #HOUR   ; Address of bytes to output
         LDAA   SECOND  ; Get current seconds
@@ -53,7 +62,7 @@ START   JSR    REDIS   ; Reset display address
 
 WAIT    CMPA   SECOND  ; Did seconds change from last value?
         BEQ    WAIT    ; If not, keep waiting
-        BRA    START   ; Repeat forever
+        BRA    LOOP    ; Repeat forever
 
 ; NMI Interrupt handler routine. Called 60 times per second. It
 ; increments the jiffies, seconds, minutes, and hours, clearing and

@@ -1,0 +1,62 @@
+The ET-3400A used a masked ROM that was compatible with, and could be
+replaced by, a 2716 EPROM which is still readily available and can be
+programmed by the user with a suitable programmer.
+
+However, the ET-3400 used a MCM6830A ROM which has an entirely
+different pinout from a 2716. You can rewire the socket as listed
+below to allow using a 2716. As well as rewiring all the pins, a chip
+select signal needed to be inverted, which can be done by adding a
+74LS04 inverter ship.
+
+You will have to cut the tracks to the original socket pins and wire
+them to the changed signals. This is quite a job as all 28 pins were
+involved and you will have to reconnect some tracks that go through
+the pins.
+
+The additional 74LS04 inverter can be mounted on a small board and
+attached using double sided tape inside.
+
+Note that the 2716 is a 2K EPROM and the original was 1K, so you only
+need to program the upper half of the ROM.
+
+I also confirmed that the circuit would work with a 2816 EEPROM, which
+is an electrically erasable ROM chip that can be erased by the
+programmer and not require a UV eraser.
+
+Signal  MCM6830A  2716/2816
+Name    Pin       Pin
+------  --------  ---------
+A7      17 A7     1  A7
+A6      18 A6     2  A6
+A5      19 A5     3  A5
+A4      20 A4     4  A4
+A3      21 A3     5  A3
+A2      22 A2     6  A2
+A1      23 A1     7  A1
+A0      24 A0     8  A0
+D0      2  D0     9  D0
+D1      3  D1     10 D1
+D2      4  D2     11 D2
+GND     1  GND    12 GND
+D3      5  D3     13 D3
+D4      6  D4     14 D4
+D5      7  D5     15 D5
+D6      8  D6     16 D6
+D7      9  D7     17 D7
+A11     13 CS2    18 CS2*/EP -> Connect to A11* thru inverter
+A10     14 CS3    19 A10
+IC2-9   11 CS1*   20 CS1*/G*
+A12     10 CS0    21 CS0,VPP (WE* for 2816) -> CONNECT TO VCC
+A9      15 A9     22 A9
+A8      16 A8     23 A8
+VCC     12 VCC    24 VCC
+
+Add 74LS04 inverter as follows:
+
+Signal   74LS04
+Name     Pin     Comments
+------   ------  --------
+GND      7
+VCC      14
+1A (in)  1       to A11
+1Y (out) 2       A11* to EPROM pin 18

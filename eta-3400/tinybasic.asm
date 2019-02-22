@@ -9,7 +9,7 @@
 ; running a (portable) interpreted language. The disassembled source
 ; code here does not reflect this and is not particularly meaningful
 ; (e.g. many of the instructions are actually data). Apparently the
-; original source for for the 6800 version of Tiny BASIC has been
+; original source for the 6800 version of Tiny BASIC has been
 ; lost. Some of the source has been reverse engineered using the
 ; source code for the 6502 version of Tiny BASIC.
 ;
@@ -44,9 +44,9 @@
 ; 1C11       Pad character.
 ; 1C12       Tape mode enable flag. (HEX 80 = enabled)
 ; 1C13       Spare stack size.
-; 1C14       Subroutine (PEEK) to read ony byte from RAM to B and A.
+; 1C14       Subroutine (PEEK) to read one byte from RAM to B and A.
 ;            (address in X)
-; 1C18       Subroutine (POKE) to store A and B into RAM at addess X.
+; 1C18       Subroutine (POKE) to store A and B into RAM at address X.
 
         CPU     6800
 

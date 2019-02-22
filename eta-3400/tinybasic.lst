@@ -18,8 +18,8 @@ Crasm 1.8:                                                   page  1
   ticularly meaningful
                         11  ; (e.g. many of the instructions are actually da
   ta). Apparently the
-                        12  ; original source for for the 6800 version of Ti
-  ny BASIC has been
+                        12  ; original source for the 6800 version of Tiny B
+  ASIC has been
                         13  ; lost. Some of the source has been reverse engi
   neered using the
                         14  ; source code for the 6502 version of Tiny BASIC
@@ -61,7 +61,7 @@ Crasm 1.8:                                                   page  1
                         45  ; 1C12       Tape mode enable flag. (HEX 80 = en
   abled)
                         46  ; 1C13       Spare stack size.
-                        47  ; 1C14       Subroutine (PEEK) to read ony byte 
+                        47  ; 1C14       Subroutine (PEEK) to read one byte 
 
 
 Crasm 1.8:                                                   page  2
@@ -69,7 +69,7 @@ Crasm 1.8:                                                   page  2
   from RAM to B and A.
                         48  ;            (address in X)
                         49  ; 1C18       Subroutine (POKE) to store A and B 
-  into RAM at addess X.
+  into RAM at address X.
                         50  
                         51          CPU     6800
                         52  

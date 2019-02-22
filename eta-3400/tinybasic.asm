@@ -217,19 +217,19 @@ SRVT    DW      IL_BBR                ; ($40-$5F) Backward Branch Relative
 L1C77   BSR     IL__SP
         STAA    M00BC
         STAB    M00BD
-        JMP     $1FD7
-L1C80   JSR     $1FFC
+        JMP     L1FD7
+L1C80   JSR     L1FFC
         LDAA    M00BC
         LDAB    M00BD
-        BRA     $1C8D
+        BRA     L1C8D
 IL__DS  BSR     IL__SP
-        BSR     $1C8D
-        LDX     M00C2
+        BSR     L1C8D
+L1C8D   LDX     M00C2
         DEX
         STAB    0,X
-        BRA     $1C96
+        BRA     L1C96
         LDX     M00C2
-        DEX
+L1C96   DEX
         STAA    0,X
         STX     M00C2
         PSHA
@@ -237,7 +237,7 @@ IL__DS  BSR     IL__SP
         CMPA    M00C3
         PULA
         BCS     IL__NO
-        JMP     $1D5C
+        JMP     L1D5C
 IL__SP  BSR     L1CA9
         TBA
 L1CA9   LDAB    #1
@@ -307,7 +307,7 @@ L1D12   LDAA    M0020
         CLR     $01,X
 WARM_S  LDS     M0022
         JSR     $212C
-        LDX     M1CFE
+L1D2A   LDX     M1CFE
         STX     M002A
         LDX     #M0080
         STX     M00C2
@@ -330,7 +330,7 @@ WARM_S  LDS     M0022
         LDX     M00BC
         LDX     $17,X
         JMP     0,X
-        JSR     $212C
+L1D5C   JSR     $212C
         LDAA    #$21
         STAA    M00C1
         JSR     $1C09
@@ -358,7 +358,7 @@ M1D93   BRA     $1DD6
         BRA     $1D18
 IL_BBR  DEC     M00BC
 IL_FBR  TST     M00BC
-        BEQ     $1D5C
+        BEQ     L1D5C
         LDX     M00BC
         STX     M002A
         RTS
@@ -380,7 +380,7 @@ IL_FBR  TST     M00BC
         LDAB    M00BD
         STAB    M002B
         STX     M00BC
-        JMP     $1FD7
+        JMP     L1FD7
         TAB
         LSRA
         LSRA
@@ -404,7 +404,7 @@ IL_FBR  TST     M00BC
 IL__BC  LDX     M002C
         STX     M00B8
         BSR     $1E2A
-        BSR     $1E20
+        BSR     L1E20
         TAB
         JSR     $1CF5
         BPL     $1DFE
@@ -428,13 +428,13 @@ IL__BV  BSR     $1E2A
         BLT     $1E09
         ASLA
         JSR     $1C94
-        LDX     M002C
+L1E20   LDX     M002C
         LDAA    0,X
         INX
         STX     M002C
         CMPA    #$0D
         RTS
-        BSR     $1E20
+        BSR     L1E20
         CMPA    #$20
         BEQ     $1E2A
         DEX
@@ -448,7 +448,7 @@ IL__BN  BSR     $1E2A
         BCC     $1E09
         LDX     #0
         STX     M00BC
-        BSR     $1E20
+        BSR     L1E20
         PSHA
         LDAA    M00BC
         LDAB    M00BD
@@ -492,7 +492,7 @@ L1E6B   BSR     $1EE0
         LDAA    0,X
         ORAA    $01,X
         BNE     $1E94
-        JMP     $1D5C
+        JMP     L1D5C
         LDAA    M00BD
         SUBA    $01,X
         PSHA
@@ -588,7 +588,7 @@ L1F23   BSR     $1F20
         JMP     $1CF5
 L1F49   LDAA    M00C0
         BEQ     $1F6A
-        JSR     $1E20
+        JSR     L1E20
         BNE     $1F4D
         BSR     $1F71
         BEQ     $1F67
@@ -600,13 +600,13 @@ L1F49   LDAA    M00C0
         RTS
         LDX     M1CFE
         STX     M002A
-        JMP     $1D5C
+        JMP     L1D5C
         LDS     M0026
         STAA    M00BF
-        JMP     $1D2A
-        JSR     $1E20
+        JMP     L1D2A
+        JSR     L1E20
         STAA    M0028
-        JSR     $1E20
+        JSR     L1E20
         STAA    M0029
         LDX     M0028
         RTS
@@ -624,14 +624,14 @@ L1F8E   JSR     Z201A
         LDX     M00BC
         STX     M0028
         BRA     $1F67
-L1F99   BSR     $1FFC
+L1F99   BSR     L1FFC
         TSX
         INC     $01,X
         INC     $01,X
         JSR     Z2025
         BNE     $1F93
         RTS
-L1FA6   BSR     $1FFC
+L1FA6   BSR     L1FFC
         STX     M002A
         RTS
 L1FAB   LDX     #M002C
@@ -656,7 +656,7 @@ L1FCE   TSX
         INC     $01,X
         LDX     M0028
         STX     M00BC
-        DES
+L1FD7   DES
         DES
         TSX
         LDAA    $02,X
@@ -674,8 +674,8 @@ L1FCE   TSX
         LDAA    0,X
         SBCA    M00BC
         BCS     Z2019
-        JMP     $1D5C
-        TSX
+        JMP     L1D5C
+L1FFC   TSX
         INX
         INX
         INX
@@ -710,7 +710,7 @@ Z2029   JSR     $1F71
         SUBB    M00BD
         SBCA    M00BC
         BCC     Z203F
-Z2038   JSR     $1E20
+Z2038   JSR     L1E20
         BNE     Z2038
         BRA     Z2029
 Z203F   CPX     M00BC
@@ -777,9 +777,9 @@ Z20AD   JSR     $1CF5
 Z20B4   CMPA    #$22
         BEQ     Z20AA
         BSR     Z2098
-L20BA   JSR     $1E20
+L20BA   JSR     L1E20
         BNE     Z20B4
-        JMP     $1D5C
+        JMP     L1D5C
 L20C2   LDAB    M00BF
         BMI     Z20AA
         ORAB    #$F8
@@ -813,7 +813,7 @@ Z20E7   LDAA    M002C
 Z20FF   BSR     Z214C
         JSR     $1C0C
         BCS     Z2123
-        JSR     $1E20
+        JSR     L1E20
         BNE     Z20FF
         BSR     Z2128
         BRA     Z20E7
@@ -911,7 +911,7 @@ L21B1   JSR     $1FC1
         JSR     $1F71
         LDAB    #$FE
 Z21CA   DECB
-        JSR     $1E20
+        JSR     L1E20
         BNE     Z21CA
 Z21D0   LDX     #0
         STX     M0028
@@ -960,7 +960,7 @@ Z2218   ADDB    M0025
         SBCA    M0026
         BCS     Z222E
         DEC     M002B
-        JMP     $1D5C
+        JMP     L1D5C
 Z222E   LDX     M002E
         STX     M00B8
 Z2232   LDX     M0024
@@ -985,13 +985,13 @@ Z2248   LDX     M0028
         STAB    0,X
 Z2257   INX
         STX     M00BC
-        JSR     $1E20
+        JSR     L1E20
         LDX     M00BC
         STAA    0,X
         CMPA    #$0D
         BNE     Z2257
 Z2265   LDS     M0026
-        JMP     $1D2A
+        JMP     L1D2A
 
 ;
 ; TBIL program table

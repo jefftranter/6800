@@ -179,31 +179,31 @@ SRVT    DW      IL_BBR                ; ($40-$5F) Backward Branch Relative
 ;       DW       IL__PQ               ; ($21) Print BASIC string
         DW      L20BA
 ;       DW       IL__PT               ; ($22) Print Tab
-        DW      $20C2
+        DW      L20C2
 ;       DW       IL__NL               ; ($23) New Line
-        DW      $2128
+        DW      Z2128
 ;       DW       IL__PC               ; ($24) Print Literal String
-        DW      $20AD
+        DW      Z20AD
 ;       DW       IL__NO               ; ($25) (Reserved)
-        DW      $20CB
+        DW      L20CB
 ;       DW       IL__NO               ; ($26) (Reserved)
         DW      $1400
 ;       DW       IL__GL               ; ($27) Get input Line
-        DW      $2159
+        DW      L2159
 ;       DW       ILRES1               ; ($28) (Seems to be reserved - No IL opcode calls this)
         DW      $1B2D
 ;       DW       ILRES2               ; ($29) (Seems to be reserved - No IL opcode calls this)
         DW      $1B38
 ;       DW       IL__IL               ; ($2A) Insert BASIC Line
-        DW      $21B1
+        DW      L21B1
 ;       DW       IL__MT               ; ($2B) Mark the BASIC program space Empty
-        DW      $1D12
+        DW      L1D12
 ;       DW       IL__XQ               ; ($2C) Execute
-        DW      $1F7E
+        DW      L1F7E
 ;       DW       WARM_S               ; ($2D) Stop (Warm Start)
-        DW      $1D25
+        DW      WARM_S
 ;       DW       IL__US               ; ($2E) Machine Language Subroutine Call
-        DW      $1CB9
+        DW      L1CB9
 ;       DW       IL__RT               ; ($2F) IL subroutine return
         DW      L1FA6
 
@@ -248,7 +248,7 @@ L1CA9   LDAB    #1
         INC     M00C3
         LDAB    0,X
         RTS
-        BSR     $1CC0
+L1CB9   BSR     $1CC0
         BSR     $1C94
         TBA
         BRA     $1C94
@@ -296,7 +296,7 @@ COLD_S  LDX     #M0100
         STX     M0022
         JSR     $1618
         ASC     "HTB1\0"
-        LDAA    M0020
+L1D12   LDAA    M0020
         LDAB    M0021
         ADDB    M1C13
         ADCA    #0
@@ -610,7 +610,7 @@ L1F49   LDAA    M00C0
         STAA    M0029
         LDX     M0028
         RTS
-        LDX     M0020
+L1F7E   LDX     M0020
         STX     M002C
         BSR     $1F71
         BEQ     $1F67
@@ -780,12 +780,12 @@ Z20B4   CMPA    #$22
 L20BA   JSR     $1E20
         BNE     Z20B4
         JMP     $1D5C
-        LDAB    M00BF
+L20C2   LDAB    M00BF
         BMI     Z20AA
         ORAB    #$F8
         NEGB
         BRA     Z20CE
-        JSR     IL__SP
+L20CB   JSR     IL__SP
 Z20CE   DECB
         BLT     Z20AA
         LDAA    #$20
@@ -857,7 +857,7 @@ Z214F   LDAA    TMC
 Z2154   CLRA
 Z2155   STAA    M00BF
         BRA     Z2163
-        LDX     #M0030
+L2159   LDX     #M0030
         STX     M002C
         STX     M00BC
         JSR     $1C8D
@@ -898,7 +898,7 @@ Z21A0   DEX
         LDAA    M00BD
         STAA    M00C1
         JMP     IL__SP
-        JSR     $1FC1
+L21B1   JSR     $1FC1
         JSR     Z201A
         TPA
         JSR     Z211C

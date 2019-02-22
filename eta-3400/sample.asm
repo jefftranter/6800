@@ -4,7 +4,7 @@
 ;                   A SAMPLE PROGRAM
 ;
 ; The sample program provides you with a routine to test the operation
-; of your ETA-3400 Microcomoputer Accessory. You can use the routine
+; of your ETA-3400 Microcomputer Accessory. You can use the routine
 ; to gain proficiency with the FANTOM II Monitor. The routine is a
 ; duplicate (with minor changes) of a program listed in the ET-3400
 ; Manual.

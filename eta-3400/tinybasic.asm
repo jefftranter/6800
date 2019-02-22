@@ -137,47 +137,47 @@ SRVT    DW      IL_BBR                ; ($40-$5F) Backward Branch Relative
         DW      IL__DS                ; ($0B) Duplicate Top two bytes on Stack
         DW      IL__SP                ; ($0C) Stack Pop
 ;       DW       IL__NO               ; ($0D) (Reserved)
-        DW      $1CA9
+        DW      L1CA9
 ;       DW       IL__NO               ; ($0E) (Reserved)
-        DW      $1C77
+        DW      L1C77
 ;       DW       IL__NO               ; ($0F) (Reserved)
-        DW      $1C80
+        DW      L1C80
 ;       DW       IL__SB               ; ($10) Save Basic Pointer
-        DW      $1FAB
+        DW      L1FAB
 ;       DW       IL__RB               ; ($11) Restore Basic Pointer
-        DW      $1FB0
+        DW      L1FB0
 ;       DW       IL__FV               ; ($12) Fetch Variable
-        DW      $1F00
+        DW      L1F00
 ;       DW       IL__SV               ; ($13) Store Variable
-        DW      $1F10
+        DW      L1F10
 ;       DW       IL__GS               ; ($14) Save GOSUB line
-        DW      $1FCE
+        DW      L1FCE
 ;       DW       IL__RS               ; ($15) Restore saved line
-        DW      $1F99
+        DW      L1F99
 ;       DW       IL__GO               ; ($16) GOTO
-        DW      $1F8E
+        DW      L1F8E
 ;       DW       IL__NE               ; ($17) Negate
-        DW      $1EC2
+        DW      L1EC2
 ;       DW       IL__AD               ; ($18) Add
-        DW      $1ECF
+        DW      L1ECF
 ;       DW       IL__SU               ; ($19) Subtract
-        DW      $1ECD
+        DW      L1ECD
 ;       DW       IL__MP               ; ($1A) Multiply
-        DW      $1EE5
+        DW      L1EE5
 ;       DW       IL__DV               ; ($1B) Divide
-        DW      $1E6B
+        DW      L1E6B
 ;       DW       IL__CP               ; ($1C) Compare
-        DW      $1F23
+        DW      L1F23
 ;       DW       IL__NX               ; ($1D) Next BASIC statement
-        DW      $1F49
+        DW      L1F49
 ;       DW       IL__NO               ; ($1E) (Reserved)
-        DW      $1CFC
+        DW      IL__NO
 ;       DW       IL__LS               ; ($1F) List the program
-        DW      $20D7
+        DW      L20D7
 ;       DW       IL__PN               ; ($20) Print Number
-        DW      $2045
+        DW      L2045
 ;       DW       IL__PQ               ; ($21) Print BASIC string
-        DW      $20BA
+        DW      L20BA
 ;       DW       IL__PT               ; ($22) Print Tab
         DW      $20C2
 ;       DW       IL__NL               ; ($23) New Line
@@ -205,7 +205,7 @@ SRVT    DW      IL_BBR                ; ($40-$5F) Backward Branch Relative
 ;       DW       IL__US               ; ($2E) Machine Language Subroutine Call
         DW      $1CB9
 ;       DW       IL__RT               ; ($2F) IL subroutine return
-        DW      $1FA6
+        DW      L1FA6
 
 ;
 ; Begin Cold Start
@@ -214,15 +214,15 @@ SRVT    DW      IL_BBR                ; ($40-$5F) Backward Branch Relative
 ; and initialize the address for end of free ram ($22 & $23)
 ;
 
-        BSR     $1CA6
+L1C77   BSR     IL__SP
         STAA    M00BC
         STAB    M00BD
         JMP     $1FD7
-        JSR     $1FFC
+L1C80   JSR     $1FFC
         LDAA    M00BC
         LDAB    M00BD
         BRA     $1C8D
-IL__DS  BSR     $1CA6
+IL__DS  BSR     IL__SP
         BSR     $1C8D
         LDX     M00C2
         DEX
@@ -236,11 +236,11 @@ IL__DS  BSR     $1CA6
         LDAA    M00C1
         CMPA    M00C3
         PULA
-        BCS     $1CFC
+        BCS     IL__NO
         JMP     $1D5C
-IL__SP  BSR     $1CA9
+IL__SP  BSR     L1CA9
         TBA
-        LDAB    #1
+L1CA9   LDAB    #1
         ADDB    M00C3
         CMPB    #$80
         BHI     $1CA3
@@ -278,7 +278,7 @@ IL__LN  BSR     $1CF5
         ADDA    M00C3
         STAA    M00BD
         CLR     M00BC
-        BSR     $1CA9
+        BSR     L1CA9
         LDX     M00BC
         LDAA    0,X
         STAB    0,X
@@ -471,7 +471,7 @@ IL__BN  BSR     $1E2A
         BCS     $1E44
         LDAA    M00BC
         JMP     $1C8D
-        BSR     $1EE0
+L1E6B   BSR     $1EE0
         LDAA    $02,X
         ASRA
         ROLA
@@ -519,24 +519,24 @@ IL__BN  BSR     $1E2A
         BSR     $1EDD
         TST     M00BE
         BPL     $1ECC
-        LDX     M00C2
+L1EC2   LDX     M00C2
         NEG     $01,X
         BNE     $1ECA
         DEC     0,X
         COM     0,X
         RTS
-        BSR     $1EC2
-        BSR     $1EE0
+L1ECD   BSR     L1EC2
+L1ECF   BSR     $1EE0
         LDAB    $03,X
         ADDB    $01,X
         LDAA    $02,X
         ADCA    0,X
         STAA    $02,X
         STAB    $03,X
-        JMP     $1CA9
+        JMP     L1CA9
         LDAB    #4
         JMP     $1CAB
-        BSR     $1EE0
+L1EE5   BSR     $1EE0
         LDAA    #$10
         STAA    M00BC
         CLRA
@@ -551,14 +551,14 @@ IL__BN  BSR     $1E2A
         DEC     M00BC
         BNE     $1EED
         BRA     $1ED9
-        BSR     $1EDD
+L1F00   BSR     $1EDD
         STAB    M00BD
         CLR     M00BC
         LDX     M00BC
         LDAA    0,X
         LDAB    $01,X
         JMP     $1C8D
-        LDAB    #3
+L1F10   LDAB    #3
         BSR     $1EE2
         LDAB    $01,X
         CLR     $01,X
@@ -566,8 +566,8 @@ IL__BN  BSR     $1E2A
         LDX     $01,X
         STAA    0,X
         STAB    $01,X
-        JMP     $1CA6
-        BSR     $1F20
+        JMP     IL__SP
+L1F23   BSR     $1F20
         PSHB
         LDAB    #3
         BSR     $1EE2
@@ -586,7 +586,7 @@ IL__BN  BSR     $1E2A
         ASR     0,X
         BCC     $1F61
         JMP     $1CF5
-        LDAA    M00C0
+L1F49   LDAA    M00C0
         BEQ     $1F6A
         JSR     $1E20
         BNE     $1F4D
@@ -619,24 +619,24 @@ IL__BN  BSR     $1E2A
         TPA
         STAA    M00C0
         RTS
-        JSR     Z201A
+L1F8E   JSR     Z201A
         BEQ     $1F56
         LDX     M00BC
         STX     M0028
         BRA     $1F67
-        BSR     $1FFC
+L1F99   BSR     $1FFC
         TSX
         INC     $01,X
         INC     $01,X
         JSR     Z2025
         BNE     $1F93
         RTS
-        BSR     $1FFC
+L1FA6   BSR     $1FFC
         STX     M002A
         RTS
-        LDX     #M002C
+L1FAB   LDX     #M002C
         BRA     $1FB3
-        LDX     #M002E
+L1FB0   LDX     #M002E
         LDAA    $01,X
         CMPA    #$80
         BCC     $1FC1
@@ -651,7 +651,7 @@ IL__BN  BSR     $1E2A
         STAA    M002D
 MDB     STX     M002E
         RTS
-        TSX
+L1FCE   TSX
         INC     $01,X
         INC     $01,X
         LDX     M0028
@@ -696,7 +696,7 @@ Z200C   LDAA    $03,X
         INS
         LDX     M00BC
 Z2019   RTS
-Z201A   JSR     $1CA6
+Z201A   JSR     IL__SP
         STAB    M00BD
         STAA    M00BC
         ORAA    M00BD
@@ -716,10 +716,10 @@ Z2038   JSR     $1E20
 Z203F   CPX     M00BC
         RTS
 Z2042   JSR     $1C8D
-        LDX     M00C2
+L2045   LDX     M00C2
         TST     0,X
         BPL     Z2052
-        JSR     $1EC2
+        JSR     L1EC2
         LDAA    #$2D
         BSR     Z2098
 Z2052   CLRA
@@ -730,7 +730,7 @@ Z2052   CLRA
         PSHB
         PSHA
         PSHB
-        JSR     $1CA6
+        JSR     IL__SP
         TSX
 Z2060   INC     0,X
         SUBB    #$10
@@ -777,7 +777,7 @@ Z20AD   JSR     $1CF5
 Z20B4   CMPA    #$22
         BEQ     Z20AA
         BSR     Z2098
-        JSR     $1E20
+L20BA   JSR     $1E20
         BNE     Z20B4
         JMP     $1D5C
         LDAB    M00BF
@@ -785,13 +785,13 @@ Z20B4   CMPA    #$22
         ORAB    #$F8
         NEGB
         BRA     Z20CE
-        JSR     $1CA6
+        JSR     IL__SP
 Z20CE   DECB
         BLT     Z20AA
         LDAA    #$20
         BSR     Z2098
         BRA     Z20CE
-        LDX     M002C
+L20D7   LDX     M002C
         STX     M00B8
         LDX     M0020
         STX     M002C
@@ -897,7 +897,7 @@ Z21A0   DEX
         JSR     Z2128
         LDAA    M00BD
         STAA    M00C1
-        JMP     $1CA6
+        JMP     IL__SP
         JSR     $1FC1
         JSR     Z201A
         TPA

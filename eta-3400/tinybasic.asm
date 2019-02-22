@@ -241,7 +241,7 @@ L1CA3   JMP     L1D5C
 IL__SP  BSR     L1CA9
         TBA
 L1CA9   LDAB    #1
-        ADDB    M00C3
+L1CAB   ADDB    M00C3
         CMPB    #$80
         BHI     L1CA3
         LDX     M00C2
@@ -289,7 +289,7 @@ L1CF5   LDX     M002A
         STX     M002A
 IL__NO  TSTA
         RTS
-M1CFE   BHI     $1D6A
+M1CFE   BHI     L1D6A
 COLD_S  LDX     #M0100
         STX     M0020
         JSR     $1A80
@@ -306,19 +306,19 @@ L1D12   LDAA    M0020
         CLR     0,X
         CLR     $01,X
 WARM_S  LDS     M0022
-        JSR     $212C
+        JSR     L212C
 L1D2A   LDX     M1CFE
         STX     M002A
         LDX     #M0080
         STX     M00C2
         LDX     #M0030
         STX     M00C0
-        STS     M0026
-        BSR     L1CF5
+L1D39   STS     M0026
+L1D3B   BSR     L1CF5
         BSR     L1D46
-        BRA     $1D3B
+        BRA     L1D3B
         CPX     #M0099
-        BRA     $1D39
+        BRA     L1D39
 L1D46   LDX     #M1C17
         STX     M00BC
         CMPA    #$30
@@ -330,13 +330,13 @@ L1D46   LDX     #M1C17
         LDX     M00BC
         LDX     $17,X
         JMP     0,X
-L1D5C   JSR     $212C
+L1D5C   JSR     L212C
         LDAA    #$21
         STAA    M00C1
         JSR     L1C09
         LDAA    #$80
         STAA    M00C3
-        LDAB    M002B
+L1D6A   LDAB    M002B
         LDAA    M002A
         SUBB    M1CFF
         SBCA    M1CFE
@@ -526,7 +526,7 @@ L1EC2   LDX     M00C2
         COM     0,X
         RTS
 L1ECD   BSR     L1EC2
-L1ECF   BSR     $1EE0
+L1ECF   BSR     L1EE0
         LDAB    $03,X
         ADDB    $01,X
         LDAA    $02,X
@@ -534,9 +534,9 @@ L1ECF   BSR     $1EE0
         STAA    $02,X
         STAB    $03,X
         JMP     L1CA9
-        LDAB    #4
-        JMP     $1CAB
-L1EE5   BSR     $1EE0
+L1EE0   LDAB    #4
+L1EE2   JMP     L1CAB
+L1EE5   BSR     L1EE0
         LDAA    #$10
         STAA    M00BC
         CLRA
@@ -559,7 +559,7 @@ L1F00   BSR     $1EDD
         LDAB    $01,X
         JMP     L1C8D
 L1F10   LDAB    #3
-        BSR     $1EE2
+        BSR     L1EE2
         LDAB    $01,X
         CLR     $01,X
         LDAA    0,X
@@ -570,38 +570,38 @@ L1F10   LDAB    #3
 L1F23   BSR     $1F20
         PSHB
         LDAB    #3
-        BSR     $1EE2
+        BSR     L1EE2
         INC     M00C3
         INC     M00C3
         PULB
         SUBB    $02,X
         SBCA    $01,X
-        BGT     $1F42
-        BLT     $1F3E
+        BGT     L1F42
+        BLT     L1F3E
         TSTB
-        BEQ     $1F40
-        BRA     $1F42
-        ASR     0,X
-        ASR     0,X
-        ASR     0,X
-        BCC     $1F61
+        BEQ     L1F40
+        BRA     L1F42
+L1F3E   ASR     0,X
+L1F40   ASR     0,X
+L1F42   ASR     0,X
+        BCC     L1F61
         JMP     L1CF5
 L1F49   LDAA    M00C0
-        BEQ     $1F6A
-        JSR     L1E20
-        BNE     $1F4D
+        BEQ     L1F6A
+L1F4D   JSR     L1E20
+        BNE     L1F4D
         BSR     L1F71
-        BEQ     $1F67
-        BSR     $1F8A
+        BEQ     L1F67
+L1F56   BSR     L1F8A
         JSR     L1C0C
-        BCS     $1F62
+        BCS     L1F62
         LDX     M00C4
         STX     M002A
-        RTS
-        LDX     M1CFE
+L1F61   RTS
+L1F62   LDX     M1CFE
         STX     M002A
-        JMP     L1D5C
-        LDS     M0026
+L1F67   JMP     L1D5C
+L1F6A   LDS     M0026
         STAA    M00BF
         JMP     L1D2A
 L1F71   JSR     L1E20
@@ -613,31 +613,31 @@ L1F71   JSR     L1E20
 L1F7E   LDX     M0020
         STX     M002C
         BSR     L1F71
-        BEQ     $1F67
+        BEQ     L1F67
         LDX     M002A
         STX     M00C4
-        TPA
+L1F8A   TPA
         STAA    M00C0
         RTS
 L1F8E   JSR     Z201A
-        BEQ     $1F56
-        LDX     M00BC
+        BEQ     L1F56
+L1F93   LDX     M00BC
         STX     M0028
-        BRA     $1F67
+        BRA     L1F67
 L1F99   BSR     L1FFC
         TSX
         INC     $01,X
         INC     $01,X
         JSR     Z2025
-        BNE     $1F93
+        BNE     L1F93
         RTS
 L1FA6   BSR     L1FFC
         STX     M002A
         RTS
 L1FAB   LDX     #M002C
-        BRA     $1FB3
+        BRA     L1FB3
 L1FB0   LDX     #M002E
-        LDAA    $01,X
+L1FB3   LDAA    $01,X
         CMPA    #$80
         BCC     L1FC1
         LDAA    0,X
@@ -833,7 +833,7 @@ Z2123   LDX     M00B8
         RTS
 Z2128   LDAA    M00BF
         BMI     Z2122
-        LDAA    #$0D
+L212C   LDAA    #$0D
         BSR     Z2149
         LDAB    PCC
         ASLB

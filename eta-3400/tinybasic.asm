@@ -87,11 +87,15 @@ M00C2   EQU     $00C2
 M00C3   EQU     $00C3
 M00C4   EQU     $00C4
 M0100   EQU     $0100
-M1C13   EQU     $1C13
+MAIN    EQU     $1400
+OUTIS   EQU     $1618
 M1CFF   EQU     $1CFF
 SNDCHR  EQU     $1865
 RCCHR   EQU     $18E1
+FTOP    EQU     $1A80
 BREAK   EQU     $1B1F
+L1B2D   EQU     $1B2D
+L1B38   EQU     $1B38
 
 ;****************************************************
 ;* Program Code / Data Areas                        *
@@ -112,7 +116,7 @@ BSC     DB      $08             ; Backspace code
 LSC     DB      $15             ; Line cancel code
 PCC     DB      $83             ; Pad character
 TMC     DB      $80             ; Tape mode control
-        DB      $20             ; Spare Stack size.
+M1C13   DB      $20             ; Spare Stack size.
 ;
 ; Code fragment for 'PEEK' and 'POKE'
 ;
@@ -187,13 +191,13 @@ SRVT    DW      IL_BBR                ; ($40-$5F) Backward Branch Relative
 ;       DW       IL__NO               ; ($25) (Reserved)
         DW      L20CB
 ;       DW       IL__NO               ; ($26) (Reserved)
-        DW      $1400
+        DW      MAIN
 ;       DW       IL__GL               ; ($27) Get input Line
         DW      L2159
 ;       DW       ILRES1               ; ($28) (Seems to be reserved - No IL opcode calls this)
-        DW      $1B2D
+        DW      L1B2D
 ;       DW       ILRES2               ; ($29) (Seems to be reserved - No IL opcode calls this)
-        DW      $1B38
+        DW      L1B38
 ;       DW       IL__IL               ; ($2A) Insert BASIC Line
         DW      L21B1
 ;       DW       IL__MT               ; ($2B) Mark the BASIC program space Empty
@@ -292,9 +296,9 @@ IL__NO  TSTA
 M1CFE   BHI     L1D6A
 COLD_S  LDX     #M0100
         STX     M0020
-        JSR     $1A80
+        JSR     FTOP
         STX     M0022
-        JSR     $1618
+        JSR     OUTIS
         ASC     "HTB1\0"
 L1D12   LDAA    M0020
         LDAB    M0021
@@ -403,29 +407,29 @@ L1DEA   STAA    M00BC
         JMP     0,X
 IL__BC  LDX     M002C
         STX     M00B8
-        BSR     L1E2A
+L1DF2   BSR     L1E2A
         BSR     L1E20
         TAB
         JSR     L1CF5
-        BPL     $1DFE
+        BPL     L1DFE
         ORAB    #$80
-        CBA
-        BNE     $1E05
+L1DFE   CBA
+        BNE     L1E05
         TSTA
-        BPL     $1DF2
+        BPL     L1DF2
         RTS
-        LDX     M00B8
+L1E05   LDX     M00B8
         STX     M002C
-        BRA     $1D9B
+L1E09   BRA     IL_FBR
 IL__BE  BSR     L1E2A
         CMPA    #$0D
-        BNE     $1E09
+        BNE     L1E09
         RTS
 IL__BV  BSR     L1E2A
         CMPA    #$5A
-        BGT     $1E09
+        BGT     L1E09
         CMPA    #$41
-        BLT     $1E09
+        BLT     L1E09
         ASLA
         JSR     L1C94
 L1E20   LDX     M002C
@@ -441,14 +445,14 @@ L1E2A   BSR     L1E20
         STX     M002C
         CMPA    #$30
         CLC
-        BLT     $1E3A
+        BLT     L1E3A
         CMPA    #$3A
-        RTS
+L1E3A   RTS
 IL__BN  BSR     L1E2A
-        BCC     $1E09
+        BCC     L1E09
         LDX     #0
         STX     M00BC
-        BSR     L1E20
+L1E44   BSR     L1E20
         PSHA
         LDAA    M00BC
         LDAB    M00BD
@@ -468,10 +472,10 @@ IL__BN  BSR     L1E2A
         STAA    M00BC
         STAB    M00BD
         BSR     L1E2A
-        BCS     $1E44
+        BCS     L1E44
         LDAA    M00BC
         JMP     L1C8D
-L1E6B   BSR     $1EE0
+L1E6B   BSR     L1EE0
         LDAA    $02,X
         ASRA
         ROLA
@@ -486,54 +490,54 @@ L1E6B   BSR     $1EE0
         STAB    $02,X
         EORA    0,X
         STAA    M00BE
-        BPL     $1E89
-        BSR     $1EC4
-        LDAB    #$11
+        BPL     L1E89
+        BSR     L1EC4
+L1E89   LDAB    #$11
         LDAA    0,X
         ORAA    $01,X
-        BNE     $1E94
+        BNE     L1E94
         JMP     L1D5C
-        LDAA    M00BD
+L1E94   LDAA    M00BD
         SUBA    $01,X
         PSHA
         LDAA    M00BC
         SBCA    0,X
         PSHA
         EORA    M00BC
-        BMI     $1EAB
+        BMI     L1EAB
         PULA
         STAA    M00BC
         PULA
         STAA    M00BD
         SEC
-        BRA     $1EAE
-        PULA
+        BRA     L1EAE
+L1EAB   PULA
         PULA
         CLC
-        ROL     $03,X
+L1EAE   ROL     $03,X
         ROL     $02,X
         ROL     M00BD
         ROL     M00BC
         DECB
-        BNE     $1E94
-        BSR     $1EDD
+        BNE     L1E94
+        BSR     L1EDD
         TST     M00BE
-        BPL     $1ECC
+        BPL     L1ECC
 L1EC2   LDX     M00C2
-        NEG     $01,X
-        BNE     $1ECA
+L1EC4   NEG     $01,X
+        BNE     L1ECA
         DEC     0,X
-        COM     0,X
-        RTS
+L1ECA   COM     0,X
+L1ECC   RTS
 L1ECD   BSR     L1EC2
 L1ECF   BSR     L1EE0
         LDAB    $03,X
         ADDB    $01,X
         LDAA    $02,X
         ADCA    0,X
-        STAA    $02,X
+L1ED9   STAA    $02,X
         STAB    $03,X
-        JMP     L1CA9
+L1EDD   JMP     L1CA9
 L1EE0   LDAB    #4
 L1EE2   JMP     L1CAB
 L1EE5   BSR     L1EE0
@@ -541,17 +545,17 @@ L1EE5   BSR     L1EE0
         STAA    M00BC
         CLRA
         CLRB
-        ASLB
+L1EED   ASLB
         ROLA
         ASL     $01,X
         ROL     0,X
-        BCC     $1EF9
+        BCC     L1EF9
         ADDB    $03,X
         ADCA    $02,X
-        DEC     M00BC
-        BNE     $1EED
-        BRA     $1ED9
-L1F00   BSR     $1EDD
+L1EF9   DEC     M00BC
+        BNE     L1EED
+        BRA     L1ED9
+L1F00   BSR     L1EDD
         STAB    M00BD
         CLR     M00BC
         LDX     M00BC
@@ -566,8 +570,8 @@ L1F10   LDAB    #3
         LDX     $01,X
         STAA    0,X
         STAB    $01,X
-        JMP     IL__SP
-L1F23   BSR     $1F20
+L1F20   JMP     IL__SP
+L1F23   BSR     L1F20
         PSHB
         LDAB    #3
         BSR     L1EE2

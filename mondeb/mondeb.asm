@@ -1215,7 +1215,7 @@ TSTEOL CMPA   #CR      ;CARRIAGE RETURN?
        BEQ    TSTEO1
        CMPA   #LF      ;LINE FEED? (CONTINUED LINES)
        BEQ     TSTEO1
-       CMPA    #';'    ;FOR SEVERAL COMMAND ON ONE LINE
+       CMPA    #';'    ;FOR SEVERAL COMMANDS ON ONE LINE
 TSTEO1 RTS
 
 ;======================================================
@@ -1243,7 +1243,7 @@ TSTDLM PSHB
 
 ISDLM2 CMPA   #2
        BNE    ISDLM3
-TSTCMA CMPB   #'.'     ;WANT A COMMAND - IS IT?
+TSTCMA CMPB   #','     ;WANT A COMMA - IS IT?
        BNE    DLMNO
        BRA    DLMYES
 ISDLM3 CMPA   #3

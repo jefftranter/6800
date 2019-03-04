@@ -1764,7 +1764,7 @@ FB46 39               1382         RTS
                       1410  ;NBR2X - USED IN DECIMAL CONVERSION
                       1411  ;XTEMP2 - SAVES IX
                       1412  
-                      1413  ;INITALIZE BOTH BYTES TO ZERO
+                      1413  ;INITIALIZE BOTH BYTES TO ZERO
 FB47 FF70BA           1414  NUMBER STX    TEMP2    ;SAVE IX
 FB4A 7F7013           1415         CLR    NBRHI
 FB4D 7F7014           1416         CLR    NBRLO
@@ -1924,7 +1924,7 @@ FBF6 39               1549         RTS
                       1551  ;===============================================
  =======
                       1552  ;OUTPUT AN "=" SIGN
-FBF7 863D             1553  OUTEQ  LDAA   #"="
+FBF7 863D             1553  OUTEQ  LDAA   #'='
 FBF9 BDFE76           1554         JSR    OUTCHR
 FBFC 39               1555         RTS
                       1556  
@@ -2446,7 +2446,7 @@ FE2B 8602             1975         LDAA   #2
 FE2D B77F42           1976         STAA   ACIA1-1
 FE30 B77F44           1977         STAA   ACIA2-1
                       1978  ;SET UP SWI INTERRUPT ADDRESS POINTER
-FE33 CEF501           1979         LDX    #TYPSWI  ;TYPW "SWI" & DO "REG" CO
+FE33 CEF501           1979         LDX    #TYPSWI  ;TYPE "SWI" & DO "REG" CO
                         MMAND
 FE36 FF7004           1980         STX    SWIVEC
                       1981  ;INITIALIZE TO MONDEB'S COMMAND LISTS
@@ -2529,10 +2529,10 @@ FE84 F17026           2042        CMPB    OUTFLG
 FE87 2709             2043        BEQ     OUTCH2
                       2044  
                       2045  ;OUTFLG = 1: ANY ACIA OUTPUT
-FE89 09               2046        DEX              ;POINT TO ACIA STATUS REG
+FE89 09               2046         DEX             ;POINT TO ACIA STATUS REG
 FE8A E500             2047  OUTCH1 BITB   ,X       ;TEST TDRE BIT
-FE8C 27FC             2048         BEQ    OUTCH1   ;LOOP IF NO READY TO ACCE
-                        PT A NEW CHAR
+FE8C 27FC             2048         BEQ    OUTCH1   ;LOOP IF NOT READY TO ACC
+                        EPT A NEW CHAR
 FE8E A701             2049         STAA   1,X      ;NOW READY - SEND IT
 FE90 2006             2050         BRA    OUTCH3
                       2051  
@@ -2623,9 +2623,9 @@ FEE4 39               2117         RTS
                       2121  ;ACCA, ACCB, & IX ARE PRESERVED
 FEE5 36               2122  TOACIA PSHA            ;SAVE CHAR
 FEE6 8602             2123         LDAA   #2       ;GET ACIA TRANSMIT REG ST
-                        ATUS BUT
+                        ATUS BIT
 FEE8 B57F42           2124  TOACI1 BITA   ACIA1-1  ;REGISTER EMPTY?
-FEEB 27F8             2125         BEQ    TOACIA   ;IF NOT, LOOP BACK
+FEEB 27FB             2125         BEQ    TOACI1   ;IF NOT, LOOP BACK
 FEED 32               2126         PULA            ;YES, RESTORE CHARACTER
 FEEE B77F43           2127         STAA   ACIA1    ;SEND IT
 FEF1 39               2128         RTS
@@ -3292,7 +3292,7 @@ Crasm 1.8:                           MONDEB                  page 50
 ^70DE   Abs TIMCON                                           
  F9C0   Abs TIMDE1                                           
 ^F9BD   Abs TIMDEL                                           
-?FEE8   Abs TOACI1                                           
+ FEE8   Abs TOACI1                                           
 ^FEE5   Abs TOACIA                                           
  FAAC   Abs TSTCMA                                           
 ^FDAB   Abs TSTCR                                            

@@ -716,7 +716,7 @@ F765 39                584         RTS             ;RETURN WITH IT
                        585  ;*****
                        586  ;SEARCH - SEARCH MEMORY FOR A BYTE STRING
                        587  
-                       588  ;GLOVAL VARIABLES USED
+                       588  ;GLOBAL VARIABLES USED
                        589  ;LINPTR - INPUT LINE CHARACTER POINTER
                        590  ;LISPTR - COMMAND LIST CHARACTER POINTER
                        591  ;RANGLO - "SEARCH FROM" ADDRESS
@@ -1763,7 +1763,7 @@ FB46 39               1381         RTS
                       1410  ;XTEMP2 - SAVES IX
                       1411  
                       1412  ;INITIALIZE BOTH BYTES TO ZERO
-FB47 FF70BA           1413  NUMBER STX    TEMP2    ;SAVE IX
+FB47 FF70D2           1413  NUMBER STX    XTEMP2   ;SAVE IX
 FB4A 7F7013           1414         CLR    NBRHI
 FB4D 7F7014           1415         CLR    NBRLO
                       1416  
@@ -3276,7 +3276,7 @@ Crasm 1.8:                           MONDEB                  page 50
 ^70B8   Abs TEMP1                                            
 ?70CA   Abs TEMP10                                           
 ?70CC   Abs TEMP11                                           
-^70BA   Abs TEMP2                                            
+ 70BA   Abs TEMP2                                            
 ^70BC   Abs TEMP3                                            
 ^70BE   Abs TEMP4                                            
 ^70C0   Abs TEMP5                                            

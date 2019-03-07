@@ -1092,7 +1092,7 @@ F924 8607              898  LOAD   LDAA   #7       ;IN LIST 7
 F926 BDF9C7            899         JSR    COMAND
 F929 2BE5              900         BMI    DUMP10   ;ERROR, UNRECOGNIZABLE MO
                         DIFIER
-F92B 2728              901         BEQ    LOAD2
+F92B 2709              901         BEQ    LOAD1
                        902  
 F92D BDFB3C            903         JSR    NUMINX   ;GET "FROM" ADDRESS
 F930 FF7024            904         STX    INPADR   ;SAVE IT
@@ -1170,8 +1170,8 @@ F98D 8D09              961         BSR    INHEX    ;GET RIGHT HEX DIGIT
 F98F 1B                962         ABA             ;COMBINE THEM IN ACCA
                        963  ;UPDATE THE CHECKSUM
 F990 16                964         TAB
-F991 FBF757            965         ADDB   CKSUM
-F994 F7F757            966         STAB   CKSUM
+F991 FB70E1            965         ADDB   CKSM
+F994 F770E1            966         STAB   CKSM
 F997 39                967         RTS
                        968  
                        969  ;INPUT A HEX CHAR & CONVERT TO INTERNAL FORM
@@ -3131,8 +3131,8 @@ Crasm 1.8:                           MONDEB                  page 48
 ^70D5   Abs LISNUM                                           
 ^70D7   Abs LISPTR                                           
 ^F924   Abs LOAD                                             
- F936   Abs LOAD1                                            
-^F955   Abs LOAD2                                            
+^F936   Abs LOAD1                                            
+ F955   Abs LOAD2                                            
 ^F961   Abs LOAD3                                            
 ^F972   Abs LOAD4                                            
 ^F526   Abs LSEI                                             

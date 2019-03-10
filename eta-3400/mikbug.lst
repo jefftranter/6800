@@ -27,7 +27,7 @@ Crasm 1.8:                           MIKBUG                  page  1
                         19  ;      L  LOAD
                         20  ;      G  GO TO TARGET PROGRAM
                         21  ;      M  MEMORY CHANGE
-                        22  ;      F  PRINTIPUNCH DUMP
+                        22  ;      F  PRINT PUNCH DUMP
                         23  ;      R  DISPLAY CONTENTS OF TARGET STACK
                         24  ;            CC  B   A    X   P   S
   8004                  25  PIASB   =      $8004
@@ -251,7 +251,8 @@ FF30 8D96              219          BSR    OUT4HS    ; STACK POINTER
 FF32 20AF              220  C2      BRA    CONTRL
                        221  
                        222  ; PUNCH DUMP
-                       223  ; PUNCH FROM BEGINING ADDRESS (BEGA) THRU ENDI
+                       223  ; PUNCH FROM BEGINNING ADDRESS (BEGA) THRU ENDIN
+  G
                        224  ; ADDRESS (ENDA)
                        225  ;
 FF34 0D0A0000000053
@@ -259,17 +260,18 @@ FF3B 3104              226  MTAPE1  DB     $D,$A,0,0,0,0,'S','1',4 ; PUNCH F
                                          ORMAT
                        227  
                        228  
-  FF3D                 229  PUNCH   =      *
 
 
 Crasm 1.8:                           MIKBUG                  page  5
 
+  FF3D                 229  PUNCH   =      *
                        230  
 FF3D 8612              231          LDAA   #$12      ; TURN TTY PUNCH ON
 FF3F BDFE75            232          JSR    OUTCH     ; OUT CHAR  
                        233  
 FF42 FE0002            234          LDX    BEGA
-FF45 FF000F            235          STX    TW        ; TEMP BEGINING ADDRESS
+FF45 FF000F            235          STX    TW        ; TEMP BEGINNING ADDRES
+                           S
 FF48 B60005            236  PUN11   LDAA   ENDA+1
 FF4B B00010            237          SUBA   TW+1
 FF4E F60004            238          LDAB   ENDA
@@ -324,18 +326,18 @@ FF9D 0D0A140000002A
 FFA4 04                282  MCL     DB     $D,$A,$14,0,0,0,'*',4 ; C/R,L/F,P
                                        UNCH
                        283  
-                       284  ;
-FFA5 FF0012            285  SAV     STX    XTEMP
 
 
 Crasm 1.8:                           MIKBUG                  page  6
 
+                       284  ;
+FFA5 FF0012            285  SAV     STX    XTEMP
 FFA8 CE8001            286          LDX    #PIAD
 FFAB 39                287          RTS
                        288  
                        289  ;INPUT   ONE CHAR INTO A-REGISTER
 FFAC 37                290  INEEE   PSHB             ; SAVE ACC-B
-FFAD 8DF6              291          BSR    SAV       ; SAV XR
+FFAD 8DF6              291          BSR    SAV       ; SAVE XR
 FFAF A600              292  IN1     LDAA   0,X       ; LOOK FOR START BIT
 FFB1 2BFC              293          BMI    IN1
 FFB3 6F02              294          CLR    2,X       ; SET COUNTER FOR HALF 
@@ -390,18 +392,18 @@ FFF8 FE00              339          DW     IO
 FFFA FF13              340          DW     SFE
 FFFC FE05              341          DW     POWDWN
 FFFE FED0              342          DW     START
-                       343  
-  0000                 344  ROMEND  =       *
 
 
 Crasm 1.8:                           MIKBUG                  page  7
 
+                       343  
+  0000                 344  ROMEND  =       *
                        345  
   0000                 346          * =    $0000
                        347          DUMMY
   0000                 348  IOV     DS     2         ; IO INTERRUPT POINTER
-  0002                 349  BEGA    DS     2         ; BEGINING ADDR PRINT/P
-                           UNCH
+  0002                 349  BEGA    DS     2         ; BEGINNING ADDR PRINT/
+                           PUNCH
   0004                 350  ENDA    DS     2         ; ENDING ADDR PRINT/PUN
                            CH
   0006                 351  NIO     DS     2         ; NMI INTERRUPT POINTER
@@ -428,8 +430,6 @@ WARNINGS:     0
 Successful assembly...
  Last address       42 (66)
  Code length       400 (1024)
-
-
 
 
 

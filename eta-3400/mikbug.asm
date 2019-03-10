@@ -19,7 +19,7 @@
 ;      L  LOAD
 ;      G  GO TO TARGET PROGRAM
 ;      M  MEMORY CHANGE
-;      F  PRINTIPUNCH DUMP
+;      F  PRINT PUNCH DUMP
 ;      R  DISPLAY CONTENTS OF TARGET STACK
 ;            CC  B   A    X   P   S
 PIASB   =      $8004
@@ -220,7 +220,7 @@ PRINT   LDX    SP
 C2      BRA    CONTRL
 
 ; PUNCH DUMP
-; PUNCH FROM BEGINING ADDRESS (BEGA) THRU ENDI
+; PUNCH FROM BEGINNING ADDRESS (BEGA) THRU ENDING
 ; ADDRESS (ENDA)
 ;
 MTAPE1  DB     $D,$A,0,0,0,0,'S','1',4 ; PUNCH FORMAT
@@ -232,7 +232,7 @@ PUNCH   =      *
         JSR    OUTCH     ; OUT CHAR  
 
         LDX    BEGA
-        STX    TW        ; TEMP BEGINING ADDRESS
+        STX    TW        ; TEMP BEGINNING ADDRESS
 PUN11   LDAA   ENDA+1
         SUBA   TW+1
         LDAB   ENDA
@@ -288,7 +288,7 @@ SAV     STX    XTEMP
 
 ;INPUT   ONE CHAR INTO A-REGISTER
 INEEE   PSHB             ; SAVE ACC-B
-        BSR    SAV       ; SAV XR
+        BSR    SAV       ; SAVE XR
 IN1     LDAA   0,X       ; LOOK FOR START BIT
         BMI    IN1
         CLR    2,X       ; SET COUNTER FOR HALF BIT TI
@@ -346,7 +346,7 @@ ROMEND  =       *
         * =    $0000
         DUMMY
 IOV     DS     2         ; IO INTERRUPT POINTER
-BEGA    DS     2         ; BEGINING ADDR PRINT/PUNCH
+BEGA    DS     2         ; BEGINNING ADDR PRINT/PUNCH
 ENDA    DS     2         ; ENDING ADDR PRINT/PUNCH
 NIO     DS     2         ; NMI INTERRUPT POINTER
 SP      DS     1         ; S-HIGH

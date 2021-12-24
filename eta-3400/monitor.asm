@@ -4,8 +4,7 @@
 ; Entered from listing in ETA-340A manual by Jeff Tranter <tranter@pobox.com>.
 ; Fixed some small errors in the listing.
 ; Adapted to the crasm assembler (https://github.com/colinbourassa/crasm).
-; Note that I do not own an ETA-3400 and have no way of testing it but I
-; have confirmed that it produces the same binary output as the Heathkit
+; I have confirmed that it produces the same binary output as the Heathkit
 ; ROMs.
 
         CPU 6800

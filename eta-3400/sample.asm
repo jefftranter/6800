@@ -26,7 +26,7 @@
         OUTCH   EQU $FE3A
         MAIN    EQU $1400
 
-        * = $1000
+        * = $0100
 
 START   JSR     REDIS           ; SET UP FIRST DISPLAY ADDRESS
         LDAA    #$01            ; FIRST SEGMENT CODE

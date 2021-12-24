@@ -6,1783 +6,1782 @@ Crasm 1.8:           HEATH KEYBOARD MONITOR                                     
                          4  ; Entered from listing in ETA-340A manual by Jeff Tranter <tranter@pobox.com>.
                          5  ; Fixed some small errors in the listing.
                          6  ; Adapted to the crasm assembler (https://github.com/colinbourassa/crasm).
-                         7  ; Note that I do not own an ETA-3400 and have no way of testing it but I
-                         8  ; have confirmed that it produces the same binary output as the Heathkit
-                         9  ; ROMs.
-                        10  
-                        11          CPU 6800
-                        12  
-                        13  ;;;     HEATH/WINTEK TERMINAL MONITOR SYSTEM
-                        14  ;
-                        15  ;       BY JIM WILSON FOR WINTEK CORPORATION
-                        16  ;         COPYRIGHT 1978 BY WINTEK CORP.
-                        17  ;            ALL RIGHTS RESERVED
-                        18  ;
-                        19  
-                        20  ;;      CONDITIONAL ASSEMBLIES
-                        21  
-  0000                  22  DEBUG   EQU     0               ; DEBUG CODE OFF
-                        23  
-                        24  ;;      CHARACTER DEFINITIONS
-                        25  
-  000D                  26  CR      EQU     $0D
-  000A                  27  LF      EQU     $0A
-  0020                  28  SPACE   EQU     ' '
-                        29  
-                        30  ;;      PIA DEFINITION
-                        31  
-                        32          DUMMY
-  1000                  33  *       EQU     $1000
-  1000                  34  TERM    DS      1
-  1001                  35  TERM.C  DS      1
-  1002                  36  TAPE    DS      1
-  1003                  37  TAPE.C  DS      1
-                        38  
-                        39  ;;      EXTERNALS
-                        40  
-  FE6B                  41  SSTEP   EQU     $FE6B
-  FEFC                  42  SWIVE1  EQU     $FEFC
-  FF76                  43  OPTAB   EQU     $FF76
-  FCBC                  44  REDIS   EQU     $FCBC
-  FD7B                  45  DISPLAY EQU     $FD7B
-  FE20                  46  OUTBYT  EQU     $FE20
-  FD43                  47  BKSP    EQU     $FD43
-  FD25                  48  PROMPT  EQU     $FD25
-  FC86                  49  OUTSTA  EQU     $FC86
-  FE52                  50  OUTSTR  EQU     $FE52
-                        51  
-                        52  ;;      RAM TEMPORARIES
-                        53  
-  00CC                  54  *       EQU     $00CC
-  00CC                  55  USERC   DS      1               ; CONDX CODES
-  00CD                  56  USERB   DS      1
-  00CE                  57  USERA   DS      1               ; ACCUMULATORS
-  00CF                  58  USERX   DS      2               ; INDEX
-  00D1                  59  USERP   DS      2               ; P.C.
-                        60  
-  00E4                  61  *       EQU     $00E4
-  0004                  62  NBR     EQU     4               ; FOUR BREAKPOINTS ALLOWED
+                         7  ; I have confirmed that it produces the same binary output as the Heathkit
+                         8  ; ROMs.
+                         9  
+                        10          CPU 6800
+                        11  
+                        12  ;;;     HEATH/WINTEK TERMINAL MONITOR SYSTEM
+                        13  ;
+                        14  ;       BY JIM WILSON FOR WINTEK CORPORATION
+                        15  ;         COPYRIGHT 1978 BY WINTEK CORP.
+                        16  ;            ALL RIGHTS RESERVED
+                        17  ;
+                        18  
+                        19  ;;      CONDITIONAL ASSEMBLIES
+                        20  
+  0000                  21  DEBUG   EQU     0               ; DEBUG CODE OFF
+                        22  
+                        23  ;;      CHARACTER DEFINITIONS
+                        24  
+  000D                  25  CR      EQU     $0D
+  000A                  26  LF      EQU     $0A
+  0020                  27  SPACE   EQU     ' '
+                        28  
+                        29  ;;      PIA DEFINITION
+                        30  
+                        31          DUMMY
+  1000                  32  *       EQU     $1000
+  1000                  33  TERM    DS      1
+  1001                  34  TERM.C  DS      1
+  1002                  35  TAPE    DS      1
+  1003                  36  TAPE.C  DS      1
+                        37  
+                        38  ;;      EXTERNALS
+                        39  
+  FE6B                  40  SSTEP   EQU     $FE6B
+  FEFC                  41  SWIVE1  EQU     $FEFC
+  FF76                  42  OPTAB   EQU     $FF76
+  FCBC                  43  REDIS   EQU     $FCBC
+  FD7B                  44  DISPLAY EQU     $FD7B
+  FE20                  45  OUTBYT  EQU     $FE20
+  FD43                  46  BKSP    EQU     $FD43
+  FD25                  47  PROMPT  EQU     $FD25
+  FC86                  48  OUTSTA  EQU     $FC86
+  FE52                  49  OUTSTR  EQU     $FE52
+                        50  
+                        51  ;;      RAM TEMPORARIES
+                        52  
+  00CC                  53  *       EQU     $00CC
+  00CC                  54  USERC   DS      1               ; CONDX CODES
+  00CD                  55  USERB   DS      1
+  00CE                  56  USERA   DS      1               ; ACCUMULATORS
+  00CF                  57  USERX   DS      2               ; INDEX
+  00D1                  58  USERP   DS      2               ; P.C.
+                        59  
+  00E4                  60  *       EQU     $00E4
+  0004                  61  NBR     EQU     4               ; FOUR BREAKPOINTS ALLOWED
+  00E4                  62  BKTBL   DS      2*NBR
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page  2
 
-  00E4                  63  BKTBL   DS      2*NBR
-  00EC                  64  T0      DS      2
-  00EE                  65  T1      DS      2
-  00F0                  66  DIGADD  DS      2
-  00F2                  67  USERS   DS      2
-  00F4                  68  T2      DS      0
-  00F4                  69  SYSSWI  DS      3
-  00F7                  70  UIRQ    DS      3
-  00FA                  71  USWI    DS      3
-  00FD                  72  UNMI    DS      3
-                        73  
-                        74          CODE
-  1400                  75  *       EQU     $1400
-                        76  
-                        77  ;;      MAIN MONITOR LOOP
-                        78  ;
-                        79  ;       1)  FEELS OUT MEMORY
-                        80  ;       2)  SEARCHES FOR PAST INCARNATIONS
-                        81  ;            A) CLEARS BREAKPOINTS IF REINCARNATED
-                        82  ;            B) CLEARS BREAKPOINT TABLE OTHERWISE
-                        83  ;       3)  SENDS PROMPT "MON>"
-                        84  ;       4)  ACCEPTS COMMAND CHARACTERS AND JUMPS
-                        85  ;             TO APPROPRIATE HANDLER
-                        86  
-1400 0F                 87  MAIN    SEI
-1401 CE1000             88          LDX     #TERM           ; TERMINAL PIA
-1404 6F01               89          CLR     1,X             ; IN CASE IRREGULAR ENTRY
-1406 6F03               90          CLR     3,X
-1408 8601               91          LDAA    #1
-140A A700               92          STAA    0,X
-140C 867F               93          LDAA    #%01111111
-140E A702               94          STAA    2,X
-1410 C604               95          LDAB    #4
-1412 E701               96          STAB    1,X
-1414 E703               97          STAB    3,X
-1416 A700               98          STAA    0,X             ; IDLE MARKING!!
-                        99  
-                       100  ;;      NOW FIND MEMORY EXTENT
-                       101  
-1418 09                102  MAIN1   DEX
-1419 A600              103          LDAA    0,X
-141B 6300              104          COM     0,X
-141D 43                105          COMA
-141E A100              106          CMPA    0,X
-1420 26F6              107          BNE     MAIN1
-1422 6300              108          COM     0,X             ; RESTORE GOOD BYTE
-1424 8615              109          LDAA    #4*NBR+5
-1426 09                110  MAIN2   DEX                     ; GO TO MONITOR GRAVEYARD
-1427 4A                111          DECA
-1428 26FC              112          BNE     MAIN2
-142A 35                113          TXS
-142B 860C              114          LDAA    #2*NBR+4
-142D EE08              115          LDX     2*NBR,X         ; RETURN ADDRESS IF ANY
-142F 8C144C            116          CPX     #MAIN5
-1432 2709              117          BEQ     MAIN4           ; IS RE-INCARNATION
-1434 C6FF              118          LDAB    #$FF
-1436 30                119          TSX
-1437 E70A              120  MAIN3   STAB    2*NBR+2,X
-1439 08                121          INX
-143A 4A                122          DECA
-143B 26FA              123          BNE     MAIN3
-143D 8604              124  MAIN4   LDAA    #NBR            ; CLEAR BREAKPOINTS
+  00EC                  63  T0      DS      2
+  00EE                  64  T1      DS      2
+  00F0                  65  DIGADD  DS      2
+  00F2                  66  USERS   DS      2
+  00F4                  67  T2      DS      0
+  00F4                  68  SYSSWI  DS      3
+  00F7                  69  UIRQ    DS      3
+  00FA                  70  USWI    DS      3
+  00FD                  71  UNMI    DS      3
+                        72  
+                        73          CODE
+  1400                  74  *       EQU     $1400
+                        75  
+                        76  ;;      MAIN MONITOR LOOP
+                        77  ;
+                        78  ;       1)  FEELS OUT MEMORY
+                        79  ;       2)  SEARCHES FOR PAST INCARNATIONS
+                        80  ;            A) CLEARS BREAKPOINTS IF REINCARNATED
+                        81  ;            B) CLEARS BREAKPOINT TABLE OTHERWISE
+                        82  ;       3)  SENDS PROMPT "MON>"
+                        83  ;       4)  ACCEPTS COMMAND CHARACTERS AND JUMPS
+                        84  ;             TO APPROPRIATE HANDLER
+                        85  
+1400 0F                 86  MAIN    SEI
+1401 CE1000             87          LDX     #TERM           ; TERMINAL PIA
+1404 6F01               88          CLR     1,X             ; IN CASE IRREGULAR ENTRY
+1406 6F03               89          CLR     3,X
+1408 8601               90          LDAA    #1
+140A A700               91          STAA    0,X
+140C 867F               92          LDAA    #%01111111
+140E A702               93          STAA    2,X
+1410 C604               94          LDAB    #4
+1412 E701               95          STAB    1,X
+1414 E703               96          STAB    3,X
+1416 A700               97          STAA    0,X             ; IDLE MARKING!!
+                        98  
+                        99  ;;      NOW FIND MEMORY EXTENT
+                       100  
+1418 09                101  MAIN1   DEX
+1419 A600              102          LDAA    0,X
+141B 6300              103          COM     0,X
+141D 43                104          COMA
+141E A100              105          CMPA    0,X
+1420 26F6              106          BNE     MAIN1
+1422 6300              107          COM     0,X             ; RESTORE GOOD BYTE
+1424 8615              108          LDAA    #4*NBR+5
+1426 09                109  MAIN2   DEX                     ; GO TO MONITOR GRAVEYARD
+1427 4A                110          DECA
+1428 26FC              111          BNE     MAIN2
+142A 35                112          TXS
+142B 860C              113          LDAA    #2*NBR+4
+142D EE08              114          LDX     2*NBR,X         ; RETURN ADDRESS IF ANY
+142F 8C144C            115          CPX     #MAIN5
+1432 2709              116          BEQ     MAIN4           ; IS RE-INCARNATION
+1434 C6FF              117          LDAB    #$FF
+1436 30                118          TSX
+1437 E70A              119  MAIN3   STAB    2*NBR+2,X
+1439 08                120          INX
+143A 4A                121          DECA
+143B 26FA              122          BNE     MAIN3
+143D 8604              123  MAIN4   LDAA    #NBR            ; CLEAR BREAKPOINTS
+143F 33                124  MAIN44  PULB
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page  3
 
-143F 33                125  MAIN44  PULB
-1440 33                126          PULB
-1441 30                127          TSX
-1442 EE0C              128          LDX     2*NBR+4,X
-1444 E700              129          STAB    0,X
-1446 4A                130          DECA
-1447 26F6              131          BNE     MAIN44
-1449 0C                132          CLC                     ; NO ERROR MESSAGE
-144A 31                133          INS
-144B 31                134          INS
-144C 240D              135  MAIN5   BCC     MAIN6           ; NO ERROR
-144E BD1618            136          JSR     OUTIS
-1451 0D0A              137          DB      CR,LF
-1453 4552524F5221      138          ASC     "ERROR!"
-1459 0700              139          db      7,0
-145B BD1618            140  MAIN6   JSR     OUTIS
-145E 0D0A              141          DB      CR,LF
-1460 4D4F4E3E20        142          ASC     "MON> "
-1465 00                143          DB      0
-1466 7D1000            144  MAIN66  TST     TERM
-1469 2AFB              145          BPL     MAIN66
-146B BD18E1            146          JSR     INCH            ; INPUT COMMAND
-146E CE19EF            147          LDX     #CMDTAB-3
-1471 08                148  MAIN7   INX
-1472 08                149          INX
-1473 08                150          INX
-1474 A100              151          CMPA    0,X
-1476 25F9              152          BCS     MAIN7
-1478 26D2              153          BNE     MAIN5           ; ILLEGAL COMMAND
-147A 36                154          PSHA
-147B BD1863            155          JSR     OUTSP
-147E 32                156          PULA
-147F C64C              157          LDAB    #-MAIN5/256*256+MAIN5
-1481 37                158          PSHB
-1482 C614              159          LDAB    #MAIN5/256
-1484 37                160          PSHB
-1485 E602              161          LDAB    2,X
-1487 37                162          PSHB
-1488 E601              163          LDAB    1,X
-148A 37                164          PSHB
-148B 5F                165          CLRB
-148C DEF2              166          LDX     USERS
-148E 39                167          RTS
-                       168  
-                       169  ;;      GO - GO TO USER CODE
-                       170  ;
-                       171  ;       ENTRY:  (X) = USERS
-                       172  ;       EXIT:   UPON BREAKPOINT
-                       173  ;       USES:   ALL,T0,T1,T2
-                       174  
-148F BD1625            175  GO      JSR     AHV
-1492 2404              176          BCC     GO1             ; NO OPTIONAL ADDRESS
-1494 A707              177          STAA    7,X
-1496 E706              178          STAB    6,X
-1498 BDFE6B            179  GO1     JSR     SSTEP           ; STEP PAST BKPT
-149B C604              180          LDAB    #NBR
-149D 30                181  GO2     TSX                     ; COPY IN BREAKPOINTS
-149E EE0C              182          LDX     2*NBR+4,X
-14A0 A600              183          LDAA    0,X
-14A2 36                184          PSHA
-14A3 36                185          PSHA
-14A4 863F              186          LDAA    #$3F
+1440 33                125          PULB
+1441 30                126          TSX
+1442 EE0C              127          LDX     2*NBR+4,X
+1444 E700              128          STAB    0,X
+1446 4A                129          DECA
+1447 26F6              130          BNE     MAIN44
+1449 0C                131          CLC                     ; NO ERROR MESSAGE
+144A 31                132          INS
+144B 31                133          INS
+144C 240D              134  MAIN5   BCC     MAIN6           ; NO ERROR
+144E BD1618            135          JSR     OUTIS
+1451 0D0A              136          DB      CR,LF
+1453 4552524F5221      137          ASC     "ERROR!"
+1459 0700              138          db      7,0
+145B BD1618            139  MAIN6   JSR     OUTIS
+145E 0D0A              140          DB      CR,LF
+1460 4D4F4E3E20        141          ASC     "MON> "
+1465 00                142          DB      0
+1466 7D1000            143  MAIN66  TST     TERM
+1469 2AFB              144          BPL     MAIN66
+146B BD18E1            145          JSR     INCH            ; INPUT COMMAND
+146E CE19EF            146          LDX     #CMDTAB-3
+1471 08                147  MAIN7   INX
+1472 08                148          INX
+1473 08                149          INX
+1474 A100              150          CMPA    0,X
+1476 25F9              151          BCS     MAIN7
+1478 26D2              152          BNE     MAIN5           ; ILLEGAL COMMAND
+147A 36                153          PSHA
+147B BD1863            154          JSR     OUTSP
+147E 32                155          PULA
+147F C64C              156          LDAB    #-MAIN5/256*256+MAIN5
+1481 37                157          PSHB
+1482 C614              158          LDAB    #MAIN5/256
+1484 37                159          PSHB
+1485 E602              160          LDAB    2,X
+1487 37                161          PSHB
+1488 E601              162          LDAB    1,X
+148A 37                163          PSHB
+148B 5F                164          CLRB
+148C DEF2              165          LDX     USERS
+148E 39                166          RTS
+                       167  
+                       168  ;;      GO - GO TO USER CODE
+                       169  ;
+                       170  ;       ENTRY:  (X) = USERS
+                       171  ;       EXIT:   UPON BREAKPOINT
+                       172  ;       USES:   ALL,T0,T1,T2
+                       173  
+148F BD1625            174  GO      JSR     AHV
+1492 2404              175          BCC     GO1             ; NO OPTIONAL ADDRESS
+1494 A707              176          STAA    7,X
+1496 E706              177          STAB    6,X
+1498 BDFE6B            178  GO1     JSR     SSTEP           ; STEP PAST BKPT
+149B C604              179          LDAB    #NBR
+149D 30                180  GO2     TSX                     ; COPY IN BREAKPOINTS
+149E EE0C              181          LDX     2*NBR+4,X
+14A0 A600              182          LDAA    0,X
+14A2 36                183          PSHA
+14A3 36                184          PSHA
+14A4 863F              185          LDAA    #$3F
+14A6 A700              186          STAA    0,X
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page  4
 
-14A6 A700              187          STAA    0,X
-14A8 5A                188          DECB
-14A9 26F2              189          BNE     GO2
-14AB 203E              190          BRA     GO7
-                       191  
-14AD 30                192  GO3     TSX
-14AE A606              193          LDAA    6,X
-14B0 2602              194          BNE     GO33
-14B2 6A05              195          DEC     5,X
-14B4 E605              196  GO33    LDAB    5,X
-14B6 4A                197          DECA
-14B7 A706              198          STAA    6,X             ; DECREMENT USER PC
-14B9 9FF2              199          STS     USERS
-14BB 9EEC              200          LDS     T0
-14BD 36                201          PSHA
-14BE 8604              202          LDAA    #NBR
-14C0 97EC              203          STAA    T0
-14C2 32                204          PULA
-14C3 30                205          TSX
-14C4 08                206  GO4     INX                     ; SEARCH TABLE FOR HIT
-14C5 08                207          INX
-14C6 A10D              208          CMPA    2*NBR+5,X
-14C8 2619              209          BNE     GO5             ; NO HIT HERE
-14CA E10C              210          CMPB    2*NBR+4,X
-14CC 2615              211          BNE     GO5
-14CE BD1618            212          JSR     OUTIS
-14D1 0D0A00            213          DB      CR,LF,0
-14D4 8604              214          LDAA    #NBR
-14D6 33                215  GO44    PULB
-14D7 33                216          PULB                    ; OP CODE INTO B
-14D8 30                217          TSX
-14D9 EE0C              218          LDX     2*NBR+4,X
-14DB E700              219          STAB    0,X
-14DD 4A                220          DECA
-14DE 26F6              221          BNE     GO44
-14E0 7E1553            222          JMP     REGS            ; DISPLAY REGISTERS
-                       223  
-14E3 7A00EC            224  GO5     DEC     T0
-14E6 26DC              225          BNE     GO4
-                       226  
-                       227  ;       SWI NO MONITORS SO INTERPRET
-                       228  
-14E8 BDFE6B            229          JSR     SSTEP           ; STEP PAST SWI
-14EB 9FEC              230  GO7     STS     T0
-14ED CE14AD            231          LDX     #GO3
-14F0 7EFEFC            232          JMP     SWIVE1
-                       233  
-                       234  ;;      BKPT - INSERT BREAKPOINT INTO TABLE
-                       235  ;
-                       236  ;       ENTRY:  NONE
-                       237  ;       EXIT:   'C' SET IF TABLE FULL
-                       238  ;       USES:   ALL,T0
-                       239  
-14F3 30                240  BKPT    TSX
-14F4 86FF              241          LDAA    #$FF
-14F6 C604              242          LDAB    #NBR
-14F8 08                243  BKP1    INX
-14F9 08                244          INX                     ; LOOK FOR EMPTY SPOT
-14FA A104              245          CMPA    4,X
-14FC 2604              246          BNE     BKP2            ; NOT EMPTY
-14FE A105              247          CMPA    5,X
-1500 2705              248          BEQ     BKP3            ; IS EMPTY
+14A8 5A                187          DECB
+14A9 26F2              188          BNE     GO2
+14AB 203E              189          BRA     GO7
+                       190  
+14AD 30                191  GO3     TSX
+14AE A606              192          LDAA    6,X
+14B0 2602              193          BNE     GO33
+14B2 6A05              194          DEC     5,X
+14B4 E605              195  GO33    LDAB    5,X
+14B6 4A                196          DECA
+14B7 A706              197          STAA    6,X             ; DECREMENT USER PC
+14B9 9FF2              198          STS     USERS
+14BB 9EEC              199          LDS     T0
+14BD 36                200          PSHA
+14BE 8604              201          LDAA    #NBR
+14C0 97EC              202          STAA    T0
+14C2 32                203          PULA
+14C3 30                204          TSX
+14C4 08                205  GO4     INX                     ; SEARCH TABLE FOR HIT
+14C5 08                206          INX
+14C6 A10D              207          CMPA    2*NBR+5,X
+14C8 2619              208          BNE     GO5             ; NO HIT HERE
+14CA E10C              209          CMPB    2*NBR+4,X
+14CC 2615              210          BNE     GO5
+14CE BD1618            211          JSR     OUTIS
+14D1 0D0A00            212          DB      CR,LF,0
+14D4 8604              213          LDAA    #NBR
+14D6 33                214  GO44    PULB
+14D7 33                215          PULB                    ; OP CODE INTO B
+14D8 30                216          TSX
+14D9 EE0C              217          LDX     2*NBR+4,X
+14DB E700              218          STAB    0,X
+14DD 4A                219          DECA
+14DE 26F6              220          BNE     GO44
+14E0 7E1553            221          JMP     REGS            ; DISPLAY REGISTERS
+                       222  
+14E3 7A00EC            223  GO5     DEC     T0
+14E6 26DC              224          BNE     GO4
+                       225  
+                       226  ;       SWI NO MONITORS SO INTERPRET
+                       227  
+14E8 BDFE6B            228          JSR     SSTEP           ; STEP PAST SWI
+14EB 9FEC              229  GO7     STS     T0
+14ED CE14AD            230          LDX     #GO3
+14F0 7EFEFC            231          JMP     SWIVE1
+                       232  
+                       233  ;;      BKPT - INSERT BREAKPOINT INTO TABLE
+                       234  ;
+                       235  ;       ENTRY:  NONE
+                       236  ;       EXIT:   'C' SET IF TABLE FULL
+                       237  ;       USES:   ALL,T0
+                       238  
+14F3 30                239  BKPT    TSX
+14F4 86FF              240          LDAA    #$FF
+14F6 C604              241          LDAB    #NBR
+14F8 08                242  BKP1    INX
+14F9 08                243          INX                     ; LOOK FOR EMPTY SPOT
+14FA A104              244          CMPA    4,X
+14FC 2604              245          BNE     BKP2            ; NOT EMPTY
+14FE A105              246          CMPA    5,X
+1500 2705              247          BEQ     BKP3            ; IS EMPTY
+1502 5A                248  BKP2    DECB
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page  5
 
-1502 5A                249  BKP2    DECB
-1503 26F3              250          BNE     BKP1            ; STILL HOPE
-1505 0D                251          SEC
-1506 39                252          RTS                     ; FULL!!
-                       253  
-1507 BD1625            254  BKP3    JSR     AHV             ; GET BREAKPOINT VALUE
-150A 2404              255          BCC     BKP4            ; NO ENTRY
-150C A705              256          STAA    5,X
-150E E704              257          STAB    4,X
-1510 0C                258  BKP4    CLC
-1511 39                259          RTS
-                       260  
-                       261  ;;      CLEAR - CLEAR BREAKPOINT ENTRY
-                       262  ;
-                       263  ;       ENTRY:  (X) = USERS
-                       264  ;       EXIT:   'C' SET IF NOT FOUND
-                       265  ;       USES:   ALL,T0
-                       266  
-1512 8604              267  CLEAR   LDAA    #NBR
-1514 97EC              268          STAA    T0
-1516 BD1625            269          JSR     AHV             ; GET LOCATION
-1519 2504              270          BCS     CLE1            ; NO VALID HEX
-151B A607              271          LDAA    7,X
-151D E606              272          LDAB    6,X             ; USER PC FOR DEFAULT
-151F 30                273  CLE1    TSX
-1520 08                274  CLE2    INX
-1521 08                275          INX
-1522 A105              276          CMPA    5,X             ; SEARCH TABLE
-1524 2604              277          BNE     CLE3            ; NOT FOUND
-1526 E104              278          CMPB    4,X
-1528 2707              279          BEQ     CLE4            ; FOUND
-152A 7A00EC            280  CLE3    DEC     T0
-152D 26F1              281          BNE     CLE2
-152F 0D                282          SEC
-1530 39                283          RTS
-                       284  
-1531 C6FF              285  CLE4    LDAB    #$FF
-1533 E704              286          STAB    4,X             ; CLEAR ENTRY
-1535 E705              287          STAB    5,X
-1537 0C                288          CLC
-1538 39                289          RTS
-                       290  
-                       291  ;;      EXEC - PROCESS MULTIPLE SINGLE STEP
-                       292  ;
-                       293  ;       ENTRY:  NONE
-                       294  ;       EXIT:   REGISTERS PRINTED
-                       295  ;       USES:   ALL,T0,T1,T2
-                       296  
-1539 BD1625            297  EXEC    JSR     AHV             ; GET COUNT
-153C 2509              298          BCS     EXEC1
-153E 8601              299          LDAA    #1              ; DEFAULT COUNT
-1540 2005              300          BRA     EXEC1
-                       301  
-1542 36                302  EXEC0   PSHA                    ; SAVE COUNT
-1543 BDFE6B            303          JSR     SSTEP           ; STEP CODE
-1546 32                304          PULA
-1547 4A                305  EXEC1   DECA
-1548 26F8              306          BNE     EXEC0           ; MORE STEPS
-154A BD1618            307          JSR     OUTIS
-154D 0D0A00            308          DB      CR,LF,0
-                       309  
-                       310  ;;      STEP - STEP USER CODE
+1503 26F3              249          BNE     BKP1            ; STILL HOPE
+1505 0D                250          SEC
+1506 39                251          RTS                     ; FULL!!
+                       252  
+1507 BD1625            253  BKP3    JSR     AHV             ; GET BREAKPOINT VALUE
+150A 2404              254          BCC     BKP4            ; NO ENTRY
+150C A705              255          STAA    5,X
+150E E704              256          STAB    4,X
+1510 0C                257  BKP4    CLC
+1511 39                258          RTS
+                       259  
+                       260  ;;      CLEAR - CLEAR BREAKPOINT ENTRY
+                       261  ;
+                       262  ;       ENTRY:  (X) = USERS
+                       263  ;       EXIT:   'C' SET IF NOT FOUND
+                       264  ;       USES:   ALL,T0
+                       265  
+1512 8604              266  CLEAR   LDAA    #NBR
+1514 97EC              267          STAA    T0
+1516 BD1625            268          JSR     AHV             ; GET LOCATION
+1519 2504              269          BCS     CLE1            ; NO VALID HEX
+151B A607              270          LDAA    7,X
+151D E606              271          LDAB    6,X             ; USER PC FOR DEFAULT
+151F 30                272  CLE1    TSX
+1520 08                273  CLE2    INX
+1521 08                274          INX
+1522 A105              275          CMPA    5,X             ; SEARCH TABLE
+1524 2604              276          BNE     CLE3            ; NOT FOUND
+1526 E104              277          CMPB    4,X
+1528 2707              278          BEQ     CLE4            ; FOUND
+152A 7A00EC            279  CLE3    DEC     T0
+152D 26F1              280          BNE     CLE2
+152F 0D                281          SEC
+1530 39                282          RTS
+                       283  
+1531 C6FF              284  CLE4    LDAB    #$FF
+1533 E704              285          STAB    4,X             ; CLEAR ENTRY
+1535 E705              286          STAB    5,X
+1537 0C                287          CLC
+1538 39                288          RTS
+                       289  
+                       290  ;;      EXEC - PROCESS MULTIPLE SINGLE STEP
+                       291  ;
+                       292  ;       ENTRY:  NONE
+                       293  ;       EXIT:   REGISTERS PRINTED
+                       294  ;       USES:   ALL,T0,T1,T2
+                       295  
+1539 BD1625            296  EXEC    JSR     AHV             ; GET COUNT
+153C 2509              297          BCS     EXEC1
+153E 8601              298          LDAA    #1              ; DEFAULT COUNT
+1540 2005              299          BRA     EXEC1
+                       300  
+1542 36                301  EXEC0   PSHA                    ; SAVE COUNT
+1543 BDFE6B            302          JSR     SSTEP           ; STEP CODE
+1546 32                303          PULA
+1547 4A                304  EXEC1   DECA
+1548 26F8              305          BNE     EXEC0           ; MORE STEPS
+154A BD1618            306          JSR     OUTIS
+154D 0D0A00            307          DB      CR,LF,0
+                       308  
+                       309  ;;      STEP - STEP USER CODE
+                       310  ;
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page  6
 
-                       311  ;
-                       312  ;       ENTRY:  NONE
-                       313  ;       EXIT:   REGISTERS PRINTED
-                       314  ;       USES:   ALL,T0,T1,T2
-                       315  
-1550 BDFE6B            316  STEP    JSR     SSTEP           ; STEP USER CODE
-                       317  
-                       318  ;;      REGS - DISPLAY ALL USER REGISTERS
-                       319  ;
-                       320  ;       ENTRY:  NONE
-                       321  ;       EXIT:   REGISTERS PRINTER
-                       322  ;       USES:   ALL,T0
-                       323  
-1553 5F                324  REGS    CLRB
-1554 DEF2              325          LDX     USERS
-1556 8643              326          LDAA    #'C'
-1558 8D26              327          BSR     REGS1
-155A 8642              328          LDAA    #'B'
-155C 8D24              329          BSR     REGS3
-155E 8641              330          LDAA    #'A'
-1560 8D20              331          BSR     REGS3
-1562 8658              332          LDAA    #'X'
-1564 8D1B              333          BSR     REGS2
-1566 8650              334          LDAA    #'P'
-1568 8D18              335          BSR     REGS3
-156A 8653              336          LDAA    #'S'
-156C 09                337          DEX
-156D DFEC              338          STX     T0
-156F CE00EB            339          LDX     #T0-1
-1572 8D0C              340          BSR     REGS1
-1574 DEF2              341          LDX     USERS
-1576 EE06              342          LDX     6,X             ; (X) = USERPC
-1578 DFEC              343          STX     T0
-157A A600              344          LDAA    0,X
-157C 8D63              345          BSR     TYPIN0          ; TYPE INSTRUCTION
-157E 0C                346          CLC
-157F 39                347          RTS
-                       348  
-1580 08                349  REGS1   INX
-1581 5C                350  REGS2   INCB
-1582 BD1865            351  REGS3   JSR     OUTCH           ; OUTPUT REGISTER NAME
-1585 863D              352          LDAA    #'='
-1587 BD1865            353          JSR     OUTCH
-158A 2067              354          BRA     TYPIN2
-                       355  
-                       356  ;;      REGISTER DISPLAY COMMANDS
-                       357  ;
-                       358  ;       ENTRY:  (X) = USERSP
-                       359  ;               (B) = 0
-                       360  ;       EXIT:   OPTIONAL REPLACEMENT VALUE STORED
-                       361  ;       USES:   ALL,T0
-                       362  
-158C 08                363  REGP    INX
-158D 08                364          INX
-158E 08                365  REGX    INX
-158F 5C                366          INCB
-1590 08                367  REGA    INX
-1591 08                368  REGB    INX
-1592 8B40              369  REGC    ADDA    #$40            ; DISPLAY REG NAME
-1594 8DEA              370          BSR     REGS1           ; OUTPUT WITH NAME
-1596 37                371          PSHB
-1597 BD1625            372          JSR     AHV
+                       311  ;       ENTRY:  NONE
+                       312  ;       EXIT:   REGISTERS PRINTED
+                       313  ;       USES:   ALL,T0,T1,T2
+                       314  
+1550 BDFE6B            315  STEP    JSR     SSTEP           ; STEP USER CODE
+                       316  
+                       317  ;;      REGS - DISPLAY ALL USER REGISTERS
+                       318  ;
+                       319  ;       ENTRY:  NONE
+                       320  ;       EXIT:   REGISTERS PRINTER
+                       321  ;       USES:   ALL,T0
+                       322  
+1553 5F                323  REGS    CLRB
+1554 DEF2              324          LDX     USERS
+1556 8643              325          LDAA    #'C'
+1558 8D26              326          BSR     REGS1
+155A 8642              327          LDAA    #'B'
+155C 8D24              328          BSR     REGS3
+155E 8641              329          LDAA    #'A'
+1560 8D20              330          BSR     REGS3
+1562 8658              331          LDAA    #'X'
+1564 8D1B              332          BSR     REGS2
+1566 8650              333          LDAA    #'P'
+1568 8D18              334          BSR     REGS3
+156A 8653              335          LDAA    #'S'
+156C 09                336          DEX
+156D DFEC              337          STX     T0
+156F CE00EB            338          LDX     #T0-1
+1572 8D0C              339          BSR     REGS1
+1574 DEF2              340          LDX     USERS
+1576 EE06              341          LDX     6,X             ; (X) = USERPC
+1578 DFEC              342          STX     T0
+157A A600              343          LDAA    0,X
+157C 8D63              344          BSR     TYPIN0          ; TYPE INSTRUCTION
+157E 0C                345          CLC
+157F 39                346          RTS
+                       347  
+1580 08                348  REGS1   INX
+1581 5C                349  REGS2   INCB
+1582 BD1865            350  REGS3   JSR     OUTCH           ; OUTPUT REGISTER NAME
+1585 863D              351          LDAA    #'='
+1587 BD1865            352          JSR     OUTCH
+158A 2067              353          BRA     TYPIN2
+                       354  
+                       355  ;;      REGISTER DISPLAY COMMANDS
+                       356  ;
+                       357  ;       ENTRY:  (X) = USERSP
+                       358  ;               (B) = 0
+                       359  ;       EXIT:   OPTIONAL REPLACEMENT VALUE STORED
+                       360  ;       USES:   ALL,T0
+                       361  
+158C 08                362  REGP    INX
+158D 08                363          INX
+158E 08                364  REGX    INX
+158F 5C                365          INCB
+1590 08                366  REGA    INX
+1591 08                367  REGB    INX
+1592 8B40              368  REGC    ADDA    #$40            ; DISPLAY REG NAME
+1594 8DEA              369          BSR     REGS1           ; OUTPUT WITH NAME
+1596 37                370          PSHB
+1597 BD1625            371          JSR     AHV
+159A 242F              372          BCC     MEM4
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page  7
 
-159A 242F              373          BCC     MEM4
-159C 8D05              374          BSR     REG1
-159E 17                375          TBA
-159F 33                376          PULB
-15A0 5A                377          DECB
-15A1 2708              378          BEQ     REG2
-15A3 09                379  REG1    DEX
-15A4 A700              380          STAA    0,X
-15A6 A100              381          CMPA    0,X
-15A8 2701              382          BEQ     REG2
-15AA 0D                383          SEC
-15AB 39                384  REG2    RTS
-                       385  
-                       386  ;;      MEM - DISPLAY MEMORY BYTES
-                       387  ;
-                       388  ;       ENTRY:  (B) = 0
-                       389  ;               (X) = USER S.P.
-                       390  ;       USES:   ALL,T0
-                       391  
-15AC 5A                392  MEM     DECB
-                       393  
-                       394  ;;      INST - DISPLAY INSTRUCTIONS
-                       395  ;
-                       396  ;       ENTRY:  (B) = 0
-                       397  ;               (X) = USER S.P.
-                       398  ;       USES:   ALL,T0
-                       399  
-15AD 37                400  INST    PSHB
-15AE EE06              401          LDX     6,X             ; GET USER P.C.
-15B0 8D73              402          BSR     AHV
-15B2 2407              403          BCC     MEM1
-15B4 36                404          PSHA
-15B5 37                405          PSHB
-15B6 30                406          TSX
-15B7 EE00              407          LDX     0,X
-15B9 31                408          INS
-15BA 31                409          INS
-15BB 0C                410  MEM1    CLC
-15BC 33                411  MEM2    PULB
-15BD 2405              412          BCC     MEM3
-15BF 8DE2              413          BSR     REG1
-15C1 250A              414          BCS     MEM5
-15C3 08                415          INX
-15C4 8D08              416  MEM3    BSR     TYPINS          ; TYPE THE DATA
-15C6 37                417          PSHB                    ; SAVE MODE FLAGS
-15C7 8D5C              418          BSR     AHV             ; GET REPLACEMENT VALUE
-15C9 23F1              419          BLS     MEM2
-15CB 0C                420  MEM4    CLC
-15CC 33                421          PULB
-15CD 39                422  MEM5    RTS
-                       423  
-                       424  ;;      TYPINS - TYPE INSTRUCTION IN HEX
-                       425  ;
-                       426  ;       ENTRY:  (X) = ADDRESS OF INSTRUCTION
-                       427  ;       EXIT:   (X) = ADDRESS OF NEXT INS.
-                       428  ;       USES:   ALL
-                       429  
-15CE A600              430  TYPINS  LDAA    0,X             ; OP CODE
-15D0 36                431          PSHA                    ;  ONTO STACK
-15D1 DFEC              432          STX     T0
-15D3 8D43              433          BSR     OUTIS
-15D5 0D0A00            434          DB      CR,LF,0
+159C 8D05              373          BSR     REG1
+159E 17                374          TBA
+159F 33                375          PULB
+15A0 5A                376          DECB
+15A1 2708              377          BEQ     REG2
+15A3 09                378  REG1    DEX
+15A4 A700              379          STAA    0,X
+15A6 A100              380          CMPA    0,X
+15A8 2701              381          BEQ     REG2
+15AA 0D                382          SEC
+15AB 39                383  REG2    RTS
+                       384  
+                       385  ;;      MEM - DISPLAY MEMORY BYTES
+                       386  ;
+                       387  ;       ENTRY:  (B) = 0
+                       388  ;               (X) = USER S.P.
+                       389  ;       USES:   ALL,T0
+                       390  
+15AC 5A                391  MEM     DECB
+                       392  
+                       393  ;;      INST - DISPLAY INSTRUCTIONS
+                       394  ;
+                       395  ;       ENTRY:  (B) = 0
+                       396  ;               (X) = USER S.P.
+                       397  ;       USES:   ALL,T0
+                       398  
+15AD 37                399  INST    PSHB
+15AE EE06              400          LDX     6,X             ; GET USER P.C.
+15B0 8D73              401          BSR     AHV
+15B2 2407              402          BCC     MEM1
+15B4 36                403          PSHA
+15B5 37                404          PSHB
+15B6 30                405          TSX
+15B7 EE00              406          LDX     0,X
+15B9 31                407          INS
+15BA 31                408          INS
+15BB 0C                409  MEM1    CLC
+15BC 33                410  MEM2    PULB
+15BD 2405              411          BCC     MEM3
+15BF 8DE2              412          BSR     REG1
+15C1 250A              413          BCS     MEM5
+15C3 08                414          INX
+15C4 8D08              415  MEM3    BSR     TYPINS          ; TYPE THE DATA
+15C6 37                416          PSHB                    ; SAVE MODE FLAGS
+15C7 8D5C              417          BSR     AHV             ; GET REPLACEMENT VALUE
+15C9 23F1              418          BLS     MEM2
+15CB 0C                419  MEM4    CLC
+15CC 33                420          PULB
+15CD 39                421  MEM5    RTS
+                       422  
+                       423  ;;      TYPINS - TYPE INSTRUCTION IN HEX
+                       424  ;
+                       425  ;       ENTRY:  (X) = ADDRESS OF INSTRUCTION
+                       426  ;       EXIT:   (X) = ADDRESS OF NEXT INS.
+                       427  ;       USES:   ALL
+                       428  
+15CE A600              429  TYPINS  LDAA    0,X             ; OP CODE
+15D0 36                430          PSHA                    ;  ONTO STACK
+15D1 DFEC              431          STX     T0
+15D3 8D43              432          BSR     OUTIS
+15D5 0D0A00            433          DB      CR,LF,0
+15D8 CE00EC            434          LDX     #T0
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page  8
 
-15D8 CE00EC            435          LDX     #T0
-15DB 8D2D              436          BSR     OUT4HS
-15DD 32                437          PULA
-15DE 5D                438          TSTB
-15DF 2B0E              439          BMI     TYPIN1          ; ONE BYTE ONLY
-15E1 8D66              440  TYPIN0  BSR     BYTCNT
-15E3 5A                441          DECB
-15E4 2A09              442          BPL     TYPIN1          ; IS VALID INST.
-15E6 5C                443          INCB                    ; RESTORE (B)
-15E7 8D2F              444          BSR     OUTIS
-15E9 444154413D        445          ASC    "DATA="
-15EE 00                446          DB      0
-15EF DEEC              447  TYPIN1  LDX     T0
-15F1 8D19              448          BSR     OUT2HS
-15F3 C101              449  TYPIN2  CMPB    #1
-15F5 2B20              450          BMI     THB1
-15F7 2713              451          BEQ     OUT2HS
-15F9 200F              452          BRA     OUT4HS
-                       453  
-                       454  ;;      DISB - DISPLAY BREAKPOINTS
-                       455  ;
-                       456  ;       ENTRY:  NONE
-                       457  ;       EXIT:   BREAKPOINT TABLE PRINTED
-                       458  ;       USES:   ALL
-                       459  
-15FB C606              460  DISB    LDAB    #6              ; OFFSET INTO TABLE
-15FD 30                461          TSX
-15FE 08                462  DISB1   INX
-15FF 5A                463          DECB
-1600 26FC              464          BNE     DISB1
-1602 C604              465          LDAB    #NBR
-1604 8D04              466  DISB2   BSR     OUT4HS
-1606 5A                467          DECB
-1607 26FB              468          BNE     DISB2
-1609 39                469          RTS
-                       470  
-                       471  ;;      OUT4HS, OUT2HS - OUTPUT HEX AND SPACES
-                       472  ;
-                       473  ;       ENTRY:  (X) = ADDRESS
-                       474  ;       EXIT:   X UPDATED PAST BYTE(S)
-                       475  ;       USES:   X,A,C
-                       476  
-160A 8D05              477  OUT4HS  BSR     THB             ; TYPE HEX BYTE
-160C 8D03              478  OUT2HS  BSR     THB
-160E 7E1863            479          JMP     OUTSP
-                       480  
-                       481  ;;      THB - TYPE HEX BYTE
-                       482  ;
-                       483  ;       ENTRY:  (X) = ADDRESS OF BYTE
-                       484  ;       EXIT:   X INCREMENTED PAST BYTE
-                       485  ;       USES:   X,A,C
-                       486  
-1611 37                487  THB     PSHB
-1612 5F                488          CLRB
-1613 BD17E4            489          JSR     OCH
-1616 33                490          PULB
-1617 39                491  THB1    RTS
-                       492  
-                       493  ;;      OUTIS - OUTPUT IMBEDDED STRING
-                       494  ;
-                       495  ;       CALLING CONVENTION:
-                       496  ;               JSR    OUTIS
+15DB 8D2D              435          BSR     OUT4HS
+15DD 32                436          PULA
+15DE 5D                437          TSTB
+15DF 2B0E              438          BMI     TYPIN1          ; ONE BYTE ONLY
+15E1 8D66              439  TYPIN0  BSR     BYTCNT
+15E3 5A                440          DECB
+15E4 2A09              441          BPL     TYPIN1          ; IS VALID INST.
+15E6 5C                442          INCB                    ; RESTORE (B)
+15E7 8D2F              443          BSR     OUTIS
+15E9 444154413D        444          ASC    "DATA="
+15EE 00                445          DB      0
+15EF DEEC              446  TYPIN1  LDX     T0
+15F1 8D19              447          BSR     OUT2HS
+15F3 C101              448  TYPIN2  CMPB    #1
+15F5 2B20              449          BMI     THB1
+15F7 2713              450          BEQ     OUT2HS
+15F9 200F              451          BRA     OUT4HS
+                       452  
+                       453  ;;      DISB - DISPLAY BREAKPOINTS
+                       454  ;
+                       455  ;       ENTRY:  NONE
+                       456  ;       EXIT:   BREAKPOINT TABLE PRINTED
+                       457  ;       USES:   ALL
+                       458  
+15FB C606              459  DISB    LDAB    #6              ; OFFSET INTO TABLE
+15FD 30                460          TSX
+15FE 08                461  DISB1   INX
+15FF 5A                462          DECB
+1600 26FC              463          BNE     DISB1
+1602 C604              464          LDAB    #NBR
+1604 8D04              465  DISB2   BSR     OUT4HS
+1606 5A                466          DECB
+1607 26FB              467          BNE     DISB2
+1609 39                468          RTS
+                       469  
+                       470  ;;      OUT4HS, OUT2HS - OUTPUT HEX AND SPACES
+                       471  ;
+                       472  ;       ENTRY:  (X) = ADDRESS
+                       473  ;       EXIT:   X UPDATED PAST BYTE(S)
+                       474  ;       USES:   X,A,C
+                       475  
+160A 8D05              476  OUT4HS  BSR     THB             ; TYPE HEX BYTE
+160C 8D03              477  OUT2HS  BSR     THB
+160E 7E1863            478          JMP     OUTSP
+                       479  
+                       480  ;;      THB - TYPE HEX BYTE
+                       481  ;
+                       482  ;       ENTRY:  (X) = ADDRESS OF BYTE
+                       483  ;       EXIT:   X INCREMENTED PAST BYTE
+                       484  ;       USES:   X,A,C
+                       485  
+1611 37                486  THB     PSHB
+1612 5F                487          CLRB
+1613 BD17E4            488          JSR     OCH
+1616 33                489          PULB
+1617 39                490  THB1    RTS
+                       491  
+                       492  ;;      OUTIS - OUTPUT IMBEDDED STRING
+                       493  ;
+                       494  ;       CALLING CONVENTION:
+                       495  ;               JSR    OUTIS
+                       496  ;               FCB    'STRING',0
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page  9
 
-                       497  ;               FCB    'STRING',0
-                       498  ;               <NEXT INST>
-                       499  ;       EXIT:  TO NEXT INSTRUCTION
-                       500  ;       USES:  A,X
-                       501  
-1618 30                502  OUTIS   TSX
-1619 EE00              503          LDX     0,X
-161B 31                504          INS
-161C 31                505          INS
-161D 37                506          PSHB
-161E 5F                507          CLRB
-161F BD17C3            508          JSR     OAS
-1622 33                509          PULB
-1623 6E00              510          JMP     0,X
-                       511  
-                       512  ;;      AHV - ACCUMULATE HEX VALUE
-                       513  ;
-                       514  ;       ENTRY:  NONE
-                       515  ;       EXIT:   (BA) = ACCUMULATED HEX VALUE OR
-                       516  ;                (A) = ASCII IF NO HEX
-                       517  ;                'C' SET FOR VALID HEX
-                       518  ;                'Z' SET FOR TERMINATOR = CR
-                       519  ;       USES:  B,A,C
-                       520  
-1625 5F                521  AHV     CLRB
-1626 BD18A3            522  AHVD    JSR     IHD             ; GET FIRST DIGIT
-1629 241D              523          BCC     AHV3            ; NOT HEX
-162B 36                524  AHV1    PSHA
-162C 37                525          PSHB
-162D 48                526          ASLA
-162E 59                527          ROLB
-162F 48                528          ASLA
-1630 59                529          ROLB
-1631 48                530          ASLA
-1632 59                531          ROLB
-1633 48                532          ASLA
-1634 59                533          ROLB                    ; MAKE WAY FOR NEXT DIGIT
-1635 37                534          PSHB
-1636 36                535          PSHA
-1637 BD18A3            536          JSR     IHD
-163A 2407              537          BCC     AHV2            ; THIS NOT HEX
-163C 33                538          PULB
-163D 1B                539          ABA
-163E 33                540          PULB
-163F 31                541          INS
-1640 31                542          INS                     ; DISCARD OLD VALUE
-1641 20E8              543          BRA     AHV1
-                       544  
-1643 31                545  AHV2    INS
-1644 31                546          INS                     ; SKIP LATEST VALUE
-1645 33                547          PULB
-1646 32                548          PULA
-1647 0D                549          SEC
-1648 39                550  AHV3    RTS
-                       551  
-                       552  ;;      BYTCNT - COUNT INSTRUCTION BYTES
-                       553  ;
-                       554  ;       ENTRY:  (A) = OPCODE
-                       555  ;       EXIT:   (B) = 0,1,2 OR 3
-                       556  ;               'C' CLEAR IF RELATIVE ADDRESSING
-                       557  ;               'Z' SET IF ILLEGAL
-                       558  
+                       497  ;               <NEXT INST>
+                       498  ;       EXIT:  TO NEXT INSTRUCTION
+                       499  ;       USES:  A,X
+                       500  
+1618 30                501  OUTIS   TSX
+1619 EE00              502          LDX     0,X
+161B 31                503          INS
+161C 31                504          INS
+161D 37                505          PSHB
+161E 5F                506          CLRB
+161F BD17C3            507          JSR     OAS
+1622 33                508          PULB
+1623 6E00              509          JMP     0,X
+                       510  
+                       511  ;;      AHV - ACCUMULATE HEX VALUE
+                       512  ;
+                       513  ;       ENTRY:  NONE
+                       514  ;       EXIT:   (BA) = ACCUMULATED HEX VALUE OR
+                       515  ;                (A) = ASCII IF NO HEX
+                       516  ;                'C' SET FOR VALID HEX
+                       517  ;                'Z' SET FOR TERMINATOR = CR
+                       518  ;       USES:  B,A,C
+                       519  
+1625 5F                520  AHV     CLRB
+1626 BD18A3            521  AHVD    JSR     IHD             ; GET FIRST DIGIT
+1629 241D              522          BCC     AHV3            ; NOT HEX
+162B 36                523  AHV1    PSHA
+162C 37                524          PSHB
+162D 48                525          ASLA
+162E 59                526          ROLB
+162F 48                527          ASLA
+1630 59                528          ROLB
+1631 48                529          ASLA
+1632 59                530          ROLB
+1633 48                531          ASLA
+1634 59                532          ROLB                    ; MAKE WAY FOR NEXT DIGIT
+1635 37                533          PSHB
+1636 36                534          PSHA
+1637 BD18A3            535          JSR     IHD
+163A 2407              536          BCC     AHV2            ; THIS NOT HEX
+163C 33                537          PULB
+163D 1B                538          ABA
+163E 33                539          PULB
+163F 31                540          INS
+1640 31                541          INS                     ; DISCARD OLD VALUE
+1641 20E8              542          BRA     AHV1
+                       543  
+1643 31                544  AHV2    INS
+1644 31                545          INS                     ; SKIP LATEST VALUE
+1645 33                546          PULB
+1646 32                547          PULA
+1647 0D                548          SEC
+1648 39                549  AHV3    RTS
+                       550  
+                       551  ;;      BYTCNT - COUNT INSTRUCTION BYTES
+                       552  ;
+                       553  ;       ENTRY:  (A) = OPCODE
+                       554  ;       EXIT:   (B) = 0,1,2 OR 3
+                       555  ;               'C' CLEAR IF RELATIVE ADDRESSING
+                       556  ;               'Z' SET IF ILLEGAL
+                       557  
+1649 36                558  BYTCNT  PSHA
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 10
 
-1649 36                559  BYTCNT  PSHA
-164A 16                560          TAB
-164B CEFF75            561          LDX     #OPTAB-1
-164E 08                562  BYT1    INX
-164F C008              563          SUBB    #8
-1651 24FB              564          BCC     BYT1
-1653 A600              565          LDAA    0,X
-1655 46                566  BYT2    RORA
-1656 5C                567          INCB
-1657 26FC              568          BNE     BYT2
-1659 32                569          PULA
-165A 251E              570          BCS     BYT7
-165C 8130              571          CMPA    #$30            ; CHECK FOR BRANCH
-165E 2404              572          BCC     BYT3
-1660 8120              573          CMPA    #$20
-1662 2414              574          BCC     BYT5            ; IS BRANCH
-1664 8160              575  BYT3    CMPA    #$60
-1666 2511              576          BCS     BYT6            ; IS ONE BYTE
-1668 818D              577          CMPA    #$8D
-166A 270C              578          BEQ     BYT5            ; IS BSR
-166C 84BD              579          ANDA    #$BD
-166E 818C              580          CMPA    #$8C
-1670 2704              581          BEQ     BYT4            ; IS X OR SP IMM.
-1672 8430              582          ANDA    #$30            ; CHECK FOR THREE BYTES
-1674 8130              583          CMPA    #$30
-1676 C2FF              584  BYT4    SBCB    #$FF
-1678 5C                585  BYT5    INCB
-1679 5C                586  BYT6    INCB
-167A 39                587  BYT7    RTS
-                       588  
-                       589  ;;      COPY - COPY MEMORY ELSEWHERE
-                       590  ;
-                       591  ;       ENTRY:  NONE
-                       592  ;       EXIT:   BLOCK MOVED
-                       593  ;       USES:   ALL
-                       594  ;
-                       595  ;       COMMAND SYNTAX: (CNTL-D)D <FROM>,<TO>,<COUNT>
-                       596  
-167B BD1618            597  COPY    JSR     OUTIS
-167E 534C49444520      598          ASC     "SLIDE "
-1684 00                599          DB      0
-1685 BD1625            600          JSR     AHV             ; GET *FROM*
-1688 2419              601          BCC     COP3            ; NO HEX
-168A 36                602          PSHA
-168B 37                603          PSHB
-168C BD1625            604          JSR     AHV             ; GET *TO*
-168F 2410              605          BCC     COP2            ; NO HEX
-1691 36                606          PSHA
-1692 37                607          PSHB
-1693 BD1625            608          JSR     AHV             ; GET *COUNT*
-1696 2407              609          BCC     COP1            ; NO HEX
-1698 36                610          PSHA
-1699 37                611          PSHB
-169A BD196D            612          JSR     MOVE            ; MOVE DATA
-169D 0C                613          CLC                     ; NO ERRORS
-169E 39                614          RTS
-                       615  
-169F 31                616  COP1    INS
-16A0 31                617          INS
-16A1 31                618  COP2    INS
-16A2 31                619          INS
-16A3 0D                620  COP3    SEC
+164A 16                559          TAB
+164B CEFF75            560          LDX     #OPTAB-1
+164E 08                561  BYT1    INX
+164F C008              562          SUBB    #8
+1651 24FB              563          BCC     BYT1
+1653 A600              564          LDAA    0,X
+1655 46                565  BYT2    RORA
+1656 5C                566          INCB
+1657 26FC              567          BNE     BYT2
+1659 32                568          PULA
+165A 251E              569          BCS     BYT7
+165C 8130              570          CMPA    #$30            ; CHECK FOR BRANCH
+165E 2404              571          BCC     BYT3
+1660 8120              572          CMPA    #$20
+1662 2414              573          BCC     BYT5            ; IS BRANCH
+1664 8160              574  BYT3    CMPA    #$60
+1666 2511              575          BCS     BYT6            ; IS ONE BYTE
+1668 818D              576          CMPA    #$8D
+166A 270C              577          BEQ     BYT5            ; IS BSR
+166C 84BD              578          ANDA    #$BD
+166E 818C              579          CMPA    #$8C
+1670 2704              580          BEQ     BYT4            ; IS X OR SP IMM.
+1672 8430              581          ANDA    #$30            ; CHECK FOR THREE BYTES
+1674 8130              582          CMPA    #$30
+1676 C2FF              583  BYT4    SBCB    #$FF
+1678 5C                584  BYT5    INCB
+1679 5C                585  BYT6    INCB
+167A 39                586  BYT7    RTS
+                       587  
+                       588  ;;      COPY - COPY MEMORY ELSEWHERE
+                       589  ;
+                       590  ;       ENTRY:  NONE
+                       591  ;       EXIT:   BLOCK MOVED
+                       592  ;       USES:   ALL
+                       593  ;
+                       594  ;       COMMAND SYNTAX: (CNTL-D)D <FROM>,<TO>,<COUNT>
+                       595  
+167B BD1618            596  COPY    JSR     OUTIS
+167E 534C49444520      597          ASC     "SLIDE "
+1684 00                598          DB      0
+1685 BD1625            599          JSR     AHV             ; GET *FROM*
+1688 2419              600          BCC     COP3            ; NO HEX
+168A 36                601          PSHA
+168B 37                602          PSHB
+168C BD1625            603          JSR     AHV             ; GET *TO*
+168F 2410              604          BCC     COP2            ; NO HEX
+1691 36                605          PSHA
+1692 37                606          PSHB
+1693 BD1625            607          JSR     AHV             ; GET *COUNT*
+1696 2407              608          BCC     COP1            ; NO HEX
+1698 36                609          PSHA
+1699 37                610          PSHB
+169A BD196D            611          JSR     MOVE            ; MOVE DATA
+169D 0C                612          CLC                     ; NO ERRORS
+169E 39                613          RTS
+                       614  
+169F 31                615  COP1    INS
+16A0 31                616          INS
+16A1 31                617  COP2    INS
+16A2 31                618          INS
+16A3 0D                619  COP3    SEC
+16A4 39                620          RTS
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 11
 
-16A4 39                621          RTS
-                       622  
-                       623  ;;      LOAD - LOAD DATA INTO MEMORY
-                       624  ;
-                       625  ;       ENTRY:  NONE
-                       626  ;       EXIT:   'C' SET IF ERROR
-                       627  ;       USES:   ALL,T0
-                       628  
-16A5 BD1625            629  LOAD    JSR     AHV             ; GET OPTIONAL PARAMETERS
-16A8 2502              630          BCS     LOA00
-16AA 8608              631          LDAA    #8              ; DEFAULT TO CASSETTE
-16AC 16                632  LOA00   TAB
-16AD 34                633  LOA0    DES
-16AE 34                634          DES                     ; SCRATCHPAD ON STACK
-16AF BD18DE            635  LOA1    JSR     ICT             ; INPUT CASSETTET/TERM
-16B2 847F              636          ANDA    #$7F
-16B4 8153              637          CMPA    #'S'
-16B6 26F7              638          BNE     LOA1
-16B8 BD18DE            639          JSR     ICT
-16BB 847F              640          ANDA    #$7F
-16BD 8139              641          CMPA    #'9'
-16BF 2736              642          BEQ     LOA4            ; IS EOF
-16C1 34                643          DES
-16C2 8131              644          CMPA    #'1'
-16C4 26E9              645          BNE     LOA1            ; NOT START-OF-RECORD
-16C6 B7C16F            646          STAA    $C16F           ; TURN ON D.P.
-16C9 4F                647          CLRA
-16CA 30                648          TSX
-16CB BD18C2            649          JSR     IHB             ; COUNT
-16CE BD18C2            650          JSR     IHB             ; ADDRESS (2 BYTES)
-16D1 BD18C2            651          JSR     IHB
-16D4 30                652          TSX
-16D5 EE01              653          LDX     1,X             ; GET FWA OF BUFFER
-16D7 D7EC              654          STAB    T0
-16D9 33                655          PULB
-16DA C003              656          SUBB    #3              ; ACCOUNT 3 BYTES
-16DC 37                657  LOA2    PSHB
-16DD D6EC              658          LDAB    T0
-16DF BD18C2            659          JSR     IHB
-16E2 D7EC              660          STAB    T0
-16E4 33                661          PULB
-16E5 5A                662          DECB
-16E6 26F4              663          BNE     LOA2
-16E8 7FC16F            664          CLR     $C16F           ; TURN OFF D.P.
-16EB D6EC              665          LDAB    T0
-16ED CE00EC            666          LDX     #T0
-16F0 BD18C2            667          JSR     IHB
-16F3 4C                668          INCA
-16F4 27B9              669          BEQ     LOA1
-16F6 0D                670  LOA3    SEC
-16F7 31                671  LOA4    INS
-16F8 31                672          INS
-16F9 39                673          RTS
-                       674  
-                       675  ;;      TIME CRITICAL ROUTINES !!!!!
-                       676  ;       SINCE CASSETTE I/O IS DONE USING ONLY SOFTWARE
-                       677  ;        TIMING LOOPS, THE ROUTINE 'BIT' MUST BE CALLED
-                       678  ;        EVERY 208 US.  CRITICAL TIMES IN THESE ROUTINES
-                       679  ;        ARE LISTED IN THE COMMENT FIELDS OF CERTAIN
-                       680  ;        INSTRUCTIONS IN THE FORM 'NNN US'.  THESE TIMES
-                       681  ;        REPRESENT THE TIME REMAINING BEFORE THE NEXT
-                       682  ;        RETURN FROM 'BIT'.  THE TIME INCLUDES THE
+                       621  
+                       622  ;;      LOAD - LOAD DATA INTO MEMORY
+                       623  ;
+                       624  ;       ENTRY:  NONE
+                       625  ;       EXIT:   'C' SET IF ERROR
+                       626  ;       USES:   ALL,T0
+                       627  
+16A5 BD1625            628  LOAD    JSR     AHV             ; GET OPTIONAL PARAMETERS
+16A8 2502              629          BCS     LOA00
+16AA 8608              630          LDAA    #8              ; DEFAULT TO CASSETTE
+16AC 16                631  LOA00   TAB
+16AD 34                632  LOA0    DES
+16AE 34                633          DES                     ; SCRATCHPAD ON STACK
+16AF BD18DE            634  LOA1    JSR     ICT             ; INPUT CASSETTET/TERM
+16B2 847F              635          ANDA    #$7F
+16B4 8153              636          CMPA    #'S'
+16B6 26F7              637          BNE     LOA1
+16B8 BD18DE            638          JSR     ICT
+16BB 847F              639          ANDA    #$7F
+16BD 8139              640          CMPA    #'9'
+16BF 2736              641          BEQ     LOA4            ; IS EOF
+16C1 34                642          DES
+16C2 8131              643          CMPA    #'1'
+16C4 26E9              644          BNE     LOA1            ; NOT START-OF-RECORD
+16C6 B7C16F            645          STAA    $C16F           ; TURN ON D.P.
+16C9 4F                646          CLRA
+16CA 30                647          TSX
+16CB BD18C2            648          JSR     IHB             ; COUNT
+16CE BD18C2            649          JSR     IHB             ; ADDRESS (2 BYTES)
+16D1 BD18C2            650          JSR     IHB
+16D4 30                651          TSX
+16D5 EE01              652          LDX     1,X             ; GET FWA OF BUFFER
+16D7 D7EC              653          STAB    T0
+16D9 33                654          PULB
+16DA C003              655          SUBB    #3              ; ACCOUNT 3 BYTES
+16DC 37                656  LOA2    PSHB
+16DD D6EC              657          LDAB    T0
+16DF BD18C2            658          JSR     IHB
+16E2 D7EC              659          STAB    T0
+16E4 33                660          PULB
+16E5 5A                661          DECB
+16E6 26F4              662          BNE     LOA2
+16E8 7FC16F            663          CLR     $C16F           ; TURN OFF D.P.
+16EB D6EC              664          LDAB    T0
+16ED CE00EC            665          LDX     #T0
+16F0 BD18C2            666          JSR     IHB
+16F3 4C                667          INCA
+16F4 27B9              668          BEQ     LOA1
+16F6 0D                669  LOA3    SEC
+16F7 31                670  LOA4    INS
+16F8 31                671          INS
+16F9 39                672          RTS
+                       673  
+                       674  ;;      TIME CRITICAL ROUTINES !!!!!
+                       675  ;       SINCE CASSETTE I/O IS DONE USING ONLY SOFTWARE
+                       676  ;        TIMING LOOPS, THE ROUTINE 'BIT' MUST BE CALLED
+                       677  ;        EVERY 208 US.  CRITICAL TIMES IN THESE ROUTINES
+                       678  ;        ARE LISTED IN THE COMMENT FIELDS OF CERTAIN
+                       679  ;        INSTRUCTIONS IN THE FORM 'NNN US'.  THESE TIMES
+                       680  ;        REPRESENT THE TIME REMAINING BEFORE THE NEXT
+                       681  ;        RETURN FROM 'BIT'.  THE TIME INCLUDES THE
+                       682  ;        LABELED INSTRUCTION AND INCLUDES THE EXECUTION
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 12
 
-                       683  ;        LABELED INSTRUCTION AND INCLUDES THE EXECUTION
-                       684  ;        OF THE 'RTS' AT THE END OF 'BIT'.  SOME
-                       685  ;        ROUTINES HAVE 'NNN US USED' AS A COMMENT
-                       686  ;        ON THEIR LAST STATEMENT.  THIS REPRESENTS
-                       687  ;        THE TIME EXPIRED SINCE THE LAST RETURN
-                       688  ;        FROM 'BIT' INCLUDING THE LABLED INSTRUCTION.
-                       689  
-                       690  ;;      HIGH SPEED LOAD
-                       691  ;
-                       692  ;         ACCEPTS ADDITIONAL BIT/CELL PARAMETER
-                       693  ;
-                       694  ;       ENTRY:  (A) = COMMAND
-                       695  ;               (B) = 0
-                       696  ;       USES:   ALL,T0,T1,T2
-                       697  
-16FA 8B40              698  CTLT    ADDA    #$40            ; DISPLACE TO PRINTING
-16FC BD1865            699          JSR     OUTCH           ; ECHO TO USER
-16FF BD1625            700          JSR     AHV
-1702 16                701          TAB
-1703 C47F              702          ANDB    #$7F
-1705 2003              703          BRA     PTAP
-                       704  
-                       705  ;;      RCRD - RECORD MEMORY DATA IN 'KCS' FORMAT
-                       706  ;
-                       707  ;       ENTRY:  (B) = 0
-                       708  ;       USES:   ALL,T0,T1,T2
-                       709  
-1707 CB09              710  RCRD    ADDB    #9
-                       711  
-                       712  ;;      DUMP - RAW MEMORY DUMP 16 BYTES PER LINE
-                       713  ;
-                       714  ;       ENTRY:  (B) = 0
-                       715  ;       USES:   T0,T1,T2
-                       716  
-1709 5A                717  DUMP    DECB
-                       718  
-                       719  ;;      PTAP - PUNCH TO TAPE
-                       720  ;
-                       721  ;       ENTRY:  DEFAULT VALUES ON STACK
-                       722  ;                BELOW RETURN ADDRESS
-                       723  ;       EXIT:   'C' SET FOR ERROR
-                       724  ;       USES:   ALL,T0,T1,T2
-                       725  
-170A 30                726  PTAP    TSX
-170B 37                727          PSHB                    ; CASSETTE/TERMINAL FLAG
-170C BD1625            728          JSR     AHV             ; ACCUMULATE HEX
-170F 240B              729          BCC     PTAP1           ; USE DEFAULT
-1711 A703              730          STAA    3,X             ;   STORE FWA
-1713 E702              731          STAB    2,X
-1715 BD1625            732          JSR     AHV
-1718 A705              733          STAA    5,X
-171A E704              734          STAB    4,X
-171C A605              735  PTAP1   LDAA    5,X
-171E E604              736          LDAB    4,X             ; GET LWA, FWA
-1720 EE02              737          LDX     2,X
-1722 DFEE              738          STX     T1
-1724 97F5              739          STAA    T2+1
-1726 D7F4              740          STAB    T2
-1728 33                741          PULB
-                       742  
-                       743  ;;      PUNCH - WRITE LOADER FILE TO TERMINAL OR CASSETTE
-                       744  ;
+                       683  ;        OF THE 'RTS' AT THE END OF 'BIT'.  SOME
+                       684  ;        ROUTINES HAVE 'NNN US USED' AS A COMMENT
+                       685  ;        ON THEIR LAST STATEMENT.  THIS REPRESENTS
+                       686  ;        THE TIME EXPIRED SINCE THE LAST RETURN
+                       687  ;        FROM 'BIT' INCLUDING THE LABLED INSTRUCTION.
+                       688  
+                       689  ;;      HIGH SPEED LOAD
+                       690  ;
+                       691  ;         ACCEPTS ADDITIONAL BIT/CELL PARAMETER
+                       692  ;
+                       693  ;       ENTRY:  (A) = COMMAND
+                       694  ;               (B) = 0
+                       695  ;       USES:   ALL,T0,T1,T2
+                       696  
+16FA 8B40              697  CTLT    ADDA    #$40            ; DISPLACE TO PRINTING
+16FC BD1865            698          JSR     OUTCH           ; ECHO TO USER
+16FF BD1625            699          JSR     AHV
+1702 16                700          TAB
+1703 C47F              701          ANDB    #$7F
+1705 2003              702          BRA     PTAP
+                       703  
+                       704  ;;      RCRD - RECORD MEMORY DATA IN 'KCS' FORMAT
+                       705  ;
+                       706  ;       ENTRY:  (B) = 0
+                       707  ;       USES:   ALL,T0,T1,T2
+                       708  
+1707 CB09              709  RCRD    ADDB    #9
+                       710  
+                       711  ;;      DUMP - RAW MEMORY DUMP 16 BYTES PER LINE
+                       712  ;
+                       713  ;       ENTRY:  (B) = 0
+                       714  ;       USES:   T0,T1,T2
+                       715  
+1709 5A                716  DUMP    DECB
+                       717  
+                       718  ;;      PTAP - PUNCH TO TAPE
+                       719  ;
+                       720  ;       ENTRY:  DEFAULT VALUES ON STACK
+                       721  ;                BELOW RETURN ADDRESS
+                       722  ;       EXIT:   'C' SET FOR ERROR
+                       723  ;       USES:   ALL,T0,T1,T2
+                       724  
+170A 30                725  PTAP    TSX
+170B 37                726          PSHB                    ; CASSETTE/TERMINAL FLAG
+170C BD1625            727          JSR     AHV             ; ACCUMULATE HEX
+170F 240B              728          BCC     PTAP1           ; USE DEFAULT
+1711 A703              729          STAA    3,X             ;   STORE FWA
+1713 E702              730          STAB    2,X
+1715 BD1625            731          JSR     AHV
+1718 A705              732          STAA    5,X
+171A E704              733          STAB    4,X
+171C A605              734  PTAP1   LDAA    5,X
+171E E604              735          LDAB    4,X             ; GET LWA, FWA
+1720 EE02              736          LDX     2,X
+1722 DFEE              737          STX     T1
+1724 97F5              738          STAA    T2+1
+1726 D7F4              739          STAB    T2
+1728 33                740          PULB
+                       741  
+                       742  ;;      PUNCH - WRITE LOADER FILE TO TERMINAL OR CASSETTE
+                       743  ;
+                       744  ;       ENTRY:  (T1) = FWA BYTES TO PUNCH
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 13
 
-                       745  ;       ENTRY:  (T1) = FWA BYTES TO PUNCH
-                       746  ;               (T2) = LWA BYTES TO PUNCH
-                       747  ;               (B) = CASSETTE TERMINAL FLAG:
-                       748  ;                   (B) > 0 THEN TO CASSETTE
-                       749  ;                       USING (B) CELLS PER BIT
-                       750  ;                   (B) = 0 THEN TO TERMINAL
-                       751  ;                   (B) < 0 THEN TO TERMINAL WITH
-                       752  ;                       IMBEDDED SPACES AND NO S1,ETC.
-                       753  ;       USES:   ALL,T0,T1
-                       754  
-1729 5D                755  PUNCH   TSTB
-172A 2F07              756          BLE     PNCH0
-172C BD1827            757          JSR     OLT             ; OUTPUT LEADER
-172F 8607              758          LDAA    #7
-1731 2002              759          BRA     PNCH1
-                       760  
-1733 8604              761  PNCH0   LDAA    #4              ; 186 US
-1735 4A                762  PNCH1   DECA
-1736 26FD              763          BNE     PNCH1
-1738 37                764          PSHB                    ; SAVE FLAG; 160 US
-1739 D6F4              765          LDAB    T2              ; (B1) = END; 156 US
-173B 96F5              766          LDAA    T2+1
-173D 90EF              767          SUBA    T1+1
-173F D2EE              768          SBCB    T1              ; (BA) = END - CURRENT
-1741 2558              769          BCS     PNCH9           ; DONE;   144 US
-1743 810F              770          CMPA    #15             ; 140 US
-1745 C200              771          SBCB    #0
-1747 33                772          PULB                    ; RESTORE FLAG
-1748 2402              773          BCC     PNCH2           ; AT LEAST FULL RECORD
-174A 2003              774          BRA     PNCH3
-174C 860F              775   PNCH2  LDAA    #15
-174E 01                776          NOP
-174F 97EC              777   PNCH3  STAA    T0              ; COUNTER
-1751 8B04              778          ADDA    #4
-1753 97ED              779          STAA    T0+1            ; BYTE COUNT
-1755 CE17B6            780          LDX     #S1STR          ; 114 US
-1758 5D                781          TSTB
-1759 2A03              782          BPL     PNCH35
-175B CE17C0            783          LDX     #CRSTR
-175E 8D63              784  PNCH35  BSR     OAS             ; OUTPUT ASCII STRING
-1760 CE00EE            785          LDX     #T0+2
-1763 4F                786          CLRA                    ; (A) = CHECKSUM
-1764 01                787          NOP
-1765 5D                788          TSTB
-1766 2B03              789          BMI     PNCH5
-1768 09                790          DEX
-1769 A500              791          BITA    0,X             ; 5 CYCLE NUTHIN'
-176B 01                792  PNCH5   NOP
-176C 01                793          NOP
-176D 8D75              794          BSR     OCH             ; 182 US
-176F 01                795          NOP
-1770 26F9              796          BNE     PNCH5
-1772 DEEE              797          LDX     T1
-1774 8D62              798  PNCH6   BSR     OSH             ; 182 US
-1776 7A00EC            799          DEC     T0
-1779 2AF9              800          BPL     PNCH6
-177B 43                801          COMA
-177C 36                802          PSHA
-177D 01                803          NOP
-177E 8607              804          LDAA    #7
-1780 4A                805  PNCH7   DECA
-1781 26FD              806          BNE     PNCH7
+                       745  ;               (T2) = LWA BYTES TO PUNCH
+                       746  ;               (B) = CASSETTE TERMINAL FLAG:
+                       747  ;                   (B) > 0 THEN TO CASSETTE
+                       748  ;                       USING (B) CELLS PER BIT
+                       749  ;                   (B) = 0 THEN TO TERMINAL
+                       750  ;                   (B) < 0 THEN TO TERMINAL WITH
+                       751  ;                       IMBEDDED SPACES AND NO S1,ETC.
+                       752  ;       USES:   ALL,T0,T1
+                       753  
+1729 5D                754  PUNCH   TSTB
+172A 2F07              755          BLE     PNCH0
+172C BD1827            756          JSR     OLT             ; OUTPUT LEADER
+172F 8607              757          LDAA    #7
+1731 2002              758          BRA     PNCH1
+                       759  
+1733 8604              760  PNCH0   LDAA    #4              ; 186 US
+1735 4A                761  PNCH1   DECA
+1736 26FD              762          BNE     PNCH1
+1738 37                763          PSHB                    ; SAVE FLAG; 160 US
+1739 D6F4              764          LDAB    T2              ; (B1) = END; 156 US
+173B 96F5              765          LDAA    T2+1
+173D 90EF              766          SUBA    T1+1
+173F D2EE              767          SBCB    T1              ; (BA) = END - CURRENT
+1741 2558              768          BCS     PNCH9           ; DONE;   144 US
+1743 810F              769          CMPA    #15             ; 140 US
+1745 C200              770          SBCB    #0
+1747 33                771          PULB                    ; RESTORE FLAG
+1748 2402              772          BCC     PNCH2           ; AT LEAST FULL RECORD
+174A 2003              773          BRA     PNCH3
+174C 860F              774   PNCH2  LDAA    #15
+174E 01                775          NOP
+174F 97EC              776   PNCH3  STAA    T0              ; COUNTER
+1751 8B04              777          ADDA    #4
+1753 97ED              778          STAA    T0+1            ; BYTE COUNT
+1755 CE17B6            779          LDX     #S1STR          ; 114 US
+1758 5D                780          TSTB
+1759 2A03              781          BPL     PNCH35
+175B CE17C0            782          LDX     #CRSTR
+175E 8D63              783  PNCH35  BSR     OAS             ; OUTPUT ASCII STRING
+1760 CE00EE            784          LDX     #T0+2
+1763 4F                785          CLRA                    ; (A) = CHECKSUM
+1764 01                786          NOP
+1765 5D                787          TSTB
+1766 2B03              788          BMI     PNCH5
+1768 09                789          DEX
+1769 A500              790          BITA    0,X             ; 5 CYCLE NUTHIN'
+176B 01                791  PNCH5   NOP
+176C 01                792          NOP
+176D 8D75              793          BSR     OCH             ; 182 US
+176F 01                794          NOP
+1770 26F9              795          BNE     PNCH5
+1772 DEEE              796          LDX     T1
+1774 8D62              797  PNCH6   BSR     OSH             ; 182 US
+1776 7A00EC            798          DEC     T0
+1779 2AF9              799          BPL     PNCH6
+177B 43                800          COMA
+177C 36                801          PSHA
+177D 01                802          NOP
+177E 8607              803          LDAA    #7
+1780 4A                804  PNCH7   DECA
+1781 26FD              805          BNE     PNCH7
+1783 32                806          PULA
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 14
 
-1783 32                807          PULA
-1784 5D                808          TSTB
-1785 2B02              809          BMI     PNCH75          ; NO CHECKSUM
-1787 8D6E              810          BSR     OHB
-1789 B61000            811  PNCH75  LDAA    TERM
-178C 43                812          COMA
-178D 49                813          ROLA
-178E DFEE              814          STX     T1
-1790 DFEE              815          STX     T1
-1792 229F              816          BHI     PNCH0           ; NOT DONE; NO BREAK
-1794 08                817          INX
-1795 37                818          PSHB
-1796 8606              819          LDAA    #6
-1798 4A                820  PNCH8   DECA
-1799 26FD              821          BNE     PNCH8
-179B 33                822  PNCH9   PULB                    ; 140 US
-179C 01                823          NOP
-179D 8603              824          LDAA    #3
-179F 4A                825  PNCHA   DECA
-17A0 26FD              826          BNE     PNCHA
-17A2 CE17BB            827          LDX     #S9STR
-17A5 5D                828          TSTB
-17A6 2B0D              829          BMI     PNCHC           ; RETURN
-17A8 8D19              830          BSR     OAS
-17AA 5D                831          TSTB
-17AB 2708              832          BEQ     PNCHC           ; NOT CASSETTE
-17AD 8613              833          LDAA    #19
-17AF 4A                834  PNCHB   DECA
-17B0 26FD              835          BNE     PNCHB
-17B2 8D73              836          BSR     OLT
-17B4 0C                837          CLC                     ; NO ERRORS
-17B5 39                838  PNCHC   RTS
-                       839  
-17B6 0D0A              840  S1STR   DB      CR,LF
-17B8 5331              841          ASC     "S1"
-17BA 00                842          DB      0
-17BB 0D0A              843  S9STR   DB      CR,LF
-17BD 5339              844          ASC     "S9"
-17BF 00                845          DB      0
-17C0 0D0A00            846  CRSTR   DB      CR,LF,0
-                       847  
-                       848  ;;      OAS - OUTPUT ASCII STRING
-                       849  ;
-                       850  ;       ENTRY:  (X) = ADDRESS OF STRING IN FORM:
-                       851  ;                 'STRING',0
-                       852  ;               (B) = CASSETTE/TERM FLAG
-                       853  ;       EXIT:   X POINTS PAST END OF STRING ZERO
-                       854  ;       USES:   X,A,C
-                       855  
-17C3 A600              856  OAS     LDAA    0,X             ; 97 US
-17C5 08                857          INX
-17C6 8D49              858  OAS1    BSR     OAB             ; 88 US
-17C8 01                859          NOP
-17C9 8610              860          LDAA    #16             ; 208 US
-17CB 4A                861  OAS2    DECA
-17CC 26FD              862          BNE     OAS2
-17CE A600              863          LDAA    0,X
-17D0 08                864          INX
-17D1 6D00              865          TST     0,X
-17D3 26F1              866          BNE     OAS1            ; NOT LAST BYTE
-17D5 08                867          INX
-17D6 2039              868          BRA     OAB             ; OUTPUT LAST AND RETURN
+1784 5D                807          TSTB
+1785 2B02              808          BMI     PNCH75          ; NO CHECKSUM
+1787 8D6E              809          BSR     OHB
+1789 B61000            810  PNCH75  LDAA    TERM
+178C 43                811          COMA
+178D 49                812          ROLA
+178E DFEE              813          STX     T1
+1790 DFEE              814          STX     T1
+1792 229F              815          BHI     PNCH0           ; NOT DONE; NO BREAK
+1794 08                816          INX
+1795 37                817          PSHB
+1796 8606              818          LDAA    #6
+1798 4A                819  PNCH8   DECA
+1799 26FD              820          BNE     PNCH8
+179B 33                821  PNCH9   PULB                    ; 140 US
+179C 01                822          NOP
+179D 8603              823          LDAA    #3
+179F 4A                824  PNCHA   DECA
+17A0 26FD              825          BNE     PNCHA
+17A2 CE17BB            826          LDX     #S9STR
+17A5 5D                827          TSTB
+17A6 2B0D              828          BMI     PNCHC           ; RETURN
+17A8 8D19              829          BSR     OAS
+17AA 5D                830          TSTB
+17AB 2708              831          BEQ     PNCHC           ; NOT CASSETTE
+17AD 8613              832          LDAA    #19
+17AF 4A                833  PNCHB   DECA
+17B0 26FD              834          BNE     PNCHB
+17B2 8D73              835          BSR     OLT
+17B4 0C                836          CLC                     ; NO ERRORS
+17B5 39                837  PNCHC   RTS
+                       838  
+17B6 0D0A              839  S1STR   DB      CR,LF
+17B8 5331              840          ASC     "S1"
+17BA 00                841          DB      0
+17BB 0D0A              842  S9STR   DB      CR,LF
+17BD 5339              843          ASC     "S9"
+17BF 00                844          DB      0
+17C0 0D0A00            845  CRSTR   DB      CR,LF,0
+                       846  
+                       847  ;;      OAS - OUTPUT ASCII STRING
+                       848  ;
+                       849  ;       ENTRY:  (X) = ADDRESS OF STRING IN FORM:
+                       850  ;                 'STRING',0
+                       851  ;               (B) = CASSETTE/TERM FLAG
+                       852  ;       EXIT:   X POINTS PAST END OF STRING ZERO
+                       853  ;       USES:   X,A,C
+                       854  
+17C3 A600              855  OAS     LDAA    0,X             ; 97 US
+17C5 08                856          INX
+17C6 8D49              857  OAS1    BSR     OAB             ; 88 US
+17C8 01                858          NOP
+17C9 8610              859          LDAA    #16             ; 208 US
+17CB 4A                860  OAS2    DECA
+17CC 26FD              861          BNE     OAS2
+17CE A600              862          LDAA    0,X
+17D0 08                863          INX
+17D1 6D00              864          TST     0,X
+17D3 26F1              865          BNE     OAS1            ; NOT LAST BYTE
+17D5 08                866          INX
+17D6 2039              867          BRA     OAB             ; OUTPUT LAST AND RETURN
+                       868  
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 15
 
-                       869  
-                       870  ;;      OSH - OUTPUT OPTIONAL SPACE WITH HEX BYTE
-                       871  ;
-                       872  ;       ENTRY:  (X) = ADDRESS OF BYTE
-                       873  ;               (A) = CHECKSUM
-                       874  ;               (B) = CASSETTE/TERMINAL FLAG
-                       875  ;       EXIT:   (X) INCREMENTED, (A) UPDATED
-                       876  ;       USES:   X,A,C
-                       877  
-17D8 AB00              878  OSH     ADDA    0,X             ; 174 US
-17DA 36                879          PSHA
-17DB 8605              880          LDAA    #5
-17DD 5D                881          TSTB
-17DE 2A09              882          BPL     OCH0            ; NO SPACE
-17E0 BD1863            883          JSR     OUTSP           ; OUTPUT SPACE
-17E3 32                884          PULA
-                       885  
-                       886  ;;      OCH - OUTPUT AND CHECKSUM HEX BYTE
-                       887  ;
-                       888  ;       ENTRY:  (X) = ADDRESS OF BYTE
-                       889  ;               (A) = CHECKSUM
-                       890  ;               (B) = CASSETTE/TERMINAL FLAG
-                       891  ;       EXIT:   (X) INCREMENTED, (A) UPDATED
-                       892  ;               'Z' SET IF END OF HEADER INFO
-                       893  ;       USES:   X,A,C
-                       894  
-17E4 AB00              895  OCH     ADDA    0,X             ; 174 US
-17E6 36                896          PSHA
-17E7 8606              897          LDAA    #6
-17E9 01                898  OCH0    NOP
-17EA 4A                899  OCH1    DECA
-17EB 26FD              900          BNE     OCH1
-17ED A600              901          LDAA    0,X
-17EF 8D06              902          BSR     OHB
-17F1 32                903          PULA
-17F2 08                904          INX
-17F3 8C00F0            905          CPX     #T1+2
-17F6 39                906          RTS                     ; 16 US USED
-                       907  
-                       908  ;;      OHB - OUTPUT HEX BYTE
-                       909  ;
-                       910  ;       ENTRY:  (A) = BYTE
-                       911  ;               (B) = CASSETTE TERMINAL FLAG
-                       912  ;       USES:   A,C
-                       913  
-17F7 36                914  OHB     PSHA                    ; 112 US
-17F8 44                915          LSRA
-17F9 44                916          LSRA
-17FA 44                917          LSRA
-17FB 44                918          LSRA
-17FC 8D08              919          BSR     OHB2
-17FE 8612              920          LDAA    #18             ; 208 US
-1800 4A                921  OHB1    DECA
-1801 26FD              922          BNE     OHB1
-1803 32                923          PULA
-1804 840F              924          ANDA    #$0F
-1806 810A              925  OHB2    CMPA    #10
-1808 2402              926          BCC     OHB3            ; IS A - F
-180A 2003              927          BRA     OHB4
-180C 01                928  OHB3    NOP
-180D 8B07              929          ADDA    #7
-180F 8B30              930  OHB4    ADDA    #$30
+                       869  ;;      OSH - OUTPUT OPTIONAL SPACE WITH HEX BYTE
+                       870  ;
+                       871  ;       ENTRY:  (X) = ADDRESS OF BYTE
+                       872  ;               (A) = CHECKSUM
+                       873  ;               (B) = CASSETTE/TERMINAL FLAG
+                       874  ;       EXIT:   (X) INCREMENTED, (A) UPDATED
+                       875  ;       USES:   X,A,C
+                       876  
+17D8 AB00              877  OSH     ADDA    0,X             ; 174 US
+17DA 36                878          PSHA
+17DB 8605              879          LDAA    #5
+17DD 5D                880          TSTB
+17DE 2A09              881          BPL     OCH0            ; NO SPACE
+17E0 BD1863            882          JSR     OUTSP           ; OUTPUT SPACE
+17E3 32                883          PULA
+                       884  
+                       885  ;;      OCH - OUTPUT AND CHECKSUM HEX BYTE
+                       886  ;
+                       887  ;       ENTRY:  (X) = ADDRESS OF BYTE
+                       888  ;               (A) = CHECKSUM
+                       889  ;               (B) = CASSETTE/TERMINAL FLAG
+                       890  ;       EXIT:   (X) INCREMENTED, (A) UPDATED
+                       891  ;               'Z' SET IF END OF HEADER INFO
+                       892  ;       USES:   X,A,C
+                       893  
+17E4 AB00              894  OCH     ADDA    0,X             ; 174 US
+17E6 36                895          PSHA
+17E7 8606              896          LDAA    #6
+17E9 01                897  OCH0    NOP
+17EA 4A                898  OCH1    DECA
+17EB 26FD              899          BNE     OCH1
+17ED A600              900          LDAA    0,X
+17EF 8D06              901          BSR     OHB
+17F1 32                902          PULA
+17F2 08                903          INX
+17F3 8C00F0            904          CPX     #T1+2
+17F6 39                905          RTS                     ; 16 US USED
+                       906  
+                       907  ;;      OHB - OUTPUT HEX BYTE
+                       908  ;
+                       909  ;       ENTRY:  (A) = BYTE
+                       910  ;               (B) = CASSETTE TERMINAL FLAG
+                       911  ;       USES:   A,C
+                       912  
+17F7 36                913  OHB     PSHA                    ; 112 US
+17F8 44                914          LSRA
+17F9 44                915          LSRA
+17FA 44                916          LSRA
+17FB 44                917          LSRA
+17FC 8D08              918          BSR     OHB2
+17FE 8612              919          LDAA    #18             ; 208 US
+1800 4A                920  OHB1    DECA
+1801 26FD              921          BNE     OHB1
+1803 32                922          PULA
+1804 840F              923          ANDA    #$0F
+1806 810A              924  OHB2    CMPA    #10
+1808 2402              925          BCC     OHB3            ; IS A - F
+180A 2003              926          BRA     OHB4
+180C 01                927  OHB3    NOP
+180D 8B07              928          ADDA    #7
+180F 8B30              929  OHB4    ADDA    #$30
+                       930  
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 16
 
-                       931  
-                       932  ;;      OAB - OUTPUT ASCII BYTE
-                       933  ;
-                       934  ;       ENTRY:  (A) = ASCII
-                       935  ;               (B) = CASSETTE/TERMINAL FLAG
-                       936  ;       EXIT:   (A) PRESERVED
-                       937  ;       USES:   C
-                       938  
-1811 5D                939  OAB     TSTB                    ; 80 US
-1812 2F51              940          BLE     OUTCH
-                       941  
-                       942  ;;      OCB - OUTPUT CASSETTE BYTE
-                       943  ;
-                       944  ;       ENTRY:  (B) = CELLS/BUT COUNT
-                       945  ;               (A) = CHARACTER
-                       946  ;       USES:   C
-                       947  
-1814 0C                948  OCB     CLC                     ; START BIT; 74 US
-1815 8D27              949          BSR     BIT1            ; 72 US
-1817 36                950          PSHA                    ; 208 US
-1818 0D                951          SEC                     ; STOP BIT
-1819 46                952          RORA
-181A 8D1B              953  OCB1    BSR     BIT             ; 200 US
-181C 01                954          NOP                     ; 208 US
-181D 44                955          LSRA
-181E 26FA              956          BNE     OCB1
-1820 8D15              957          BSR     BIT
-1822 32                958          PULA
-1823 08                959          INX
-1824 09                960          DEX                     ; 8 CYCLE PSEUDO-OP
-1825 2010              961          BRA     BIT
-                       962  
-                       963  ;;      OLT - OUTPUT LEADER TRAILER
-                       964  ;
-                       965  ;       ENTRY:  NONE
-                       966  ;       EXIT:   5 SECONDS MARKING WRITTEN
-                       967  ;       USES:   C
-                       968  
-1827 0D                969  OLT     SEC                     ; 78 US
-1828 36                970          PSHA
-1829 8D13              971          BSR     BIT1
-182B 37                972          PSHB
-182C C66E              973          LDAB    #110
-182E 17                974          TBA
-182F 8D06              975  OLT1    BSR     BIT
-1831 01                976          NOP
-1832 4A                977          DECA
-1833 26FA              978          BNE     OLT1
-1835 33                979          PULB
-1836 32                980          PULA
-                       981  
-                       982  ;;      BIT - OUTPUT 'C' TO CASSETTE
-                       983  ;
-                       984  ;       ENTRY:  (B) = CELL/BIT COUNT
-                       985  ;               'C' = BIT
-                       986  ;       USES:   C EXCEPT 'C'
-                       987  
-1837 36                988  BIT     PSHA                    ; 192 US
-1838 8615              989          LDAA    #21
-183A 01                990          NOP
-183B 01                991          NOP
-183C 2003              992          BRA     BIT3            ; 182 US
+                       931  ;;      OAB - OUTPUT ASCII BYTE
+                       932  ;
+                       933  ;       ENTRY:  (A) = ASCII
+                       934  ;               (B) = CASSETTE/TERMINAL FLAG
+                       935  ;       EXIT:   (A) PRESERVED
+                       936  ;       USES:   C
+                       937  
+1811 5D                938  OAB     TSTB                    ; 80 US
+1812 2F51              939          BLE     OUTCH
+                       940  
+                       941  ;;      OCB - OUTPUT CASSETTE BYTE
+                       942  ;
+                       943  ;       ENTRY:  (B) = CELLS/BUT COUNT
+                       944  ;               (A) = CHARACTER
+                       945  ;       USES:   C
+                       946  
+1814 0C                947  OCB     CLC                     ; START BIT; 74 US
+1815 8D27              948          BSR     BIT1            ; 72 US
+1817 36                949          PSHA                    ; 208 US
+1818 0D                950          SEC                     ; STOP BIT
+1819 46                951          RORA
+181A 8D1B              952  OCB1    BSR     BIT             ; 200 US
+181C 01                953          NOP                     ; 208 US
+181D 44                954          LSRA
+181E 26FA              955          BNE     OCB1
+1820 8D15              956          BSR     BIT
+1822 32                957          PULA
+1823 08                958          INX
+1824 09                959          DEX                     ; 8 CYCLE PSEUDO-OP
+1825 2010              960          BRA     BIT
+                       961  
+                       962  ;;      OLT - OUTPUT LEADER TRAILER
+                       963  ;
+                       964  ;       ENTRY:  NONE
+                       965  ;       EXIT:   5 SECONDS MARKING WRITTEN
+                       966  ;       USES:   C
+                       967  
+1827 0D                968  OLT     SEC                     ; 78 US
+1828 36                969          PSHA
+1829 8D13              970          BSR     BIT1
+182B 37                971          PSHB
+182C C66E              972          LDAB    #110
+182E 17                973          TBA
+182F 8D06              974  OLT1    BSR     BIT
+1831 01                975          NOP
+1832 4A                976          DECA
+1833 26FA              977          BNE     OLT1
+1835 33                978          PULB
+1836 32                979          PULA
+                       980  
+                       981  ;;      BIT - OUTPUT 'C' TO CASSETTE
+                       982  ;
+                       983  ;       ENTRY:  (B) = CELL/BIT COUNT
+                       984  ;               'C' = BIT
+                       985  ;       USES:   C EXCEPT 'C'
+                       986  
+1837 36                987  BIT     PSHA                    ; 192 US
+1838 8615              988          LDAA    #21
+183A 01                989          NOP
+183B 01                990          NOP
+183C 2003              991          BRA     BIT3            ; 182 US
+                       992  
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 17
 
-                       993  
-183E 36                994  BIT1    PSHA                    ; 64 US
-183F 8601              995          LDAA    #1
-1841 37                996  BIT3    PSHB
-1842 8C                997          DB      $8C             ; 3 CYCLE SKIP
-1843 861D              998  BIT4    LDAA    #29
-1845 4A                999  BIT5    DECA
-1846 26FD             1000          BNE     BIT5
-1848 4C               1001          INCA
-1849 8D10             1002          BSR     FLIP            ; 43 US
-184B 861E             1003          LDAA    #30
-184D 4A               1004  BIT6    DECA
-184E 26FD             1005          BNE     BIT6
-1850 07               1006          TPA
-1851 8401             1007          ANDA    #1              ; MASK TO CARRY
-1853 8D07             1008          BSR     FLIP1
-1855 5A               1009          DECB
-1856 26EB             1010          BNE     BIT4
-1858 33               1011          PULB
-1859 32               1012          PULA
-185A 39               1013          RTS                     ; ___ ALL TIMES REFERENCED HERE !!!
-                      1014  
-                      1015  ;;      FLIP - FLIP CASSETTE BIT
-                      1016  ;
-                      1017  ;       ENTRY:  (A) = 0 THEN NO FLIP
-                      1018  ;               (A) = 1 THEN FLIP
-                      1019  ;       USES:   A,C EXCEPT 'C'
-                      1020  
-185B 01               1021  FLIP    NOP                     ; 35 US
-185C B81002           1022  FLIP1   EORA    TAPE
-185F B71002           1023          STAA    TAPE
-1862 39               1024          RTS                     ; 24 US
-                      1025  
-                      1026  ;;      OUTSP - OUTPUT SPACE TO TERMINAL
-                      1027  ;
-                      1028  ;       ENTRY:  NONE
-                      1029  ;       EXIT:   (A) = ' '
-                      1030  ;       USES:   A,C
-                      1031  
-1863 8620             1032  OUTSP   LDAA    #' '
-                      1033  
-                      1034  ;;      OUTCH - OUTPUT CHARACTER TO TERMINAL
-                      1035  ;
-                      1036  ;       ENTRY:  (A) = CHARACTER
-                      1037  ;       EXIT:   (A) PRESERVED UNLESS -LF-
-                      1038  ;       USES:   C
-                      1039  
-1865 36               1040  OUTCH   PSHA
-1866 37               1041          PSHB
-1867 8D21             1042          BSR     BRD             ; BAUD RATE DETERMINE
-1869 0D               1043          SEC                     ; STOP BIT
-186A 8D32             1044          BSR     WOB
-186C 0C               1045          CLC                     ; START BIT
-186D 8D2F             1046          BSR     WOB
-186F 0D               1047          SEC
-1870 46               1048          RORA
-1871 8D2B             1049  OUTC1   BSR     WOB             ; WAIT - OUTPUT BIT
-1873 44               1050          LSRA
-1874 26FB             1051          BNE     OUTC1
-1876 8D26             1052          BSR     WOB             ; WAIT; OUTPUT STOP
-1878 33               1053          PULB
-1879 32               1054          PULA
+183E 36                993  BIT1    PSHA                    ; 64 US
+183F 8601              994          LDAA    #1
+1841 37                995  BIT3    PSHB
+1842 8C                996          DB      $8C             ; 3 CYCLE SKIP
+1843 861D              997  BIT4    LDAA    #29
+1845 4A                998  BIT5    DECA
+1846 26FD              999          BNE     BIT5
+1848 4C               1000          INCA
+1849 8D10             1001          BSR     FLIP            ; 43 US
+184B 861E             1002          LDAA    #30
+184D 4A               1003  BIT6    DECA
+184E 26FD             1004          BNE     BIT6
+1850 07               1005          TPA
+1851 8401             1006          ANDA    #1              ; MASK TO CARRY
+1853 8D07             1007          BSR     FLIP1
+1855 5A               1008          DECB
+1856 26EB             1009          BNE     BIT4
+1858 33               1010          PULB
+1859 32               1011          PULA
+185A 39               1012          RTS                     ; ___ ALL TIMES REFERENCED HERE !!!
+                      1013  
+                      1014  ;;      FLIP - FLIP CASSETTE BIT
+                      1015  ;
+                      1016  ;       ENTRY:  (A) = 0 THEN NO FLIP
+                      1017  ;               (A) = 1 THEN FLIP
+                      1018  ;       USES:   A,C EXCEPT 'C'
+                      1019  
+185B 01               1020  FLIP    NOP                     ; 35 US
+185C B81002           1021  FLIP1   EORA    TAPE
+185F B71002           1022          STAA    TAPE
+1862 39               1023          RTS                     ; 24 US
+                      1024  
+                      1025  ;;      OUTSP - OUTPUT SPACE TO TERMINAL
+                      1026  ;
+                      1027  ;       ENTRY:  NONE
+                      1028  ;       EXIT:   (A) = ' '
+                      1029  ;       USES:   A,C
+                      1030  
+1863 8620             1031  OUTSP   LDAA    #' '
+                      1032  
+                      1033  ;;      OUTCH - OUTPUT CHARACTER TO TERMINAL
+                      1034  ;
+                      1035  ;       ENTRY:  (A) = CHARACTER
+                      1036  ;       EXIT:   (A) PRESERVED UNLESS -LF-
+                      1037  ;       USES:   C
+                      1038  
+1865 36               1039  OUTCH   PSHA
+1866 37               1040          PSHB
+1867 8D21             1041          BSR     BRD             ; BAUD RATE DETERMINE
+1869 0D               1042          SEC                     ; STOP BIT
+186A 8D32             1043          BSR     WOB
+186C 0C               1044          CLC                     ; START BIT
+186D 8D2F             1045          BSR     WOB
+186F 0D               1046          SEC
+1870 46               1047          RORA
+1871 8D2B             1048  OUTC1   BSR     WOB             ; WAIT - OUTPUT BIT
+1873 44               1049          LSRA
+1874 26FB             1050          BNE     OUTC1
+1876 8D26             1051          BSR     WOB             ; WAIT; OUTPUT STOP
+1878 33               1052          PULB
+1879 32               1053          PULA
+187A 810A             1054          CMPA    #LF
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 18
 
-187A 810A             1055          CMPA    #LF
-187C 260B             1056          BNE     OUTC2
-187E 36               1057          PSHA
-187F 4F               1058          CLRA
-1880 8DE3             1059          BSR     OUTCH           ; OUTPUT FILL CHARACTER
-1882 8DE1             1060          BSR     OUTCH
-1884 8DDF             1061          BSR     OUTCH
-1886 8DDD             1062          BSR     OUTCH
-1888 32               1063          PULA
-1889 39               1064  OUTC2   RTS
-                      1065  
-                      1066  ;;      BRD - BAUD RATE DETERMINATION
-                      1067  ;
-                      1068  ;       ENTRY:  NONE
-                      1069  ;       EXIT:   (B) = BAUD RATE DIVISOR
-                      1070  ;                      (COMPENSATED FOR 5*13 EXTRA
-                      1071  ;                        EXECUTION TIME!!)
-                      1072  ;       USES:   B,C
-                      1073  
-188A 36               1074  BRD     PSHA
-188B C601             1075          LDAB    #1              ; ASSUME 110 BAUD
-188D B61000           1076          LDAA    TERM            ;  BAUD SWITCH DATA
-1890 43               1077          COMA
-1891 840E             1078          ANDA    #%00001110      ; MASK TO SWITCHES
-1893 44               1079          LSRA
-1894 2706             1080          BEQ     BRD2            ; IS 110
-1896 56               1081  BRD1    RORB
-1897 4A               1082          DECA
-1898 26FC             1083          BNE     BRD1
-189A C005             1084          SUBB    #5              ; EXECUTION COMPENSATION
-189C 32               1085  BRD2    PULA
-189D 39               1086          RTS
-                      1087  
-                      1088  ;;      WOB - WAIT AND OUTPUT BIT
-                      1089  ;
-                      1090  ;       ENTRY:  (B) = DELAY COUNT
-                      1091  ;               'C' = BIT
-                      1092  ;       EXIT:   (B), 'C' PRESERVED
-                      1093  ;       USES:   C
-                      1094  
-189E 37               1095  WOB     PSHB
-189F 8D72             1096          BSR     DLB             ; DELAY ONE BIT
-18A1 2068             1097          BRA     WIB1
-                      1098  
-                      1099  ;;      IHD - INPUT HEX DIGIT FROM TERMINAL
-                      1100  ;
-                      1101  ;       ENTRY:  NONE
-                      1102  ;       EXIT:   (A) = HEX VALUE IF VALID
-                      1103  ;               'C' SET IF HEX
-                      1104  ;               'Z' SET IF CR
-                      1105  ;       USES:   A,C
-                      1106  
-18A3 8D3C             1107  IHD     BSR     INCH
-18A5 8120             1108          CMPA    #SPACE
-18A7 27FA             1109          BEQ     IHD             ; IGNORE SPACES
-                      1110  
-                      1111  ;;      ASH - ASCII TO HEX TRANSLATOR
-                      1112  ;
-                      1113  ;       ENTRY:  (A) = ASCII
-                      1114  ;       EXIT, USES: SEE "IHD"
-                      1115  
-18A9 8030             1116  ASH     SUBA  #'0'
+187C 260B             1055          BNE     OUTC2
+187E 36               1056          PSHA
+187F 4F               1057          CLRA
+1880 8DE3             1058          BSR     OUTCH           ; OUTPUT FILL CHARACTER
+1882 8DE1             1059          BSR     OUTCH
+1884 8DDF             1060          BSR     OUTCH
+1886 8DDD             1061          BSR     OUTCH
+1888 32               1062          PULA
+1889 39               1063  OUTC2   RTS
+                      1064  
+                      1065  ;;      BRD - BAUD RATE DETERMINATION
+                      1066  ;
+                      1067  ;       ENTRY:  NONE
+                      1068  ;       EXIT:   (B) = BAUD RATE DIVISOR
+                      1069  ;                      (COMPENSATED FOR 5*13 EXTRA
+                      1070  ;                        EXECUTION TIME!!)
+                      1071  ;       USES:   B,C
+                      1072  
+188A 36               1073  BRD     PSHA
+188B C601             1074          LDAB    #1              ; ASSUME 110 BAUD
+188D B61000           1075          LDAA    TERM            ;  BAUD SWITCH DATA
+1890 43               1076          COMA
+1891 840E             1077          ANDA    #%00001110      ; MASK TO SWITCHES
+1893 44               1078          LSRA
+1894 2706             1079          BEQ     BRD2            ; IS 110
+1896 56               1080  BRD1    RORB
+1897 4A               1081          DECA
+1898 26FC             1082          BNE     BRD1
+189A C005             1083          SUBB    #5              ; EXECUTION COMPENSATION
+189C 32               1084  BRD2    PULA
+189D 39               1085          RTS
+                      1086  
+                      1087  ;;      WOB - WAIT AND OUTPUT BIT
+                      1088  ;
+                      1089  ;       ENTRY:  (B) = DELAY COUNT
+                      1090  ;               'C' = BIT
+                      1091  ;       EXIT:   (B), 'C' PRESERVED
+                      1092  ;       USES:   C
+                      1093  
+189E 37               1094  WOB     PSHB
+189F 8D72             1095          BSR     DLB             ; DELAY ONE BIT
+18A1 2068             1096          BRA     WIB1
+                      1097  
+                      1098  ;;      IHD - INPUT HEX DIGIT FROM TERMINAL
+                      1099  ;
+                      1100  ;       ENTRY:  NONE
+                      1101  ;       EXIT:   (A) = HEX VALUE IF VALID
+                      1102  ;               'C' SET IF HEX
+                      1103  ;               'Z' SET IF CR
+                      1104  ;       USES:   A,C
+                      1105  
+18A3 8D3C             1106  IHD     BSR     INCH
+18A5 8120             1107          CMPA    #SPACE
+18A7 27FA             1108          BEQ     IHD             ; IGNORE SPACES
+                      1109  
+                      1110  ;;      ASH - ASCII TO HEX TRANSLATOR
+                      1111  ;
+                      1112  ;       ENTRY:  (A) = ASCII
+                      1113  ;       EXIT, USES: SEE "IHD"
+                      1114  
+18A9 8030             1115  ASH     SUBA  #'0'
+18AB 250C             1116          BCS   ASH1              ; NOT HEX
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 19
 
-18AB 250C             1117          BCS   ASH1              ; NOT HEX
-18AD 810A             1118          CMPA  #10
-18AF 2510             1119          BCS   ASH3
-18B1 8011             1120          SUBA  #'A'-'0'
-18B3 8106             1121          CMPA  #6
-18B5 2508             1122          BCS   ASH2              ; IS HEX
-18B7 8B11             1123          ADDA  #'A'-'0'          ; DISPLACE BACK
-18B9 8B30             1124  ASH1    ADDA  #'0'
-18BB 810D             1125          CMPA  #CR
-18BD 0C               1126          CLC
-18BE 39               1127          RTS
-                      1128  
-18BF 80F6             1129  ASH2    SUBA    #$F6            ; -10
-18C1 39               1130  ASH3    RTS
-                      1131  
-                      1132  ;;      IHB - INPUT HEX BYTE
-                      1133  ;
-                      1134  ;       ENTRY:  (B) = CASSETTE/TERMINAL FLAG
-                      1135  ;               (X) = ADDRESS
-                      1136  ;               (A) = CHECKSUM
-                      1137  ;       EXIT:   A, X UPDATED
-                      1138  ;               (B) PRESERVED
-                      1139  
-18C2 36               1140  IHB     PSHA                    ; SAVE CHECKSUM
-18C3 8D19             1141          BSR     ICT             ; INPUT CASSETTE/TERMINAL
-18C5 847F             1142          ANDA    #$7F
-18C7 8DE0             1143          BSR     ASH             ; ASCII - HEX
-18C9 48               1144          ASLA
-18CA 48               1145          ASLA
-18CB 48               1146          ASLA
-18CC 48               1147          ASLA
-18CD 97EC             1148          STAA    T0
-18CF 8D0D             1149          BSR     ICT             ; INPUT CASSETTE/TERMINAL
-18D1 847F             1150          ANDA    #$7F
-18D3 8DD4             1151          BSR     ASH             ; ASCII - HEX
-18D5 9BEC             1152          ADDA    T0
-18D7 A700             1153          STAA    0,X             ; PLACE IN MEMORY
-18D9 32               1154          PULA
-18DA AB00             1155          ADDA    0,X
-18DC 08               1156          INX
-18DD 39               1157  IHB2    RTS
-                      1158  
-                      1159  ;;      ICT - INPUT FROM CASSETTE OR TERMINAL
-                      1160  ;
-                      1161  ;       ENTRY:  (B) = CASSETTE/TERMINAL FLAG
-                      1162  ;       EXIT:   (A) = CHARACTER
-                      1163  ;       USES:   A,C
-                      1164  
-18DE 5D               1165  ICT     TSTB
-18DF 2E54             1166          BGT     ICC             ; IS CASSETTE
-                      1167  
-                      1168  ;;      INCH - INPUT TERMINAL CHARACTER
-                      1169  ;
-                      1170  ;       ENTRY:  NONE
-                      1171  ;       EXIT:   (A) = CHARACTER
-                      1172  ;       USES:   A,C
-                      1173  
-18E1 37               1174  INCH    PSHB
-18E2 8DA6             1175          BSR     BRD             ; BAUD RATE DETERMINE
-18E4 17               1176          TBA
-                      1177  
-                      1178  ; Official ROM has this code?
+18AD 810A             1117          CMPA  #10
+18AF 2510             1118          BCS   ASH3
+18B1 8011             1119          SUBA  #'A'-'0'
+18B3 8106             1120          CMPA  #6
+18B5 2508             1121          BCS   ASH2              ; IS HEX
+18B7 8B11             1122          ADDA  #'A'-'0'          ; DISPLACE BACK
+18B9 8B30             1123  ASH1    ADDA  #'0'
+18BB 810D             1124          CMPA  #CR
+18BD 0C               1125          CLC
+18BE 39               1126          RTS
+                      1127  
+18BF 80F6             1128  ASH2    SUBA    #$F6            ; -10
+18C1 39               1129  ASH3    RTS
+                      1130  
+                      1131  ;;      IHB - INPUT HEX BYTE
+                      1132  ;
+                      1133  ;       ENTRY:  (B) = CASSETTE/TERMINAL FLAG
+                      1134  ;               (X) = ADDRESS
+                      1135  ;               (A) = CHECKSUM
+                      1136  ;       EXIT:   A, X UPDATED
+                      1137  ;               (B) PRESERVED
+                      1138  
+18C2 36               1139  IHB     PSHA                    ; SAVE CHECKSUM
+18C3 8D19             1140          BSR     ICT             ; INPUT CASSETTE/TERMINAL
+18C5 847F             1141          ANDA    #$7F
+18C7 8DE0             1142          BSR     ASH             ; ASCII - HEX
+18C9 48               1143          ASLA
+18CA 48               1144          ASLA
+18CB 48               1145          ASLA
+18CC 48               1146          ASLA
+18CD 97EC             1147          STAA    T0
+18CF 8D0D             1148          BSR     ICT             ; INPUT CASSETTE/TERMINAL
+18D1 847F             1149          ANDA    #$7F
+18D3 8DD4             1150          BSR     ASH             ; ASCII - HEX
+18D5 9BEC             1151          ADDA    T0
+18D7 A700             1152          STAA    0,X             ; PLACE IN MEMORY
+18D9 32               1153          PULA
+18DA AB00             1154          ADDA    0,X
+18DC 08               1155          INX
+18DD 39               1156  IHB2    RTS
+                      1157  
+                      1158  ;;      ICT - INPUT FROM CASSETTE OR TERMINAL
+                      1159  ;
+                      1160  ;       ENTRY:  (B) = CASSETTE/TERMINAL FLAG
+                      1161  ;       EXIT:   (A) = CHARACTER
+                      1162  ;       USES:   A,C
+                      1163  
+18DE 5D               1164  ICT     TSTB
+18DF 2E54             1165          BGT     ICC             ; IS CASSETTE
+                      1166  
+                      1167  ;;      INCH - INPUT TERMINAL CHARACTER
+                      1168  ;
+                      1169  ;       ENTRY:  NONE
+                      1170  ;       EXIT:   (A) = CHARACTER
+                      1171  ;       USES:   A,C
+                      1172  
+18E1 37               1173  INCH    PSHB
+18E2 8DA6             1174          BSR     BRD             ; BAUD RATE DETERMINE
+18E4 17               1175          TBA
+                      1176  
+                      1177  ; Official ROM has this code?
+18E5 7E1B50           1178  JMP     PATCH
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 20
 
-18E5 7E1B50           1179  JMP     PATCH
-                      1180  
-                      1181  ; Source code in manual has three lines below?
-                      1182  ;INC1    TAB
-                      1183  ;        LSRB
-                      1184  ;        INCB
-                      1185  
-18E8 7D1000           1186  INC2    TST     TERM
-18EB 2BFB             1187          BMI     INC2            ; WAIT FOR SPACING
-18ED 8D15             1188          BSR     WIB             ; WAIT, INPUT START
-18EF 25F7             1189          BCS     INC2            ; WAS NOISE
-18F1 16               1190          TAB
-18F2 8680             1191          LDAA    #$80
-18F4 8D0E             1192  INC3    BSR     WIB             ; WAIT; INPUT BIT
-18F6 46               1193          RORA
-18F7 24FB             1194          BCC     INC3
-18F9 8D09             1195          BSR     WIB             ; GET STOP
-18FB 2503             1196          BCS     INC4            ; NO FRAME ERROR
-18FD 7C1000           1197          INC     TERM            ;   SEND STOP BIT
-1900 847F             1198  INC4    ANDA    #$7F            ; MASK TO SEVEN BITS
-1902 33               1199          PULB
-1903 39               1200          RTS
-                      1201  
-                      1202  ;;      WIB - WAIT AND INPUT BIT
-                      1203  ;
-                      1204  ;       ENTRY:  (B) = DELAY COUNT
-                      1205  ;       EXIT:   'C' = BIT
-                      1206  ;       USES:   C
-                      1207  
-1904 37               1208  WIB     PSHB
-1905 8D0C             1209          BSR     DLB             ; WAIT ONE BIT TIME
-1907 CB80             1210          ADDB    #$80
-1909 C080             1211          SUBB    #$80
-190B C900             1212  WIB1    ADCB    #0              ; COPY BIT INTO LSB
-190D F71000           1213          STAB    TERM
-1910 56               1214          RORB                    ; RESTORE SMASHED 'C'
-1911 33               1215          PULB
-1912 39               1216          RTS
-                      1217  
-                      1218  ;       DB - DELAY ONE BIT AND RETURN (TERM) IN B
-                      1219  ;
-                      1220  ;       ENTRY:  (B) = DELAY CONSTANT
-                      1221  ;       EXIT:   (B) = (TERM) .AND. 11111110 B
-                      1222  ;       USES:   C EXCEPT 'C'
-                      1223  
-1913 C5FE             1224  DLB     BITB    #$FE
-1915 2611             1225          BNE     DLB4            ; NOT 110 BAUD
-1917 5A               1226          DECB
-1918 2702             1227          BEQ     DLB1            ; 110 FULL BIT TIME
-191A C638             1228          LDAB    #56
-191C C831             1229  DLB1    EORB    #49
-191E 36               1230          PSHA
-191F 8612             1231  DLB2    LDAA    #18
-1921 4A               1232  DLB3    DECA
-1922 26FD             1233          BNE     DLB3
-1924 5A               1234          DECB
-1925 26F8             1235          BNE     DLB2
-1927 32               1236          PULA
-1928 BC1913           1237  DLB4    CPX     DLB             ; 5 CYCLE NUTHIN'
-192B 01               1238          NOP
-192C 5A               1239          DECB
-192D 26F9             1240          BNE     DLB4
+                      1179  
+                      1180  ; Source code in manual has three lines below?
+                      1181  ;INC1    TAB
+                      1182  ;        LSRB
+                      1183  ;        INCB
+                      1184  
+18E8 7D1000           1185  INC2    TST     TERM
+18EB 2BFB             1186          BMI     INC2            ; WAIT FOR SPACING
+18ED 8D15             1187          BSR     WIB             ; WAIT, INPUT START
+18EF 25F7             1188          BCS     INC2            ; WAS NOISE
+18F1 16               1189          TAB
+18F2 8680             1190          LDAA    #$80
+18F4 8D0E             1191  INC3    BSR     WIB             ; WAIT; INPUT BIT
+18F6 46               1192          RORA
+18F7 24FB             1193          BCC     INC3
+18F9 8D09             1194          BSR     WIB             ; GET STOP
+18FB 2503             1195          BCS     INC4            ; NO FRAME ERROR
+18FD 7C1000           1196          INC     TERM            ;   SEND STOP BIT
+1900 847F             1197  INC4    ANDA    #$7F            ; MASK TO SEVEN BITS
+1902 33               1198          PULB
+1903 39               1199          RTS
+                      1200  
+                      1201  ;;      WIB - WAIT AND INPUT BIT
+                      1202  ;
+                      1203  ;       ENTRY:  (B) = DELAY COUNT
+                      1204  ;       EXIT:   'C' = BIT
+                      1205  ;       USES:   C
+                      1206  
+1904 37               1207  WIB     PSHB
+1905 8D0C             1208          BSR     DLB             ; WAIT ONE BIT TIME
+1907 CB80             1209          ADDB    #$80
+1909 C080             1210          SUBB    #$80
+190B C900             1211  WIB1    ADCB    #0              ; COPY BIT INTO LSB
+190D F71000           1212          STAB    TERM
+1910 56               1213          RORB                    ; RESTORE SMASHED 'C'
+1911 33               1214          PULB
+1912 39               1215          RTS
+                      1216  
+                      1217  ;       DB - DELAY ONE BIT AND RETURN (TERM) IN B
+                      1218  ;
+                      1219  ;       ENTRY:  (B) = DELAY CONSTANT
+                      1220  ;       EXIT:   (B) = (TERM) .AND. 11111110 B
+                      1221  ;       USES:   C EXCEPT 'C'
+                      1222  
+1913 C5FE             1223  DLB     BITB    #$FE
+1915 2611             1224          BNE     DLB4            ; NOT 110 BAUD
+1917 5A               1225          DECB
+1918 2702             1226          BEQ     DLB1            ; 110 FULL BIT TIME
+191A C638             1227          LDAB    #56
+191C C831             1228  DLB1    EORB    #49
+191E 36               1229          PSHA
+191F 8612             1230  DLB2    LDAA    #18
+1921 4A               1231  DLB3    DECA
+1922 26FD             1232          BNE     DLB3
+1924 5A               1233          DECB
+1925 26F8             1234          BNE     DLB2
+1927 32               1235          PULA
+1928 BC1913           1236  DLB4    CPX     DLB             ; 5 CYCLE NUTHIN'
+192B 01               1237          NOP
+192C 5A               1238          DECB
+192D 26F9             1239          BNE     DLB4
+192F F61000           1240          LDAB    TERM
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 21
 
-192F F61000           1241          LDAB    TERM
-1932 C4FE             1242          ANDB    #$FE
-1934 39               1243          RTS
-                      1244  
-                      1245  ;;      ICC - INPUT CASSETTE CHARACTER
-                      1246  ;
-                      1247  ;       GETS BITS FROM CASSETTE IN SERIAL FASHION
-                      1248  ;       EACH BIT CONSISTS OF SEVERAL 'CELLS'
-                      1249  ;       EACH CELL IS EITHER 1/2 CYCLE OF 1200HZ
-                      1250  ;                        OE 1/2 CYCLE OF 2400HZ
-                      1251  ;       AT 8 CELLS/BIT THE ROUTINE IS 'KCS'
-                      1252  ;         COMPATIBLE
-                      1253  ;
-                      1254  ;       ENTRY:  (B) = CELLS PER BIT
-                      1255  ;       EXIT:   (A) = CHARACTER
-                      1256  ;               'C' = STOP BIT
-                      1257  ;       USES:   A,C
-                      1258  
-1935 37               1259  ICC     PSHB
-1936 54               1260          LSRB
-1937 8D1E             1261  ICC1    BSR     TNC             ; TAKE NEXT CELL
-1939 25FC             1262          BCS     ICC1            ; NOT START BIT
-193B 5A               1263          DECB
-193C 2AF9             1264          BPL     ICC1            ; NOT ENOUGH CELLS
-193E 33               1265          PULB
-193F 867F             1266          LDAA    #%01111111      ; PRESET ASSEMBLY
-1941 37               1267  ICC2    PSHB
-1942 36               1268          PSHA
-1943 8D12             1269  ICC3    BSR     TNC             ; TAKE NEXT CELL
-1945 5A               1270          DECB
-1946 26FB             1271          BNE     ICC3
-1948 32               1272          PULA
-1949 33               1273          PULB
-194A 46               1274          RORA
-194B 25F4             1275          BCS     ICC2
-194D 37               1276          PSHB
-194E 36               1277          PSHA
-194F 8D06             1278  ICC4    BSR     TNC             ; GET STOP BIT
-1951 5A               1279          DECB
-1952 26FB             1280          BNE     ICC4
-1954 32               1281          PULA
-1955 33               1282          PULB
-1956 39               1283          RTS
-                      1284  
-                      1285  ;;      TNC - TAKE NEXT CELL
-                      1286  ;
-                      1287  ;       WAIT FOR 1/2 CYCLE OF 1200 HZ OR
-                      1288  ;                  1 CYCLE OF 2400 HZ
-                      1289  ;       STRUCTURE ASSURES EXIT AT END OF
-                      1290  ;        ZERO CELL
-                      1291  ;
-                      1292  ;       ENTRY:  NONE
-                      1293  ;       EXIT:   'C' = NEW CELL VALUE
-                      1294  ;               (A) = NEW CASSETTE DATA
-                      1295  ;       USES:   A,C
-                      1296  
-1957 B61002           1297  TNC     LDAA    TAPE
-195A 8D02             1298          BSR     TNC1
-195C 240E             1299          BCC     TNC3            ; WAS ZERO
-195E 37               1300  TNC1    PSHB
-195F 5F               1301          CLRB
-1960 5C               1302  TNC2    INCB
+1932 C4FE             1241          ANDB    #$FE
+1934 39               1242          RTS
+                      1243  
+                      1244  ;;      ICC - INPUT CASSETTE CHARACTER
+                      1245  ;
+                      1246  ;       GETS BITS FROM CASSETTE IN SERIAL FASHION
+                      1247  ;       EACH BIT CONSISTS OF SEVERAL 'CELLS'
+                      1248  ;       EACH CELL IS EITHER 1/2 CYCLE OF 1200HZ
+                      1249  ;                        OE 1/2 CYCLE OF 2400HZ
+                      1250  ;       AT 8 CELLS/BIT THE ROUTINE IS 'KCS'
+                      1251  ;         COMPATIBLE
+                      1252  ;
+                      1253  ;       ENTRY:  (B) = CELLS PER BIT
+                      1254  ;       EXIT:   (A) = CHARACTER
+                      1255  ;               'C' = STOP BIT
+                      1256  ;       USES:   A,C
+                      1257  
+1935 37               1258  ICC     PSHB
+1936 54               1259          LSRB
+1937 8D1E             1260  ICC1    BSR     TNC             ; TAKE NEXT CELL
+1939 25FC             1261          BCS     ICC1            ; NOT START BIT
+193B 5A               1262          DECB
+193C 2AF9             1263          BPL     ICC1            ; NOT ENOUGH CELLS
+193E 33               1264          PULB
+193F 867F             1265          LDAA    #%01111111      ; PRESET ASSEMBLY
+1941 37               1266  ICC2    PSHB
+1942 36               1267          PSHA
+1943 8D12             1268  ICC3    BSR     TNC             ; TAKE NEXT CELL
+1945 5A               1269          DECB
+1946 26FB             1270          BNE     ICC3
+1948 32               1271          PULA
+1949 33               1272          PULB
+194A 46               1273          RORA
+194B 25F4             1274          BCS     ICC2
+194D 37               1275          PSHB
+194E 36               1276          PSHA
+194F 8D06             1277  ICC4    BSR     TNC             ; GET STOP BIT
+1951 5A               1278          DECB
+1952 26FB             1279          BNE     ICC4
+1954 32               1280          PULA
+1955 33               1281          PULB
+1956 39               1282          RTS
+                      1283  
+                      1284  ;;      TNC - TAKE NEXT CELL
+                      1285  ;
+                      1286  ;       WAIT FOR 1/2 CYCLE OF 1200 HZ OR
+                      1287  ;                  1 CYCLE OF 2400 HZ
+                      1288  ;       STRUCTURE ASSURES EXIT AT END OF
+                      1289  ;        ZERO CELL
+                      1290  ;
+                      1291  ;       ENTRY:  NONE
+                      1292  ;       EXIT:   'C' = NEW CELL VALUE
+                      1293  ;               (A) = NEW CASSETTE DATA
+                      1294  ;       USES:   A,C
+                      1295  
+1957 B61002           1296  TNC     LDAA    TAPE
+195A 8D02             1297          BSR     TNC1
+195C 240E             1298          BCC     TNC3            ; WAS ZERO
+195E 37               1299  TNC1    PSHB
+195F 5F               1300          CLRB
+1960 5C               1301  TNC2    INCB
+1961 B11002           1302          CMPA    TAPE
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 22
 
-1961 B11002           1303          CMPA    TAPE
-1964 27FA             1304          BEQ     TNC2           ; NO TRANSITION
-1966 B61002           1305          LDAA    TAPE
-1969 C11D             1306          CMPB    #29
-196B 33               1307          PULB
-196C 39               1308  TNC3    RTS
-                      1309  
-                      1310  ;;      MOVE - REENTRANT MOVE MEMORY
+1964 27FA             1303          BEQ     TNC2           ; NO TRANSITION
+1966 B61002           1304          LDAA    TAPE
+1969 C11D             1305          CMPB    #29
+196B 33               1306          PULB
+196C 39               1307  TNC3    RTS
+                      1308  
+                      1309  ;;      MOVE - REENTRANT MOVE MEMORY
+                      1310  ;
                       1311  ;
-                      1312  ;
-                      1313  ;       ENTRY:  STACK>  RETURN (0,S)
-                      1314  ;                       COUNT  (2,S)       
-                      1315  ;                       TO     (4,S)
-                      1316  ;                       FROM   (6,S)
-                      1317  ;       EXIT:   STACK CLEANED
-                      1318  ;       USES:   ALL
-                      1319  
-196D 30               1320  MOVE    TSX
-196E EE02             1321          LDX     2,X             ; CHECK COUNT <> 0
-1970 2774             1322          BEQ     MOV4            ; NO MOVE
-1972 30               1323  MOVEA   TSX                     ; ** ALTERNATE ENTRY **
-1973 A605             1324          LDAA    5,X             ; (BA) = TO
-1975 E604             1325          LDAB    4,X
-1977 A007             1326          SUBA    7,X             ; (BA) = TO - FROM
-1979 E206             1327          SBCB    6,X
-197B 2524             1328          BCS     MOV2            ; IS MOVE DOWN
-197D 2603             1329          BNE     MOV1
-197F 4D               1330          TSTA
-1980 2764             1331          BEQ     MOV4            ; DISPLACEMENT = 0
-                      1332  
-                      1333  ;       HAVE MOVE UP - MUST START AT TOP
-                      1334  ;          TO AVOID CONFLICT
-                      1335  
-1982 86FF             1336  MOV1    LDAA    #$FF            ; (BA) = -1
-1984 16               1337          TAB
-1985 36               1338          PSHA                    ; DELTA = -1
-1986 37               1339          PSHB
-1987 AB03             1340          ADDA    3,X             ; (BA) = COUNT - 1
-1989 E902             1341          ADCB    2,X
-198B 36               1342          PSHA
-198C 37               1343          PSHB
-198D AB05             1344          ADDA    5,X             ; TO = TO + COUNT - 1
-198F E904             1345          ADCb    4,X
-1991 A705             1346          STAA    5,X
-1993 E704             1347          STAB    4,X
-1995 33               1348          PULB
-1996 32               1349          PULA
-1997 AB07             1350          ADDA    7,X             ; FROM = FROM
-1999 E906             1351          ADCB    6,X             ;   + COUNT = 1
-199B A707             1352          STAA    7,X
-199D E706             1353          STAB    6,X
-199F 200E             1354          BRA     MOV3
-                      1355  
-                      1356  ;       HAVE MOVE DOWN - MAY START AT TOP
-                      1357  
-19A1 8601             1358  MOV2    LDAA    #1              ; DELTA = 1
-19A3 5F               1359          CLRB
-19A4 36               1360          PSHA
-19A5 37               1361          PSHB
-19A6 4F               1362          CLRA
-19A7 A003             1363          SUBA    3,X             ; (BA) = - COUNT
-19A9 E202             1364          SBCB    2,X
+                      1312  ;       ENTRY:  STACK>  RETURN (0,S)
+                      1313  ;                       COUNT  (2,S)       
+                      1314  ;                       TO     (4,S)
+                      1315  ;                       FROM   (6,S)
+                      1316  ;       EXIT:   STACK CLEANED
+                      1317  ;       USES:   ALL
+                      1318  
+196D 30               1319  MOVE    TSX
+196E EE02             1320          LDX     2,X             ; CHECK COUNT <> 0
+1970 2774             1321          BEQ     MOV4            ; NO MOVE
+1972 30               1322  MOVEA   TSX                     ; ** ALTERNATE ENTRY **
+1973 A605             1323          LDAA    5,X             ; (BA) = TO
+1975 E604             1324          LDAB    4,X
+1977 A007             1325          SUBA    7,X             ; (BA) = TO - FROM
+1979 E206             1326          SBCB    6,X
+197B 2524             1327          BCS     MOV2            ; IS MOVE DOWN
+197D 2603             1328          BNE     MOV1
+197F 4D               1329          TSTA
+1980 2764             1330          BEQ     MOV4            ; DISPLACEMENT = 0
+                      1331  
+                      1332  ;       HAVE MOVE UP - MUST START AT TOP
+                      1333  ;          TO AVOID CONFLICT
+                      1334  
+1982 86FF             1335  MOV1    LDAA    #$FF            ; (BA) = -1
+1984 16               1336          TAB
+1985 36               1337          PSHA                    ; DELTA = -1
+1986 37               1338          PSHB
+1987 AB03             1339          ADDA    3,X             ; (BA) = COUNT - 1
+1989 E902             1340          ADCB    2,X
+198B 36               1341          PSHA
+198C 37               1342          PSHB
+198D AB05             1343          ADDA    5,X             ; TO = TO + COUNT - 1
+198F E904             1344          ADCb    4,X
+1991 A705             1345          STAA    5,X
+1993 E704             1346          STAB    4,X
+1995 33               1347          PULB
+1996 32               1348          PULA
+1997 AB07             1349          ADDA    7,X             ; FROM = FROM
+1999 E906             1350          ADCB    6,X             ;   + COUNT = 1
+199B A707             1351          STAA    7,X
+199D E706             1352          STAB    6,X
+199F 200E             1353          BRA     MOV3
+                      1354  
+                      1355  ;       HAVE MOVE DOWN - MAY START AT TOP
+                      1356  
+19A1 8601             1357  MOV2    LDAA    #1              ; DELTA = 1
+19A3 5F               1358          CLRB
+19A4 36               1359          PSHA
+19A5 37               1360          PSHB
+19A6 4F               1361          CLRA
+19A7 A003             1362          SUBA    3,X             ; (BA) = - COUNT
+19A9 E202             1363          SBCB    2,X
+19AB A703             1364          STAA    3,X
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 23
 
-19AB A703             1365          STAA    3,X
-19AD E702             1366          STAB    2,X             ; COUNT = - COUNT
-                      1367  
-                      1368  ;       ACTUAL MOVE LOOP FOLLOWS
-                      1369  
-19AF 30               1370  MOV3    TSX
-19B0 EE08             1371          LDX     8,X
-19B2 A600             1372          LDAA    0,X
-19B4 30               1373          TSX
-19B5 EE06             1374          LDX     6,X
-19B7 A700             1375          STAA    0,X
-19B9 30               1376          TSX
-19BA A601             1377          LDAA    1,X
-19BC E600             1378          LDAB    0,X
-19BE AB09             1379          ADDA    9,X
-19C0 E908             1380          ADCB    8,X
-19C2 A709             1381          STAA    9,X
-19C4 E708             1382          STAB    8,X
-19C6 A601             1383          LDAA    1,X             ; BUMP *TO*
-19C8 E600             1384          LDAB    0,X
-19CA AB07             1385          ADDA    7,X
-19CC E906             1386          ADCB    6,X
-19CE A707             1387          STAA    7,X
-19D0 E706             1388          STAB    6,X
-19D2 A601             1389          LDAA    1,X             ; BUMP  *COUNT*
-19D4 E600             1390          LDAB    0,X
-19D6 AB05             1391          ADDA    5,X
-19D8 E904             1392          ADCB    4,X
-19DA A705             1393          STAA    5,X
-19DC E704             1394          STAB    4,X
-19DE 26CF             1395          BNE     MOV3            ; COUNT <> 0
-19E0 4D               1396          TSTA
-19E1 26CC             1397          BNE     MOV3
-19E3 31               1398          INS
-19E4 31               1399          INS                     ; DISCARD DELTA
-19E5 30               1400          TSX
-                      1401  
-19E6 EE00             1402  MOV4    LDX     0,X
-19E8 31               1403          INS
-19E9 31               1404          INS
-19EA 31               1405          INS
-19EB 31               1406          INS
-19EC 31               1407          INS
-19ED 31               1408          INS
-19EE 31               1409          INS
-19EF 31               1410          INS
-19F0 6E00             1411          JMP     0,X
-                      1412  
-                      1413  ;;      COMMAND TABLE
-                      1414  
-19F2 54               1415  CMDTAB  DB     'T'             ; TAPE RECORD DATA
-19F3 1707             1416          DW      RCRD
-                      1417  
-19F5 53               1418          DB      'S'             ; SET USER CODE
-19F6 1550             1419          DW      STEP
-                      1420  
-19F8 52               1421          DB      'R'             ; DISPLAY USER REGISTERS
-19F9 1553             1422          DW      REGS
-                      1423  
-19FB 50               1424          DB      'P'             ; PUNCH TO PAPER TAPE
-19FC 170A             1425          DW      PTAP
-                      1426  
+19AD E702             1365          STAB    2,X             ; COUNT = - COUNT
+                      1366  
+                      1367  ;       ACTUAL MOVE LOOP FOLLOWS
+                      1368  
+19AF 30               1369  MOV3    TSX
+19B0 EE08             1370          LDX     8,X
+19B2 A600             1371          LDAA    0,X
+19B4 30               1372          TSX
+19B5 EE06             1373          LDX     6,X
+19B7 A700             1374          STAA    0,X
+19B9 30               1375          TSX
+19BA A601             1376          LDAA    1,X
+19BC E600             1377          LDAB    0,X
+19BE AB09             1378          ADDA    9,X
+19C0 E908             1379          ADCB    8,X
+19C2 A709             1380          STAA    9,X
+19C4 E708             1381          STAB    8,X
+19C6 A601             1382          LDAA    1,X             ; BUMP *TO*
+19C8 E600             1383          LDAB    0,X
+19CA AB07             1384          ADDA    7,X
+19CC E906             1385          ADCB    6,X
+19CE A707             1386          STAA    7,X
+19D0 E706             1387          STAB    6,X
+19D2 A601             1388          LDAA    1,X             ; BUMP  *COUNT*
+19D4 E600             1389          LDAB    0,X
+19D6 AB05             1390          ADDA    5,X
+19D8 E904             1391          ADCB    4,X
+19DA A705             1392          STAA    5,X
+19DC E704             1393          STAB    4,X
+19DE 26CF             1394          BNE     MOV3            ; COUNT <> 0
+19E0 4D               1395          TSTA
+19E1 26CC             1396          BNE     MOV3
+19E3 31               1397          INS
+19E4 31               1398          INS                     ; DISCARD DELTA
+19E5 30               1399          TSX
+                      1400  
+19E6 EE00             1401  MOV4    LDX     0,X
+19E8 31               1402          INS
+19E9 31               1403          INS
+19EA 31               1404          INS
+19EB 31               1405          INS
+19EC 31               1406          INS
+19ED 31               1407          INS
+19EE 31               1408          INS
+19EF 31               1409          INS
+19F0 6E00             1410          JMP     0,X
+                      1411  
+                      1412  ;;      COMMAND TABLE
+                      1413  
+19F2 54               1414  CMDTAB  DB     'T'             ; TAPE RECORD DATA
+19F3 1707             1415          DW      RCRD
+                      1416  
+19F5 53               1417          DB      'S'             ; SET USER CODE
+19F6 1550             1418          DW      STEP
+                      1419  
+19F8 52               1420          DB      'R'             ; DISPLAY USER REGISTERS
+19F9 1553             1421          DW      REGS
+                      1422  
+19FB 50               1423          DB      'P'             ; PUNCH TO PAPER TAPE
+19FC 170A             1424          DW      PTAP
+                      1425  
+19FE 4D               1426          DB      'M'             ; DISPLAY MEMORY (BYTE)
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 24
 
-19FE 4D               1427          DB      'M'             ; DISPLAY MEMORY (BYTE)
-19FF 15AC             1428          DW      MEM
-                      1429  
-1A01 4C               1430          DB      'L'             ; LOAD FROM TAPE
-1A02 16A5             1431          DW      LOAD
-                      1432  
-1A04 49               1433          DB      'I'             ; DISPLAY MEMORY (INST)
-1A05 15AD             1434          DW      INST
-                      1435  
-1A07 48               1436          DB      'H'             ; HALTPOINT INSERT
-1A08 14F3             1437          DW      BKPT
-                      1438  
-1A0A 47               1439          DB      'G'             ; GO TO USER CODE
-1A0B 148F             1440          DW      GO
-                      1441  
-1A0D 45               1442          DB      'E'             ; MULTIPLE STEP
-1A0E 1539             1443          DW      EXEC
-                      1444  
-1A10 44               1445          DB      'D'             ; DUMP MEMORY
-1A11 1709             1446          DW      DUMP
-                      1447  
-1A13 43               1448          DB      'C'             ; BREAKPOINT CLEAR
-1A14 1512             1449          DW      CLEAR
-                      1450  
-1A16 42               1451          DB      'B'             ; GO TO BASIC
-1A17 1C03             1452          DW      $1C03           ; WARM START ENTRY
-                      1453  
-1A19 18               1454          DB      'X'-$40         ; DISPLAY INDEX
-1A1A 158E             1455          DW      REGX
-                      1456  
-1A1C 14               1457          DB      'T'-$40         ; HI SPEED TAPE
-1A1D 16FA             1458          DW      CTLT
-                      1459  
-1A1F 13               1460          DB      'S'-$40         ; SLIVE MEMORY!!
-1A20 167B             1461          DW      COPY
-                      1462  
-1A22 10               1463          DB      'P'-$40         ; DISPLAY P.C.
-1A23 158C             1464          DW      REGP
-                      1465  
-1A25 08               1466          DB      'H'-$40         ; HALTPOINT LIST
-1A26 15FB             1467          DW      DISB
-                      1468  
-1A28 03               1469          DB      'C'-$40         ; DISPLAY CONDX
-1A29 1592             1470          DW      REGC
-                      1471  
-1A2B 02               1472          DB      'B'-$40         ; DISPLAY B ACC.
-1A2C 1591             1473          DW      REGB
-                      1474  
-1A2E 01               1475          DB      'A'-$40         ; DISPLAY A ACC.
-1A2F 1590             1476          DW      REGA
-                      1477  
-1A31 00               1478          DB      '@'-$40         ; EXIT TO OLD MONITOR
-1A32 FC00             1479          DW      $FC00
-                      1480  
-                      1481  ;;      MTST - MEMORY DIAGNOSTIC
-                      1482  ;
-                      1483  ;         DISPLAYS LWA IN 'ADDR' FIELD ON LEDS
-                      1484  ;                  CURRENT TEST PATTERN IN 'DATA'
-                      1485  ;       ENTRY:  NONE
-                      1486  ;       EXIT:   FAILED ADDRESS/PATTERN DISPLAYED
-                      1487  ;                PROCESSOR HALTED
-                      1488  ;       USES:   ALL,T0,T1,DIGADD
+19FF 15AC             1427          DW      MEM
+                      1428  
+1A01 4C               1429          DB      'L'             ; LOAD FROM TAPE
+1A02 16A5             1430          DW      LOAD
+                      1431  
+1A04 49               1432          DB      'I'             ; DISPLAY MEMORY (INST)
+1A05 15AD             1433          DW      INST
+                      1434  
+1A07 48               1435          DB      'H'             ; HALTPOINT INSERT
+1A08 14F3             1436          DW      BKPT
+                      1437  
+1A0A 47               1438          DB      'G'             ; GO TO USER CODE
+1A0B 148F             1439          DW      GO
+                      1440  
+1A0D 45               1441          DB      'E'             ; MULTIPLE STEP
+1A0E 1539             1442          DW      EXEC
+                      1443  
+1A10 44               1444          DB      'D'             ; DUMP MEMORY
+1A11 1709             1445          DW      DUMP
+                      1446  
+1A13 43               1447          DB      'C'             ; BREAKPOINT CLEAR
+1A14 1512             1448          DW      CLEAR
+                      1449  
+1A16 42               1450          DB      'B'             ; GO TO BASIC
+1A17 1C03             1451          DW      $1C03           ; WARM START ENTRY
+                      1452  
+1A19 18               1453          DB      'X'-$40         ; DISPLAY INDEX
+1A1A 158E             1454          DW      REGX
+                      1455  
+1A1C 14               1456          DB      'T'-$40         ; HI SPEED TAPE
+1A1D 16FA             1457          DW      CTLT
+                      1458  
+1A1F 13               1459          DB      'S'-$40         ; SLIVE MEMORY!!
+1A20 167B             1460          DW      COPY
+                      1461  
+1A22 10               1462          DB      'P'-$40         ; DISPLAY P.C.
+1A23 158C             1463          DW      REGP
+                      1464  
+1A25 08               1465          DB      'H'-$40         ; HALTPOINT LIST
+1A26 15FB             1466          DW      DISB
+                      1467  
+1A28 03               1468          DB      'C'-$40         ; DISPLAY CONDX
+1A29 1592             1469          DW      REGC
+                      1470  
+1A2B 02               1471          DB      'B'-$40         ; DISPLAY B ACC.
+1A2C 1591             1472          DW      REGB
+                      1473  
+1A2E 01               1474          DB      'A'-$40         ; DISPLAY A ACC.
+1A2F 1590             1475          DW      REGA
+                      1476  
+1A31 00               1477          DB      '@'-$40         ; EXIT TO OLD MONITOR
+1A32 FC00             1478          DW      $FC00
+                      1479  
+                      1480  ;;      MTST - MEMORY DIAGNOSTIC
+                      1481  ;
+                      1482  ;         DISPLAYS LWA IN 'ADDR' FIELD ON LEDS
+                      1483  ;                  CURRENT TEST PATTERN IN 'DATA'
+                      1484  ;       ENTRY:  NONE
+                      1485  ;       EXIT:   FAILED ADDRESS/PATTERN DISPLAYED
+                      1486  ;                PROCESSOR HALTED
+                      1487  ;       USES:   ALL,T0,T1,DIGADD
+                      1488  
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 25
 
-                      1489  
-1A34 0F               1490  MTST    SEI
-1A35 8D49             1491          BSR     FTOP            ; FIND TOP OF MEMORY
-1A37 35               1492          TXS                     ; STACK AT TOP
-1A38 31               1493          INS
-1A39 6F00             1494  MTS2    CLR     0,X
-1A3B 09               1495          DEX
-1A3C 26FB             1496          BNE     MTS2            ; CLEAR ALL MEMORY
-1A3E 6F00             1497          CLR     0,X
-1A40 9FEE             1498          STS     T1              ; HOPE THIS IS GOOD!!
-1A42 8E00EB           1499          LDS     #T0-1
-1A45 BDFCBC           1500          JSR     REDIS           ; RESET DISPLAYS
-1A48 CE00EE           1501          LDX     #T1
-1A4B C602             1502          LDAB    #2
-1A4D BDFD7B           1503          JSR     DISPLAY         ; OUTPUT LWA FOUND
-1A50 4F               1504          CLRA
-1A51 5A               1505          DECB
-1A52 BDFE20           1506  MTS3    JSR     OUTBYT          ; OUTPUT PATTERN
-1A55 36               1507          PSHA
-1A56 BDFD43           1508          JSR     BKSP            ; BACKSPACE DISPLAYS
-1A59 32               1509          PULA
-1A5A DEEE             1510          LDX     T1
-1A5C A100             1511  MTS4    CMPA    0,X
-1A5E 2613             1512          BNE     MTS6            ; FAILURE!
-1A60 6C00             1513          INC     0,X
-1A62 09               1514          DEX
-1A63 8C00F1           1515          CPX     #DIGADD+1       ; SKIP CONTAMINATED AREA
-1A66 2603             1516          BNE     MTS5
-1A68 CE00DF           1517          LDX     #T0-13
-1A6B 8CFFFF           1518  MTS5    CPX     #-1
-1A6E 26EC             1519          BNE     MTS4
-1A70 4C               1520          INCA
-1A71 20DF             1521          BRA     MTS3
-                      1522  
-1A73 DFEE             1523  MTS6    STX     T1
-1A75 BDFCBC           1524          JSR     REDIS           ; RESET DISPLAYS
-1A78 CE00EE           1525          LDX     #T1
-1A7B 5C               1526          INCB
-1A7C BDFD7B           1527          JSR     DISPLAY
-1A7F 3E               1528          WAI
-                      1529  
-                      1530  ;;      FTOP - FIND MEMORY TOP
-                      1531  ;
-                      1532  ;       SEARCHES DOWN FROM 1000H UNTIL FINDS
-                      1533  ;         GOOD MEMORY
-                      1534  ;
-                      1535  ;       ENTRY:  NONE
-                      1536  ;       EXIT:   (X) = LWA MEMORY
-                      1537  ;       USES:   X
-                      1538  
-1A80 36               1539  FTOP    PSHA
-1A81 CE1000           1540          LDX     #TERM           ; TOP OF MEMORY+1
-1A84 8655             1541          LDAA    #$55            ; TEST PATTERN
-1A86 09               1542  FTO1    DEX
-1A87 A700             1543          STAA    0,X
-1A89 A100             1544          CMPA    0,X
-1A8B 26F9             1545          BNE     FTO1
-1A8D 32               1546          PULA
-1A8E 39               1547          RTS
-                      1548  
-                      1549  ;;      CCD - CONSOLE CASSETTE DUMP
-                      1550  ;
+1A34 0F               1489  MTST    SEI
+1A35 8D49             1490          BSR     FTOP            ; FIND TOP OF MEMORY
+1A37 35               1491          TXS                     ; STACK AT TOP
+1A38 31               1492          INS
+1A39 6F00             1493  MTS2    CLR     0,X
+1A3B 09               1494          DEX
+1A3C 26FB             1495          BNE     MTS2            ; CLEAR ALL MEMORY
+1A3E 6F00             1496          CLR     0,X
+1A40 9FEE             1497          STS     T1              ; HOPE THIS IS GOOD!!
+1A42 8E00EB           1498          LDS     #T0-1
+1A45 BDFCBC           1499          JSR     REDIS           ; RESET DISPLAYS
+1A48 CE00EE           1500          LDX     #T1
+1A4B C602             1501          LDAB    #2
+1A4D BDFD7B           1502          JSR     DISPLAY         ; OUTPUT LWA FOUND
+1A50 4F               1503          CLRA
+1A51 5A               1504          DECB
+1A52 BDFE20           1505  MTS3    JSR     OUTBYT          ; OUTPUT PATTERN
+1A55 36               1506          PSHA
+1A56 BDFD43           1507          JSR     BKSP            ; BACKSPACE DISPLAYS
+1A59 32               1508          PULA
+1A5A DEEE             1509          LDX     T1
+1A5C A100             1510  MTS4    CMPA    0,X
+1A5E 2613             1511          BNE     MTS6            ; FAILURE!
+1A60 6C00             1512          INC     0,X
+1A62 09               1513          DEX
+1A63 8C00F1           1514          CPX     #DIGADD+1       ; SKIP CONTAMINATED AREA
+1A66 2603             1515          BNE     MTS5
+1A68 CE00DF           1516          LDX     #T0-13
+1A6B 8CFFFF           1517  MTS5    CPX     #-1
+1A6E 26EC             1518          BNE     MTS4
+1A70 4C               1519          INCA
+1A71 20DF             1520          BRA     MTS3
+                      1521  
+1A73 DFEE             1522  MTS6    STX     T1
+1A75 BDFCBC           1523          JSR     REDIS           ; RESET DISPLAYS
+1A78 CE00EE           1524          LDX     #T1
+1A7B 5C               1525          INCB
+1A7C BDFD7B           1526          JSR     DISPLAY
+1A7F 3E               1527          WAI
+                      1528  
+                      1529  ;;      FTOP - FIND MEMORY TOP
+                      1530  ;
+                      1531  ;       SEARCHES DOWN FROM 1000H UNTIL FINDS
+                      1532  ;         GOOD MEMORY
+                      1533  ;
+                      1534  ;       ENTRY:  NONE
+                      1535  ;       EXIT:   (X) = LWA MEMORY
+                      1536  ;       USES:   X
+                      1537  
+1A80 36               1538  FTOP    PSHA
+1A81 CE1000           1539          LDX     #TERM           ; TOP OF MEMORY+1
+1A84 8655             1540          LDAA    #$55            ; TEST PATTERN
+1A86 09               1541  FTO1    DEX
+1A87 A700             1542          STAA    0,X
+1A89 A100             1543          CMPA    0,X
+1A8B 26F9             1544          BNE     FTO1
+1A8D 32               1545          PULA
+1A8E 39               1546          RTS
+                      1547  
+                      1548  ;;      CCD - CONSOLE CASSETTE DUMP
+                      1549  ;
+                      1550  ;       ENTRY: NONE
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 26
 
-                      1551  ;       ENTRY: NONE
-                      1552  ;       EXIT:  TO LED MONITOR
-                      1553  ;       USES:  ALL,T0,T1,T2
-                      1554  
-1A8F C608             1555  CCD     LDAB   #8
-1A91 8D42             1556          BSR    IN.PIA           ; INITIALIZE PIA
-1A93 8E00EB           1557          LDS    #T0-1
-1A96 37               1558          PSHB
-1A97 BDFC86           1559          JSR     OUTSTA
-1A9A 4785             1560          DB      $47,$05+$80     ; 'FR'
-1A9C CE00EE           1561          LDX     #T1
-1A9F C602             1562          LDAB    #2
-1AA1 BDFCBC           1563          JSR     REDIS           ; RESET DISPLAYS
-1AA4 BDFD25           1564          JSR     PROMPT          ; PROMPT FWA
-1AA7 BDFC86           1565          JSR     OUTSTA
-1AAA 0EFD             1566          DB      $0E,$7d+$80     ; 'LA'
-1AAC BDFCBC           1567          JSR     REDIS           ; RESET DISPLAYS
-1AAF CE00F4           1568          LDX     #T2
-1AB2 BDFD25           1569          JSR     PROMPT          ; PROMPT LWA
-1AB5 33               1570          PULB
-1AB6 BD1729           1571          JSR     PUNCH
-1AB9 7EFC00           1572  CCD1    JMP     $FC00           ; EXIT TO MONITOR
-                      1573  
-                      1574  ;;      CCL - CONSOLE CASSETTE LOAD
-                      1575  ;
-                      1576  ;       ENTRY:  NONE
-                      1577  ;       EXIT:   TO CONSOLE MONITOR IF SUCESS
-                      1578  ;       USES:   ALL,T0,HIGHEST MEMORY
-                      1579  
-1ABC C608             1580  CCL     LDAB    #8
-1ABE 8D15             1581          BSR     IN.PIA          ; INITIALIZE PIA
-1AC0 8DBE             1582          BSR     FTOP            ; FIND MEMORY TOP
-1AC2 35               1583          TXS
-1AC3 31               1584          INS
-1AC4 BD16AD           1585          JSR     LOA0            ; LOAD MEMORY
-1AC7 24F0             1586          BCC     CCD1            ; NORMAL RETURN
-1AC9 BDFCBC           1587          JSR     REDIS           ;   PRINT ERROR MESSAGE
-1ACC BDFE52           1588          JSR     OUTSTR
-1ACF 4F05051D85       1589          DB      $4F,$05,$05,$1D,$05+$80
-1AD4 3E               1590          WAI
-                      1591  
-                      1592  ;       IN.PI - INITIALIZE PIA FOR LED MONITOR
-                      1593  ;
-                      1594  ;       INITIALIZE CASSETTE SIDE FOR LOAD OR DUMP
-                      1595  ;        AND SET (TERM) SO THAT A BREAK IS NOT
-                      1596  ;         SENSED.
-                      1597  ;
-                      1598  ;       ENTRY:  NONE
-                      1599  ;       EXIT:   NONE
-                      1600  ;       USES:   A,X
-                      1601  
-1AD5 CE1000           1602  IN.PIA  LDX     #TERM
-1AD8 6F01             1603          CLR     1,X
-1ADA 6F03             1604          CLR     3,X
-1ADC 8680             1605          LDAA    #%10000000
-1ADE A700             1606          STAA    0,X             ; INTO DDR
-1AE0 43               1607          COMA
-1AE1 A702             1608          STAA    2,X             ; INITIALIZE CASSETTE
-1AE3 8604             1609          LDAA    #4
-1AE5 A703             1610          STAA    3,X
-1AE7 39               1611          RTS
-                      1612  
+                      1551  ;       EXIT:  TO LED MONITOR
+                      1552  ;       USES:  ALL,T0,T1,T2
+                      1553  
+1A8F C608             1554  CCD     LDAB   #8
+1A91 8D42             1555          BSR    IN.PIA           ; INITIALIZE PIA
+1A93 8E00EB           1556          LDS    #T0-1
+1A96 37               1557          PSHB
+1A97 BDFC86           1558          JSR     OUTSTA
+1A9A 4785             1559          DB      $47,$05+$80     ; 'FR'
+1A9C CE00EE           1560          LDX     #T1
+1A9F C602             1561          LDAB    #2
+1AA1 BDFCBC           1562          JSR     REDIS           ; RESET DISPLAYS
+1AA4 BDFD25           1563          JSR     PROMPT          ; PROMPT FWA
+1AA7 BDFC86           1564          JSR     OUTSTA
+1AAA 0EFD             1565          DB      $0E,$7d+$80     ; 'LA'
+1AAC BDFCBC           1566          JSR     REDIS           ; RESET DISPLAYS
+1AAF CE00F4           1567          LDX     #T2
+1AB2 BDFD25           1568          JSR     PROMPT          ; PROMPT LWA
+1AB5 33               1569          PULB
+1AB6 BD1729           1570          JSR     PUNCH
+1AB9 7EFC00           1571  CCD1    JMP     $FC00           ; EXIT TO MONITOR
+                      1572  
+                      1573  ;;      CCL - CONSOLE CASSETTE LOAD
+                      1574  ;
+                      1575  ;       ENTRY:  NONE
+                      1576  ;       EXIT:   TO CONSOLE MONITOR IF SUCESS
+                      1577  ;       USES:   ALL,T0,HIGHEST MEMORY
+                      1578  
+1ABC C608             1579  CCL     LDAB    #8
+1ABE 8D15             1580          BSR     IN.PIA          ; INITIALIZE PIA
+1AC0 8DBE             1581          BSR     FTOP            ; FIND MEMORY TOP
+1AC2 35               1582          TXS
+1AC3 31               1583          INS
+1AC4 BD16AD           1584          JSR     LOA0            ; LOAD MEMORY
+1AC7 24F0             1585          BCC     CCD1            ; NORMAL RETURN
+1AC9 BDFCBC           1586          JSR     REDIS           ;   PRINT ERROR MESSAGE
+1ACC BDFE52           1587          JSR     OUTSTR
+1ACF 4F05051D85       1588          DB      $4F,$05,$05,$1D,$05+$80
+1AD4 3E               1589          WAI
+                      1590  
+                      1591  ;       IN.PI - INITIALIZE PIA FOR LED MONITOR
+                      1592  ;
+                      1593  ;       INITIALIZE CASSETTE SIDE FOR LOAD OR DUMP
+                      1594  ;        AND SET (TERM) SO THAT A BREAK IS NOT
+                      1595  ;         SENSED.
+                      1596  ;
+                      1597  ;       ENTRY:  NONE
+                      1598  ;       EXIT:   NONE
+                      1599  ;       USES:   A,X
+                      1600  
+1AD5 CE1000           1601  IN.PIA  LDX     #TERM
+1AD8 6F01             1602          CLR     1,X
+1ADA 6F03             1603          CLR     3,X
+1ADC 8680             1604          LDAA    #%10000000
+1ADE A700             1605          STAA    0,X             ; INTO DDR
+1AE0 43               1606          COMA
+1AE1 A702             1607          STAA    2,X             ; INITIALIZE CASSETTE
+1AE3 8604             1608          LDAA    #4
+1AE5 A703             1609          STAA    3,X
+1AE7 39               1610          RTS
+                      1611  
+                      1612  ;; Code below is in the ROM, but not in the source code in the manual.
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 27
 
-                      1613  ;; Code below is in the ROM, but not in the source code in the manual.
-                      1614  
-1AE8 BD1618           1615  RET     JSR     OUTIS
-1AEB 0D0A             1616          DB      CR,LF
-1AED 4D454547414E     1617          ASC     "MEEGAN"
-1AF3 00               1618          DB      0
-1AF4 20F2             1619          BRA     RET
-                      1620  
-                      1621  ;;      TTST - TERMINAL TESTER
-                      1622  ;
-                      1623  ;       ENTRY:  NONE
-                      1624  ;       EXIT:   NEVER
-                      1625  
-1AF6 8601             1626  TTST    LDAA    #1
-1AF8 B71000           1627          STAA    TERM
-1AFB C604             1628          LDAB    #4
-1AFD F71001           1629          STAB    TERM.C
-1B00 BD1618           1630  TTS0    JSR     OUTIS
-1B03 0D0A             1631          DB      CR,LF
+                      1613  
+1AE8 BD1618           1614  RET     JSR     OUTIS
+1AEB 0D0A             1615          DB      CR,LF
+1AED 4D454547414E     1616          ASC     "MEEGAN"
+1AF3 00               1617          DB      0
+1AF4 20F2             1618          BRA     RET
+                      1619  
+                      1620  ;;      TTST - TERMINAL TESTER
+                      1621  ;
+                      1622  ;       ENTRY:  NONE
+                      1623  ;       EXIT:   NEVER
+                      1624  
+1AF6 8601             1625  TTST    LDAA    #1
+1AF8 B71000           1626          STAA    TERM
+1AFB C604             1627          LDAB    #4
+1AFD F71001           1628          STAB    TERM.C
+1B00 BD1618           1629  TTS0    JSR     OUTIS
+1B03 0D0A             1630          DB      CR,LF
 1B05 54484953204953
 1B0C 2041205445524D
-1B13 494E414C205445   1632          ASC     "THIS IS A TERMINAL TEST"
-1B1C 00               1633          DB      0
-1B1D 20E1             1634          BRA     TTS0
-                      1635  
-                      1636  ;; Code below is in the ROM, but not in the source code in the manual.
-                      1637  
-1B1F B61000           1638          LDAA    TERM
-1B22 43               1639          COMA
-1B23 49               1640          ROLA
-1B24 2406             1641          BCC     X2
-1B26 7D1000           1642  X1      TST     TERM
-1B29 2BFB             1643          BMI     X1
-1B2B 0D               1644          SEC
-1B2C 39               1645  X2      RTS
-1B2D C608             1646          LDAB    #08
-1B2F BD16AD           1647          JSR     LOA0
-1B32 2403             1648          BCC     X3
-1B34 7E144E           1649          JMP     $144E
-1B37 39               1650  X3      RTS
-1B38 CE0000           1651          LDX     #0
-1B3B DFEE             1652          STX     T1
-1B3D DE24             1653          LDX     $24
-1B3F DFF4             1654          STX     T2
-1B41 C608             1655          LDAB    #8
-1B43 BD1729           1656          JSR     PUNCH
-1B46 39               1657          RTS
-                      1658  
+1B13 494E414C205445   1631          ASC     "THIS IS A TERMINAL TEST"
+1B1C 00               1632          DB      0
+1B1D 20E1             1633          BRA     TTS0
+                      1634  
+                      1635  ;; Code below is in the ROM, but not in the source code in the manual.
+                      1636  
+1B1F B61000           1637          LDAA    TERM
+1B22 43               1638          COMA
+1B23 49               1639          ROLA
+1B24 2406             1640          BCC     X2
+1B26 7D1000           1641  X1      TST     TERM
+1B29 2BFB             1642          BMI     X1
+1B2B 0D               1643          SEC
+1B2C 39               1644  X2      RTS
+1B2D C608             1645          LDAB    #08
+1B2F BD16AD           1646          JSR     LOA0
+1B32 2403             1647          BCC     X3
+1B34 7E144E           1648          JMP     $144E
+1B37 39               1649  X3      RTS
+1B38 CE0000           1650          LDX     #0
+1B3B DFEE             1651          STX     T1
+1B3D DE24             1652          LDX     $24
+1B3F DFF4             1653          STX     T2
+1B41 C608             1654          LDAB    #8
+1B43 BD1729           1655          JSR     PUNCH
+1B46 39               1656          RTS
+                      1657  
 1B47 FFFFFFFFFFFFFF
-1B4E FFFF             1659          DS      9,$FF
-                      1660  
-1B50 16               1661  PATCH   TAB
-1B51 54               1662          LSRB
-1B52 2701             1663          BEQ     P1
-1B54 5C               1664          INCB
-1B55 7E18E8           1665  P1      JMP     INC2
-                      1666  
-                      1667  ;; Fill the rest of the ROM with FFs.
-                      1668  
+1B4E FFFF             1658          DS      9,$FF
+                      1659  
+1B50 16               1660  PATCH   TAB
+1B51 54               1661          LSRB
+1B52 2701             1662          BEQ     P1
+1B54 5C               1663          INCB
+1B55 7E18E8           1664  P1      JMP     INC2
+                      1665  
+                      1666  ;; Fill the rest of the ROM with FFs.
+                      1667  
 1B58 FFFFFFFFFFFFFF
 1B5F FFFFFFFFFFFFFF
-1B66 FFFFFFFFFFFFFF   1669          DS      $1C00-*,$FF
+1B66 FFFFFFFFFFFFFF   1668          DS      $1C00-*,$FF
+                      1669  
 
 
 Crasm 1.8:           HEATH KEYBOARD MONITOR                                                                          page 28
 
-                      1670  
 
 ERRORS:       0
 WARNINGS:     0
@@ -1790,6 +1789,7 @@ WARNINGS:     0
 Successful assembly...
  Last address     1bff (7167)
  Code length      1000 (4096)
+
 
 
 

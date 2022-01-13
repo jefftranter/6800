@@ -1,0 +1,39 @@
+name 6800sbc;
+device g16v8;
+partno x;
+date 1/11/2022;
+designer jtranter;
+company none;
+revision 1;
+assembly x;
+location x;
+
+PIN 1  = VMA;
+PIN 2  = A15;
+PIN 3  = A14;
+PIN 4  = A13;
+PIN 5  = A12;
+PIN 6  = A11;
+PIN 7  = A10;
+PIN 8  = A9;
+PIN 9 =  A8;
+PIN 10 = GND;
+PIN 11 = SPARE1;
+PIN 12 = SPARE2;
+PIN 13 = SPARE3;
+PIN 14 = !DISPEN;
+PIN 15 = !KBDEN;
+PIN 16 = !ACIAEN;
+PIN 17 = !PIAEN;
+PIN 18 = !RAMEN;
+PIN 19 = !ROMEN;
+PIN 20 = VCC;
+
+ROMEN  = VMA &  A15 &  A14; /* $C000-$FFFF */
+RAMEN  = VMA & !A15; /* $0000 - $7FFF */
+KBDEN  = VMA &  A15 & !A14 & !A13 & !A12 & !A11 & !A10 & !A9 & !A8; /* $80XX */
+DISPEN = VMA &  A15 & !A14 & !A13 & !A12 & !A11 & !A10 & !A9 &  A8; /* $81XX */
+PIAEN  = VMA &  A15 & !A14 & !A13 & !A12 & !A11 & !A10 &  A9 & !A8; /* $82XX */
+ACIAEN = VMA &  A15 & !A14 & !A13 & !A12 & !A11 & !A10 &  A9 &  A8; /* $82XX */
+SPARE2 = 'b'1; /* Unused */
+SPARE3 = 'b'1; /* Unused */

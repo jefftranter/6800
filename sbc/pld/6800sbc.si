@@ -1,0 +1,21 @@
+name 6800sbc;
+device g16v8;
+partno x;
+date 1/11/2022;
+designer jtranter;
+company none;
+revision 1;
+assembly x;
+location x;
+
+ORDER:   VMA, A15, A14, A13, A12, A11, A10, A9, A8, SPARE1, SPARE2, SPARE3, !DISPEN, !KBDEN, !ACIAEN, !PIAEN, !RAMEN, !ROMEN;
+
+VECTORS: 1    1    1    X    X    X    X    X   X   X       H       H       H        H       H        H       H       L  /* ROMEN */
+         1    0    X    X    X    X    X    X   X   X       H       H       H        H       H        H       L       H  /* RAMEN */
+         1    1    0    0    0    0    0    0   0   X       H       H       H        L       H        H       H       H  /* KBDEN */
+         1    1    0    0    0    0    0    0   1   X       H       H       L        H       H        H       H       H  /* DISPEN */
+         1    1    0    0    0    0    0    1   0   X       H       H       H        H       H        L       H       H  /* PIAEN */
+         1    1    0    0    0    0    0    1   1   X       H       H       H        H       L        H       H       H  /* ACIAEN */
+         1    1    0    0    1    X    X    X   X   X       H       H       H        H       H        H       H       H  /* NOTHING SELECTED */
+         1    1    0    1    X    X    X    X   X   X       H       H       H        H       H        H       H       H  /* NOTHING SELECTED */
+         0    X    X    X    X    X    X    X   X   X       H       H       H        H       H        H       H       H  /* NO VMA */

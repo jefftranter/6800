@@ -71,14 +71,14 @@ Write data $01 to turn segment on, $00 to turn off.
 |Decimal Point | $C147,F|  |Decimal Point | $C137,F|
 +--------------+--------+  +--------------+--------+ 
 |    Fifth (V) | $C12X  |  |Rightmost (C) | $C11X  |
-|    Segment g | $C130,8|  |    Segment g | $C110,8|
-|    Segment f | $C131,9|  |    Segment f | $C111,9|
-|    Segment e | $C132,A|  |    Segment e | $C112,A|
-|    Segment d | $C133,B|  |    Segment d | $C113,B|
-|    Segment c | $C134,C|  |    Segment c | $C114,C|
-|    Segment b | $C135,D|  |    Segment b | $C115,D|
-|    Segment a | $C136,E|  |    Segment a | $C116,E|
-|Decimal Point | $C137,F|  |Decimal Point | $C117,F|
+|    Segment g | $C120,8|  |    Segment g | $C110,8|
+|    Segment f | $C121,9|  |    Segment f | $C111,9|
+|    Segment e | $C122,A|  |    Segment e | $C112,A|
+|    Segment d | $C123,B|  |    Segment d | $C113,B|
+|    Segment c | $C124,C|  |    Segment c | $C114,C|
+|    Segment b | $C125,D|  |    Segment b | $C115,D|
+|    Segment a | $C126,E|  |    Segment a | $C116,E|
+|Decimal Point | $C127,F|  |Decimal Point | $C117,F|
 +---------------+-------+  +--------------+--------+
 
 Keyboard Memory Map:

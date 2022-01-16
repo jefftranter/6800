@@ -104,7 +104,7 @@ UNMI    DS 3                         ; USER NMI VECTOR
 ;;      MONITOR CODE
 
         CODE
-        * EQU $C000                  ; ROM starts at $C000
+        * EQU $F400                  ; ROM starts at $C000
 
 ;; FILL UNUSED LOCATIONS WITH FF
 

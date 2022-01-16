@@ -1,4 +1,4 @@
-all:	all.run all.hex monitor.hex fantomii.hex tinybasic.hex
+all:	all.bin all.run all.hex monitor.hex fantomii.hex tinybasic.hex
 
 monitor.hex: monitor.asm
 	crasm -o monitor.hex monitor.asm >monitor.lst
@@ -16,5 +16,8 @@ all.hex: monitor.hex fantomii.hex tinybasic.hex
 all.run: all.hex
 	srec_cat all.hex -intel -o all.run
 
+all.bin: all.hex
+	srec_cat all.hex -Intel --crop 0xc000 0x10000 --offset -0xc000 -output all.bin -Binary
+
 clean:
-	$(RM) *.hex *.lst *.run
+	$(RM) *.hex *.lst *.run *.bin

@@ -1,4 +1,4 @@
-sall:	all.bin all.run all.hex monitor.hex fantomii.hex tinybasic.hex minibug.hex
+sall:	all.bin all.run all.hex monitor.hex fantomii.hex tinybasic.hex mikbug.hex minibug.hex
 
 monitor.hex: monitor.asm
 	crasm -o monitor.hex monitor.asm >monitor.lst

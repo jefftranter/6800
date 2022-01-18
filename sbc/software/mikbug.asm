@@ -297,7 +297,7 @@ IN1     LDAA    ACIACS
 ;
 ; OUTPUT ONE CHAR 
 OUTEEE  PSHA
-OUTEEE1 LDAA                    ; ACIACS
+OUTEEE1 LDAA    ACIACS
         ASRA
         ASRA
         BCC     OUTEEE1

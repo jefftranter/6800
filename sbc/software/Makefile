@@ -1,4 +1,4 @@
-all:	all.bin all.run all.hex monitor.hex fantomii.hex tinybasic.hex
+sall:	all.bin all.run all.hex monitor.hex fantomii.hex tinybasic.hex minibug.hex
 
 monitor.hex: monitor.asm
 	crasm -o monitor.hex monitor.asm >monitor.lst
@@ -8,6 +8,12 @@ fantomii.hex: fantomii.asm
 
 tinybasic.hex: tinybasic.asm
 	crasm -o tinybasic.hex tinybasic.asm >tinybasic.lst
+
+mikbug.hex: mikbug.asm
+	crasm -o mikbug.hex mikbug.asm >mikbug.lst
+
+minibug.hex: minibug.asm
+	crasm -o minibug.hex minibug.asm >minibug.lst
 
 all.hex: monitor.hex fantomii.hex tinybasic.hex
 	cat monitor.hex fantomii.hex tinybasic.hex | grep "^:1" | sort >all.hex

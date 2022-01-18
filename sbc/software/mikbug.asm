@@ -1,4 +1,13 @@
-        NAM     MIKES-BUG
+; MIKBUG and MINIBUG are ROM monitors for the 6800 from Motorola. Mike
+; Holley at swtpc.com,
+; http://www.swtpc.com/mholley/MP_A/MIKBUG_Index.htm has a Motorola
+; "Engineering Note 100 MCM6830L7 MIKBUG" PDF document and MIKBUG
+; source. The Note has listings for MIKBUG and MINIBUG. I'm guessing
+; "MIK" is Mike Wiles, an author of the Note. From Mike Lee in
+; Feb-April 2019, I obtained a varient of MIKBUG, which replaces the
+; PIA parallel keyboard input with an ACIA serial input.
+
+        NAM     MIKBUG
         CPU     6800
         OUTPUT  HEX             ; For Intel hex output
 ;       OUTPUT  SCODE           ; For Motorola S record (RUN) output
@@ -13,12 +22,13 @@
 ;     CC   B   A   X   P   S
 ;
 ; ADDRESS
-ACIACS  EQU     $8018
-ACIADA  EQU     $8019
+ACIACS  EQU     $8300
+ACIADA  EQU     ACIACS+1
 VAR     EQU     $0100
 ;
 ;       OPT     MEMORY
-*       EQU     $C000
+        CODE
+*       EQU     $F900
 ;
 ; I/O INTERRUPT SEQUENCE
 IO      LDX     IOV
@@ -295,7 +305,7 @@ IN1     LDAA    ACIACS
         BSR     OUTEEE
         RTS
 ;
-; OUTPUT ONE CHAR 
+; OUTPUT ONE CHAR
 OUTEEE  PSHA
 OUTEEE1 LDAA    ACIACS
         ASRA
@@ -304,14 +314,20 @@ OUTEEE1 LDAA    ACIACS
         PULA
         STAA    ACIADA
         RTS
+
+;; FILL UNUSED LOCATIONS WITH FF
+
+        DS      $FB00-*,$FF
+
 ;
 ; VECTOR
-*       EQU     $FFF8
-        DW      IO
-        DW      SFE
-        DW      POWDWN
-        DW      START
+;*     EQU     $FFF8
+;       DW      IO
+;       DW      SFE
+;       DW      POWDWN
+;       DW      START
 
+        DUMMY
 *       EQU     VAR
 IOV     DS      2               ; IO INTERRUPT POINTER
 BEGA    DS      2               ; BEGINNING ADDR PRINT/PUNCH

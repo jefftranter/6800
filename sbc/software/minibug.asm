@@ -6,10 +6,10 @@
 ; MINI-BUG
 ; COPYWRITE 1973, MOTOROLA INC
 ; REV 004 (USED WITH MIKBUG)
-;ACIACS  EQU     $8300           ; ACIA CONTROL/STATUS
-ACIACS  EQU     $FCF4           ; ACIA CONTROL/STATUS
+ACIACS  EQU     $8300           ; ACIA CONTROL/STATUS
 ACIADA  EQU     ACIACS+1
-*       EQU     $FE00
+        CODE
+*       EQU     $FB00
 ; MINIB
 ; INPUT ONE CHAR INTO A-REGISTER
 INCH    LDAA     ACIACS
@@ -171,7 +171,8 @@ JSR     INCH                    ; READ CHARACTER
         BNE     CONTRL
         RTI                     ; GO
 
-*       EQU     $FF00
+        DUMMY
+*       EQU     $0100
         DS      40
 STACK   DS      1               ; STACK POINTER
 ; REGISTERS FOR GO

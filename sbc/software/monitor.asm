@@ -3,7 +3,6 @@
 ;        Jeff Tranter <tranter@pobox.com>
 ;
 ; Changes:
-; - Fills a 16K ROM.
 ; - Addresses of keyboard and display changed.
 ; - Optionally use only the 6802 on-board RAM from $00-$7F (needs to
 ;   be enabled in hardware)
@@ -104,11 +103,7 @@ UNMI    DS 3                         ; USER NMI VECTOR
 ;;      MONITOR CODE
 
         CODE
-        * EQU $F400                  ; ROM starts at $C000
-
-;; FILL UNUSED LOCATIONS WITH FF
-
-        DS      $FC00-*,$FF
+        * EQU $FC00
 
 ;;      RESET - CLEAR BREAKPOINT TABLE AND INITIALIZE STACK
 

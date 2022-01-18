@@ -73,11 +73,7 @@ USWI    DS      3
 UNMI    DS      3
 
         CODE
-*       EQU     $C000
-
-;; FILL UNUSED LOCATIONS WITH FF
-
-        DS      $E400-*,$FF
+*       EQU     $E400
 
 ;;      MAIN MONITOR LOOP
 ;
@@ -180,7 +176,7 @@ MAIN7   INX
 GO      JSR     AHV
         BCC     GO1             ; NO OPTIONAL ADDRESS
         STAA    7,X
-        STAB    6,X              
+        STAB    6,X
 GO1     JSR     SSTEP           ; STEP PAST BKPT
         LDAB    #NBR
 GO2     TSX                     ; COPY IN BREAKPOINTS
@@ -1316,7 +1312,7 @@ TNC3    RTS
 ;
 ;
 ;       ENTRY:  STACK>  RETURN (0,S)
-;                       COUNT  (2,S)       
+;                       COUNT  (2,S)
 ;                       TO     (4,S)
 ;                       FROM   (6,S)
 ;       EXIT:   STACK CLEANED
@@ -1670,5 +1666,5 @@ PATCH   TAB
 P1      JMP     INC2
 
 ;; Fill the rest of the ROM with FFs.
-        
+
         DS      $EC00-*,$FF

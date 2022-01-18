@@ -1,4 +1,4 @@
-sall:	all.bin all.run all.hex monitor.hex fantomii.hex tinybasic.hex mikbug.hex minibug.hex
+all:	all.bin all.run all.hex monitor.hex fantomii.hex tinybasic.hex mikbug.hex minibug.hex unused.hex
 
 monitor.hex: monitor.asm
 	crasm -o monitor.hex monitor.asm >monitor.lst
@@ -15,8 +15,11 @@ mikbug.hex: mikbug.asm
 minibug.hex: minibug.asm
 	crasm -o minibug.hex minibug.asm >minibug.lst
 
-all.hex: monitor.hex fantomii.hex tinybasic.hex
-	cat monitor.hex fantomii.hex tinybasic.hex | grep "^:1" | sort >all.hex
+unused.hex: unused.asm
+	crasm -o unused.hex unused.asm >unused.lst
+
+all.hex: monitor.hex fantomii.hex tinybasic.hex minibug.hex mikbug.hex unused.hex
+	cat monitor.hex mikbug.hex minibug.hex fantomii.hex tinybasic.hex unused.hex | grep "^:1" | sort >all.hex
 	echo ":00000001FF" >>all.hex
 
 all.run: all.hex

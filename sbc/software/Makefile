@@ -1,4 +1,4 @@
-all:	all.bin all.run all.hex monitor.hex fantomii.hex tinybasic.hex mikbug.hex minibug.hex unused.hex
+all:	all.bin all.run all.hex monitor.hex fantomii.hex tinybasic.hex mikbug.hex minibug.hex unused.hex basic680.hex
 
 monitor.hex: monitor.asm
 	crasm -o monitor.hex monitor.asm >monitor.lst
@@ -14,6 +14,9 @@ mikbug.hex: mikbug.asm
 
 minibug.hex: minibug.asm
 	crasm -o minibug.hex minibug.asm >minibug.lst
+
+basic680.hex: basic680.asm
+	crasm -o basic680.hex basic680.asm >basic680.lst
 
 unused.hex: unused.asm
 	crasm -o unused.hex unused.asm >unused.lst

@@ -13,6 +13,8 @@ This is a port of software to my 6800-based single board computer:
 - Pittman Tiny Basic from the Heathkit ETA-3400 memory I/O accessory.
   Uses the PIA serial port.
 
+- A port of Microsoft Basic for the Altair 680 computer.
+
 All will fit in the 16K 6800 SBC EPROM.
 
 Program     Size        Addresses  Start

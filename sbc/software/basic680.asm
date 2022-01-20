@@ -29,6 +29,13 @@
 ; from code from the start address of zero.
 ;
 ; The code size is 6.9K.
+;
+; TODO:
+; Implement and hook up MikBug routines.
+; Try loading and running it from RAM.
+; Test all features.
+; See if it can be made to run from ROM.
+; Clean up source code.
 
 ; f9dasm: M6800/1/2/3/8/9 / H6309 Binary/OS9/FLEX9 Disassembler V1.79
 ; Loaded Motorola S file basic680.mot
@@ -1176,18 +1183,18 @@ Z086F   BSR     OUTSPC                   ;086F: 8D 1F          '..'
 ;Z0874  JSR     Z00BF                    ;0874: BD 00 BF       '...'
 Z0874   DB      $BD,$00,$BF
         BRA     Z07FC                    ;0877: 20 83          ' .'
-;  
+;
 ; XXX This is a little strange in that IX appears to be
 ; loaded with the location one BEFORE the start of the
 ; string....
-;  
+;
 ; PRINT THE STRING POINTED TO BY IX-1 WHICH ENDS WITH A ZERO.
 ; XXX ??? IF THE STRING IS BELOW DSCTMP IT WILL BE COPIED INTO STRING SPACE.
-;  
+;
 STROUT  JSR     STRLIT                   ;0879: BD 0F 0B       '...'   GET A STRING LITERAL
-;  
+;
 ; PRINT THE STRING WHOSE DESCRIPTOR IS POINTED TO BY FACMO.
-;  
+;
 STRPRT  JSR     FREFAC                   ;087C: BD 10 7D       '..}'   RETURN TEMP POINTER.
         INCB                             ;087F: 5C             '\'
 STRPR2  DECB                             ;0880: 5A             'Z'
@@ -1199,11 +1206,11 @@ STRPR2  DECB                             ;0880: 5A             'Z'
         BNE     STRPR2                   ;088A: 26 F4          '&.'
         BSR     CRFIN                    ;088C: 8D B0          '..'    TYPE REST OF CARRIAGE RETURN.
         BRA     STRPR2                   ;088E: 20 F0          ' .'    AND ON AND ON.
-;  
+;
 ; OUTDO OUTPUTS THE CHARACTER IN ACCA, USING CNTWFL
 ; (SUPPRESS OR NOT), TRMPOS (PRINT HEAD POSITION),
 ; TIMING, ETCQ. NO REGISTERS ARE CHANGED.
-;  
+;
 OUTSPC  LDAA    #$20                     ;0890: 86 20          '. '
         CPX     #$863F                   ;0892: 8C 86 3F       '..?'
 OUTDO   TST     M0111                    ;0895: 7D 01 11       '}..'
@@ -2062,10 +2069,10 @@ Z0EEC   STAA    $02,X                    ;0EEC: A7 02          '..'
         INS                              ;0EFB: 31             '1'
         LDX     #M00FE                   ;0EFC: CE 00 FE       '...'
         BRA     STRLIT                   ;0EFF: 20 0A          ' .'
-;  
+;
 ; "STRINI" GET STRING SPACE FOR THE CREATION OF A STRING AND
 ; CREATES A DESCRIPTOR FOR IT IN "DSCTMP".
-;  
+;
 STRINI  STX     M00AD                    ;0F01: DF AD          '..'
 Z0F03   BSR     GETSPA                   ;0F03: 8D 53          '.S'
 Z0F05   STX     DSCTMP+1                 ;0F05: DF B1          '..'
@@ -2074,7 +2081,7 @@ Z0F05   STX     DSCTMP+1                 ;0F05: DF B1          '..'
 
 ; This entry point takes IX pointing to string value, instead of IX-1
 dstrlit DEX                              ;0F0A: 09             '.'
-;  
+;
 ; "STRLT2" TAKES THE STRING LITERAL WHOSE FIRST CHARACTER
 ; IS POINTED TO BY IX-1 AND BUILDS A DESCRIPTOR FOR IT.
 ; THE DESCRIPTOR IS INITIALLY BUILT IN "DSCTMP", BUT "PUTNEW"
@@ -2085,10 +2092,10 @@ dstrlit DEX                              ;0F0A: 09             '.'
 ; OVER. LEADING QUOTES SHOULD BE SKIPPED BEFORE JSR. ON RETURN
 ; THE CHARACTER AFTER THE STRING LITERAL IS POINTED TO
 ; BY [STRNG2].
-;  
+;
 ; DSCTMP is temporary storage for a string descriptor,
 ; one byte of length and two bytes of address.
-;  
+;
 STRLIT  LDAA    #'"'                     ;0F0B: 86 22          '."'    ASSUME STRING ENDS ON QUOTE.
         STAA    CHARAC                   ;0F0D: 97 58          '.X'
         STAA    ENDCHR                   ;0F0F: 97 59          '.Y'
@@ -2131,15 +2138,15 @@ PUTNW1  JSR     Z1454                    ;0F46: BD 14 54       '..T'
         STX     TEMPPT                   ;0F55: DF 61          '.a'
         RTS                              ;0F57: 39             '9'
 
-;  
+;
 ; GETSPA - GET SPACE FOR CHARACTER STRING.
 ; MAY FORCE GARBAGE COLLECTION.
-;  
+;
 ; # OF CHARACTERS (BYTES) IN ACCA.
 ; RETURNS WITH POINTER IN [Y,X]. OTHERWISE (IF CAN'T GET
 ; SPACE) BLOWS OFF TO "OUT OF STRING SPACE" TYPE ERROR.
 ; ALSO PRESERVES [ACCA] AND SETS [FRESPC]=[Y,X]=PNTR AT SPACE.
-;  
+;
 GETSPA  CLR     M005D                    ;0F58: 7F 00 5D       '..]'   SIGNAL NO GARBAGE COLLECTION YET.
 TRYAG2  PSHB                             ;0F5B: 37             '7'     SAVE FOR LATER.
         COMB                             ;0F5C: 53             'S'
@@ -3504,7 +3511,7 @@ Z19D9   STX     M0082                    ;19D9: DF 82          '..'
 ; Strings used by INIT routine
 ; XXX Both high-byte and \000 terminated?
 FNS     ASC    "WANT SIN-COS-TAN-AT"     ;1A0B: 57 41 4E 54 20 53 49 4E 2D 43 4F 53 2D 54 41 4E 2D 41 54 'WANT SIN-COS-TAN-AT'
-        DB      'N'|$80,$00              ;1A1E: CE 00          '..'    'N'|$80, \000  
+        DB      'N'|$80,$00              ;1A1E: CE 00          '..'    'N'|$80, \000
 AUTTXT  DB      $0D,$0A,$0C              ;1A20: 0D 0A 0C       '...'
         ASC     "WRITTEN BY RICHARD W."  ;1A23: 57 52 49 54 54 45 4E 20 42 59 20 52 49 43 48 41 52 44 20 57 2E 'WRITTEN BY RICHARD W.'
         ASC     " WEILAND"               ;1A38: 20 57 45 49 4C 41 4E 44 ' WEILAND'

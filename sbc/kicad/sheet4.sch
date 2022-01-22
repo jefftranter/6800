@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 4 6
 Title "6800 SIngle Board Computer"
-Date "2022-01-14"
+Date "2022-01-22"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -14,10 +14,10 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L Display_Character:MAN71A U5
+L Display_Character:MAN71A U6
 U 1 1 61DB9E06
 P 1500 1400
-F 0 "U5" H 1500 2067 50  0000 C CNN
+F 0 "U6" H 1500 2067 50  0000 C CNN
 F 1 "MAN71A" H 1500 1976 50  0000 C CNN
 F 2 "Display_7Segment:MAN71A" H 1000 700 50  0001 L CNN
 F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 1510 1740 50  0001 L CNN
@@ -25,12 +25,12 @@ F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 74xx:74LS259 U11
+L 74xx:74LS259 U12
 U 1 1 61DD2902
 P 1500 2700
-F 0 "U11" V 1550 2750 50  0000 C CNN
+F 0 "U12" V 1550 2750 50  0000 C CNN
 F 1 "74LS259" V 1400 2700 50  0000 C CNN
-F 2 "" H 1500 2700 50  0001 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 1500 2700 50  0001 C CNN
 F 3 "http://www.ti.com/lit/gpn/sn74LS259" H 1500 2700 50  0001 C CNN
 	1    1500 2700
 	0    -1   -1   0   
@@ -98,10 +98,10 @@ Wire Wire Line
 Wire Wire Line
 	1500 3200 1500 3350
 $Comp
-L Display_Character:MAN71A U6
+L Display_Character:MAN71A U7
 U 1 1 62040A44
 P 3200 1400
-F 0 "U6" H 3200 2067 50  0000 C CNN
+F 0 "U7" H 3200 2067 50  0000 C CNN
 F 1 "MAN71A" H 3200 1976 50  0000 C CNN
 F 2 "Display_7Segment:MAN71A" H 2700 700 50  0001 L CNN
 F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 3210 1740 50  0001 L CNN
@@ -109,12 +109,12 @@ F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 74xx:74LS259 U12
+L 74xx:74LS259 U13
 U 1 1 62040A4A
 P 3200 2700
-F 0 "U12" V 3250 2750 50  0000 C CNN
+F 0 "U13" V 3250 2750 50  0000 C CNN
 F 1 "74LS259" V 3100 2700 50  0000 C CNN
-F 2 "" H 3200 2700 50  0001 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 3200 2700 50  0001 C CNN
 F 3 "http://www.ti.com/lit/gpn/sn74LS259" H 3200 2700 50  0001 C CNN
 	1    3200 2700
 	0    -1   -1   0   
@@ -200,10 +200,10 @@ Wire Wire Line
 Wire Wire Line
 	3200 3200 3200 3350
 $Comp
-L Display_Character:MAN71A U7
+L Display_Character:MAN71A U8
 U 1 1 62048245
 P 4850 1400
-F 0 "U7" H 4850 2067 50  0000 C CNN
+F 0 "U8" H 4850 2067 50  0000 C CNN
 F 1 "MAN71A" H 4850 1976 50  0000 C CNN
 F 2 "Display_7Segment:MAN71A" H 4350 700 50  0001 L CNN
 F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 4860 1740 50  0001 L CNN
@@ -211,12 +211,12 @@ F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 74xx:74LS259 U13
+L 74xx:74LS259 U14
 U 1 1 6204824B
 P 4850 2700
-F 0 "U13" V 4900 2750 50  0000 C CNN
+F 0 "U14" V 4900 2750 50  0000 C CNN
 F 1 "74LS259" V 4750 2700 50  0000 C CNN
-F 2 "" H 4850 2700 50  0001 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 4850 2700 50  0001 C CNN
 F 3 "http://www.ti.com/lit/gpn/sn74LS259" H 4850 2700 50  0001 C CNN
 	1    4850 2700
 	0    -1   -1   0   
@@ -302,10 +302,10 @@ Wire Wire Line
 Wire Wire Line
 	4850 3200 4850 3350
 $Comp
-L Display_Character:MAN71A U8
+L Display_Character:MAN71A U9
 U 1 1 6204F591
 P 6450 1400
-F 0 "U8" H 6450 2067 50  0000 C CNN
+F 0 "U9" H 6450 2067 50  0000 C CNN
 F 1 "MAN71A" H 6450 1976 50  0000 C CNN
 F 2 "Display_7Segment:MAN71A" H 5950 700 50  0001 L CNN
 F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 6460 1740 50  0001 L CNN
@@ -313,12 +313,12 @@ F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 74xx:74LS259 U14
+L 74xx:74LS259 U15
 U 1 1 6204F597
 P 6450 2700
-F 0 "U14" V 6500 2750 50  0000 C CNN
+F 0 "U15" V 6500 2750 50  0000 C CNN
 F 1 "74LS259" V 6350 2700 50  0000 C CNN
-F 2 "" H 6450 2700 50  0001 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 6450 2700 50  0001 C CNN
 F 3 "http://www.ti.com/lit/gpn/sn74LS259" H 6450 2700 50  0001 C CNN
 	1    6450 2700
 	0    -1   -1   0   
@@ -404,10 +404,10 @@ Wire Wire Line
 Wire Wire Line
 	6450 3200 6450 3350
 $Comp
-L Display_Character:MAN71A U9
+L Display_Character:MAN71A U10
 U 1 1 62056D6F
 P 8000 1400
-F 0 "U9" H 8000 2067 50  0000 C CNN
+F 0 "U10" H 8000 2067 50  0000 C CNN
 F 1 "MAN71A" H 8000 1976 50  0000 C CNN
 F 2 "Display_7Segment:MAN71A" H 7500 700 50  0001 L CNN
 F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 8010 1740 50  0001 L CNN
@@ -415,12 +415,12 @@ F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 74xx:74LS259 U15
+L 74xx:74LS259 U16
 U 1 1 62056D75
 P 8000 2700
-F 0 "U15" V 8050 2750 50  0000 C CNN
+F 0 "U16" V 8050 2750 50  0000 C CNN
 F 1 "74LS259" V 7900 2700 50  0000 C CNN
-F 2 "" H 8000 2700 50  0001 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 8000 2700 50  0001 C CNN
 F 3 "http://www.ti.com/lit/gpn/sn74LS259" H 8000 2700 50  0001 C CNN
 	1    8000 2700
 	0    -1   -1   0   
@@ -490,10 +490,10 @@ Wire Wire Line
 Wire Wire Line
 	8000 3200 8000 3350
 $Comp
-L Display_Character:MAN71A U10
+L Display_Character:MAN71A U11
 U 1 1 6205E8DF
 P 9650 1400
-F 0 "U10" H 9650 2067 50  0000 C CNN
+F 0 "U11" H 9650 2067 50  0000 C CNN
 F 1 "MAN71A" H 9650 1976 50  0000 C CNN
 F 2 "Display_7Segment:MAN71A" H 9150 700 50  0001 L CNN
 F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 9660 1740 50  0001 L CNN
@@ -501,12 +501,12 @@ F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 
 	0    -1   -1   0   
 $EndComp
 $Comp
-L 74xx:74LS259 U16
+L 74xx:74LS259 U17
 U 1 1 6205E8E5
 P 9650 2700
-F 0 "U16" V 9700 2750 50  0000 C CNN
+F 0 "U17" V 9700 2750 50  0000 C CNN
 F 1 "74LS259" V 9550 2700 50  0000 C CNN
-F 2 "" H 9650 2700 50  0001 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 9650 2700 50  0001 C CNN
 F 3 "http://www.ti.com/lit/gpn/sn74LS259" H 9650 2700 50  0001 C CNN
 	1    9650 2700
 	0    -1   -1   0   
@@ -592,32 +592,31 @@ Wire Wire Line
 Wire Wire Line
 	9650 3200 9650 3350
 $Comp
-L Device:R R53
+L Device:R R5
 U 1 1 6206D5D2
-P 1900 3450
-F 0 "R53" H 1970 3496 50  0000 L CNN
-F 1 "4K7" H 1970 3405 50  0000 L CNN
-F 2 "" V 1830 3450 50  0001 C CNN
-F 3 "~" H 1900 3450 50  0001 C CNN
-	1    1900 3450
+P 1900 3550
+F 0 "R5" H 1970 3596 50  0000 L CNN
+F 1 "4K7" H 1970 3505 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 1830 3550 50  0001 C CNN
+F 3 "~" H 1900 3550 50  0001 C CNN
+	1    1900 3550
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:VCC #PWR040
 U 1 1 6206EB43
-P 1900 3750
-F 0 "#PWR040" H 1900 3600 50  0001 C CNN
-F 1 "VCC" H 1918 3923 50  0000 C CNN
-F 2 "" H 1900 3750 50  0001 C CNN
-F 3 "" H 1900 3750 50  0001 C CNN
-	1    1900 3750
+P 1900 3900
+F 0 "#PWR040" H 1900 3750 50  0001 C CNN
+F 1 "VCC" H 1918 4073 50  0000 C CNN
+F 2 "" H 1900 3900 50  0001 C CNN
+F 3 "" H 1900 3900 50  0001 C CNN
+	1    1900 3900
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	1900 3200 1900 3300
 Wire Wire Line
 	3600 3300 3600 3200
-Connection ~ 1900 3300
 Wire Wire Line
 	3600 3300 5250 3300
 Wire Wire Line
@@ -638,13 +637,11 @@ Wire Wire Line
 Wire Wire Line
 	10050 3300 10050 3200
 Connection ~ 8400 3300
-Wire Wire Line
-	1900 3600 1900 3750
 $Comp
-L power:GND #PWR044
+L power:GND #PWR045
 U 1 1 621278DA
 P 2350 6850
-F 0 "#PWR044" H 2350 6600 50  0001 C CNN
+F 0 "#PWR045" H 2350 6600 50  0001 C CNN
 F 1 "GND" H 2355 6677 50  0000 C CNN
 F 2 "" H 2350 6850 50  0001 C CNN
 F 3 "" H 2350 6850 50  0001 C CNN
@@ -697,188 +694,188 @@ Wire Wire Line
 Wire Wire Line
 	2850 6400 2850 6300
 $Comp
-L Switch:SW_Push_45deg SW1
+L Switch:SW_Push_45deg SW2
 U 1 1 62214EB7
 P 4000 5300
-F 0 "SW1" H 3950 5300 50  0000 C CNN
+F 0 "SW2" H 3950 5300 50  0000 C CNN
 F 1 "\"D\"" H 3950 5200 50  0000 C CNN
-F 2 "" H 4000 5300 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4000 5300 50  0001 C CNN
 F 3 "~" H 4000 5300 50  0001 C CNN
 	1    4000 5300
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW2
+L Switch:SW_Push_45deg SW3
 U 1 1 62258455
 P 4350 5300
-F 0 "SW2" H 4300 5300 50  0000 C CNN
+F 0 "SW3" H 4300 5300 50  0000 C CNN
 F 1 "\"E\"" H 4300 5200 50  0000 C CNN
-F 2 "" H 4350 5300 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4350 5300 50  0001 C CNN
 F 3 "~" H 4350 5300 50  0001 C CNN
 	1    4350 5300
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW3
+L Switch:SW_Push_45deg SW4
 U 1 1 62258F24
 P 4700 5300
-F 0 "SW3" H 4650 5300 50  0000 C CNN
+F 0 "SW4" H 4650 5300 50  0000 C CNN
 F 1 "\"F\"" H 4650 5200 50  0000 C CNN
-F 2 "" H 4700 5300 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4700 5300 50  0001 C CNN
 F 3 "~" H 4700 5300 50  0001 C CNN
 	1    4700 5300
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW4
+L Switch:SW_Push_45deg SW5
 U 1 1 62259474
 P 4000 5600
-F 0 "SW4" H 3950 5600 50  0000 C CNN
+F 0 "SW5" H 3950 5600 50  0000 C CNN
 F 1 "\"A\"" H 3950 5500 50  0000 C CNN
-F 2 "" H 4000 5600 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4000 5600 50  0001 C CNN
 F 3 "~" H 4000 5600 50  0001 C CNN
 	1    4000 5600
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW5
+L Switch:SW_Push_45deg SW6
 U 1 1 62259C3B
 P 4350 5600
-F 0 "SW5" H 4300 5600 50  0000 C CNN
+F 0 "SW6" H 4300 5600 50  0000 C CNN
 F 1 "\"B\"" H 4300 5500 50  0000 C CNN
-F 2 "" H 4350 5600 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4350 5600 50  0001 C CNN
 F 3 "~" H 4350 5600 50  0001 C CNN
 	1    4350 5600
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW6
+L Switch:SW_Push_45deg SW7
 U 1 1 6225A3A7
 P 4700 5600
-F 0 "SW6" H 4650 5600 50  0000 C CNN
+F 0 "SW7" H 4650 5600 50  0000 C CNN
 F 1 "\"C\"" H 4650 5500 50  0000 C CNN
-F 2 "" H 4700 5600 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4700 5600 50  0001 C CNN
 F 3 "~" H 4700 5600 50  0001 C CNN
 	1    4700 5600
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW7
+L Switch:SW_Push_45deg SW8
 U 1 1 6225A80E
 P 4000 5900
-F 0 "SW7" H 3950 5900 50  0000 C CNN
+F 0 "SW8" H 3950 5900 50  0000 C CNN
 F 1 "\"7\"" H 3950 5800 50  0000 C CNN
-F 2 "" H 4000 5900 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4000 5900 50  0001 C CNN
 F 3 "~" H 4000 5900 50  0001 C CNN
 	1    4000 5900
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW8
+L Switch:SW_Push_45deg SW9
 U 1 1 6225AD2B
 P 4350 5900
-F 0 "SW8" H 4300 5900 50  0000 C CNN
+F 0 "SW9" H 4300 5900 50  0000 C CNN
 F 1 "\"8\"" H 4300 5800 50  0000 C CNN
-F 2 "" H 4350 5900 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4350 5900 50  0001 C CNN
 F 3 "~" H 4350 5900 50  0001 C CNN
 	1    4350 5900
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW9
+L Switch:SW_Push_45deg SW10
 U 1 1 6225B3B7
 P 4700 5900
-F 0 "SW9" H 4650 5900 50  0000 C CNN
+F 0 "SW10" H 4650 5900 50  0000 C CNN
 F 1 "\"9\"" H 4650 5800 50  0000 C CNN
-F 2 "" H 4700 5900 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4700 5900 50  0001 C CNN
 F 3 "~" H 4700 5900 50  0001 C CNN
 	1    4700 5900
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW10
+L Switch:SW_Push_45deg SW11
 U 1 1 6225B9E3
 P 4000 6150
-F 0 "SW10" H 3950 6150 50  0000 C CNN
+F 0 "SW11" H 3950 6150 50  0000 C CNN
 F 1 "\"4\"" H 3950 6050 50  0000 C CNN
-F 2 "" H 4000 6150 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4000 6150 50  0001 C CNN
 F 3 "~" H 4000 6150 50  0001 C CNN
 	1    4000 6150
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW11
+L Switch:SW_Push_45deg SW12
 U 1 1 6225C072
 P 4350 6150
-F 0 "SW11" H 4300 6150 50  0000 C CNN
+F 0 "SW12" H 4300 6150 50  0000 C CNN
 F 1 "\"5\"" H 4300 6050 50  0000 C CNN
-F 2 "" H 4350 6150 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4350 6150 50  0001 C CNN
 F 3 "~" H 4350 6150 50  0001 C CNN
 	1    4350 6150
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW12
+L Switch:SW_Push_45deg SW13
 U 1 1 6225C55B
 P 4700 6150
-F 0 "SW12" H 4650 6150 50  0000 C CNN
+F 0 "SW13" H 4650 6150 50  0000 C CNN
 F 1 "\"6\"" H 4650 6050 50  0000 C CNN
-F 2 "" H 4700 6150 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4700 6150 50  0001 C CNN
 F 3 "~" H 4700 6150 50  0001 C CNN
 	1    4700 6150
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW13
+L Switch:SW_Push_45deg SW14
 U 1 1 6225CAC6
 P 4000 6400
-F 0 "SW13" H 3950 6400 50  0000 C CNN
+F 0 "SW14" H 3950 6400 50  0000 C CNN
 F 1 "\"1\"" H 3950 6300 50  0000 C CNN
-F 2 "" H 4000 6400 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4000 6400 50  0001 C CNN
 F 3 "~" H 4000 6400 50  0001 C CNN
 	1    4000 6400
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW14
+L Switch:SW_Push_45deg SW15
 U 1 1 6225D2BE
 P 4350 6400
-F 0 "SW14" H 4300 6400 50  0000 C CNN
+F 0 "SW15" H 4300 6400 50  0000 C CNN
 F 1 "\"2\"" H 4300 6300 50  0000 C CNN
-F 2 "" H 4350 6400 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4350 6400 50  0001 C CNN
 F 3 "~" H 4350 6400 50  0001 C CNN
 	1    4350 6400
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW15
+L Switch:SW_Push_45deg SW16
 U 1 1 6225D70B
 P 4700 6400
-F 0 "SW15" H 4650 6400 50  0000 C CNN
+F 0 "SW16" H 4650 6400 50  0000 C CNN
 F 1 "\"3\"" H 4650 6300 50  0000 C CNN
-F 2 "" H 4700 6400 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4700 6400 50  0001 C CNN
 F 3 "~" H 4700 6400 50  0001 C CNN
 	1    4700 6400
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW16
+L Switch:SW_Push_45deg SW17
 U 1 1 6225DD3F
 P 4000 6650
-F 0 "SW16" H 3950 6650 50  0000 C CNN
+F 0 "SW17" H 3950 6650 50  0000 C CNN
 F 1 "\"0\"" H 3950 6550 50  0000 C CNN
-F 2 "" H 4000 6650 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4000 6650 50  0001 C CNN
 F 3 "~" H 4000 6650 50  0001 C CNN
 	1    4000 6650
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push_45deg SW17
+L Switch:SW_Push_45deg SW18
 U 1 1 6225E2B6
 P 4350 6650
-F 0 "SW17" H 4300 6650 50  0000 C CNN
+F 0 "SW18" H 4300 6650 50  0000 C CNN
 F 1 "\"RESET\"" H 4300 6550 50  0000 C CNN
-F 2 "" H 4350 6650 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH_6mm_H4.3mm" H 4350 6650 50  0001 C CNN
 F 3 "~" H 4350 6650 50  0001 C CNN
 	1    4350 6650
 	1    0    0    -1  
@@ -945,10 +942,10 @@ Wire Wire Line
 	4600 6050 4600 6300
 Connection ~ 4600 6050
 $Comp
-L Diode:1N4148 D5
+L Diode:1N4148 D8
 U 1 1 6239F190
 P 3900 4900
-F 0 "D5" V 3854 4979 50  0000 L CNN
+F 0 "D8" V 3854 4979 50  0000 L CNN
 F 1 "1N4148" V 4000 4900 50  0000 L CNN
 F 2 "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal" H 3900 4725 50  0001 C CNN
 F 3 "https://assets.nexperia.com/documents/data-sheet/1N4148_1N4448.pdf" H 3900 4900 50  0001 C CNN
@@ -956,10 +953,10 @@ F 3 "https://assets.nexperia.com/documents/data-sheet/1N4148_1N4448.pdf" H 3900 
 	0    1    1    0   
 $EndComp
 $Comp
-L Diode:1N4148 D6
+L Diode:1N4148 D9
 U 1 1 6239FA0C
 P 4250 4900
-F 0 "D6" V 4204 4979 50  0000 L CNN
+F 0 "D9" V 4204 4979 50  0000 L CNN
 F 1 "1N4148" V 4350 4900 50  0000 L CNN
 F 2 "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal" H 4250 4725 50  0001 C CNN
 F 3 "https://assets.nexperia.com/documents/data-sheet/1N4148_1N4448.pdf" H 4250 4900 50  0001 C CNN
@@ -967,10 +964,10 @@ F 3 "https://assets.nexperia.com/documents/data-sheet/1N4148_1N4448.pdf" H 4250 
 	0    1    1    0   
 $EndComp
 $Comp
-L Diode:1N4148 D7
+L Diode:1N4148 D10
 U 1 1 623A0111
 P 4600 4900
-F 0 "D7" V 4554 4979 50  0000 L CNN
+F 0 "D10" V 4554 4979 50  0000 L CNN
 F 1 "1N4148" V 4700 4900 50  0000 L CNN
 F 2 "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal" H 4600 4725 50  0001 C CNN
 F 3 "https://assets.nexperia.com/documents/data-sheet/1N4148_1N4448.pdf" H 4600 4900 50  0001 C CNN
@@ -1007,10 +1004,10 @@ Wire Wire Line
 Wire Wire Line
 	3400 6750 3400 5900
 $Comp
-L Device:R_Network06 RN1
+L Device:R_Network06 RN7
 U 1 1 623FE313
 P 3400 5050
-F 0 "RN1" H 3300 5250 50  0000 C CNN
+F 0 "RN7" H 3300 5250 50  0000 C CNN
 F 1 "8K2" H 3550 5250 50  0000 C CNN
 F 2 "Resistor_THT:R_Array_SIP7" V 3775 5050 50  0001 C CNN
 F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 3400 5050 50  0001 C CNN
@@ -1066,10 +1063,10 @@ Wire Wire Line
 	4600 5050 4600 5200
 Connection ~ 4600 5200
 $Comp
-L power:GND #PWR045
+L power:GND #PWR046
 U 1 1 6253C15B
 P 4450 6850
-F 0 "#PWR045" H 4450 6600 50  0001 C CNN
+F 0 "#PWR046" H 4450 6600 50  0001 C CNN
 F 1 "GND" H 4455 6677 50  0000 C CNN
 F 2 "" H 4450 6850 50  0001 C CNN
 F 3 "" H 4450 6850 50  0001 C CNN
@@ -1079,21 +1076,21 @@ $EndComp
 Wire Wire Line
 	4450 6750 4450 6850
 $Comp
-L Device:R R54
+L Device:R R6
 U 1 1 6257E9F5
 P 5150 7100
-F 0 "R54" H 5220 7146 50  0000 L CNN
+F 0 "R6" H 5220 7146 50  0000 L CNN
 F 1 "3K" H 5220 7055 50  0000 L CNN
-F 2 "" V 5080 7100 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5080 7100 50  0001 C CNN
 F 3 "~" H 5150 7100 50  0001 C CNN
 	1    5150 7100
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:VCC #PWR046
+L power:VCC #PWR047
 U 1 1 6257F4F5
 P 5150 6850
-F 0 "#PWR046" H 5150 6700 50  0001 C CNN
+F 0 "#PWR047" H 5150 6700 50  0001 C CNN
 F 1 "VCC" H 5167 7023 50  0000 C CNN
 F 2 "" H 5150 6850 50  0001 C CNN
 F 3 "" H 5150 6850 50  0001 C CNN
@@ -1108,16 +1105,16 @@ U 1 1 625A9865
 P 5150 7500
 F 0 "C23" H 5268 7546 50  0000 L CNN
 F 1 "100uF" H 5268 7455 50  0000 L CNN
-F 2 "" H 5188 7350 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D4.0mm_P2.00mm" H 5188 7350 50  0001 C CNN
 F 3 "~" H 5150 7500 50  0001 C CNN
 	1    5150 7500
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR047
+L power:GND #PWR048
 U 1 1 625AA82F
 P 5150 7750
-F 0 "#PWR047" H 5150 7500 50  0001 C CNN
+F 0 "#PWR048" H 5150 7500 50  0001 C CNN
 F 1 "GND" H 5155 7577 50  0000 C CNN
 F 2 "" H 5150 7750 50  0001 C CNN
 F 3 "" H 5150 7750 50  0001 C CNN
@@ -1138,12 +1135,12 @@ Wire Wire Line
 	4250 7300 4150 7300
 Connection ~ 2850 6300
 $Comp
-L 74xx:74LS244 U17
+L 74xx:74LS244 U18
 U 1 1 61DD1B82
 P 2350 5900
-F 0 "U17" H 2350 6100 50  0000 C CNN
+F 0 "U18" H 2350 6100 50  0000 C CNN
 F 1 "74LS244" H 2350 5600 50  0000 C CNN
-F 2 "" H 2350 5900 50  0001 C CNN
+F 2 "Package_DIP:DIP-20_W7.62mm_Socket" H 2350 5900 50  0001 C CNN
 F 3 "http://www.ti.com/lit/gpn/sn74LS244" H 2350 5900 50  0001 C CNN
 	1    2350 5900
 	-1   0    0    -1  
@@ -1169,7 +1166,7 @@ Wire Wire Line
 Wire Wire Line
 	5150 7650 5150 7750
 Wire Wire Line
-	2450 3700 2450 3850
+	2250 3750 2250 3900
 Wire Wire Line
 	4250 7300 5150 7300
 Connection ~ 4250 7300
@@ -1185,10 +1182,10 @@ Wire Wire Line
 Wire Wire Line
 	1650 6100 1850 6100
 $Comp
-L power:VCC #PWR0106
+L power:VCC #PWR044
 U 1 1 61FC7B67
 P 2950 6100
-F 0 "#PWR0106" H 2950 5950 50  0001 C CNN
+F 0 "#PWR044" H 2950 5950 50  0001 C CNN
 F 1 "VCC" V 2967 6228 50  0000 L CNN
 F 2 "" H 2950 6100 50  0001 C CNN
 F 3 "" H 2950 6100 50  0001 C CNN
@@ -1201,41 +1198,28 @@ Wire Wire Line
 	2850 6000 2850 6100
 Connection ~ 2850 6100
 $Comp
-L Switch:SW_Push_45deg SW18
-U 1 1 61E29308
-P 2350 3600
-F 0 "SW18" H 2250 3550 50  0000 C CNN
-F 1 "SEGMENT TEST" H 2350 3450 50  0000 C CNN
-F 2 "" H 2350 3600 50  0001 C CNN
-F 3 "~" H 2350 3600 50  0001 C CNN
-	1    2350 3600
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR041
 U 1 1 620C3BC4
-P 2450 3850
-F 0 "#PWR041" H 2450 3600 50  0001 C CNN
-F 1 "GND" H 2455 3677 50  0000 C CNN
-F 2 "" H 2450 3850 50  0001 C CNN
-F 3 "" H 2450 3850 50  0001 C CNN
-	1    2450 3850
+P 2250 3900
+F 0 "#PWR041" H 2250 3650 50  0001 C CNN
+F 1 "GND" H 2255 3727 50  0000 C CNN
+F 2 "" H 2250 3900 50  0001 C CNN
+F 3 "" H 2250 3900 50  0001 C CNN
+	1    2250 3900
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	1900 3300 2250 3300
-Wire Wire Line
-	2250 3500 2250 3300
 Connection ~ 2250 3300
 Wire Wire Line
 	2250 3300 3600 3300
 $Comp
-L Device:R_Pack08 RN3
+L Device:R_Pack08 RN1
 U 1 1 61E155F6
 P 1500 1950
-F 0 "RN3" H 1888 1996 50  0000 L CNN
+F 0 "RN1" H 1888 1996 50  0000 L CNN
 F 1 "470" H 1888 1905 50  0000 L CNN
-F 2 "" V 1975 1950 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x08_P2.54mm_Vertical" V 1975 1950 50  0001 C CNN
 F 3 "~" H 1500 1950 50  0001 C CNN
 	1    1500 1950
 	1    0    0    -1  
@@ -1273,56 +1257,56 @@ Wire Wire Line
 Wire Wire Line
 	1800 1700 1800 1750
 $Comp
-L Device:R_Pack08 RN4
+L Device:R_Pack08 RN2
 U 1 1 61E853C6
 P 3200 2000
-F 0 "RN4" H 3588 2046 50  0000 L CNN
+F 0 "RN2" H 3588 2046 50  0000 L CNN
 F 1 "470" H 3588 1955 50  0000 L CNN
-F 2 "" V 3675 2000 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x08_P2.54mm_Vertical" V 3675 2000 50  0001 C CNN
 F 3 "~" H 3200 2000 50  0001 C CNN
 	1    3200 2000
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R_Pack08 RN5
+L Device:R_Pack08 RN3
 U 1 1 61E8861F
 P 4850 2000
-F 0 "RN5" H 5238 2046 50  0000 L CNN
+F 0 "RN3" H 5238 2046 50  0000 L CNN
 F 1 "470" H 5238 1955 50  0000 L CNN
-F 2 "" V 5325 2000 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x08_P2.54mm_Vertical" V 5325 2000 50  0001 C CNN
 F 3 "~" H 4850 2000 50  0001 C CNN
 	1    4850 2000
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R_Pack08 RN6
+L Device:R_Pack08 RN4
 U 1 1 61E8BBEB
 P 6450 2000
-F 0 "RN6" H 6838 2046 50  0000 L CNN
+F 0 "RN4" H 6838 2046 50  0000 L CNN
 F 1 "470" H 6838 1955 50  0000 L CNN
-F 2 "" V 6925 2000 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x08_P2.54mm_Vertical" V 6925 2000 50  0001 C CNN
 F 3 "~" H 6450 2000 50  0001 C CNN
 	1    6450 2000
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R_Pack08 RN7
+L Device:R_Pack08 RN5
 U 1 1 61E8CAFA
 P 8000 2000
-F 0 "RN7" H 8388 2046 50  0000 L CNN
+F 0 "RN5" H 8388 2046 50  0000 L CNN
 F 1 "470" H 8388 1955 50  0000 L CNN
-F 2 "" V 8475 2000 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x08_P2.54mm_Vertical" V 8475 2000 50  0001 C CNN
 F 3 "~" H 8000 2000 50  0001 C CNN
 	1    8000 2000
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:R_Pack08 RN8
+L Device:R_Pack08 RN6
 U 1 1 61E927BF
 P 9650 2000
-F 0 "RN8" H 10038 2046 50  0000 L CNN
+F 0 "RN6" H 10038 2046 50  0000 L CNN
 F 1 "470" H 10038 1955 50  0000 L CNN
-F 2 "" V 10125 2000 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x08_P2.54mm_Vertical" V 10125 2000 50  0001 C CNN
 F 3 "~" H 9650 2000 50  0001 C CNN
 	1    9650 2000
 	1    0    0    -1  
@@ -1347,4 +1331,22 @@ Text Notes 1550 4600 0    118  ~ 0
 KEYPAD
 Text Notes 4250 800  0    118  ~ 0
 DISPLAY
+$Comp
+L Connector:Conn_01x02_Male J11
+U 1 1 61EE8C80
+P 2450 3750
+F 0 "J11" H 2422 3632 50  0000 R CNN
+F 1 "SEGMENT TEST" H 2422 3723 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 2450 3750 50  0001 C CNN
+F 3 "~" H 2450 3750 50  0001 C CNN
+	1    2450 3750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2250 3300 2250 3650
+Wire Wire Line
+	1900 3700 1900 3900
+Wire Wire Line
+	1900 3400 1900 3300
+Connection ~ 1900 3300
 $EndSCHEMATC

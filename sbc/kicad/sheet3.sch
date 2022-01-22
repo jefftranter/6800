@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 3 6
 Title "6800 SIngle Board Computer"
-Date "2022-01-14"
+Date "2022-01-22"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -14,10 +14,10 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L Interface_UART:MC6850 U3
+L Interface_UART:MC6850 U5
 U 1 1 61DBC0F9
 P 7300 3250
-F 0 "U3" H 7300 3700 50  0000 C CNN
+F 0 "U5" H 7300 3700 50  0000 C CNN
 F 1 "MC6850" H 7300 3600 50  0000 C CNN
 F 2 "Package_DIP:DIP-40_W15.24mm" H 7350 2100 50  0001 L CNN
 F 3 "http://pdf.datasheetcatalog.com/datasheet/motorola/MC6850.pdf" H 7300 3250 50  0001 C CNN
@@ -25,10 +25,10 @@ F 3 "http://pdf.datasheetcatalog.com/datasheet/motorola/MC6850.pdf" H 7300 3250 
 	1    0    0    -1  
 $EndComp
 $Comp
-L Interface:6821 U2
+L Interface:6821 U4
 U 1 1 61DBC0F3
 P 3250 3250
-F 0 "U2" H 3250 3650 50  0000 C CNN
+F 0 "U4" H 3250 3650 50  0000 C CNN
 F 1 "6821" H 3250 3550 50  0000 C CNN
 F 2 "Package_DIP:DIP-40_W15.24mm" H 3300 1900 50  0001 L CNN
 F 3 "http://pdf.datasheetcatalog.com/datasheet/motorola/6821.pdf" H 3250 3250 50  0001 C CNN
@@ -281,29 +281,29 @@ U 1 1 61EFB83E
 P 2850 5950
 F 0 "Y1" H 2850 6218 50  0000 C CNN
 F 1 "1.8432 MHz" H 2850 6127 50  0000 C CNN
-F 2 "" H 2850 5950 50  0001 C CNN
+F 2 "Crystal:Crystal_HC18-U_Vertical" H 2850 5950 50  0001 C CNN
 F 3 "~" H 2850 5950 50  0001 C CNN
 	1    2850 5950
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS04 U4
+L 74xx:74LS04 U3
 U 1 1 61EFC55B
 P 2250 6500
-F 0 "U4" H 2250 6817 50  0000 C CNN
+F 0 "U3" H 2250 6817 50  0000 C CNN
 F 1 "74LS04" H 2250 6726 50  0000 C CNN
-F 2 "" H 2250 6500 50  0001 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 2250 6500 50  0001 C CNN
 F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 2250 6500 50  0001 C CNN
 	1    2250 6500
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74xx:74LS04 U4
+L 74xx:74LS04 U3
 U 2 1 61EFCF0C
 P 3450 6500
-F 0 "U4" H 3450 6817 50  0000 C CNN
+F 0 "U3" H 3450 6817 50  0000 C CNN
 F 1 "74LS04" H 3450 6726 50  0000 C CNN
-F 2 "" H 3450 6500 50  0001 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 3450 6500 50  0001 C CNN
 F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 3450 6500 50  0001 C CNN
 	2    3450 6500
 	1    0    0    -1  
@@ -314,7 +314,7 @@ U 1 1 61F064AF
 P 2850 6500
 F 0 "C22" V 2598 6500 50  0000 C CNN
 F 1 "1nF" V 2689 6500 50  0000 C CNN
-F 2 "" H 2888 6350 50  0001 C CNN
+F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 2888 6350 50  0001 C CNN
 F 3 "~" H 2850 6500 50  0001 C CNN
 	1    2850 6500
 	0    1    1    0   
@@ -325,7 +325,7 @@ U 1 1 61F07150
 P 2250 6900
 F 0 "R3" V 2043 6900 50  0000 C CNN
 F 1 "2K2" V 2134 6900 50  0000 C CNN
-F 2 "" V 2180 6900 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 2180 6900 50  0001 C CNN
 F 3 "~" H 2250 6900 50  0001 C CNN
 	1    2250 6900
 	0    1    1    0   
@@ -336,18 +336,18 @@ U 1 1 61F07645
 P 3450 6900
 F 0 "R4" V 3243 6900 50  0000 C CNN
 F 1 "2K2" V 3334 6900 50  0000 C CNN
-F 2 "" V 3380 6900 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 3380 6900 50  0001 C CNN
 F 3 "~" H 3450 6900 50  0001 C CNN
 	1    3450 6900
 	0    1    1    0   
 $EndComp
 $Comp
-L 74xx:74LS04 U4
+L 74xx:74LS04 U3
 U 3 1 61F07BCC
 P 4200 6500
-F 0 "U4" H 4200 6817 50  0000 C CNN
+F 0 "U3" H 4200 6817 50  0000 C CNN
 F 1 "74LS04" H 4200 6726 50  0000 C CNN
-F 2 "" H 4200 6500 50  0001 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 4200 6500 50  0001 C CNN
 F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 4200 6500 50  0001 C CNN
 	3    4200 6500
 	1    0    0    -1  

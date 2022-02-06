@@ -34,6 +34,6 @@ RAMEN  = VMA & !A15; /* $0000 - $7FFF */
 KBDEN  = VMA &  A15 & !A14 & !A13 & !A12 & !A11 & !A10 & !A9 & !A8; /* $80XX */
 DISPEN = VMA &  A15 & !A14 & !A13 & !A12 & !A11 & !A10 & !A9 &  A8; /* $81XX */
 PIAEN  = VMA &  A15 & !A14 & !A13 & !A12 & !A11 & !A10 &  A9 & !A8; /* $82XX */
-ACIAEN = VMA &  A15 & !A14 & !A13 & !A12 & !A11 & !A10 &  A9 &  A8; /* $82XX */
+ACIAEN = VMA &  A15 & !A14 & !A13 & !A12 & !A11 & !A10 &  A9 &  A8; /* $83XX */
 SPARE2 = 'b'1; /* Unused */
 SPARE3 = 'b'1; /* Unused */

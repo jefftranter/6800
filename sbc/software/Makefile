@@ -33,3 +33,13 @@ all.bin: all.hex
 
 clean:
 	$(RM) *.hex *.lst *.run *.bin
+
+# For EPROM programming using TL866 II Plus programmer
+blankcheck: all.bin
+	minipro -p 27C128@DIP28 -y -b
+
+program: all.bin
+	minipro -p 27C128@DIP28 -y -w all.bin
+
+verify: all.bin
+	minipro -p 27C128@DIP28 -y -m all.bin

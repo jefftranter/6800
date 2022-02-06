@@ -81,8 +81,8 @@
 ;;      RESERVED MEMORY BYTES IN RAM
 
         DUMMY
-;       * EQU $00D1                 ; Use this when external RAM present
-        * EQU $0006                 ; Use this for testing with only internal 128 bytes of RAM
+        * EQU $00D1                 ; Use this when external RAM present
+;       * EQU $0006                 ; Use this for testing with only internal 128 bytes of RAM
 
 USRSTK  EQU *-6
         DS 19

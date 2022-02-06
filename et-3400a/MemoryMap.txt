@@ -79,7 +79,7 @@ Write data $01 to turn segment on, $00 to turn off.
 |    Segment b | $C125,D|  |    Segment b | $C115,D|
 |    Segment a | $C126,E|  |    Segment a | $C116,E|
 |Decimal Point | $C127,F|  |Decimal Point | $C117,F|
-+---------------+-------+  +--------------+--------+
++--------------+--------+  +--------------+--------+
 
 Keyboard Memory Map:
 +--------+---------------+-------+
@@ -91,7 +91,10 @@ Keyboard Memory Map:
 |   1    |- - 0 1 4 7 A D| $C006 |
 +--------+-+-+-+-+-+-+-+-+-------+
 
-Example: Read $C005 = $02 -> Key 'B' pressed.
+Data bit goes low when corresponding key is pressed.
+Examples:
+Read $C003 = %11111110 $FE -> Key 'F' pressed.
+Read $C005 = %11111101 $FD -> Key 'B' pressed.
 
 
 Important ROM Locations:

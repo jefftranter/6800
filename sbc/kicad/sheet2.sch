@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 5 6
 Title "6800 SIngle Board Computer"
-Date "2022-01-22"
+Date "2022-02-06"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -335,8 +335,7 @@ F 3 "" H 8600 3950 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	8600 3950 8800 3950
-NoConn ~ 8800 4050
+	8600 3950 8700 3950
 Text GLabel 8600 4150 0    50   Input ~ 0
 ~ROMEN
 Wire Wire Line
@@ -395,7 +394,7 @@ A4
 Text GLabel 5300 3000 0    50   Input ~ 0
 A5
 Text GLabel 5300 3100 0    50   Input ~ 0
-A7
+A6
 Text GLabel 5300 3200 0    50   Input ~ 0
 A7
 Text GLabel 5300 3300 0    50   Input ~ 0
@@ -555,4 +554,11 @@ F 3 "" H 2350 3450 50  0001 C CNN
 	1    2350 3450
 	0    1    1    0   
 $EndComp
+Wire Wire Line
+	8800 4050 8700 4050
+Wire Wire Line
+	8700 4050 8700 3950
+Connection ~ 8700 3950
+Wire Wire Line
+	8700 3950 8800 3950
 $EndSCHEMATC

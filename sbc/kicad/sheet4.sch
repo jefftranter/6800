@@ -14,17 +14,6 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L Display_Character:MAN71A U6
-U 1 1 61DB9E06
-P 1500 1400
-F 0 "U6" H 1500 2067 50  0000 C CNN
-F 1 "MAN71A" H 1500 1976 50  0000 C CNN
-F 2 "Display_7Segment:MAN71A" H 1000 700 50  0001 L CNN
-F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 1510 1740 50  0001 L CNN
-	1    1500 1400
-	0    -1   -1   0   
-$EndComp
-$Comp
 L 74xx:74LS259 U12
 U 1 1 61DD2902
 P 1500 2700
@@ -35,24 +24,17 @@ F 3 "http://www.ti.com/lit/gpn/sn74LS259" H 1500 2700 50  0001 C CNN
 	1    1500 2700
 	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	1800 1700 1900 1700
 $Comp
 L power:VCC #PWR022
 U 1 1 61FB2049
-P 1800 1000
-F 0 "#PWR022" H 1800 850 50  0001 C CNN
-F 1 "VCC" H 1817 1173 50  0000 C CNN
-F 2 "" H 1800 1000 50  0001 C CNN
-F 3 "" H 1800 1000 50  0001 C CNN
-	1    1800 1000
+P 900 950
+F 0 "#PWR022" H 900 800 50  0001 C CNN
+F 1 "VCC" H 917 1123 50  0000 C CNN
+F 2 "" H 900 950 50  0001 C CNN
+F 3 "" H 900 950 50  0001 C CNN
+	1    900  950 
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	1900 1100 1800 1100
-Wire Wire Line
-	1800 1100 1800 1000
-Connection ~ 1800 1100
 $Comp
 L power:GND #PWR034
 U 1 1 61FB883E
@@ -100,13 +82,13 @@ Wire Wire Line
 $Comp
 L Display_Character:MAN71A U7
 U 1 1 62040A44
-P 3200 1400
-F 0 "U7" H 3200 2067 50  0000 C CNN
-F 1 "MAN71A" H 3200 1976 50  0000 C CNN
-F 2 "Display_7Segment:MAN71A" H 2700 700 50  0001 L CNN
-F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 3210 1740 50  0001 L CNN
-	1    3200 1400
-	0    -1   -1   0   
+P 3000 1350
+F 0 "U7" H 3000 2017 50  0000 C CNN
+F 1 "MAN71A" H 3000 1926 50  0000 C CNN
+F 2 "Display_7Segment:MAN71A" H 2500 650 50  0001 L CNN
+F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 3010 1690 50  0001 L CNN
+	1    3000 1350
+	0    1    -1   0   
 $EndComp
 $Comp
 L 74xx:74LS259 U13
@@ -120,39 +102,18 @@ F 3 "http://www.ti.com/lit/gpn/sn74LS259" H 3200 2700 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	2800 1800 2800 1700
-Wire Wire Line
-	2900 1800 2900 1700
-Wire Wire Line
-	3000 1800 3000 1700
-Wire Wire Line
-	3100 1800 3100 1700
-Wire Wire Line
-	3200 1800 3200 1700
-Wire Wire Line
-	3300 1800 3300 1700
-Wire Wire Line
-	3400 1800 3400 1700
-Wire Wire Line
 	3500 1800 3500 1700
-Wire Wire Line
-	3500 1700 3600 1700
 $Comp
 L power:VCC #PWR023
 U 1 1 62040A91
-P 3500 1000
-F 0 "#PWR023" H 3500 850 50  0001 C CNN
-F 1 "VCC" H 3517 1173 50  0000 C CNN
-F 2 "" H 3500 1000 50  0001 C CNN
-F 3 "" H 3500 1000 50  0001 C CNN
-	1    3500 1000
+P 2600 950
+F 0 "#PWR023" H 2600 800 50  0001 C CNN
+F 1 "VCC" H 2617 1123 50  0000 C CNN
+F 2 "" H 2600 950 50  0001 C CNN
+F 3 "" H 2600 950 50  0001 C CNN
+	1    2600 950 
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3600 1100 3500 1100
-Wire Wire Line
-	3500 1100 3500 1000
-Connection ~ 3500 1100
 $Comp
 L power:GND #PWR035
 U 1 1 62040A9A
@@ -202,13 +163,13 @@ Wire Wire Line
 $Comp
 L Display_Character:MAN71A U8
 U 1 1 62048245
-P 4850 1400
-F 0 "U8" H 4850 2067 50  0000 C CNN
-F 1 "MAN71A" H 4850 1976 50  0000 C CNN
-F 2 "Display_7Segment:MAN71A" H 4350 700 50  0001 L CNN
-F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 4860 1740 50  0001 L CNN
-	1    4850 1400
-	0    -1   -1   0   
+P 4650 1350
+F 0 "U8" H 4650 2017 50  0000 C CNN
+F 1 "MAN71A" H 4650 1926 50  0000 C CNN
+F 2 "Display_7Segment:MAN71A" H 4150 650 50  0001 L CNN
+F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 4660 1690 50  0001 L CNN
+	1    4650 1350
+	0    1    -1   0   
 $EndComp
 $Comp
 L 74xx:74LS259 U14
@@ -222,39 +183,18 @@ F 3 "http://www.ti.com/lit/gpn/sn74LS259" H 4850 2700 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	4450 1800 4450 1700
-Wire Wire Line
-	4550 1800 4550 1700
-Wire Wire Line
-	4650 1800 4650 1700
-Wire Wire Line
-	4750 1800 4750 1700
-Wire Wire Line
-	4850 1800 4850 1700
-Wire Wire Line
-	4950 1800 4950 1700
-Wire Wire Line
-	5050 1800 5050 1700
-Wire Wire Line
 	5150 1800 5150 1700
-Wire Wire Line
-	5150 1700 5250 1700
 $Comp
 L power:VCC #PWR024
 U 1 1 62048292
-P 5150 1000
-F 0 "#PWR024" H 5150 850 50  0001 C CNN
-F 1 "VCC" H 5167 1173 50  0000 C CNN
-F 2 "" H 5150 1000 50  0001 C CNN
-F 3 "" H 5150 1000 50  0001 C CNN
-	1    5150 1000
+P 4250 950
+F 0 "#PWR024" H 4250 800 50  0001 C CNN
+F 1 "VCC" H 4267 1123 50  0000 C CNN
+F 2 "" H 4250 950 50  0001 C CNN
+F 3 "" H 4250 950 50  0001 C CNN
+	1    4250 950 
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5250 1100 5150 1100
-Wire Wire Line
-	5150 1100 5150 1000
-Connection ~ 5150 1100
 $Comp
 L power:GND #PWR036
 U 1 1 6204829B
@@ -304,13 +244,13 @@ Wire Wire Line
 $Comp
 L Display_Character:MAN71A U9
 U 1 1 6204F591
-P 6450 1400
-F 0 "U9" H 6450 2067 50  0000 C CNN
-F 1 "MAN71A" H 6450 1976 50  0000 C CNN
-F 2 "Display_7Segment:MAN71A" H 5950 700 50  0001 L CNN
-F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 6460 1740 50  0001 L CNN
-	1    6450 1400
-	0    -1   -1   0   
+P 6250 1350
+F 0 "U9" H 6250 2017 50  0000 C CNN
+F 1 "MAN71A" H 6250 1926 50  0000 C CNN
+F 2 "Display_7Segment:MAN71A" H 5750 650 50  0001 L CNN
+F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 6260 1690 50  0001 L CNN
+	1    6250 1350
+	0    1    -1   0   
 $EndComp
 $Comp
 L 74xx:74LS259 U15
@@ -324,39 +264,18 @@ F 3 "http://www.ti.com/lit/gpn/sn74LS259" H 6450 2700 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	6050 1800 6050 1700
-Wire Wire Line
-	6150 1800 6150 1700
-Wire Wire Line
-	6250 1800 6250 1700
-Wire Wire Line
-	6350 1800 6350 1700
-Wire Wire Line
-	6450 1800 6450 1700
-Wire Wire Line
-	6550 1800 6550 1700
-Wire Wire Line
-	6650 1800 6650 1700
-Wire Wire Line
 	6750 1800 6750 1700
-Wire Wire Line
-	6750 1700 6850 1700
 $Comp
 L power:VCC #PWR025
 U 1 1 6204F5DE
-P 6750 1000
-F 0 "#PWR025" H 6750 850 50  0001 C CNN
-F 1 "VCC" H 6767 1173 50  0000 C CNN
-F 2 "" H 6750 1000 50  0001 C CNN
-F 3 "" H 6750 1000 50  0001 C CNN
-	1    6750 1000
+P 5850 950
+F 0 "#PWR025" H 5850 800 50  0001 C CNN
+F 1 "VCC" H 5867 1123 50  0000 C CNN
+F 2 "" H 5850 950 50  0001 C CNN
+F 3 "" H 5850 950 50  0001 C CNN
+	1    5850 950 
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	6850 1100 6750 1100
-Wire Wire Line
-	6750 1100 6750 1000
-Connection ~ 6750 1100
 $Comp
 L power:GND #PWR037
 U 1 1 6204F5E7
@@ -406,13 +325,13 @@ Wire Wire Line
 $Comp
 L Display_Character:MAN71A U10
 U 1 1 62056D6F
-P 8000 1400
-F 0 "U10" H 8000 2067 50  0000 C CNN
-F 1 "MAN71A" H 8000 1976 50  0000 C CNN
-F 2 "Display_7Segment:MAN71A" H 7500 700 50  0001 L CNN
-F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 8010 1740 50  0001 L CNN
-	1    8000 1400
-	0    -1   -1   0   
+P 7800 1350
+F 0 "U10" H 7800 2017 50  0000 C CNN
+F 1 "MAN71A" H 7800 1926 50  0000 C CNN
+F 2 "Display_7Segment:MAN71A" H 7300 650 50  0001 L CNN
+F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 7810 1690 50  0001 L CNN
+	1    7800 1350
+	0    1    -1   0   
 $EndComp
 $Comp
 L 74xx:74LS259 U16
@@ -425,24 +344,17 @@ F 3 "http://www.ti.com/lit/gpn/sn74LS259" H 8000 2700 50  0001 C CNN
 	1    8000 2700
 	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	8300 1700 8400 1700
 $Comp
 L power:VCC #PWR026
 U 1 1 62056DBC
-P 8300 1000
-F 0 "#PWR026" H 8300 850 50  0001 C CNN
-F 1 "VCC" H 8317 1173 50  0000 C CNN
-F 2 "" H 8300 1000 50  0001 C CNN
-F 3 "" H 8300 1000 50  0001 C CNN
-	1    8300 1000
+P 7400 950
+F 0 "#PWR026" H 7400 800 50  0001 C CNN
+F 1 "VCC" H 7417 1123 50  0000 C CNN
+F 2 "" H 7400 950 50  0001 C CNN
+F 3 "" H 7400 950 50  0001 C CNN
+	1    7400 950 
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	8400 1100 8300 1100
-Wire Wire Line
-	8300 1100 8300 1000
-Connection ~ 8300 1100
 $Comp
 L power:GND #PWR038
 U 1 1 62056DC5
@@ -492,13 +404,13 @@ Wire Wire Line
 $Comp
 L Display_Character:MAN71A U11
 U 1 1 6205E8DF
-P 9650 1400
-F 0 "U11" H 9650 2067 50  0000 C CNN
-F 1 "MAN71A" H 9650 1976 50  0000 C CNN
-F 2 "Display_7Segment:MAN71A" H 9150 700 50  0001 L CNN
-F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 9660 1740 50  0001 L CNN
-	1    9650 1400
-	0    -1   -1   0   
+P 9450 1350
+F 0 "U11" H 9450 2017 50  0000 C CNN
+F 1 "MAN71A" H 9450 1926 50  0000 C CNN
+F 2 "Display_7Segment:MAN71A" H 8950 650 50  0001 L CNN
+F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 9460 1690 50  0001 L CNN
+	1    9450 1350
+	0    1    -1   0   
 $EndComp
 $Comp
 L 74xx:74LS259 U17
@@ -512,39 +424,18 @@ F 3 "http://www.ti.com/lit/gpn/sn74LS259" H 9650 2700 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	9250 1800 9250 1700
-Wire Wire Line
-	9350 1800 9350 1700
-Wire Wire Line
-	9450 1800 9450 1700
-Wire Wire Line
-	9550 1800 9550 1700
-Wire Wire Line
-	9650 1800 9650 1700
-Wire Wire Line
-	9750 1800 9750 1700
-Wire Wire Line
-	9850 1800 9850 1700
-Wire Wire Line
 	9950 1800 9950 1700
-Wire Wire Line
-	9950 1700 10050 1700
 $Comp
 L power:VCC #PWR027
 U 1 1 6205E92C
-P 9950 1000
-F 0 "#PWR027" H 9950 850 50  0001 C CNN
-F 1 "VCC" H 9967 1173 50  0000 C CNN
-F 2 "" H 9950 1000 50  0001 C CNN
-F 3 "" H 9950 1000 50  0001 C CNN
-	1    9950 1000
+P 9050 950
+F 0 "#PWR027" H 9050 800 50  0001 C CNN
+F 1 "VCC" H 9067 1123 50  0000 C CNN
+F 2 "" H 9050 950 50  0001 C CNN
+F 3 "" H 9050 950 50  0001 C CNN
+	1    9050 950 
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	10050 1100 9950 1100
-Wire Wire Line
-	9950 1100 9950 1000
-Connection ~ 9950 1100
 $Comp
 L power:GND #PWR039
 U 1 1 6205E935
@@ -1240,22 +1131,6 @@ Wire Wire Line
 	1700 2200 1700 2150
 Wire Wire Line
 	1800 2200 1800 2150
-Wire Wire Line
-	1100 1750 1100 1700
-Wire Wire Line
-	1200 1750 1200 1700
-Wire Wire Line
-	1300 1750 1300 1700
-Wire Wire Line
-	1400 1750 1400 1700
-Wire Wire Line
-	1500 1750 1500 1700
-Wire Wire Line
-	1600 1700 1600 1750
-Wire Wire Line
-	1700 1700 1700 1750
-Wire Wire Line
-	1800 1700 1800 1750
 $Comp
 L Device:R_Pack08 RN2
 U 1 1 61E853C6
@@ -1312,24 +1187,10 @@ F 3 "~" H 9650 2000 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7600 1800 7600 1700
-Wire Wire Line
-	7700 1800 7700 1700
-Wire Wire Line
-	7800 1800 7800 1700
-Wire Wire Line
-	7900 1800 7900 1700
-Wire Wire Line
-	8000 1800 8000 1700
-Wire Wire Line
-	8100 1800 8100 1700
-Wire Wire Line
-	8200 1800 8200 1700
-Wire Wire Line
 	8300 1800 8300 1700
 Text Notes 1550 4600 0    118  ~ 0
 KEYPAD
-Text Notes 4250 800  0    118  ~ 0
+Text Notes 4650 750  0    118  ~ 0
 DISPLAY
 $Comp
 L Connector:Conn_01x02_Male J11
@@ -1349,4 +1210,155 @@ Wire Wire Line
 Wire Wire Line
 	1900 3400 1900 3300
 Connection ~ 1900 3300
+$Comp
+L Display_Character:MAN71A U6
+U 1 1 61DB9E06
+P 1300 1350
+F 0 "U6" H 1300 2017 50  0000 C CNN
+F 1 "MAN71A" H 1300 1926 50  0000 C CNN
+F 2 "Display_7Segment:MAN71A" H 800 650 50  0001 L CNN
+F 3 "https://www.digchip.com/datasheets/parts/datasheet/161/MAN3640A-pdf.php" H 1310 1690 50  0001 L CNN
+	1    1300 1350
+	0    1    -1   0   
+$EndComp
+Wire Wire Line
+	1000 1050 900  1050
+Wire Wire Line
+	900  1050 900  950 
+Connection ~ 900  1050
+Wire Wire Line
+	1100 1650 1100 1750
+Wire Wire Line
+	1200 1650 1200 1750
+Wire Wire Line
+	1300 1650 1300 1750
+Wire Wire Line
+	1400 1650 1400 1750
+Wire Wire Line
+	1500 1650 1500 1750
+Wire Wire Line
+	1600 1650 1600 1750
+Wire Wire Line
+	1700 1650 1700 1750
+Wire Wire Line
+	1800 1750 1800 1700
+Wire Wire Line
+	1800 1700 900  1700
+Wire Wire Line
+	900  1700 900  1650
+Wire Wire Line
+	2700 1050 2600 1050
+Wire Wire Line
+	2600 1050 2600 950 
+Connection ~ 2600 1050
+Wire Wire Line
+	2800 1650 2800 1800
+Wire Wire Line
+	2900 1650 2900 1800
+Wire Wire Line
+	3000 1650 3000 1800
+Wire Wire Line
+	3100 1650 3100 1800
+Wire Wire Line
+	3200 1650 3200 1800
+Wire Wire Line
+	3300 1650 3300 1800
+Wire Wire Line
+	3400 1650 3400 1800
+Wire Wire Line
+	3500 1700 2600 1700
+Wire Wire Line
+	2600 1700 2600 1650
+Wire Wire Line
+	4250 950  4250 1050
+Wire Wire Line
+	4250 1050 4350 1050
+Connection ~ 4250 1050
+Wire Wire Line
+	4450 1650 4450 1800
+Wire Wire Line
+	4550 1650 4550 1800
+Wire Wire Line
+	4650 1650 4650 1800
+Wire Wire Line
+	4750 1650 4750 1800
+Wire Wire Line
+	4850 1650 4850 1800
+Wire Wire Line
+	4950 1650 4950 1800
+Wire Wire Line
+	5050 1650 5050 1800
+Wire Wire Line
+	5150 1700 4250 1700
+Wire Wire Line
+	4250 1700 4250 1650
+Wire Wire Line
+	5850 950  5850 1050
+Wire Wire Line
+	5850 1050 5950 1050
+Connection ~ 5850 1050
+Wire Wire Line
+	6050 1650 6050 1800
+Wire Wire Line
+	6150 1650 6150 1800
+Wire Wire Line
+	6250 1650 6250 1800
+Wire Wire Line
+	6350 1650 6350 1800
+Wire Wire Line
+	6450 1650 6450 1800
+Wire Wire Line
+	6550 1650 6550 1800
+Wire Wire Line
+	6650 1650 6650 1800
+Wire Wire Line
+	6750 1700 5850 1700
+Wire Wire Line
+	5850 1700 5850 1650
+Wire Wire Line
+	7400 950  7400 1050
+Wire Wire Line
+	7400 1050 7500 1050
+Connection ~ 7400 1050
+Wire Wire Line
+	7600 1650 7600 1800
+Wire Wire Line
+	7700 1650 7700 1800
+Wire Wire Line
+	7800 1650 7800 1800
+Wire Wire Line
+	7900 1650 7900 1800
+Wire Wire Line
+	8000 1650 8000 1800
+Wire Wire Line
+	8100 1650 8100 1800
+Wire Wire Line
+	8200 1650 8200 1800
+Wire Wire Line
+	8300 1700 7400 1700
+Wire Wire Line
+	7400 1700 7400 1650
+Wire Wire Line
+	9050 950  9050 1050
+Wire Wire Line
+	9050 1050 9150 1050
+Connection ~ 9050 1050
+Wire Wire Line
+	9250 1650 9250 1800
+Wire Wire Line
+	9350 1650 9350 1800
+Wire Wire Line
+	9450 1650 9450 1800
+Wire Wire Line
+	9550 1650 9550 1800
+Wire Wire Line
+	9650 1650 9650 1800
+Wire Wire Line
+	9750 1650 9750 1800
+Wire Wire Line
+	9850 1650 9850 1800
+Wire Wire Line
+	9950 1700 9050 1700
+Wire Wire Line
+	9050 1700 9050 1650
 $EndSCHEMATC

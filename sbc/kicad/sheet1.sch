@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 2 6
 Title "6800 SIngle Board Computer"
-Date "2022-02-06"
+Date "2022-02-07"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -87,13 +87,13 @@ $EndComp
 $Comp
 L power:VCC #PWR04
 U 1 1 61E4A38D
-P 6750 2100
-F 0 "#PWR04" H 6750 1950 50  0001 C CNN
-F 1 "VCC" H 6767 2273 50  0000 C CNN
-F 2 "" H 6750 2100 50  0001 C CNN
-F 3 "" H 6750 2100 50  0001 C CNN
-	1    6750 2100
-	1    0    0    -1  
+P 6850 2100
+F 0 "#PWR04" H 6850 1950 50  0001 C CNN
+F 1 "VCC" V 6867 2273 50  0000 C CNN
+F 2 "" H 6850 2100 50  0001 C CNN
+F 3 "" H 6850 2100 50  0001 C CNN
+	1    6850 2100
+	0    1    1    0   
 $EndComp
 Wire Wire Line
 	5600 2100 5850 2100
@@ -696,8 +696,8 @@ NoConn ~ 7250 4450
 NoConn ~ 7850 4350
 Text Notes 1900 2350 0    79   ~ 0
 UNREGULATED\nAC OR DC IN\n7-15V
-Text Notes 5050 1450 0    118  ~ 0
-POWER
+Text Notes 4500 1450 0    118  ~ 0
+POWER (OPTIONAL)
 $Comp
 L Diode:1N4001 D2
 U 1 1 61EC6469
@@ -788,4 +788,29 @@ Wire Wire Line
 Wire Wire Line
 	4900 1750 6750 1750
 Connection ~ 4900 1750
+$Comp
+L Connector_Generic:Conn_01x02 J12
+U 1 1 6201E14B
+P 6850 1900
+F 0 "J12" V 6850 1650 50  0000 C CNN
+F 1 "REG. POWER" V 6850 2200 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 6850 1900 50  0001 C CNN
+F 3 "~" H 6850 1900 50  0001 C CNN
+	1    6850 1900
+	0    1    -1   0   
+$EndComp
+$Comp
+L power:PWR_FLAG #FLG0101
+U 1 1 62045FE8
+P 6850 2700
+F 0 "#FLG0101" H 6850 2775 50  0001 C CNN
+F 1 "PWR_FLAG" H 6850 2873 50  0000 C CNN
+F 2 "" H 6850 2700 50  0001 C CNN
+F 3 "~" H 6850 2700 50  0001 C CNN
+	1    6850 2700
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6850 2100 6850 2700
+Connection ~ 6850 2100
 $EndSCHEMATC

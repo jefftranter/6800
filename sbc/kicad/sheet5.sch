@@ -950,7 +950,7 @@ PA4
 Text GLabel 1650 7450 0    50   Input ~ 0
 PA5
 Text GLabel 1650 7550 0    50   Input ~ 0
-PA1
+PA6
 $Comp
 L Device:R_Network08 RN9
 U 1 1 61EBFA5C

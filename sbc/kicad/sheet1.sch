@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 2 6
 Title "6800 SIngle Board Computer"
-Date "2022-02-07"
+Date "2022-02-09"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -686,13 +686,8 @@ F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 6550 5000 50  0001 C CNN
 	6    6550 5000
 	1    0    0    -1  
 $EndComp
-NoConn ~ 6250 5000
 NoConn ~ 6850 5000
-NoConn ~ 6250 4450
-NoConn ~ 6250 4250
 NoConn ~ 6850 4350
-NoConn ~ 7250 4250
-NoConn ~ 7250 4450
 NoConn ~ 7850 4350
 Text Notes 1900 2350 0    79   ~ 0
 UNREGULATED\nAC OR DC IN\n7-15V
@@ -813,4 +808,53 @@ $EndComp
 Wire Wire Line
 	6850 2100 6850 2700
 Connection ~ 6850 2100
+Text Notes 1450 4300 0    50   ~ 0
+REGULATED\n5V IN SELECT
+Text Notes 6200 1700 0    50   ~ 0
+UNREGULATED\nPOWER SELECT
+$Comp
+L power:GND #PWR0101
+U 1 1 62049965
+P 6250 5100
+F 0 "#PWR0101" H 6250 4850 50  0001 C CNN
+F 1 "GND" H 6255 4927 50  0000 C CNN
+F 2 "" H 6250 5100 50  0001 C CNN
+F 3 "" H 6250 5100 50  0001 C CNN
+	1    6250 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0102
+U 1 1 6204A1DA
+P 6250 4550
+F 0 "#PWR0102" H 6250 4300 50  0001 C CNN
+F 1 "GND" H 6255 4377 50  0000 C CNN
+F 2 "" H 6250 4550 50  0001 C CNN
+F 3 "" H 6250 4550 50  0001 C CNN
+	1    6250 4550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0103
+U 1 1 6204A7F3
+P 7250 4550
+F 0 "#PWR0103" H 7250 4300 50  0001 C CNN
+F 1 "GND" H 7255 4377 50  0000 C CNN
+F 2 "" H 7250 4550 50  0001 C CNN
+F 3 "" H 7250 4550 50  0001 C CNN
+	1    7250 4550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7250 4250 7250 4450
+Wire Wire Line
+	7250 4450 7250 4550
+Connection ~ 7250 4450
+Wire Wire Line
+	6250 4250 6250 4450
+Wire Wire Line
+	6250 4450 6250 4550
+Connection ~ 6250 4450
+Wire Wire Line
+	6250 5000 6250 5100
 $EndSCHEMATC

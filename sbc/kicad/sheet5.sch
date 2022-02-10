@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 6 6
 Title "6800 SIngle Board Computer"
-Date "2022-02-07"
+Date "2022-02-09"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -779,8 +779,8 @@ $Comp
 L Connector:Conn_01x03_Male J4
 U 1 1 61E10F5C
 P 6000 3150
-F 0 "J4" H 5900 3150 50  0000 R CNN
-F 1 "LTC" H 5950 3250 50  0000 R CNN
+F 0 "J4" H 5900 3100 50  0000 R CNN
+F 1 "LTC" H 5900 3200 50  0000 R CNN
 F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 6000 3150 50  0001 C CNN
 F 3 "~" H 6000 3150 50  0001 C CNN
 	1    6000 3150
@@ -920,120 +920,128 @@ Wire Wire Line
 $Comp
 L power:VCC #PWR075
 U 1 1 61ECAFDD
-P 1750 6450
-F 0 "#PWR075" H 1750 6300 50  0001 C CNN
-F 1 "VCC" H 1767 6623 50  0000 C CNN
-F 2 "" H 1750 6450 50  0001 C CNN
-F 3 "" H 1750 6450 50  0001 C CNN
-	1    1750 6450
+P 2900 6650
+F 0 "#PWR075" H 2900 6500 50  0001 C CNN
+F 1 "VCC" H 2917 6823 50  0000 C CNN
+F 2 "" H 2900 6650 50  0001 C CNN
+F 3 "" H 2900 6650 50  0001 C CNN
+	1    2900 6650
 	1    0    0    -1  
 $EndComp
 $Comp
 L Connector_Generic:Conn_02x06_Odd_Even J10
 U 1 1 61ED5301
-P 2650 7250
-F 0 "J10" H 2800 7700 50  0000 C CNN
-F 1 "BAUD RATE" H 2800 7600 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x06_P2.54mm_Vertical" H 2650 7250 50  0001 C CNN
-F 3 "~" H 2650 7250 50  0001 C CNN
-	1    2650 7250
+P 3800 7450
+F 0 "J10" H 3950 7900 50  0000 C CNN
+F 1 "BAUD RATE" H 3950 7800 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x06_P2.54mm_Vertical" H 3800 7450 50  0001 C CNN
+F 3 "~" H 3800 7450 50  0001 C CNN
+	1    3800 7450
 	1    0    0    -1  
 $EndComp
-Text GLabel 1650 7050 0    50   Input ~ 0
+Text GLabel 2800 7250 0    50   Input ~ 0
 PA1
-Text GLabel 1650 7150 0    50   Input ~ 0
+Text GLabel 2800 7350 0    50   Input ~ 0
 PA2
-Text GLabel 1650 7250 0    50   Input ~ 0
+Text GLabel 2800 7450 0    50   Input ~ 0
 PA3
-Text GLabel 1650 7350 0    50   Input ~ 0
+Text GLabel 2800 7550 0    50   Input ~ 0
 PA4
-Text GLabel 1650 7450 0    50   Input ~ 0
+Text GLabel 2800 7650 0    50   Input ~ 0
 PA5
-Text GLabel 1650 7550 0    50   Input ~ 0
+Text GLabel 2800 7750 0    50   Input ~ 0
 PA6
 $Comp
 L Device:R_Network08 RN9
 U 1 1 61EBFA5C
-P 2150 6750
-F 0 "RN9" H 1600 6800 50  0000 C CNN
-F 1 "3K" H 1600 6700 50  0000 C CNN
-F 2 "Resistor_THT:R_Array_SIP9" V 2625 6750 50  0001 C CNN
-F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 2150 6750 50  0001 C CNN
-	1    2150 6750
+P 3300 6950
+F 0 "RN9" H 2750 7000 50  0000 C CNN
+F 1 "3K" H 2750 6900 50  0000 C CNN
+F 2 "Resistor_THT:R_Array_SIP9" V 3775 6950 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 3300 6950 50  0001 C CNN
+	1    3300 6950
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1750 6550 1750 6450
+	2900 6750 2900 6650
 $Comp
 L power:GND #PWR078
 U 1 1 61EFFBD5
-P 3050 7550
-F 0 "#PWR078" H 3050 7300 50  0001 C CNN
-F 1 "GND" H 3055 7377 50  0000 C CNN
-F 2 "" H 3050 7550 50  0001 C CNN
-F 3 "" H 3050 7550 50  0001 C CNN
-	1    3050 7550
+P 4200 7750
+F 0 "#PWR078" H 4200 7500 50  0001 C CNN
+F 1 "GND" H 4205 7577 50  0000 C CNN
+F 2 "" H 4200 7750 50  0001 C CNN
+F 3 "" H 4200 7750 50  0001 C CNN
+	1    4200 7750
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2950 7050 2950 7150
+	4100 7250 4100 7350
 Wire Wire Line
-	2950 7150 2950 7250
-Connection ~ 2950 7150
+	4100 7350 4100 7450
+Connection ~ 4100 7350
 Wire Wire Line
-	2950 7250 2950 7350
-Connection ~ 2950 7250
+	4100 7450 4100 7550
+Connection ~ 4100 7450
 Wire Wire Line
-	2950 7350 2950 7450
-Connection ~ 2950 7350
+	4100 7550 4100 7650
+Connection ~ 4100 7550
 Wire Wire Line
-	2950 7450 2950 7550
-Connection ~ 2950 7450
+	4100 7650 4100 7750
+Connection ~ 4100 7650
 Wire Wire Line
-	1650 7050 1750 7050
+	2800 7250 2900 7250
 Wire Wire Line
-	1650 7150 1850 7150
+	2800 7350 3000 7350
 Wire Wire Line
-	1650 7250 1950 7250
+	2800 7450 3100 7450
 Wire Wire Line
-	1650 7350 2050 7350
+	2800 7550 3200 7550
 Wire Wire Line
-	1650 7450 2150 7450
+	2800 7650 3300 7650
 Wire Wire Line
-	1650 7550 2250 7550
+	2800 7750 3400 7750
 Wire Wire Line
-	1750 6950 1750 7050
-Connection ~ 1750 7050
+	2900 7150 2900 7250
+Connection ~ 2900 7250
 Wire Wire Line
-	1750 7050 2450 7050
+	2900 7250 3600 7250
 Wire Wire Line
-	1850 6950 1850 7150
-Connection ~ 1850 7150
+	3000 7150 3000 7350
+Connection ~ 3000 7350
 Wire Wire Line
-	1850 7150 2450 7150
+	3000 7350 3600 7350
 Wire Wire Line
-	1950 6950 1950 7250
-Connection ~ 1950 7250
+	3100 7150 3100 7450
+Connection ~ 3100 7450
 Wire Wire Line
-	1950 7250 2450 7250
+	3100 7450 3600 7450
 Wire Wire Line
-	2050 6950 2050 7350
-Connection ~ 2050 7350
+	3200 7150 3200 7550
+Connection ~ 3200 7550
 Wire Wire Line
-	2050 7350 2450 7350
+	3200 7550 3600 7550
 Wire Wire Line
-	2150 6950 2150 7450
-Connection ~ 2150 7450
+	3300 7150 3300 7650
+Connection ~ 3300 7650
 Wire Wire Line
-	2150 7450 2450 7450
+	3300 7650 3600 7650
 Wire Wire Line
-	2250 6950 2250 7550
-Connection ~ 2250 7550
+	3400 7150 3400 7750
+Connection ~ 3400 7750
 Wire Wire Line
-	2250 7550 2450 7550
-NoConn ~ 2350 6950
-NoConn ~ 2450 6950
+	3400 7750 3600 7750
+NoConn ~ 3500 7150
+NoConn ~ 3600 7150
 Wire Wire Line
-	2950 7550 3050 7550
-Connection ~ 2950 7550
+	4100 7750 4200 7750
+Connection ~ 4100 7750
+Text Notes 4500 7050 0    50   ~ 0
+POWER FROM\nFTDI
+Text Notes 5100 5950 0    50   ~ 0
+SERIAL SELECT JUMPERS\nACIA: J6 1-2, J7 2-3\nPIA:  J6 2-3, J7 1-2
+Text Notes 550  7950 0    50   ~ 0
+      BAUD RATE JUMPERS\n+--+--+--+--+--+--+---+\n|PA1|PA2|PA3|PA4|PA5|PA6|RATE|\n+--+--+--+--+--+--+---+\n| H | H  | H | H  | H | H | 110|\n| L  | L | L  | L | H  | H | 300|\n| H  | L | H  | L | H  | H | 600|\n| L  | L | H  | L | H  | H |1200|\n| H  | H | L  | L | H  | H |2400|\n| L  | H | L  | L | H  | H |4800|\n| H  | L | L  | L | H  | H |9600|\n+--+--+--+--+--+--+---+
+Text Notes 6150 3650 0    50   ~ 0
+LTC INTERRUPT SELECT\nIRQ J4 1-2\nNMI J4 2-3
 $EndSCHEMATC

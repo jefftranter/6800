@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 1 6
 Title "6800 SIngle Board Computer"
-Date "2022-02-09"
+Date "2022-02-12"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""

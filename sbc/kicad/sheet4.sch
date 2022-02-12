@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 4 6
 Title "6800 SIngle Board Computer"
-Date "2022-02-09"
+Date "2022-02-12"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -884,17 +884,6 @@ Wire Wire Line
 	4100 6750 3400 6750
 Wire Wire Line
 	3400 6750 3400 5900
-$Comp
-L Device:R_Network06 RN7
-U 1 1 623FE313
-P 3400 5050
-F 0 "RN7" H 3300 5250 50  0000 C CNN
-F 1 "8K2" H 3550 5250 50  0000 C CNN
-F 2 "Resistor_THT:R_Array_SIP7" V 3775 5050 50  0001 C CNN
-F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 3400 5050 50  0001 C CNN
-	1    3400 5050
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	3600 5250 3600 5400
 Connection ~ 3600 5400
@@ -926,8 +915,6 @@ F 3 "" H 3100 4750 50  0001 C CNN
 	1    3100 4750
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3100 4850 3100 4750
 Text GLabel 3900 4600 1    50   Input ~ 0
 A0
 Text GLabel 4250 4600 1    50   Input ~ 0
@@ -956,17 +943,6 @@ F 3 "" H 4450 6850 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	4450 6750 4450 6850
-$Comp
-L Device:R R6
-U 1 1 6257E9F5
-P 5150 7100
-F 0 "R6" H 5220 7146 50  0000 L CNN
-F 1 "3K" H 5220 7055 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5080 7100 50  0001 C CNN
-F 3 "~" H 5150 7100 50  0001 C CNN
-	1    5150 7100
-	1    0    0    -1  
-$EndComp
 $Comp
 L power:VCC #PWR047
 U 1 1 6257F4F5
@@ -1903,4 +1879,98 @@ Wire Wire Line
 	5050 1650 5050 1850
 Wire Wire Line
 	5150 1700 5150 1850
+$Comp
+L Device:R R6
+U 1 1 6257E9F5
+P 5150 7100
+F 0 "R6" H 5220 7146 50  0000 L CNN
+F 1 "3K" H 5220 7055 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5080 7100 50  0001 C CNN
+F 3 "~" H 5150 7100 50  0001 C CNN
+	1    5150 7100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R55
+U 1 1 620A360E
+P 3100 5100
+F 0 "R55" H 3050 5300 50  0000 L CNN
+F 1 "8K2" H 3050 4950 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 3030 5100 50  0001 C CNN
+F 3 "~" H 3100 5100 50  0001 C CNN
+	1    3100 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R56
+U 1 1 620A46F1
+P 3200 5100
+F 0 "R56" H 3150 5350 50  0000 L CNN
+F 1 "8K2" H 3150 4900 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 3130 5100 50  0001 C CNN
+F 3 "~" H 3200 5100 50  0001 C CNN
+	1    3200 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R57
+U 1 1 620A4865
+P 3300 5100
+F 0 "R57" H 3250 5300 50  0000 L CNN
+F 1 "8K2" H 3250 4950 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 3230 5100 50  0001 C CNN
+F 3 "~" H 3300 5100 50  0001 C CNN
+	1    3300 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R58
+U 1 1 620A4AA0
+P 3400 5100
+F 0 "R58" H 3350 5350 50  0000 L CNN
+F 1 "8K2" H 3350 4900 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 3330 5100 50  0001 C CNN
+F 3 "~" H 3400 5100 50  0001 C CNN
+	1    3400 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R60
+U 1 1 620A4C34
+P 3600 5100
+F 0 "R60" H 3550 5350 50  0000 L CNN
+F 1 "8K2" H 3550 4900 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 3530 5100 50  0001 C CNN
+F 3 "~" H 3600 5100 50  0001 C CNN
+	1    3600 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R59
+U 1 1 620A4E16
+P 3500 5100
+F 0 "R59" H 3450 5300 50  0000 L CNN
+F 1 "8K2" H 3450 4950 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 3430 5100 50  0001 C CNN
+F 3 "~" H 3500 5100 50  0001 C CNN
+	1    3500 5100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3600 4950 3500 4950
+Wire Wire Line
+	3400 4950 3300 4950
+Wire Wire Line
+	3200 4950 3100 4950
+Wire Wire Line
+	3100 4750 3100 4950
+Connection ~ 3100 4950
+Wire Wire Line
+	3200 4950 3300 4950
+Connection ~ 3200 4950
+Connection ~ 3300 4950
+Wire Wire Line
+	3400 4950 3500 4950
+Connection ~ 3400 4950
+Connection ~ 3500 4950
 $EndSCHEMATC

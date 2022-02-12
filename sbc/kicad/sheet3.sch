@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 3 6
 Title "6800 SIngle Board Computer"
-Date "2022-02-09"
+Date "2022-02-12"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -19,7 +19,7 @@ U 1 1 61DBC0F9
 P 7300 3250
 F 0 "U5" H 7300 3700 50  0000 C CNN
 F 1 "MC6850" H 7300 3600 50  0000 C CNN
-F 2 "Package_DIP:DIP-40_W15.24mm" H 7350 2100 50  0001 L CNN
+F 2 "Package_DIP:DIP-24_W15.24mm" H 7350 2100 50  0001 L CNN
 F 3 "http://pdf.datasheetcatalog.com/datasheet/motorola/MC6850.pdf" H 7300 3250 50  0001 C CNN
 	1    7300 3250
 	1    0    0    -1  

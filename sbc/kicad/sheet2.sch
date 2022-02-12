@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 5 6
 Title "6800 SIngle Board Computer"
-Date "2022-02-09"
+Date "2022-02-12"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -112,7 +112,7 @@ L Device:Crystal Y2
 U 1 1 61EF488D
 P 1850 4750
 F 0 "Y2" H 1400 4800 50  0000 C CNN
-F 1 "3.579545 kHz" H 1400 4700 50  0000 C CNN
+F 1 "3.579545 MHz" H 1400 4700 50  0000 C CNN
 F 2 "Crystal:Crystal_HC18-U_Vertical" H 1850 4750 50  0001 C CNN
 F 3 "~" H 1850 4750 50  0001 C CNN
 	1    1850 4750
@@ -375,7 +375,7 @@ L Memory_RAM:CY62256-70PC U19
 U 1 1 61DA8011
 P 6000 3200
 F 0 "U19" H 6000 3600 50  0000 C CNN
-F 1 "62256 RAM" H 6000 3450 50  0000 C CNN
+F 1 "62256" H 6000 3450 50  0000 C CNN
 F 2 "Package_DIP:DIP-28_W15.24mm" H 6000 3100 50  0001 C CNN
 F 3 "https://ecee.colorado.edu/~mcclurel/Cypress_SRAM_CY62256.pdf" H 6000 3100 50  0001 C CNN
 	1    6000 3200

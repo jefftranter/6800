@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 2 6
 Title "6800 SIngle Board Computer"
-Date "2022-02-09"
+Date "2022-02-12"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -857,4 +857,70 @@ Wire Wire Line
 Connection ~ 6250 4450
 Wire Wire Line
 	6250 5000 6250 5100
+$Comp
+L 74xx:74LS00 U2
+U 5 1 620849AD
+P 8600 5300
+F 0 "U2" H 8450 5650 50  0000 C CNN
+F 1 "74LS00" H 8750 5650 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 8600 5300 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74ls00" H 8600 5300 50  0001 C CNN
+	5    8600 5300
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U3
+U 7 1 62087D0F
+P 7900 5300
+F 0 "U3" H 7750 5650 50  0000 C CNN
+F 1 "74LS04" H 8050 5650 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm_Socket" H 7900 5300 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 7900 5300 50  0001 C CNN
+	7    7900 5300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR081
+U 1 1 6209947A
+P 7900 5800
+F 0 "#PWR081" H 7900 5550 50  0001 C CNN
+F 1 "GND" H 7905 5627 50  0000 C CNN
+F 2 "" H 7900 5800 50  0001 C CNN
+F 3 "" H 7900 5800 50  0001 C CNN
+	1    7900 5800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR082
+U 1 1 62099D08
+P 8600 5800
+F 0 "#PWR082" H 8600 5550 50  0001 C CNN
+F 1 "GND" H 8605 5627 50  0000 C CNN
+F 2 "" H 8600 5800 50  0001 C CNN
+F 3 "" H 8600 5800 50  0001 C CNN
+	1    8600 5800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VCC #PWR079
+U 1 1 6209A4EC
+P 7900 4800
+F 0 "#PWR079" H 7900 4650 50  0001 C CNN
+F 1 "VCC" H 7917 4973 50  0000 C CNN
+F 2 "" H 7900 4800 50  0001 C CNN
+F 3 "" H 7900 4800 50  0001 C CNN
+	1    7900 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VCC #PWR080
+U 1 1 6209AE4E
+P 8600 4800
+F 0 "#PWR080" H 8600 4650 50  0001 C CNN
+F 1 "VCC" H 8617 4973 50  0000 C CNN
+F 2 "" H 8600 4800 50  0001 C CNN
+F 3 "" H 8600 4800 50  0001 C CNN
+	1    8600 4800
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

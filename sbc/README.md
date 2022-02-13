@@ -43,7 +43,25 @@ MEMORY MAP
 
 JUMPERS AND CONNECTORS
 
-To be written...
+```
+J1 AC/DC IN Connector to power board from unregulated AC or DC input.
+J10 PA1 Jumper to select baud rate for PIA serial interface.
+J11 SEGMENT TEST Jumper to light all LED segments for testing.
+J12 REG. POWER Jumper to select powering board from unregulated AC/DC input.
+J13 PA2 Jumper to select baud rate for PIA serial interface.
+J14 PA3 Jumper to select baud rate for PIA serial interface.
+J15 PA4 Jumper to select baud rate for PIA serial interface.
+J16 PA5 Jumper to select baud rate for PIA serial interface.
+J17 PA6 Jumper to select baud rate for PIA serial interface.
+J2 5V IN Connector to power board from regulated 5 Volt input.
+J3 EXPANSION Connector for expansion connector to CPU bus signals.
+J4 LTC Jumper to select if AC input generates IRQ or NMI interrupts.
+J5 PARALLEL PORT Connector for 2 8-bit parallel i/o ports from PIA.
+J6 TX DATA SELECT Jumper to select whether to use ACIA or PIA for serial output.
+J7 RX DATA SELECT Jumper to select whether to use ACIA or PIA for serial input.
+J8 USB POWER Jumper to select powering board from USB FTDI connector.
+J9 FTDI SERIAL Connector to a 6 pin FTDI USB serial adaptor for console.
+```
 
 ASSEMBLY NOTES
 

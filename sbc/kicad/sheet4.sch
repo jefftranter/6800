@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 4 6
 Title "6800 SIngle Board Computer"
-Date "2022-02-12"
+Date "2022-03-02"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -859,27 +859,11 @@ Wire Wire Line
 	4100 5400 3600 5400
 Connection ~ 4100 5400
 Wire Wire Line
-	4050 5650 3800 5650
-Wire Wire Line
-	3800 5650 3800 5500
-Wire Wire Line
 	3800 5500 3500 5500
-Wire Wire Line
-	4050 5950 3700 5950
-Wire Wire Line
-	3700 5950 3700 5600
 Wire Wire Line
 	3700 5600 3400 5600
 Wire Wire Line
-	4050 6200 3600 6200
-Wire Wire Line
-	3600 6200 3600 5700
-Wire Wire Line
 	3600 5700 3300 5700
-Wire Wire Line
-	4050 6450 3500 6450
-Wire Wire Line
-	3500 6450 3500 5800
 Wire Wire Line
 	4100 6750 3400 6750
 Wire Wire Line
@@ -1973,4 +1957,24 @@ Wire Wire Line
 	3400 4950 3500 4950
 Connection ~ 3400 4950
 Connection ~ 3500 4950
+Wire Wire Line
+	3800 5500 3800 5700
+Wire Wire Line
+	3800 5700 4100 5700
+Connection ~ 4100 5700
+Wire Wire Line
+	3700 5600 3700 6000
+Wire Wire Line
+	3700 6000 4100 6000
+Connection ~ 4100 6000
+Wire Wire Line
+	3600 5700 3600 6250
+Wire Wire Line
+	3600 6250 4100 6250
+Connection ~ 4100 6250
+Wire Wire Line
+	3500 6500 4100 6500
+Connection ~ 4100 6500
+Wire Wire Line
+	3500 5800 3500 6500
 $EndSCHEMATC

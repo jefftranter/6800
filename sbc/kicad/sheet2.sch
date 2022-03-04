@@ -5,8 +5,8 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 5 6
 Title "6800 SIngle Board Computer"
-Date "2022-02-12"
-Rev "0.1"
+Date "2022-03-02"
+Rev "1.0"
 Comp "Jeff Tranter"
 Comment1 ""
 Comment2 "CPU, RAM, ROM"
@@ -112,7 +112,7 @@ L Device:Crystal Y2
 U 1 1 61EF488D
 P 1850 4750
 F 0 "Y2" H 1400 4800 50  0000 C CNN
-F 1 "3.579545 MHz" H 1400 4700 50  0000 C CNN
+F 1 "4 MHz" H 1400 4700 50  0000 C CNN
 F 2 "Crystal:Crystal_HC18-U_Vertical" H 1850 4750 50  0001 C CNN
 F 3 "~" H 1850 4750 50  0001 C CNN
 	1    1850 4750

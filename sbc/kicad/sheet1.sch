@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 2 6
 Title "6800 SIngle Board Computer"
-Date "2022-02-12"
+Date "2022-03-02"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -690,7 +690,7 @@ NoConn ~ 6850 5000
 NoConn ~ 6850 4350
 NoConn ~ 7850 4350
 Text Notes 1900 2350 0    79   ~ 0
-UNREGULATED\nAC OR DC IN\n7-15V
+UNREGULATED\nAC OR DC IN\n8-25V
 Text Notes 4500 1450 0    118  ~ 0
 POWER (OPTIONAL)
 $Comp
@@ -809,7 +809,7 @@ Wire Wire Line
 	6850 2100 6850 2700
 Connection ~ 6850 2100
 Text Notes 1450 4300 0    50   ~ 0
-REGULATED\n5V IN SELECT
+REGULATED\n5V IN
 Text Notes 6200 1700 0    50   ~ 0
 UNREGULATED\nPOWER SELECT
 $Comp

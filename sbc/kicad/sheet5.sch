@@ -5,7 +5,7 @@ $Descr USLetter 11000 8500
 encoding utf-8
 Sheet 6 6
 Title "6800 SIngle Board Computer"
-Date "2022-02-12"
+Date "2022-03-02"
 Rev "0.1"
 Comp "Jeff Tranter"
 Comment1 ""
@@ -917,8 +917,6 @@ Text Notes 4500 6600 0    50   ~ 0
 POWER FROM\nFTDI
 Text Notes 5100 5500 0    50   ~ 0
 SERIAL SELECT JUMPERS\nACIA: J6 1-2, J7 2-3\nPIA:  J6 2-3, J7 1-2
-Text Notes 4800 7950 0    50   ~ 0
-      BAUD RATE JUMPERS\n+--+--+--+--+--+--+---+\n|PA1|PA2|PA3|PA4|PA5|PA6|RATE|\n+--+--+--+--+--+--+---+\n| H | H  | H | H  | H | H | 110|\n| L  | L | L  | L | H  | H | 300|\n| H  | L | H  | L | H  | H | 600|\n| L  | L | H  | L | H  | H |1200|\n| H  | H | L  | L | H  | H |2400|\n| L  | H | L  | L | H  | H |4800|\n| H  | L | L  | L | H  | H |9600|\n+--+--+--+--+--+--+---+
 Text Notes 6150 3200 0    50   ~ 0
 LTC INTERRUPT SELECT\nIRQ J4 1-2\nNMI J4 2-3
 $Comp

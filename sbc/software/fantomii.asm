@@ -1530,7 +1530,7 @@ MTS6    STX     T1
 
 ;;      FTOP - FIND MEMORY TOP
 ;
-;       SEARCHES DOWN FROM 1000H UNTIL FINDS
+;       SEARCHES DOWN FROM 8000H UNTIL FINDS
 ;         GOOD MEMORY
 ;
 ;       ENTRY:  NONE
@@ -1538,7 +1538,7 @@ MTS6    STX     T1
 ;       USES:   X
 
 FTOP    PSHA
-        LDX     #TERM           ; TOP OF MEMORY+1
+        LDX     $8000           ; TOP OF MEMORY+1
         LDAA    #$55            ; TEST PATTERN
 FTO1    DEX
         STAA    0,X

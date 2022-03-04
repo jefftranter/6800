@@ -11,7 +11,7 @@
     (via_costs 50)
     (plane_via_costs 5)
     (start_ripup_costs 100)
-    (start_pass_no 39850)
+    (start_pass_no 116)
     (layer_rule F.Cu
       (active on)
       (preferred_direction vertical)
@@ -77,23 +77,22 @@
     A8 A7 A6 A5 A4 A3 SCLK ~HALT
     ~RESET R~W E MR BA VMA D0 D1
     D2 D3 D4 D5 D6 D7 RXDATA "Net-(J7-Pad2)"
-    "Net-(R3-Pad2)" "Net-(R4-Pad1)" "Net-(SW10-Pad2)" ~PIAEN ~ACIAEN ~D0 ~DISP1EN BA2
-    BA1 BA0 ~DISP2EN ~DISP3EN ~DISP4EN ~DISP5EN ~DISP6EN ~KBDEN
-    ~WRITE ~READ ~RAMEN ~ROMEN ~DISPEN "Net-(D8-Pad2)" "Net-(D9-Pad2)" "Net-(D10-Pad2)"
-    "Net-(J6-Pad2)" "Net-(SW5-Pad2)" "Net-(SW11-Pad2)" "Net-(SW14-Pad2)" "Net-(U2-Pad5)" "Net-(J11-Pad2)" "Net-(R7-Pad2)" "Net-(R7-Pad1)"
-    "Net-(R8-Pad2)" "Net-(R8-Pad1)" "Net-(R9-Pad2)" "Net-(R9-Pad1)" "Net-(R10-Pad2)" "Net-(R10-Pad1)" "Net-(R11-Pad2)" "Net-(R11-Pad1)"
-    "Net-(R12-Pad2)" "Net-(R12-Pad1)" "Net-(R13-Pad2)" "Net-(R13-Pad1)" "Net-(R14-Pad2)" "Net-(R14-Pad1)" "Net-(R15-Pad2)" "Net-(R15-Pad1)"
-    "Net-(R16-Pad2)" "Net-(R16-Pad1)" "Net-(R17-Pad2)" "Net-(R17-Pad1)" "Net-(R18-Pad2)" "Net-(R18-Pad1)" "Net-(R19-Pad2)" "Net-(R19-Pad1)"
-    "Net-(R20-Pad2)" "Net-(R20-Pad1)" "Net-(R21-Pad2)" "Net-(R21-Pad1)" "Net-(R22-Pad2)" "Net-(R22-Pad1)" "Net-(R23-Pad2)" "Net-(R23-Pad1)"
-    "Net-(R24-Pad2)" "Net-(R24-Pad1)" "Net-(R25-Pad2)" "Net-(R25-Pad1)" "Net-(R26-Pad2)" "Net-(R26-Pad1)" "Net-(R27-Pad2)" "Net-(R27-Pad1)"
-    "Net-(R28-Pad2)" "Net-(R28-Pad1)" "Net-(R29-Pad2)" "Net-(R29-Pad1)" "Net-(R30-Pad2)" "Net-(R30-Pad1)" "Net-(R31-Pad2)" "Net-(R31-Pad1)"
-    "Net-(R32-Pad2)" "Net-(R32-Pad1)" "Net-(R33-Pad2)" "Net-(R33-Pad1)" "Net-(R34-Pad2)" "Net-(R34-Pad1)" "Net-(R35-Pad2)" "Net-(R35-Pad1)"
-    "Net-(R36-Pad2)" "Net-(R36-Pad1)" "Net-(R37-Pad2)" "Net-(R37-Pad1)" "Net-(R38-Pad2)" "Net-(R38-Pad1)" "Net-(R39-Pad2)" "Net-(R39-Pad1)"
-    "Net-(R40-Pad2)" "Net-(R40-Pad1)" "Net-(R41-Pad2)" "Net-(R41-Pad1)" "Net-(R42-Pad2)" "Net-(R42-Pad1)" "Net-(R43-Pad2)" "Net-(R43-Pad1)"
-    "Net-(R44-Pad2)" "Net-(R44-Pad1)" "Net-(R45-Pad2)" "Net-(R45-Pad1)" "Net-(R46-Pad2)" "Net-(R46-Pad1)" "Net-(R47-Pad2)" "Net-(R47-Pad1)"
-    "Net-(R48-Pad2)" "Net-(R48-Pad1)" "Net-(R49-Pad2)" "Net-(R49-Pad1)" "Net-(R50-Pad2)" "Net-(R50-Pad1)" "Net-(R51-Pad2)" "Net-(R51-Pad1)"
-    "Net-(R52-Pad2)" "Net-(R52-Pad1)" "Net-(R53-Pad2)" "Net-(R53-Pad1)" "Net-(R54-Pad2)" "Net-(R54-Pad1)" "Net-(R55-Pad2)" "Net-(R56-Pad2)"
-    "Net-(R57-Pad2)" "Net-(R58-Pad2)" "Net-(R59-Pad2)" "Net-(R60-Pad2)"
+    "Net-(R3-Pad2)" "Net-(R4-Pad1)" ~PIAEN ~ACIAEN ~D0 ~DISP1EN BA2 BA1
+    BA0 ~DISP2EN ~DISP3EN ~DISP4EN ~DISP5EN ~DISP6EN ~KBDEN ~WRITE
+    ~READ ~RAMEN ~ROMEN ~DISPEN "Net-(D8-Pad2)" "Net-(D9-Pad2)" "Net-(D10-Pad2)" "Net-(J6-Pad2)"
+    "Net-(U2-Pad5)" "Net-(J11-Pad2)" "Net-(R7-Pad2)" "Net-(R7-Pad1)" "Net-(R8-Pad2)" "Net-(R8-Pad1)" "Net-(R9-Pad2)" "Net-(R9-Pad1)"
+    "Net-(R10-Pad2)" "Net-(R10-Pad1)" "Net-(R11-Pad2)" "Net-(R11-Pad1)" "Net-(R12-Pad2)" "Net-(R12-Pad1)" "Net-(R13-Pad2)" "Net-(R13-Pad1)"
+    "Net-(R14-Pad2)" "Net-(R14-Pad1)" "Net-(R15-Pad2)" "Net-(R15-Pad1)" "Net-(R16-Pad2)" "Net-(R16-Pad1)" "Net-(R17-Pad2)" "Net-(R17-Pad1)"
+    "Net-(R18-Pad2)" "Net-(R18-Pad1)" "Net-(R19-Pad2)" "Net-(R19-Pad1)" "Net-(R20-Pad2)" "Net-(R20-Pad1)" "Net-(R21-Pad2)" "Net-(R21-Pad1)"
+    "Net-(R22-Pad2)" "Net-(R22-Pad1)" "Net-(R23-Pad2)" "Net-(R23-Pad1)" "Net-(R24-Pad2)" "Net-(R24-Pad1)" "Net-(R25-Pad2)" "Net-(R25-Pad1)"
+    "Net-(R26-Pad2)" "Net-(R26-Pad1)" "Net-(R27-Pad2)" "Net-(R27-Pad1)" "Net-(R28-Pad2)" "Net-(R28-Pad1)" "Net-(R29-Pad2)" "Net-(R29-Pad1)"
+    "Net-(R30-Pad2)" "Net-(R30-Pad1)" "Net-(R31-Pad2)" "Net-(R31-Pad1)" "Net-(R32-Pad2)" "Net-(R32-Pad1)" "Net-(R33-Pad2)" "Net-(R33-Pad1)"
+    "Net-(R34-Pad2)" "Net-(R34-Pad1)" "Net-(R35-Pad2)" "Net-(R35-Pad1)" "Net-(R36-Pad2)" "Net-(R36-Pad1)" "Net-(R37-Pad2)" "Net-(R37-Pad1)"
+    "Net-(R38-Pad2)" "Net-(R38-Pad1)" "Net-(R39-Pad2)" "Net-(R39-Pad1)" "Net-(R40-Pad2)" "Net-(R40-Pad1)" "Net-(R41-Pad2)" "Net-(R41-Pad1)"
+    "Net-(R42-Pad2)" "Net-(R42-Pad1)" "Net-(R43-Pad2)" "Net-(R43-Pad1)" "Net-(R44-Pad2)" "Net-(R44-Pad1)" "Net-(R45-Pad2)" "Net-(R45-Pad1)"
+    "Net-(R46-Pad2)" "Net-(R46-Pad1)" "Net-(R47-Pad2)" "Net-(R47-Pad1)" "Net-(R48-Pad2)" "Net-(R48-Pad1)" "Net-(R49-Pad2)" "Net-(R49-Pad1)"
+    "Net-(R50-Pad2)" "Net-(R50-Pad1)" "Net-(R51-Pad2)" "Net-(R51-Pad1)" "Net-(R52-Pad2)" "Net-(R52-Pad1)" "Net-(R53-Pad2)" "Net-(R53-Pad1)"
+    "Net-(R54-Pad2)" "Net-(R54-Pad1)" "Net-(R55-Pad2)" "Net-(R56-Pad2)" "Net-(R57-Pad2)" "Net-(R58-Pad2)" "Net-(R59-Pad2)" "Net-(R60-Pad2)"
     (clearance_class "kicad_default")
     (via_rule kicad_default)
     (rule

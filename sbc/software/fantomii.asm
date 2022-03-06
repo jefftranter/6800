@@ -1538,7 +1538,7 @@ MTS6    STX     T1
 ;       USES:   X
 
 FTOP    PSHA
-        LDX     $8000           ; TOP OF MEMORY+1
+        LDX     #$8000          ; TOP OF MEMORY+1
         LDAA    #$55            ; TEST PATTERN
 FTO1    DEX
         STAA    0,X

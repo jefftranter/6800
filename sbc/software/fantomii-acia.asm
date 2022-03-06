@@ -4,10 +4,10 @@
 
 ; Motorola Compiler options
 ; note: OPT line, one entry per line, padded with ' ' space at end of line
-;       OPT    cre 
-;       OPT    l 
-;       OPT    s 
-;       OPT    c 
+;       OPT    cre
+;       OPT    l
+;       OPT    s
+;       OPT    c
 ;***    OPT    S,O      SYMBOL TABLE;OBJECT TAPE
 ;***    PAGE
 ;**Keywords for A09 compiler (arakula from Github)
@@ -26,7 +26,7 @@
 ; It can be supplied in a ROM or 2708 EPROM, or as firmware
 ; on the WINCE Control Module.
 ; FANTOM-II supports commands below entered from a teletype or equivalent
-; terminal such as the WINTEK Model BRB video terminal or 
+; terminal such as the WINTEK Model BRB video terminal or
 ; Texas Instrument ASR 700 (Silent 700)
 ;
 ; Note: To relocate - specify scratch pad RAM area, ACIA, and ROM start address
@@ -77,7 +77,7 @@ UNMI   DS     3        ;USER NMI VECTOR
 
 
 ;*      ACIA ADDRESSES.
- 
+
 ACIACR EQU    $EE08
 ACIASR EQU    $EE08
 ACIADR EQU    $EE09
@@ -149,7 +149,7 @@ GO2    PSHB
 
 PUNCH  CLRA            ;DUMP WITH SPACES
 PNCH1  INCB            ;NORMAL DUMP
-       PSHA            
+       PSHA
        PSHB
        TSX
        BSR    AHV      ;GET BEGINNING ADDRESS
@@ -251,7 +251,7 @@ REGX   INX
        INCB
 REGA   INX
 REGB   INX
-REGC   ADDA   #$40  
+REGC   ADDA   #$40
        BSR    PTREGA
        PSHB
        BSR    AHV      ;GET REPLACEMENT VALUE
@@ -528,7 +528,7 @@ OUTSP  LDAA   #' '
 ;
 ;        USES:    CCR EXCEPT 'C' BIT
 
-OUTCH  PSHB   
+OUTCH  PSHB
        LDAB   #2       ;MASK FOR ACIACR
 OUT1   BITB   ACIASR
        BEQ    OUT1
@@ -588,7 +588,7 @@ OUTCHB BRA    OUTCH    ;SHORT JUMP EXTENSION
 CRLF   STX    TEMP
 CRLF1  LDX    #CRSTR
        BRA    OUTSTR
-         
+
 ;      REST OF PUNCH ROUTINE
 
 PNCH6  CMPB   #15
@@ -764,7 +764,7 @@ CLBLDX CLRB
 
 LDXU   LDX   USERS
        RTS             ;EXIT TO COMMAND HANDLER
-       
+
 ;*     BYTCNT - DETERMINE NUMBER OF BYTES IN AN INSTRUCTION
 ;
 ;        ENTRY: -- OPCODE IN A
@@ -862,7 +862,7 @@ STEP4  BSR    LDXU
        BEQ    BSRH
        CMPA   #$6E
        BEQ    JPXH     ;IT IS INDEXED JUMP
-       CMPA   #$7E 
+       CMPA   #$7E
        BEQ    JMPH     ;IT IS EXTENDED JUMP
        CMPA   #$39
        BEQ    RTSH     ;IT IS RTS
@@ -872,7 +872,7 @@ STEP4  BSR    LDXU
        BEQ    SWIH     ;IT IS SWI
        STS    6,X      ;AIM USER PC AT SCRATCH AREA
        PSHA            ;REPLACE OPCODE
-       LDX    #SSRET 
+       LDX    #SSRET
 
 ;*     SWIVE1--SET UP SWI RETURN; JUMP TO USER CODE
 ;
@@ -1042,5 +1042,5 @@ OPTAB  DW     $9C00,$3CAF,$4000,$00AC
        DW     UIRQ     ;USER IRQ HANDLER
        DW     SYSSWI   ;SYSTEM SWI HANDLER
        DW     UNMI     ;USER NMI HANDLER
-       DW     RESET      
+       DW     RESET
 ;      END

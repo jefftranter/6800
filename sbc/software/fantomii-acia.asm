@@ -47,7 +47,7 @@ USRACB DS     1        ; REGISTERS - VALID ON POWER
 USRACA DS     1        ;  UP ONLY!!! USER MAY
 USRIND DS     2        ;  CHANGE SUBSEQUENTLY
 USRPCT DS     2
-       DS     37       ;MONITOR STACK ARES
+       DS     37       ;MONITOR STACK AREA
 MONSTK EQU    *-1      ;INITIAL MONITOR S.P.
 END    DS     2        ;PUNCH END ADDRESS
 BEG    DS     2        ;PUNCH BEG ADDRESS
@@ -148,9 +148,9 @@ PNCH1  INCB            ;NORMAL DUMP
        STAA   5,X
        STAB   4,X
 PNCH2  PULA            ;NOW SET UP ACIA
-       TST    1,X
-       BEQ    PNCH3
-       STAA   ACIACR
+;      TST    1,X
+;      BEQ    PNCH3
+;      STAA   ACIACR
 ;      LDAA   #$12     ;TAPE ON
 ;      JSR    OUTCH
 PNCH3  LDAA   7,X
@@ -364,12 +364,14 @@ LOAD7  JSR CRLF
 ;      NORMAL ENTRY IS AT 'LOAD'
 ;      OPTIONAL CASSETTE ENTRY IS 'LOAD1'
 
-LOAD1  DECB            ;CASSETTE ENTRY
-       STAB   ACIACR   ;RESET ACIA
-LOAD   ADDB   #$9      ;NORMAL ENTRY
-       STAB   ACIACR   ;FIX ACIA
+;LOAD1 DECB            ;CASSETTE ENTRY
+;      STAB   ACIACR   ;RESET ACIA
+;LOAD  ADDB   #$9      ;NORMAL ENTRY
+;      STAB   ACIACR   ;FIX ACIA
 ;      LDAA   #$11     ;READER-ON
 ;      BSR    OUTCHA
+LOAD1  NOP
+LOAD   NOP
 LOAD3  BSR    INCH
        CMPA   #'S'
        BNE    LOAD3

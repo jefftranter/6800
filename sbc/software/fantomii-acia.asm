@@ -520,7 +520,11 @@ OUTCH  PSHB
        LDAB   #2       ;MASK FOR ACIACR
 OUT1   BITB   ACIASR
        BEQ    OUT1
+       PSHA            ;SAVE ORIGINAL A
+       ANDA   #$7F     ;CONVERT TO 7-BIT ASCII
        STAA   ACIADR   ;SEND (A) TO CONSOLE
+       PULA            ;RESTORE A
+       TSTA            ;RESTORE FLAGS
        PULB
 OUT2   RTS
 

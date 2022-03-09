@@ -24,8 +24,8 @@ basic680.hex: basic680.asm
 unused.hex: unused.asm
 	crasm -o unused.hex unused.asm >unused.lst
 
-all.hex: monitor.hex fantomii.hex tinybasic.hex minibug.hex mikbug.hex unused.hex
-	cat monitor.hex mikbug.hex minibug.hex fantomii.hex tinybasic.hex unused.hex | grep "^:1" | sort >all.hex
+all.hex: monitor.hex fantomii.hex fantomii-acia.hex tinybasic.hex minibug.hex mikbug.hex unused.hex
+	cat monitor.hex mikbug.hex minibug.hex fantomii.hex fantomii-acia.hex tinybasic.hex unused.hex | grep "^:1" | sort >all.hex
 	echo ":00000001FF" >>all.hex
 
 all.run: all.hex

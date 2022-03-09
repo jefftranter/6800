@@ -34,7 +34,7 @@ INHEX   BSR      INCH
         SUBA     #7
 IN1HG   RTS
 
-LOAD    LDAA    #$D1            ; TURN READER ON
+LOAD    LDAA    #$15            ; TURN READER ON
         STAA    ACIACS
         LDAA    #$11
         BSR     OUTCH
@@ -65,7 +65,7 @@ LOAD15  INC     CKSM
         BEQ     LOAD3
 LOAD19  LDAA    #'?'            ; PRINT QUESTION MARK
         BSR     OUTCH
-LOAD21  LDAA    #$B1            ; TURN READER OFF
+LOAD21  LDAA    #$15            ; TURN READER OFF
         STAA    ACIACS
         LDAA    #$13
         BSR     OUTCH
@@ -148,7 +148,7 @@ PRINT2  BSR     OUT2HS          ; OUT 2 HEX & SPACE
 ; ENTER POWER ON SEQUENCE
 START   EQU     *
 ; INZ ACIA
-        LDAA    #$B1            ; SET SYSTEM PARAMETERS
+        LDAA    #$15            ; SET SYSTEM PARAMETERS
         STAA    ACIACS
 
 CONTRL  LDS     #STACK          ; SET STACK POINTER

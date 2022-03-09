@@ -17,15 +17,15 @@ This is a port of software to my 6800-based single board computer:
 
 All will fit in the 16K 6800 SBC EPROM.
 
-Program     Size        Addresses  Start
-----------  ----        ---------  ----
-Monitor     0400 (1K)   FC00-FFFF  FC00 or reset
-MiniBug     0100 (256)  FB00-FBFF  FBD6
-MikBug      0200 (512)  F900-FAFF  F9D0
-Unused      0500 (1.3K) F400-F8FF
-Tiny Basic  0800 (2K)   EC00-F3FF  EC00
-Fantom II   0800 (2K)   E400-EBFF  E400
-Unused      2500 (9.5K) C000-E3FF
+Program           Size        Addresses  Start
+----------        ----        ---------  ----
+Monitor           0400 (1K)   FC00-FFFF  FC00 or reset
+MiniBug           0100 (256)  FB00-FBFF  FBD6
+MikBug            0200 (512)  F900-FAFF  F9D0
+Fantom II (ACIA)  0500 (1.3K) F400-F8FF  F400
+Tiny Basic        0800 (2K)   EC00-F3FF  EC00
+Fantom II (PIA)   0800 (2K)   E400-EBFF  E400
+Unused            2500 (9.5K) C000-E3FF
 
 MONITOR:
 
@@ -33,7 +33,7 @@ By default on reset it runs the monitor from the Heathkit
 ET-3400/ET-6800. This uses the 7-segment LEDs and keypad switches. See
 the Heathkit manuals for more details.
 
-FANTOM II Monitor:
+FANTOM II Monitor (PIA):
 
 This monitor came from the Heathkit ETA-3400 and uses a serial
 interface.
@@ -59,6 +59,14 @@ D      - Dump Memory
 P      - Punch loader Compatible Tape
 L      - Load Memory
 ```
+
+FANTOM II Monitor (ACIA):
+
+This is a version of the FANTOM II montor above that uses the ACIA for
+serial i/o.
+
+Set jumpers for ACIA serial interface, set serial port settings to
+115200 8N1, and start using: RESET DO F400.
 
 TINY BASIC:
 

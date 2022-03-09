@@ -2,20 +2,6 @@
 ; Adapted to the crasm assembler and modified for my 6800 Single Board
 ; Computer by Jeff Tranter <tranter@pobox.com>.
 
-; Motorola Compiler options
-; note: OPT line, one entry per line, padded with ' ' space at end of line
-;       OPT    cre
-;       OPT    l
-;       OPT    s
-;       OPT    c
-;***    OPT    S,O      SYMBOL TABLE;OBJECT TAPE
-;***    PAGE
-;**Keywords for A09 compiler (arakula from Github)
-; https://github.com/Arakula/A09
-; compiles under Motorola compiler as well - see options above
-;      *      *        *
-;23456789012345678901234567890
-;       SETLI 132
         NAM    FANTOMII
         CPU    6800
         OUTPUT  HEX             ; For Intel hex output
@@ -52,11 +38,9 @@
 ; 317-742-6802
 ; Orig Author Jim Wilson, WINTEK
 ;
-; WINCE 6800 Module RAM $ED80-$EDFF
-;                       $0000-$017F
 ; FANTOM II
 ; RAM DECLARATIONS
-*      EQU   $EDBE
+*      EQU   $00CC
 USRSTK EQU    *-1      ;INITIAL VALUE OF USER S.P.
 USRCCR DS     1        ;INITIAL LOCATIONS OF USER
 USRACB DS     1        ; REGISTERS - VALID ON POWER
@@ -78,9 +62,9 @@ UNMI   DS     3        ;USER NMI VECTOR
 
 ;*      ACIA ADDRESSES.
 
-ACIACR EQU    $EE08
-ACIASR EQU    $EE08
-ACIADR EQU    $EE09
+ACIACR EQU    $8300
+ACIASR EQU    $8300
+ACIADR EQU    $8301
 
 ;*     FANTOM COMMAND HANDLES RULES:
 ;*     ALL FANTOM COMMAND HANDLERS MUST HAVE THEIR
@@ -96,8 +80,12 @@ ACIADR EQU    $EE09
 ;                (X) = (USER STACK POINTER)
 ;                (A) = ASCII COMMAND CHARACTER
 
-*      EQU    $FC00
+*      EQU    $F400
 ROMBAS EQU    *
+
+; Make initial code a jump to start for convenience purposes.
+
+       JMP    RESET
 
 ;*     GO--GO TO USER PROGRAM
 ;
@@ -114,7 +102,7 @@ ROMBAS EQU    *
 ;
 ;        USES--ALL REGISTERS
 
-GO     LDX    #USWI    ;INCASE NO BREAKPOINTS
+GO     LDX    #USWI    ;IN CASE NO BREAKPOINTS
        BRA    GO2
 GO1    PSHA
        PSHB
@@ -163,8 +151,8 @@ PNCH2  PULA            ;NOW SET UP ACIA
        TST    1,X
        BEQ    PNCH3
        STAA   ACIACR
-       LDAA   #$12     ;TAPE ON
-       JSR    OUTCH
+;      LDAA   #$12     ;TAPE ON
+;      JSR    OUTCH
 PNCH3  LDAA   7,X
        PSHA
        LDAA   6,X      ;CURRENT ADDRESS ONTO STACK
@@ -344,7 +332,7 @@ IHD    BSR    INCH
        BCS    IHD1     ;LESS THAN ZERO
        CMPA   #10
        BCS    IHD3     ;ZERO THRU NINE
-       SUBA   #'A'-'0' ;DISLACE A TO ZERO
+       SUBA   #'A'-'0' ;DISPLACE A TO ZERO
        CMPA   #6
        BCS    IHD2     ;A THRU F
        ADDA   #'A'-'0'
@@ -380,8 +368,8 @@ LOAD1  DECB            ;CASSETTE ENTRY
        STAB   ACIACR   ;RESET ACIA
 LOAD   ADDB   #$9      ;NORMAL ENTRY
        STAB   ACIACR   ;FIX ACIA
-       LDAA   #$11     ;READER-ON
-       BSR    OUTCHA
+;      LDAA   #$11     ;READER-ON
+;      BSR    OUTCHA
 LOAD3  BSR    INCH
        CMPA   #'S'
        BNE    LOAD3
@@ -462,7 +450,7 @@ IHD3   RTS             ;HEX RETURN
 ;                       > 0  THEN INSTRUCTION
 ;
 ;        EXIT:    BYTE/INSTRUCTION TYPED ON NEW LINE
-;                 (X) = ADDRES OF NEXT BYTE/INSTRUCTION
+;                 (X) = ADDRESS OF NEXT BYTE/INSTRUCTION
 ;
 ;        USES:    ALL, 'TEMP'
 
@@ -532,6 +520,7 @@ OUTCH  PSHB
        LDAB   #2       ;MASK FOR ACIACR
 OUT1   BITB   ACIASR
        BEQ    OUT1
+       ANDA   #$7F     ;CONVERT TO 7-BIT ASCII
        STAA   ACIADR   ;SEND (A) TO CONSOLE
        PULB
 OUT2   RTS
@@ -659,10 +648,11 @@ OUTST3 RTS
 ;            SET UP ACIA, CHECK IF BREAKPOINTS ALIVE
 ;               AND ATTEMPT TO CLEAR THEM
 
-RESET  LDX    #ACIACR-1
-       STX    0,X      ;RESET ACIA
-RESET1 DEX             ;RESET DELAY
-       BNE RESET1
+RESET  LDAA   #$03     ;RESET CODE
+       STAA   ACIACR   ;RESET ACIA
+       NOP             ;RESET DELAY
+       NOP
+       NOP
 
 ;      NOW TRY TO CLEAR ALL BREAKPOINTS
 
@@ -686,7 +676,7 @@ RESET3 PULA
 
 MAINLP CLRA            ;(A) SENT BEFORE PROMPT
 MAIN1  LDS    #MONSTK  ;  ENTER HERE FOR ERROR
-       LDAB   #$41     ; 7+E+2, 1/16, RTS FALSE
+       LDAB   #$15     ; 8N1, 1/16, RTS LOW
        STAB   ACIACR
        LDX    #PMTMSG
        BSR    CMDEX
@@ -811,7 +801,7 @@ BYT7   RTS
 ;
 ;        MOST INSTRUCTIONS ARE EXECUTED OUT-OF-PLACE;
 ;          SOME INSTRUCTIONS (THOSE WHICH INVOLVE THE
-;          P.C.) MUST BE INTERPRESTED. A SET OF HANDLERS
+;          P.C.) MUST BE INTERPRETED. A SET OF HANDLERS
 ;          IS INCLUDED  FOR THIS SET OF INSTRUCTIONS
 
 SSTEP  STS    TEMP     ;WE'LL USE THIS TO RETURN
@@ -976,7 +966,7 @@ SWIH   LDAA   7,X
        DEX
        DECB
        BPL    SWIH
-       ORAA   #%00010000  ;SET INTERUPT MASK
+       ORAA   #%00010000  ;SET INTERRUPT MASK
        STAA   1,X
        STX    USERS
        LDAB   #-USWI/256*256+USWI  ;USWI LO ORDER
@@ -984,10 +974,10 @@ SWIH   LDAA   7,X
        BRA    NEWPC     ;PATCH IN USER IRQ ADDRESS
 
 ;*     STRING TABLES
-PMTMSG DB     $D,$A,$13,$14,0,0,' ','*',' '+$80
+PMTMSG DB     $0D,$0A,'M','O','N','>',' '+$80
 PMTMSGL EQU   *-PMTMSG
 S9MSG  DB     'S','9'
-CRSTR  DB     $D,$A,0,0,0,$80
+CRSTR  DB     $0D,$0A+$80
 S1MSG  DB     'S','1'+$80
 
 ;*     COMMAND TABLE
@@ -1035,12 +1025,16 @@ OPTAB  DW     $9C00,$3CAF,$4000,$00AC
        DW     $1101,$1004,$1000,$1000
        DW     $110D,$100C,$100C,$100C
 
-*      EQU $FFF8
+;; Fill the rest of the ROM with FFs.
+
+        DS      $F900-*,$FF
+
+;*     EQU $FFF8
 
 ;*     INTERRUPT VECTORS
 
-       DW     UIRQ     ;USER IRQ HANDLER
-       DW     SYSSWI   ;SYSTEM SWI HANDLER
-       DW     UNMI     ;USER NMI HANDLER
-       DW     RESET
+;      DW     UIRQ     ;USER IRQ HANDLER
+;      DW     SYSSWI   ;SYSTEM SWI HANDLER
+;      DW     UNMI     ;USER NMI HANDLER
+;      DW     RESET
 ;      END

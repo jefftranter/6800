@@ -942,7 +942,7 @@ OAB     TSTB                    ; 80 US
 
 ;;      OCB - OUTPUT CASSETTE BYTE
 ;
-;       ENTRY:  (B) = CELLS/BUT COUNT
+;       ENTRY:  (B) = CELLS/BIT COUNT
 ;               (A) = CHARACTER
 ;       USES:   C
 
@@ -1450,7 +1450,7 @@ CMDTAB  DB     'T'             ; TAPE RECORD DATA
         DW      CLEAR
 
         DB      'B'             ; GO TO BASIC
-        DW      $1C03           ; WARM START ENTRY
+        DW      $EC03           ; WARM START ENTRY
 
         DB      'X'-$40         ; DISPLAY INDEX
         DW      REGX

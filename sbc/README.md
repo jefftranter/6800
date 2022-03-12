@@ -122,3 +122,12 @@ rating of C2 is not exceeded). For AC input, change the value of C2 to
 Current consumption for unregulated input should be between 400 and
 600mA. If the 7805 regulator gets hot you might want to mount a
 heatsink on it.
+
+OTHER NOTES
+
+If you want to use port A of the PIA for i/o, be sure to remove any
+jumpers at J6, J7, and J10-J17.
+
+The Heathkit ETA-3400 had support for a cassette tape interface. This
+is not present, so any monitor or Basic commands related to cassette
+will not function.

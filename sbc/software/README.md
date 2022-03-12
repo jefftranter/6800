@@ -70,9 +70,9 @@ Set jumpers for ACIA serial interface, set serial port settings to
 
 TINY BASIC:
 
-This is the Pitman Tiny Basic from the Heathkit ETA-3400.
-From the FANTOM II monitor, start Tiny Basic by typing G EC00.
-See the Heathkit manuals for more details.
+This is the Pitman Tiny Basic from the Heathkit ETA-3400. From the
+FANTOM II PIA monitor, start Tiny Basic by typing G EC00. See the
+Heathkit manuals for more details.
 
 MINIBUG:
 

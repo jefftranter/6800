@@ -397,7 +397,7 @@ Crasm 1.8:                                                   page  6
 Crasm 1.8:                                                   page  7
 
 1CFD 39                294          RTS
-1CFE 226A              295  M1CFE   BHI     L1D6A
+1CFE 226A              295  M1CFE   DW      ILTBL
 1D00 CE0100            296  COLD_S  LDX     #M0100
 1D03 DF20              297          STX     M0020
 1D05 BD1A80            298          JSR     FTOP
@@ -444,7 +444,7 @@ Crasm 1.8:                                                   page  7
 1D63 BD1C09            339          JSR     L1C09
 1D66 8680              340          LDAA    #$80
 1D68 97C3              341          STAA    M00C3
-1D6A D62B              342  L1D6A   LDAB    M002B
+1D6A D62B              342          LDAB    M002B
 1D6C 962A              343          LDAA    M002A
 1D6E F01CFF            344          SUBB    M1CFF
 1D71 B21CFE            345          SBCA    M1CFE
@@ -1325,7 +1325,7 @@ Crasm 1.8:                                                   page 21
 ^1D00   Abs COLD_S                                           
 ?1C00   Abs CV                                               
  1A80   Abs FTOP                                             
-?226A   Abs ILTBL                                            
+^226A   Abs ILTBL                                            
 ^1D98   Abs IL_BBR                                           
 ^1D9B   Abs IL_FBR                                           
 ^1DEE   Abs IL__BC                                           
@@ -1363,7 +1363,6 @@ Crasm 1.8:                                                   page 21
  1D3B   Abs L1D3B                                            
 ^1D46   Abs L1D46                                            
 ^1D5C   Abs L1D5C                                            
-^1D6A   Abs L1D6A                                            
 ^1D8A   Abs L1D8A                                            
  1DA0   Abs L1DA0                                            
 ^1DA5   Abs L1DA5                                            
@@ -1382,11 +1381,11 @@ Crasm 1.8:                                                   page 21
 ^1E6B   Abs L1E6B                                            
 ^1E89   Abs L1E89                                            
 ^1E94   Abs L1E94                                            
+^1EAB   Abs L1EAB                                            
 
 
 Crasm 1.8:                                                   page 22
 
-^1EAB   Abs L1EAB                                            
 ^1EAE   Abs L1EAE                                            
 ^1EC2   Abs L1EC2                                            
 ^1EC4   Abs L1EC4                                            
@@ -1448,11 +1447,11 @@ Crasm 1.8:                                                   page 22
  0027   Abs M0027                                            
  0028   Abs M0028                                            
  0029   Abs M0029                                            
+ 002A   Abs M002A                                            
 
 
 Crasm 1.8:                                                   page 23
 
- 002A   Abs M002A                                            
  002B   Abs M002B                                            
  002C   Abs M002C                                            
  002D   Abs M002D                                            
@@ -1514,11 +1513,11 @@ Crasm 1.8:                                                   page 23
 ^20A7   Abs Z20A7                                            
 ^20AA   Abs Z20AA                                            
  20AB   Abs Z20AB                                            
+^20AD   Abs Z20AD                                            
 
 
 Crasm 1.8:                                                   page 24
 
-^20AD   Abs Z20AD                                            
  20B4   Abs Z20B4                                            
 ^20CE   Abs Z20CE                                            
 ^20E7   Abs Z20E7                                            
@@ -1553,6 +1552,7 @@ Crasm 1.8:                                                   page 24
 ^2248   Abs Z2248                                            
  2257   Abs Z2257                                            
 ^2265   Abs Z2265                                            
+
 
 
 

@@ -121,10 +121,14 @@ M1C13   DB      $20             ; Spare Stack size.
 ;
 ; Code fragment for 'PEEK' and 'POKE'
 ;
+; Get the byte pointed to by X into B:A.
+;
 PEEK    LDAA    0,X
         CLRB
 M1C17   RTS
 
+; Put the byte in A into cell pointed to by X
+;
 POKE    STAA    0,X
         RTS
 ;
@@ -294,7 +298,7 @@ L1CF5   LDX     M002A
         STX     M002A
 IL__NO  TSTA
         RTS
-M1CFE   BHI     L1D6A
+M1CFE   DW      ILTBL
 COLD_S  LDX     #M0100
         STX     M0020
         JSR     FTOP
@@ -341,7 +345,7 @@ L1D5C   JSR     L212C
         JSR     L1C09
         LDAA    #$80
         STAA    M00C3
-L1D6A   LDAB    M002B
+        LDAB    M002B
         LDAA    M002A
         SUBB    M1CFF
         SBCA    M1CFE

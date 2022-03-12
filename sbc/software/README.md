@@ -11,7 +11,7 @@ This is a port of software to my 6800-based single board computer:
 - The Motorola MikBug serial monitor. Uses the ACIA serial port.
 
 - Pittman Tiny Basic from the Heathkit ETA-3400 memory I/O accessory.
-  Uses the PIA serial port.
+  Uses the PIA serial port. NOT YET WORKING.
 
 - A port of Microsoft Basic for the Altair 680 computer (in progress).
 

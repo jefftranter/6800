@@ -134,7 +134,7 @@ MAIN44  PULB
         INS
         INS
 MAIN5   BCC     MAIN6           ; NO ERROR
-        JSR     OUTIS
+MAIN55  JSR     OUTIS
         DB      CR,LF
         ASC     "ERROR!"
         db      7,0
@@ -1575,7 +1575,7 @@ CCD1    JMP     $FC00           ; EXIT TO MONITOR
 ;;      CCL - CONSOLE CASSETTE LOAD
 ;
 ;       ENTRY:  NONE
-;       EXIT:   TO CONSOLE MONITOR IF SUCESS
+;       EXIT:   TO CONSOLE MONITOR IF SUCCESS
 ;       USES:   ALL,T0,HIGHEST MEMORY
 
 CCL     LDAB    #8
@@ -1647,7 +1647,7 @@ X2      RTS
         LDAB    #08
         JSR     LOA0
         BCC     X3
-        JMP     $144E
+        JMP     MAIN55
 X3      RTS
         LDX     #0
         STX     T1

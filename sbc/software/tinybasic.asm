@@ -108,7 +108,9 @@ L1C0C   JMP     BREAK           ; Begin break routine
 ;
 BSC     DB      $08             ; Backspace code
 LSC     DB      $15             ; Line cancel code
-PCC     DB      $83             ; Pad character
+PCC     DB      $00             ; CRLF padding characters
+                                ; low 7 bits are number of NUL/0xFF
+                                ; bit7=1: send 0xFF, =0, send NUL
 TMC     DB      $80             ; Tape mode control
 M1C13   DB      $20             ; Spare Stack size.
 ;

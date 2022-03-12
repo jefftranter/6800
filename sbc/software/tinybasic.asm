@@ -55,22 +55,15 @@
 ;* Used Labels                                      *
 ;****************************************************
 
-M0020   EQU     $0020
-M0021   EQU     $0021
-M0022   EQU     $0022
-M0024   EQU     $0024
-M0025   EQU     $0025
-M0026   EQU     $0026
-M0027   EQU     $0027
-M0028   EQU     $0028
-M0029   EQU     $0029
-M002A   EQU     $002A
-M002B   EQU     $002B
-M002C   EQU     $002C
-M002D   EQU     $002D
-M002E   EQU     $002E
-M002F   EQU     $002F
-M0030   EQU     $0030
+start_prgm EQU  $0020               ; start of BASIC text (0x900)
+end_ram EQU     $0022               ; end of available RAM
+end_prgm EQU    $0024               ; end of BASIC text
+top_of_stack EQU $0026              ; top of return stack pointer location
+basic_lineno EQU $0028              ; save for current line number to be executed
+il_pc   EQU     $002A               ; program counter for IL code
+basic_ptr EQU   $002C               ; pointer to currently executed BASIC byte
+basicptr_save EQU $002E             ; temporary save for basic_ptr
+expr_stack EQU  $0030               ; lowest byte of expr_stack (0x30)
 M0080   EQU     $0080
 M0099   EQU     $0099
 M00B6   EQU     $00B6
@@ -292,37 +285,37 @@ L1CE4   ADDA    M00C3
         LDAA    0,X
         STAB    0,X
         BRA     L1C94
-L1CF5   LDX     M002A
+L1CF5   LDX     il_pc
         LDAA    0,X
         INX
-        STX     M002A
+        STX     il_pc
 IL__NO  TSTA
         RTS
 M1CFE   DW      ILTBL
 COLD_S  LDX     #M0100
-        STX     M0020
+        STX     start_prgm
         JSR     FTOP
-        STX     M0022
+        STX     end_ram
         JSR     OUTIS
         ASC     "HTB1\0"
-L1D12   LDAA    M0020
-        LDAB    M0021
+L1D12   LDAA    start_prgm
+        LDAB    start_prgm+1
 L1D16   ADDB    M1C13
         ADCA    #0
-        STAA    M0024
-        STAB    M0025
-        LDX     M0020
+        STAA    end_prgm
+        STAB    end_prgm+1
+        LDX     start_prgm
         CLR     0,X
         CLR     $01,X
-WARM_S  LDS     M0022
+WARM_S  LDS     end_ram
 L1D27   JSR     L212C
 L1D2A   LDX     M1CFE
-        STX     M002A
+        STX     il_pc
         LDX     #M0080
         STX     M00C2
-        LDX     #M0030
+        LDX     #expr_stack
         STX     M00C0
-L1D39   STS     M0026
+L1D39   STS     top_of_stack
 L1D3B   BSR     L1CF5
         BSR     L1D46
         BRA     L1D3B
@@ -345,22 +338,22 @@ L1D5C   JSR     L212C
         JSR     L1C09
         LDAA    #$80
         STAA    M00C3
-        LDAB    M002B
-        LDAA    M002A
+        LDAB    il_pc+1
+        LDAA    il_pc
         SUBB    M1CFF
         SBCA    M1CFE
         JSR     Z2042
         LDAA    M00C0
         BEQ     L1D8A
         LDX     #M1D93
-        STX     M002A
+        STX     il_pc
         JSR     Z20AD
-        LDAA    M0028
-        LDAB    M0029
+        LDAA    basic_lineno
+        LDAB    basic_lineno+1
         JSR     Z2042
 L1D8A   LDAA    #7
         JSR     L1C09
-        LDS     M0026
+        LDS     top_of_stack
         BRA     L1D27
 M1D93   BRA     L1DD5+1
         LSRB
@@ -369,7 +362,7 @@ IL_BBR  DEC     M00BC
 IL_FBR  TST     M00BC
         BEQ     L1D5C
 L1DA0   LDX     M00BC
-        STX     M002A
+        STX     il_pc
         RTS
 L1DA5   CMPA    #$40
         BCC     L1DCC
@@ -384,10 +377,10 @@ L1DA5   CMPA    #$40
         STAA    M00BC
         ANDB    #8
         BNE     L1DA0
-        LDX     M002A
-        STAA    M002A
+        LDX     il_pc
+        STAA    il_pc
         LDAB    M00BD
-        STAB    M002B
+        STAB    il_pc+1
         STX     M00BC
         JMP     L1FD7
 L1DCC   TAB
@@ -405,12 +398,12 @@ L1DD5   LDX     M00BC
         BCC     L1DE2
         ORAB    #$E0
 L1DE2   BEQ     L1DEA
-        ADDB    M002B
+        ADDB    il_pc+1
         STAB    M00BD
-        ADCA    M002A
+        ADCA    il_pc
 L1DEA   STAA    M00BC
         JMP     0,X
-IL__BC  LDX     M002C
+IL__BC  LDX     basic_ptr
         STX     M00B8
 L1DF2   BSR     L1E2A
         BSR     L1E20
@@ -424,7 +417,7 @@ L1DFE   CBA
         BPL     L1DF2
         RTS
 L1E05   LDX     M00B8
-        STX     M002C
+        STX     basic_ptr
 L1E09   BRA     IL_FBR
 IL__BE  BSR     L1E2A
         CMPA    #$0D
@@ -437,17 +430,17 @@ IL__BV  BSR     L1E2A
         BLT     L1E09
         ASLA
         JSR     L1C94
-L1E20   LDX     M002C
+L1E20   LDX     basic_ptr
         LDAA    0,X
         INX
-        STX     M002C
+        STX     basic_ptr
         CMPA    #$0D
         RTS
 L1E2A   BSR     L1E20
         CMPA    #$20
         BEQ     L1E2A
         DEX
-        STX     M002C
+        STX     basic_ptr
         CMPA    #$30
         CLC
         BLT     L1E3A
@@ -605,25 +598,25 @@ L1F56   BSR     L1F8A
         JSR     L1C0C
         BCS     L1F62
         LDX     M00C4
-        STX     M002A
+        STX     il_pc
 L1F61   RTS
 L1F62   LDX     M1CFE
-        STX     M002A
+        STX     il_pc
 L1F67   JMP     L1D5C
-L1F6A   LDS     M0026
+L1F6A   LDS     top_of_stack
         STAA    M00BF
         JMP     L1D2A
 L1F71   JSR     L1E20
-        STAA    M0028
+        STAA    basic_lineno
         JSR     L1E20
-        STAA    M0029
-        LDX     M0028
+        STAA    basic_lineno+1
+        LDX     basic_lineno
         RTS
-L1F7E   LDX     M0020
-        STX     M002C
+L1F7E   LDX     start_prgm
+        STX     basic_ptr
         BSR     L1F71
         BEQ     L1F67
-        LDX     M002A
+        LDX     il_pc
         STX     M00C4
 L1F8A   TPA
         STAA    M00C0
@@ -631,7 +624,7 @@ L1F8A   TPA
 L1F8E   JSR     Z201A
         BEQ     L1F56
 L1F93   LDX     M00BC
-        STX     M0028
+        STX     basic_lineno
         BRA     L1F67
 L1F99   BSR     L1FFC
         TSX
@@ -641,29 +634,29 @@ L1F99   BSR     L1FFC
         BNE     L1F93
         RTS
 L1FA6   BSR     L1FFC
-        STX     M002A
+        STX     il_pc
         RTS
-L1FAB   LDX     #M002C
+L1FAB   LDX     #basic_ptr
         BRA     L1FB3
-L1FB0   LDX     #M002E
+L1FB0   LDX     #basicptr_save
 L1FB3   LDAA    $01,X
         CMPA    #$80
         BCC     L1FC1
         LDAA    0,X
         BNE     L1FC1
-        LDX     M002C
+        LDX     basic_ptr
         BRA     MDB
-L1FC1   LDX     M002C
-        LDAA    M002E
-        STAA    M002C
-        LDAA    M002F
-        STAA    M002D
-MDB     STX     M002E
+L1FC1   LDX     basic_ptr
+        LDAA    basicptr_save
+        STAA    basic_ptr
+        LDAA    basicptr_save+1
+        STAA    basic_ptr+1
+MDB     STX     basicptr_save
         RTS
 L1FCE   TSX
         INC     $01,X
         INC     $01,X
-        LDX     M0028
+        LDX     basic_lineno
         STX     M00BC
 L1FD7   DES
         DES
@@ -676,7 +669,7 @@ L1FD7   DES
         STAA    $02,X
         LDAA    M00BD
         STAA    $03,X
-        LDX     #M0024
+        LDX     #end_prgm
         STS     M00BC
         LDAA    $01,X
         SUBA    M00BD
@@ -688,7 +681,7 @@ L1FFC   TSX
         INX
         INX
         INX
-        CPX     M0022
+        CPX     end_ram
         BEQ     L1FF9
         LDX     $01,X
         STX     M00BC
@@ -710,12 +703,12 @@ Z201A   JSR     IL__SP
         STAA    M00BC
         ORAA    M00BD
         BEQ     L1FF9
-Z2025   LDX     M0020
-        STX     M002C
+Z2025   LDX     start_prgm
+        STX     basic_ptr
 Z2029   JSR     L1F71
         BEQ     Z203F
-        LDAB    M0029
-        LDAA    M0028
+        LDAB    basic_lineno+1
+        LDAA    basic_lineno
         SUBB    M00BD
         SBCA    M00BC
         BCC     Z203F
@@ -800,23 +793,23 @@ Z20CE   DECB
         LDAA    #$20
         BSR     Z2098
         BRA     Z20CE
-L20D7   LDX     M002C
+L20D7   LDX     basic_ptr
         STX     M00B8
-        LDX     M0020
-        STX     M002C
-        LDX     M0024
+        LDX     start_prgm
+        STX     basic_ptr
+        LDX     end_prgm
         BSR     Z210F
         BEQ     Z20E7
         BSR     Z210F
-Z20E7   LDAA    M002C
-        LDAB    M002D
+Z20E7   LDAA    basic_ptr
+        LDAB    basic_ptr+1
         SUBB    M00B7
         SBCA    M00B6
         BCC     Z2123
         JSR     L1F71
         BEQ     Z2123
-        LDAA    M0028
-        LDAB    M0029
+        LDAA    basic_lineno
+        LDAB    basic_lineno+1
         JSR     Z2042
         LDAA    #$20
 Z20FF   BSR     Z214C
@@ -832,13 +825,13 @@ Z210F   INX
         CPX     #M0080
         BEQ     Z2122
         JSR     Z201A
-Z211C   LDX     M002C
+Z211C   LDX     basic_ptr
         DEX
         DEX
-        STX     M002C
+        STX     basic_ptr
 Z2122   RTS
 Z2123   LDX     M00B8
-        STX     M002C
+        STX     basic_ptr
         RTS
 Z2128   LDAA    M00BF
         BMI     Z2122
@@ -866,8 +859,8 @@ Z214F   LDAA    TMC
 Z2154   CLRA
 Z2155   STAA    M00BF
         BRA     Z2163
-L2159   LDX     #M0030
-        STX     M002C
+L2159   LDX     #expr_stack
+        STX     basic_ptr
         STX     M00BC
         JSR     L1C8D
 Z2163   EORA    M0080
@@ -886,9 +879,9 @@ Z2163   EORA    M0080
         BEQ     Z218B
         CMPA    BSC
         BNE     Z2192
-        CPX     #M0030
+        CPX     #expr_stack
         BNE     Z21A0
-Z218B   LDX     M002C
+Z218B   LDX     basic_ptr
         LDAA    #$0D
         CLR     M00BF
 Z2192   CPX     M00C2
@@ -923,10 +916,10 @@ Z21CA   DECB
         JSR     L1E20
         BNE     Z21CA
 Z21D0   LDX     #0
-        STX     M0028
+        STX     basic_lineno
         JSR     L1FC1
         LDAA    #$0D
-        LDX     M002C
+        LDX     basic_ptr
         CMPA    0,X
         BEQ     Z21EC
         ADDB    #3
@@ -935,60 +928,60 @@ Z21E2   INCB
         CMPA    0,X
         BNE     Z21E2
         LDX     M00B6
-        STX     M0028
+        STX     basic_lineno
 Z21EC   LDX     M00B8
         STX     M00BC
         TSTB
         BEQ     Z2248
         BPL     Z2218
-        LDAA    M002F
+        LDAA    basicptr_save+1
         ABA
         STAA    M00B9
-        LDAA    M002E
+        LDAA    basicptr_save
         ADCA    #$FF
         STAA    M00B8
-Z2200   LDX     M002E
+Z2200   LDX     basicptr_save
         LDAB    0,X
-        CPX     M0024
+        CPX     end_prgm
         BEQ     Z2244
-        CPX     M0026
+        CPX     top_of_stack
         BEQ     Z2244
         INX
-        STX     M002E
+        STX     basicptr_save
         LDX     M00B8
         STAB    0,X
         INX
         STX     M00B8
         BRA     Z2200
-Z2218   ADDB    M0025
-        STAB    M002F
+Z2218   ADDB    end_prgm+1
+        STAB    basicptr_save+1
         LDAA    #0
-        ADCA    M0024
-        STAA    M002E
-        SUBB    M0027
-        SBCA    M0026
+        ADCA    end_prgm
+        STAA    basicptr_save
+        SUBB    top_of_stack+1
+        SBCA    top_of_stack
         BCS     Z222E
-        DEC     M002B
+        DEC     il_pc+1
         JMP     L1D5C
-Z222E   LDX     M002E
+Z222E   LDX     basicptr_save
         STX     M00B8
-Z2232   LDX     M0024
+Z2232   LDX     end_prgm
         LDAA    0,X
         DEX
-        STX     M0024
-        LDX     M002E
+        STX     end_prgm
+        LDX     basicptr_save
         STAA    0,X
         DEX
-        STX     M002E
+        STX     basicptr_save
         CPX     M00BC
         BNE     Z2232
 Z2244   LDX     M00B8
-        STX     M0024
-Z2248   LDX     M0028
+        STX     end_prgm
+Z2248   LDX     basic_lineno
         BEQ     Z2265
         LDX     M00BC
-        LDAA    M0028
-        LDAB    M0029
+        LDAA    basic_lineno
+        LDAB    basic_lineno+1
         STAA    0,X
         INX
         STAB    0,X
@@ -999,7 +992,7 @@ Z2257   INX
         STAA    0,X
         CMPA    #$0D
         BNE     Z2257
-Z2265   LDS     M0026
+Z2265   LDS     top_of_stack
         JMP     L1D2A
 
 ;

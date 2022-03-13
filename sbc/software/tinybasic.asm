@@ -17,6 +17,10 @@
 ;   https://github.com/Arakula/f9dasm
 ;   https://github.com/colinbourassa/crasm
 ;
+; To Do:
+; Add more source comments from original 6800 version.
+; Suppress output of XON/XOFF characters with high bit set.
+;
 ; Jeff Tranter <tranter@pobox.com>
 
 ; LOCATION   SIGNIFICANCE

@@ -82,11 +82,10 @@ expr_stack_low EQU $00C1            ; low addr byte of expr_stack (should be 0x3
 expr_stack_x EQU $00C2              ; high byte of expr_stack_top (==0x00, used with X register)
 expr_stack_top EQU $00C3            ; low byte of expr_stack_top (used in 8 bit comparisons)
 il_pc_save EQU  $00C4; save of IL program counter
-                                       ; unused area in zero page (starting with 0xc6)
+                                    ; unused area in zero page (starting with 0xc6)
 M0100   EQU     $0100
 MAIN    EQU     $E400
 OUTIS   EQU     $E618
-M1CFF   EQU     $ECFF
 SNDCHR  EQU     $E865
 RCCHR   EQU     $E8E1
 FTOP    EQU     $EA80
@@ -115,7 +114,7 @@ PCC     DB      $00             ; CRLF padding characters
                                 ; low 7 bits are number of NUL/0xFF
                                 ; bit7=1: send 0xFF, =0, send NUL
 TMC     DB      $80             ; Tape mode control
-M1C13   DB      $20             ; Spare Stack size.
+SSS     DB      $20             ; Spare Stack size.
 ;
 ; Code fragment for 'PEEK' and 'POKE'
 ;
@@ -296,7 +295,7 @@ L1CF5   LDX     il_pc
         STX     il_pc
 IL__NO  TSTA
         RTS
-M1CFE   DW      ILTBL
+IL_baseaddr DW  ILTBL
 COLD_S  LDX     #M0100
         STX     start_prgm
         JSR     FTOP
@@ -305,7 +304,7 @@ COLD_S  LDX     #M0100
         ASC     "HTB1\0"              ; For Heathkit Tiny basic 1
 L1D12   LDAA    start_prgm
         LDAB    start_prgm+1
-L1D16   ADDB    M1C13
+L1D16   ADDB    SSS
         ADCA    #0
         STAA    end_prgm
         STAB    end_prgm+1
@@ -314,7 +313,7 @@ L1D16   ADDB    M1C13
         CLR     $01,X
 WARM_S  LDS     end_ram
 L1D27   JSR     L212C
-L1D2A   LDX     M1CFE
+L1D2A   LDX     IL_baseaddr
         STX     il_pc
         LDX     #rnd_seed
         STX     expr_stack_x
@@ -345,8 +344,8 @@ L1D5C   JSR     L212C
         STAA    expr_stack_top
         LDAB    il_pc+1
         LDAA    il_pc
-        SUBB    M1CFF
-        SBCA    M1CFE
+        SUBB    IL_baseaddr+1
+        SBCA    IL_baseaddr
         JSR     Z2042
         LDAA    run_mode
         BEQ     L1D8A
@@ -373,12 +372,12 @@ L1DA5   CMPA    #$40
         BCC     L1DCC
         PSHA
         JSR     L1CF5
-        ADDA    M1CFF
+        ADDA    IL_baseaddr+1
         STAA    IL_temp+1
         PULA
         TAB
         ANDA    #7
-        ADCA    M1CFE
+        ADCA    IL_baseaddr
         STAA    IL_temp
         ANDB    #8
         BNE     L1DA0
@@ -605,7 +604,7 @@ L1F56   BSR     L1F8A
         LDX     il_pc_save
         STX     il_pc
 L1F61   RTS
-L1F62   LDX     M1CFE
+L1F62   LDX     IL_baseaddr
         STX     il_pc
 L1F67   JMP     L1D5C
 L1F6A   LDS     top_of_stack

@@ -27,6 +27,9 @@ unused.hex: unused.asm
 example.run: example.asm
 	crasm -o example.run example.asm >example.lst
 
+disasm.run: disasm.asm
+	crasm -o disasm.run disasm.asm >disasm.lst
+
 all.hex: monitor.hex fantomii.hex fantomii-acia.hex tinybasic.hex minibug.hex mikbug.hex unused.hex
 	cat monitor.hex mikbug.hex minibug.hex fantomii.hex fantomii-acia.hex tinybasic.hex unused.hex | grep "^:1" | sort >all.hex
 	echo ":00000001FF" >>all.hex

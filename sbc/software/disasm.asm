@@ -812,6 +812,206 @@ OPCODES1
  DB OP_SEC, AM_INHERENT           ; $0D
  DB OP_CLI, AM_INHERENT           ; $0E
  DB OP_SEI, AM_INHERENT           ; $0F
+ DB OP_SBA, AM_INHERENT           ; $10
+ DB OP_CBA, AM_INHERENT           ; $11
+ DB OP_TAB, AM_INHERENT           ; $16
+ DB OP_TBA, AM_INHERENT           ; $17
+ DB OP_DAA, AM_INHERENT           ; $19
+ DB OP_ABA, AM_INHERENT           ; $1B
+
+ DB OP_BRA, AM_RELATIVE           ; $20
+ DB OP_BHI, AM_RELATIVE           ; $22
+ DB OP_BLS, AM_RELATIVE           ; $23
+ DB OP_BCC, AM_RELATIVE           ; $24
+ DB OP_BCS, AM_RELATIVE           ; $25
+ DB OP_BNE, AM_RELATIVE           ; $26
+ DB OP_BEQ, AM_RELATIVE           ; $27
+ DB OP_BVC, AM_RELATIVE           ; $28
+ DB OP_BVS, AM_RELATIVE           ; $29
+ DB OP_BPL, AM_RELATIVE           ; $2A
+ DB OP_BMI, AM_RELATIVE           ; $2B
+ DB OP_BGE, AM_RELATIVE           ; $2C
+ DB OP_BLT, AM_RELATIVE           ; $2D
+ DB OP_BGT, AM_RELATIVE           ; $2E
+ DB OP_BLE, AM_RELATIVE           ; $2F
+
+ DB OP_TSX, AM_INHERENT           ; $30
+ DB OP_INS, AM_INHERENT           ; $31
+ DB OP_PULA, AM_INHERENT          ; $32
+ DB OP_PULB, AM_INHERENT          ; $33
+ DB OP_DES, AM_INHERENT           ; $34
+ DB OP_TXS, AM_INHERENT           ; $35
+ DB OP_PSHA, AM_INHERENT          ; $36
+ DB OP_PSHB, AM_INHERENT          ; $37
+ DB OP_RTS, AM_INHERENT           ; $39
+ DB OP_RTI, AM_INHERENT           ; $3B
+ DB OP_WAI, AM_INHERENT           ; $3E
+ DB OP_SWI, AM_INHERENT           ; $3F
+
+ DB OP_NEGA, AM_INHERENT          ; $40
+ DB OP_COMA, AM_INHERENT          ; $43
+ DB OP_LSRA, AM_INHERENT          ; $44
+ DB OP_RORA, AM_INHERENT          ; $46
+ DB OP_ASRA, AM_INHERENT          ; $47
+ DB OP_ASLA, AM_INHERENT          ; $48
+ DB OP_ROLA, AM_INHERENT          ; $49
+ DB OP_DECA, AM_INHERENT          ; $4A
+ DB OP_INCA, AM_INHERENT          ; $4C
+ DB OP_TSTA, AM_INHERENT          ; $4D
+ DB OP_CLRA, AM_INHERENT          ; $4F
+
+ DB OP_NEGB, AM_INHERENT          ; $50
+ DB OP_COMB, AM_INHERENT          ; $53
+ DB OP_LSRB, AM_INHERENT          ; $54
+ DB OP_RORB, AM_INHERENT          ; $56
+ DB OP_ASRB, AM_INHERENT          ; $57
+ DB OP_ASLB, AM_INHERENT          ; $58
+ DB OP_ROLB, AM_INHERENT          ; $59
+ DB OP_DECB, AM_INHERENT          ; $5A
+ DB OP_INCB, AM_INHERENT          ; $5C
+ DB OP_TSTB, AM_INHERENT          ; $5D
+ DB OP_CLRB, AM_INHERENT          ; $5F
+
+ DB OP_NEG, AM_INDEXED            ; $60
+ DB OP_COM, AM_INDEXED            ; $63
+ DB OP_LSR, AM_INDEXED            ; $64
+ DB OP_ROR, AM_INDEXED            ; $66
+ DB OP_ASR, AM_INDEXED            ; $67
+ DB OP_ASL, AM_INDEXED            ; $68
+ DB OP_ROL, AM_INDEXED            ; $69
+ DB OP_DEC, AM_INDEXED            ; $6A
+ DB OP_INC, AM_INDEXED            ; $6C
+ DB OP_TST, AM_INDEXED            ; $6D
+ DB OP_JMP, AM_INDEXED            ; $6E
+ DB OP_CLR, AM_INDEXED            ; $6F
+
+ DB OP_NEG, AM_EXTENDED           ; $70
+ DB OP_COM, AM_EXTENDED           ; $73
+ DB OP_LSR, AM_EXTENDED           ; $74
+ DB OP_ROR, AM_EXTENDED           ; $76
+ DB OP_ASR, AM_EXTENDED           ; $77
+ DB OP_ASL, AM_EXTENDED           ; $78
+ DB OP_ROL, AM_EXTENDED           ; $79
+ DB OP_DEC, AM_EXTENDED           ; $7A
+ DB OP_INC, AM_EXTENDED           ; $7C
+ DB OP_TST, AM_EXTENDED           ; $7D
+ DB OP_JMP, AM_EXTENDED           ; $7E
+ DB OP_CLR, AM_EXTENDED           ; $7F
+
+ DB OP_SUBA, AM_IMMEDIATE         ; $80
+ DB OP_CMPA, AM_IMMEDIATE         ; $81
+ DB OP_SBCA, AM_IMMEDIATE         ; $82
+ DB OP_ANDA, AM_IMMEDIATE         ; $84
+ DB OP_BITA, AM_IMMEDIATE         ; $85
+ DB OP_LDAA, AM_IMMEDIATE         ; $86
+ DB OP_EORA, AM_IMMEDIATE         ; $88
+ DB OP_ADCA, AM_IMMEDIATE         ; $89
+ DB OP_ORAA, AM_IMMEDIATE         ; $8A
+ DB OP_ADDA, AM_IMMEDIATE         ; $8B
+ DB OP_CPX, AM_IMMEDIATEX         ; $8C
+ DB OP_BSR, AM_RELATIVE           ; $8D
+ DB OP_LDS, AM_IMMEDIATEX         ; $8E
+
+ DB OP_SUBA, AM_DIRECT            ; $90
+ DB OP_CMPA, AM_DIRECT            ; $91
+ DB OP_SBCA, AM_DIRECT            ; $92
+ DB OP_ANDA, AM_DIRECT            ; $94
+ DB OP_BITA, AM_DIRECT            ; $95
+ DB OP_LDAA, AM_DIRECT            ; $96
+ DB OP_STAA, AM_DIRECT            ; $97
+ DB OP_EORA, AM_DIRECT            ; $98
+ DB OP_ADCA, AM_DIRECT            ; $99
+ DB OP_ORAA, AM_DIRECT            ; $9A
+ DB OP_ADDA, AM_DIRECT            ; $9B
+ DB OP_CPX, AM_DIRECT             ; $9C
+ DB OP_LDS, AM_DIRECT             ; $9E
+ DB OP_STS, AM_DIRECT             ; $9F
+
+ DB OP_SUBA, AM_INDEXED           ; $A0
+ DB OP_CMPA, AM_INDEXED           ; $A1
+ DB OP_SBCA, AM_INDEXED           ; $A2
+ DB OP_ANDA, AM_INDEXED           ; $A4
+ DB OP_BITA, AM_INDEXED           ; $A5
+ DB OP_LDAA, AM_INDEXED           ; $A6
+ DB OP_STAA, AM_INDEXED           ; $A7
+ DB OP_EORA, AM_INDEXED           ; $A8
+ DB OP_ADCA, AM_INDEXED           ; $A9
+ DB OP_ORAA, AM_INDEXED           ; $AA
+ DB OP_ADDA, AM_INDEXED           ; $AB
+ DB OP_CPX, AM_INDEXED            ; $AC
+ DB OP_JSR, AM_INDEXED            ; $AD
+ DB OP_LDS, AM_INDEXED            ; $AE
+ DB OP_STS, AM_INDEXED            ; $AF
+
+ DB OP_SUBA, AM_EXTENDED          ; $B0
+ DB OP_CMPA, AM_EXTENDED          ; $B1
+ DB OP_SBCA, AM_EXTENDED          ; $B2
+ DB OP_ANDA, AM_EXTENDED          ; $B4
+ DB OP_BITA, AM_EXTENDED          ; $B5
+ DB OP_LDAA, AM_EXTENDED          ; $B6
+ DB OP_STAA, AM_EXTENDED          ; $B7
+ DB OP_EORA, AM_EXTENDED          ; $B8
+ DB OP_ADCA, AM_EXTENDED          ; $B9
+ DB OP_ORAA, AM_EXTENDED          ; $BA
+ DB OP_ADDA, AM_EXTENDED          ; $BB
+ DB OP_CPX, AM_EXTENDED           ; $BC
+ DB OP_JSR, AM_EXTENDED           ; $BD
+ DB OP_LDS, AM_EXTENDED           ; $BE
+ DB OP_STS, AM_EXTENDED           ; $BF
+
+ DB OP_SUBB, AM_IMMEDIATE         ; $C0
+ DB OP_CMPB, AM_IMMEDIATE         ; $C1
+ DB OP_SBCB, AM_IMMEDIATE         ; $C2
+ DB OP_ANDB, AM_IMMEDIATE         ; $C4
+ DB OP_BITB, AM_IMMEDIATE         ; $C5
+ DB OP_LDAB, AM_IMMEDIATE         ; $C6
+ DB OP_EORB, AM_IMMEDIATE         ; $C8
+ DB OP_ADCB, AM_IMMEDIATE         ; $C9
+ DB OP_ORAB, AM_IMMEDIATE         ; $CA
+ DB OP_ADDB, AM_IMMEDIATE         ; $CB
+ DB OP_LDX, AM_IMMEDIATEX         ; $CE
+
+ DB OP_SUBB, AM_DIRECT            ; $D0
+ DB OP_CMPB, AM_DIRECT            ; $D1
+ DB OP_SBCB, AM_DIRECT            ; $D2
+ DB OP_ANDB, AM_DIRECT            ; $D4
+ DB OP_BITB, AM_DIRECT            ; $D5
+ DB OP_LDAB, AM_DIRECT            ; $D6
+ DB OP_STAB, AM_DIRECT            ; $D7
+ DB OP_EORB, AM_DIRECT            ; $D8
+ DB OP_ADCB, AM_DIRECT            ; $D9
+ DB OP_ORAB, AM_DIRECT            ; $DA
+ DB OP_ADDB, AM_DIRECT            ; $DB
+ DB OP_LDX, AM_DIRECT             ; $DE
+ DB OP_STX, AM_DIRECT             ; $DF
+
+ DB OP_SUBB, AM_INDEXED           ; $E0
+ DB OP_CMPB, AM_INDEXED           ; $E1
+ DB OP_SBCB, AM_INDEXED           ; $E2
+ DB OP_ANDB, AM_INDEXED           ; $E4
+ DB OP_BITB, AM_INDEXED           ; $E5
+ DB OP_LDAB, AM_INDEXED           ; $E6
+ DB OP_STAB, AM_INDEXED           ; $E7
+ DB OP_EORB, AM_INDEXED           ; $E8
+ DB OP_ADCB, AM_INDEXED           ; $E9
+ DB OP_ORAB, AM_INDEXED           ; $EA
+ DB OP_ADDB, AM_INDEXED           ; $EB
+ DB OP_LDX, AM_INDEXED            ; $EE
+ DB OP_STX, AM_INDEXED            ; $EF
+
+ DB OP_SUBB, AM_EXTENDED          ; $F0
+ DB OP_CMPB, AM_EXTENDED          ; $F1
+ DB OP_SBCB, AM_EXTENDED          ; $F2
+ DB OP_ANDB, AM_EXTENDED          ; $F4
+ DB OP_BITB, AM_EXTENDED          ; $F5
+ DB OP_LDAB, AM_EXTENDED          ; $F6
+ DB OP_STAB, AM_EXTENDED          ; $F7
+ DB OP_EORB, AM_EXTENDED          ; $F8
+ DB OP_ADCB, AM_EXTENDED          ; $F9
+ DB OP_ORAB, AM_EXTENDED          ; $FA
+ DB OP_ADDB, AM_EXTENDED          ; $FB
+ DB OP_LDX, AM_EXTENDED           ; $FE
+ DB OP_STX, AM_EXTENDED           ; $FF
 
 ; *** Strings ***
 

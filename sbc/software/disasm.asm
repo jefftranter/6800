@@ -42,9 +42,8 @@
   ESC = $1B ; Escape
 
 ; External Routines
-  ECHO     = $FFEF ; Woz monitor ECHO routine
-  PRBYTE   = $FFDC ; Woz monitor print byte as two hex chars
-  PRHEX    = $FFE5 ; Woz monitor print nybble as hex digit
+  INCH     = $F520 ; Fantom II monitor input routine
+  OUTCH    = $F569 ; Fantom II monitor output routine
 
 ; Instructions. Matches entries in table of MNEMONICS
 
@@ -296,7 +295,7 @@ DOMB
   LSRA
   LSRA
   LSRA
-  JSR PRHEX
+;  JSR PRHEX
   LDX #2
   JSR PrintSpaces
   JSR PrintDollar
@@ -317,7 +316,7 @@ DOBB                   ; handle special BBRn and BBSn instructions
   LSRA
   LSRA
   LSRA
-  JSR PRHEX
+;  JSR PRHEX
   LDX #2
   JSR PrintSpaces
   JSR PrintDollar
@@ -615,44 +614,57 @@ PrintSpace PSHA
 PrintSpaces PSHA
   LDAA #SP
 @LOOP
-  JSR ECHO
+  JSR PrintChar
   DEX
   BNE @LOOP
   PULA
   RTS
 
 ; Output a character
-; Calls Woz monitor ECHO routine
 ; Registers changed: none
-PrintChar JSR ECHO
+PrintChar JSR OUTCH
   RTS
 
 ; Get character from keyboard
 ; Returns in A
 ; Clears high bit to be valid ASCII
 ; Registers changed: A
-GetKey LDAA $D011 ; Keyboard CR
-  BPL GetKey
-  LDAA $D010 ; Keyboard data
-  AND #%01111111
+GetKey JSR INCH
   RTS
 
 ; Print 16-bit address in hex
-; Pass byte in X (low) and Y (high)
+; Pass byte in X
 ; Registers changed: None
 PrintAddress PSHA
   TYA
-  JSR PRBYTE
+  JSR PrintByte
   TXA
-  JSR PRBYTE
+  JSR PrintByte
   PULA
   RTS
 
-; Print byte in hex
+; Print byte as two hex chars.
 ; Pass byte in A
 ; Registers changed: None
-PrintByte JSR PRBYTE
-  RTS
+PrintByte PSHA    ; Save A for LSD.
+  LSRA
+  LSRA
+  LSRA            ; MSD to LSD position.
+  LSRA
+  JSR PrintHex    ; Output hex digit.
+  PULA            ; Restore A.
+                  ; Falls through into PrntHex routine
+
+; Print nybble as one hex digit.
+; Pass byte in A
+; Registers changed: A
+PrintHex AND #$0F ; Mask LSD for hex print.
+  ORAA #'0'       ; Add "0".
+  CMPA #$3A       ; Digit?
+  BCC PrintChar   ; Yes, output it.
+  ADCA #$06       ; Add offset for letter.
+                  ; Falls through into PrintChar routine
+JMP PrintChar
 
 ; Print a string
 ; Pass address of string in X (low) and Y (high).

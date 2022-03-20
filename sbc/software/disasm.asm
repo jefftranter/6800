@@ -19,7 +19,7 @@
 ; Version Date         Comments
 ; 0.0     16-Mar-2022  First version started, based on 6502 version
 
-        CPU    6800
+        CPU     6800
         OUTPUT  HEX             ; For Intel hex output
 ;       OUTPUT  SCODE           ; For Motorola S record (RUN) output
         CODE
@@ -27,20 +27,20 @@
 ; *** ASSEMBLY TIME OPTIONS ***
 
 ; Start address.
-*     = $1000
+ *       = $1000
 
 ; *** CONSTANTS ***
 
 ; Characters:
-  CR  = $0D ; Carriage Return
-  SP  = $20 ; Space
-  ESC = $1B ; Escape
+ CR      = $0D ; Carriage Return
+ SP      = $20 ; Space
+ ESC     = $1B ; Escape
 
 ; External Routines:
-  INCH     = $F520 ; Fantom II (ACIA) monitor input routine
-  OUTCH    = $F569 ; Fantom II (ACIA) monitor output routine
-; INCH     = $E8E1 ; Fantom II (PIA) monitor input routine
-; OUTCH    = $E865 ; Fantom II (PIA) monitor output routine
+ INCH    = $F520 ; Fantom II (ACIA) monitor input routine
+ OUTCH   = $F569 ; Fantom II (ACIA) monitor output routine
+;INCH    = $E8E1 ; Fantom II (PIA) monitor input routine
+;OUTCH   = $E865 ; Fantom II (PIA) monitor output routine
 
 ; Instructions. Matches entries in table of MNEMONICS
  OP_INV  = $00
@@ -154,61 +154,61 @@
 
 ; Addressing Modes. OPCODES table lists these for each instruction.
 ; LENGTHS lists the instruction length for each addressing mode.
- AM_INVALID = 0                    ; example:
- AM_INHERENT = 1                   ; RTS
- AM_IMMEDIATE = 2                  ; LDAA #$12
- AM_IMMEDIATEX = 3                 ; LDX #$1234
- AM_DIRECT = 4                     ; LDAA $12
- AM_INDEXED = 5                    ; LDAA $12,X
- AM_EXTENDED = 6                   ; LDAA $1234
- AM_RELATIVE = 7                   ; BNE $FD
+ AM_INVALID = 0                 ; example:
+ AM_INHERENT = 1                ; RTS
+ AM_IMMEDIATE = 2               ; LDAA #$12
+ AM_IMMEDIATEX = 3              ; LDX #$1234
+ AM_DIRECT = 4                  ; LDAA $12
+ AM_INDEXED = 5                 ; LDAA $12,X
+ AM_EXTENDED = 6                ; LDAA $1234
+ AM_RELATIVE = 7                ; BNE $FD
 
 ; *** VARIABLES ***
 
 ; Page zero variables
- T1     = $35     ; temp variable 1
- T2     = $36     ; temp variable 2
- ADDR   = $37     ; instruction address, 2 bytes (low/high)
- OPCODE = $39     ; instruction opcode
- OP     = $3A     ; instruction type OP_*
- AM     = $41     ; addressing mode AM_*
- LEN    = $42     ; instruction length
- REL    = $43     ; relative addressing branch offset (2 bytes)
- DEST   = $45     ; relative address destination address (2 bytes)
+ T1     = $35                   ; temp variable 1
+ T2     = $36                   ; temp variable 2
+ ADDR   = $37                   ; instruction address, 2 bytes (low/high)
+ OPCODE = $39                   ; instruction opcode
+ OP     = $3A                   ; instruction type OP_*
+ AM     = $41                   ; addressing mode AM_*
+ LEN    = $42                   ; instruction length
+ REL    = $43                   ; relative addressing branch offset (2 bytes)
+ DEST   = $45                   ; relative address destination address (2 bytes)
 
 ; *** CODE ***
 
 ; Main program disassembles starting from itself. Prompts user to hit
 ; key to continue after each screen.
-START JSR PrintCR
-  LDX #WelcomeString
-  JSR PrintString
-  JSR PrintCR
-  LDX #START
-  STX ADDR
-OUTER JSR PrintCR
-  LDAA #23              ; Prompt every 23 lines
-LOOP PSHA
-  JSR DISASM
-  PULA
-  CLC
-  SBCA #1
-  BNE LOOP
-  LDX #ContinueString
-  JSR PrintString
-SpaceOrEscape JSR GetKey
-  CMPA #' '
-  BEQ OUTER
-  CMPA #ESC
-  BNE SpaceOrEscape
-  RTS
+START   JSR     PrintCR         ; Print newline
+        LDX     #WelcomeString  ; Print welcome string
+        JSR     PrintString
+        JSR     PrintCR         ; Print newline
+        LDX     #START          ; Start disassembling from START
+        STX     ADDR
+OUTER   JSR     PrintCR         ; Print newline
+        LDAA    #23             ; Prompt every 23 lines
+LOOP    PSHA                    ; Save line count
+        JSR     DISASM          ; Disassemble one instruction
+        PULA                    ; Restore line count
+        CLC                     ; Decrement count
+        SBCA    #1
+        BNE     LOOP            ; Go back if more lines to display
+        LDX     #ContinueString ; Prompt to contnue
+        JSR     PrintString
+SpaceOrEscape JSR GetKey        ; Get a key
+        CMPA    #' '            ; Space?
+        BEQ     OUTER           ; If so, disassemble more lines
+        CMPA    #ESC            ; Escape?
+        BNE     SpaceOrEscape   ; If not, keep prompting
+        RTS                     ; Escape pressed, so return
 
 ; Disassemble instruction at address ADDR (high) / ADDR+1 (low). On
 ; return ADDR/ADDR+1 points to next instruction so it can be called
 ; again.
-DISASM LDX #0
-  LDAA (ADDR,X)          ; get instruction op code
-  STAA OPCODE
+DISASM  LDX     ADDR
+        LDAA    0,X             ; Get instruction op code
+        STAA    OPCODE          ; Save it
   BMI UPPER              ; if bit 7 set, in upper half of table
   ASLA                   ; double it since table is two bytes per entry
   TAX
@@ -541,134 +541,118 @@ DONEOPS
 
 ; Print a dollar sign
 ; Registers changed: None
-PrintDollar PSHA
-  LDAA #'$'
-  JSR PrintChar
-  PULA
-  RTS
+PrintDollar PSHA                ; Save A
+        LDAA    #'$'
+        JSR     PrintChar
+        PULA                    ; Restore A
+        RTS
 
 ; Print ",X"
 ; Registers changed: None
-PrintCommaX PSHA
-  LDAA #','
-  JSR PrintChar
-  LDAA #'X'
-  JSR PrintChar
-  PULA
-  RTS
-
-; Print ",Y"
-; Registers changed: None
-PrintCommaY PSHA
-  LDAA #','
-  JSR PrintChar
-  LDAA #'Y'
-  JSR PrintChar
-  PULA
-  RTS
+PrintCommaX PSHA                ; Save A
+        LDAA    #','
+        JSR     PrintChar
+        LDAA    #'X'
+        JSR     PrintChar
+        PULA                    ; Restore A
+        RTS
 
 ; Print "($"
 ; Registers changed: None
-PrintLParenDollar PSHA
-  LDAA #'('
-  JSR PrintChar
-  LDAA #'$'
-  JSR PrintChar
-  PULA
-  RTS
+PrintLParenDollar PSHA          ; Save A
+        LDAA    #'('
+        JSR     PrintChar
+        LDAA    #'$'
+        JSR     PrintChar
+        PULA                    ; Restore A
+        RTS
 
 ; Print a right parenthesis
 ; Registers changed: None
-PrintRParen PSHA
-  LDAA #')'
-  JSR PrintChar
-  PULA
-  RTS
+PrintRParen PSHA                ; Save A
+        LDAA    #')'
+        JSR     PrintChar
+        PULA                    ; Restore A
+        RTS
 
 ; Print a carriage return
 ; Registers changed: None
-PrintCR PSHA
-  LDAA #CR
-  JSR PrintChar
-  PULA
-  RTS
+PrintCR PSHA                    ; Save A
+        LDAA    #CR
+        JSR     PrintChar
+        PULA                    ; Restore A
+        RTS
 
 ; Print a space
 ; Registers changed: None
-PrintSpace PSHA
-  LDAA #SP
-  JSR PrintChar
-  PULA
-  RTS
+PrintSpace PSHA                 ; Save A
+        LDAA    #SP
+        JSR     PrintChar
+        PULA                    ; Restore A
+        RTS
 
 ; Print number of spaces in X
 ; Registers changed: X
 PrintSpaces PSHA
-  LDAA #SP
-@LOOP
-  JSR PrintChar
-  DEX
-  BNE @LOOP
-  PULA
-  RTS
+        LDAA    #SP
+LOOP1   JSR     PrintChar
+        DEX
+        BNE     LOOP1
+        PULA
+        RTS
 
-; Output a character
+; Output character in A
 ; Registers changed: none
-PrintChar JSR OUTCH
-  RTS
+PrintChar JMP   OUTCH
 
 ; Get character from keyboard
 ; Returns in A
 ; Clears high bit to be valid ASCII
 ; Registers changed: A
-GetKey JSR INCH
-  RTS
+GetKey  JMP     INCH
 
 ; Print 16-bit address in hex
 ; Pass byte in X
 ; Registers changed: None
-PrintAddress STX T1 ; Save address
-  LDAA T1           ; Get high byte
-  JSR PrintByte     ; Print it
-  LDAA T1+1         ; Get low byte
-  JSR PrintByte     ; Print it
-  RTS
+PrintAddress STX T1             ; Save address
+        LDAA    T1              ; Get high byte
+        JSR     PrintByte       ; Print it
+        LDAA    T1+1            ; Get low byte
+        JMP     PrintByte       ; Print it
 
 ; Print byte as two hex chars.
 ; Pass byte in A
 ; Registers changed: None
-PrintByte PSHA    ; Save A for LSD.
-  LSRA
-  LSRA
-  LSRA            ; MSD to LSD position.
-  LSRA
-  JSR PrintHex    ; Output hex digit.
-  PULA            ; Restore A.
-                  ; Falls through into PrntHex routine
+PrintByte PSHA                  ; Save A for LSD.
+        LSRA
+        LSRA
+        LSRA                    ; MSD to LSD position.
+        LSRA
+        JSR     PrintHex        ; Output hex digit
+        PULA                    ; Restore A
+                                ; Falls through into PrintHex routine
 
 ; Print nybble as one hex digit.
 ; Pass byte in A
 ; Registers changed: A
-PrintHex AND #$0F ; Mask LSD for hex print.
-  ORAA #'0'       ; Add "0".
-  CMPA #$3A       ; Digit?
-  BCC PrintChar   ; Yes, output it.
-  ADCA #$06       ; Add offset for letter.
-                  ; Falls through into PrintChar routine
-JMP PrintChar
+PrintHex AND    #$0F            ; Mask LSD for hex print
+        ORAA    #'0'            ; Add "0"
+        CMPA    #$3A            ; Digit?
+        BCC     PrintChar       ; Yes, output it
+        ADCA    #$06            ; Add offset for letter
+        JMP     PrintChar       ; Print it
 
 ; Print a string
 ; Pass address of string in X.
 ; String must be terminated in a null.
 ; Cannot be longer than 256 characters.
 ; Registers changed: A, X
-;
-PrintString LDAA 0,X
-  BEQ done
-  JSR PrintChar
-  INX
-  BNE PrintString
-done RTS
+PrintString LDAA 0,X            ; Get character
+        BEQ     done            ; Branch if null
+        JSR     PrintChar       ; Print character
+        INX                     ; Advance pointer
+        BRA     PrintString     ; Go back
+done    RTS                     ; Return
 
 ; DATA
 

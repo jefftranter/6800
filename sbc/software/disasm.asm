@@ -26,27 +26,23 @@
 
 ; *** ASSEMBLY TIME OPTIONS ***
 
-; Uncomment this if you want the output to include source code only
-; and not the data bytes in memory. This allows the output to be fed
-; back to an assembler.
-; SOURCEONLY = 1
-
 ; Start address.
 *     = $1000
 
 ; *** CONSTANTS ***
 
-; Characters
+; Characters:
   CR  = $0D ; Carriage Return
   SP  = $20 ; Space
   ESC = $1B ; Escape
 
-; External Routines
-  INCH     = $F520 ; Fantom II monitor input routine
-  OUTCH    = $F569 ; Fantom II monitor output routine
+; External Routines:
+  INCH     = $F520 ; Fantom II (ACIA) monitor input routine
+  OUTCH    = $F569 ; Fantom II (ACIA) monitor output routine
+; INCH     = $E8E1 ; Fantom II (PIA) monitor input routine
+; OUTCH    = $E865 ; Fantom II (PIA) monitor output routine
 
 ; Instructions. Matches entries in table of MNEMONICS
-
  OP_INV  = $00
  OP_ABA  = $01
  OP_ADCA = $02
@@ -156,7 +152,8 @@
  OP_TXS  = $6A
  OP_WAI  = $6B
 
-; Addressing Modes. OPCODES1/OPCODES2 tables list these for each instruction. LENGTHS lists the instruction length for each addressing mode.
+; Addressing Modes. OPCODES table lists these for each instruction.
+; LENGTHS lists the instruction length for each addressing mode.
  AM_INVALID = 0                    ; example:
  AM_INHERENT = 1                   ; RTS
  AM_IMMEDIATE = 2                  ; LDAA #$12
@@ -183,21 +180,18 @@
 
 ; Main program disassembles starting from itself. Prompts user to hit
 ; key to continue after each screen.
-START JSR PRINTCR
-
+START JSR PrintCR
   LDX #WelcomeString
   JSR PrintString
-  JSR PRINTCR
-  LDAA #START
-  STAA ADDR
-  LDAA #START
-  STAA ADDR+1
-OUTER JSR PRINTCR
-  LDAA #23
+  JSR PrintCR
+  LDX #START
+  STX ADDR
+OUTER JSR PrintCR
+  LDAA #23              ; Prompt every 23 lines
 LOOP PSHA
   JSR DISASM
   PULA
-  SEC
+  CLC
   SBCA #1
   BNE LOOP
   LDX #ContinueString
@@ -209,7 +203,7 @@ SpaceOrEscape JSR GetKey
   BNE SpaceOrEscape
   RTS
 
-; Disassemble instruction at address ADDR (low) / ADDR+1 (high). On
+; Disassemble instruction at address ADDR (high) / ADDR+1 (low). On
 ; return ADDR/ADDR+1 points to next instruction so it can be called
 ; again.
 DISASM LDX #0
@@ -236,7 +230,6 @@ AROUND
   LDAA LENGTHS,X         ; get instruction length given addressing mode
   STAA LEN               ; store it
   LDX ADDR
-;  .ifndef SOURCEONLY
   JSR PrintAddress      ; print address
   LDX #3
   JSR PrintSpaces       ; then three spaces
@@ -267,7 +260,6 @@ THREE
   LDAA (ADDR),Y          ; get 2nd operand byte
   JSR PrintByte         ; display it
 ONE
-;  .endif                ; .ifndef SOURCEONLY
   LDX #4
   JSR PrintSpaces
   LDAA OP                ; get the op code
@@ -534,7 +526,7 @@ TRYABINDIND
   JSR PrintRParen
   JMP DONEOPS
 DONEOPS
-  JSR PRINTCR           ; print a final CR
+  JSR PrintCR           ; print a final CR
   LDAA ADDR              ; update address to next instruction
   CLC
   ADCA LEN
@@ -595,7 +587,7 @@ PrintRParen PSHA
 
 ; Print a carriage return
 ; Registers changed: None
-PRINTCR PSHA
+PrintCR PSHA
   LDAA #CR
   JSR PrintChar
   PULA
@@ -635,12 +627,11 @@ GetKey JSR INCH
 ; Print 16-bit address in hex
 ; Pass byte in X
 ; Registers changed: None
-PrintAddress PSHA
-  TYA
-  JSR PrintByte
-  TXA
-  JSR PrintByte
-  PULA
+PrintAddress STX T1 ; Save address
+  LDAA T1           ; Get high byte
+  JSR PrintByte     ; Print it
+  LDAA T1+1         ; Get low byte
+  JSR PrintByte     ; Print it
   RTS
 
 ; Print byte as two hex chars.
@@ -667,29 +658,17 @@ PrintHex AND #$0F ; Mask LSD for hex print.
 JMP PrintChar
 
 ; Print a string
-; Pass address of string in X (low) and Y (high).
+; Pass address of string in X.
 ; String must be terminated in a null.
 ; Cannot be longer than 256 characters.
-; Registers changed: A, Y
+; Registers changed: A, X
 ;
-PrintString STX T1
-  STY T1+1
-  LDY #0
-@loop
-  LDAA (T1),Y
+PrintString LDAA 0,X
   BEQ done
   JSR PrintChar
-  INY
-  BNE @loop       ; if doesn't branch, string is too long
-done
-  RTS
-
-;  get opcode
-;  get mnemonic, addressing mode, instruction length
-;  display opcode string
-;  display arguments based on addressing mode
-;  increment instruction pointer based on instruction length
-;  loop back
+  INX
+  BNE PrintString
+done RTS
 
 ; DATA
 
@@ -804,12 +783,14 @@ MNEMONICS ASC "??? " ; $00
  ASC "WAI " ; $6B
 
 ; Lengths of instructions given an addressing mode. Matches values of AM_*
-LENGTHS 
+; INVALID, INHERENT, IMMEDIATE, IMMEDIATEX, DIRECT, INDEXED, EXTENDED,
+;  RELATIVE
+LENGTHS
  DB 1, 1, 2, 3, 2, 2, 3, 2
 
 ; Opcodes. Listed in order. Defines the mnemonic and addressing mode.
 ; 2 bytes per table entry
-OPCODES1
+OPCODES
  DB OP_INV, AM_INVALID            ; $00
  DB OP_NOP, AM_INHERENT           ; $01
  DB OP_INV, AM_INVALID            ; $02
@@ -1084,5 +1065,5 @@ OPCODES1
 
 ; *** Strings ***
 
-ContinueString  ASC "  <SPACE> TO CONTINUE, <ESC> TO STOP\0"
-WelcomeString ASC "DISASM VERSION 0.0 by JEFF TRANTER\0"
+ContinueString ASC "  <SPACE> to continue, <ESC> to stop\0"
+WelcomeString ASC "Disasm version 0.0 by Jeff Tranter\0"

@@ -242,45 +242,45 @@ DISASM  LDX     ADDR
         LDAA    0,X             ; Get addressing mode
         STAA    AM              ; Store it
 
-        LDX    #LENGTHS         ; Get address of instruction lengths table
-        STX    T1               ; Save it
-        ADDA   T1+1             ; A contains length, add LSB of table address
-        STAA   T1+1             ; And save
+        LDX     #LENGTHS        ; Get address of instruction lengths table
+        STX     T1              ; Save it
+        ADDA    T1+1            ; A contains length, add LSB of table address
+        STAA    T1+1            ; And save
 
-        LDX    T1               ; Get address of table entry
-        LDAA   0,X              ; Get instruction length
-        STAA   LEN              ; Save it
+        LDX     T1              ; Get address of table entry
+        LDAA    0,X             ; Get instruction length
+        STAA    LEN             ; Save it
 
-        LDX    ADDR
-        JSR    PrintAddress     ; Print address
-        LDX    #3
-        JSR    PrintSpaces      ; Then three spaces
-        LDAA   OPCODE           ; Get instruction op code
-        JSR    PrintByte        ; Display the opcode byte
-        JSR    PrintSpace
-        LDAA   LEN              ; How many bytes in the instruction?
-        CMPA   #3               ; Three?
-        BEQ    THREE            ; If so, branch
-        CMPA   #2               ; Two?
-        BEQ    TWO              ; If so, branch
-        LDX    #5               ; One byte instructions, print five padding spaces
-        JSR    PrintSpaces
-        JMP    ONE
-TWO     LDX    #0
-        LDAA   0,X              ; Get 1st operand byte
-        JSR    PrintByte        ; Display it
-        LDX    #3               ; Three adding spaces
-        JSR    PrintSpaces
-        JMP    ONE
-THREE   LDX    #0
-        LDAA   0,X              ; Get 1st operand byte
-        JSR    PrintByte        ; Display it
-        JSR    PrintSpace
-        LDAA   1,X              ; Get 2nd operand byte
-        JSR    PrintByte        ; Display it
-ONE     LDX    #4               ; One byte instruction, print four padding spaces
-        JSR    PrintSpaces
-        LDAA   OP               ; Get the op code
+        LDX     ADDR
+        JSR     PrintAddress    ; Print address
+        LDX     #3
+        JSR     PrintSpaces     ; Then three spaces
+        LDAA    OPCODE          ; Get instruction op code
+        JSR     PrintByte       ; Display the opcode byte
+        JSR     PrintSpace
+        LDAA    LEN             ; How many bytes in the instruction?
+        CMPA    #3              ; Three?
+        BEQ     THREE           ; If so, branch
+        CMPA    #2              ; Two?
+        BEQ     TWO             ; If so, branch
+        LDX     #5              ; One byte instructions, print five padding spaces
+        JSR     PrintSpaces
+        JMP     ONE
+TWO     LDX     #0
+        LDAA    0,X             ; Get 1st operand byte
+        JSR     PrintByte       ; Display it
+        LDX     #3              ; Three adding spaces
+        JSR     PrintSpaces
+        JMP     ONE
+THREE   LDX     #0
+        LDAA    0,X             ; Get 1st operand byte
+        JSR     PrintByte       ; Display it
+        JSR     PrintSpace
+        LDAA    1,X             ; Get 2nd operand byte
+        JSR     PrintByte       ; Display it
+ONE     LDX     #4              ; One byte instruction, print four padding spaces
+        JSR     PrintSpaces
+        LDAA    OP              ; Get the op code
 
 ; Calculate entry in mnemonics table by taking opcode and multplying
 ; it by four (since entries are each 4 bytes long) and adding as
@@ -307,13 +307,13 @@ ONE     LDX    #4               ; One byte instruction, print four padding space
 
         LDX     T1              ; Get entry in table
         LDAA    0,X             ; Get 1st character of mnemonic
-        JSR PrintChar           ; Any print it
+        JSR     PrintChar       ; Any print it
         INX                     ; Advance to next character
         LDAA    0,X             ; Get 2nd character of mnemonic
-        JSR PrintChar           ; Any print it
+        JSR     PrintChar       ; Any print it
         INX                     ; Advance to next character
         LDAA    0,X             ; Get 3rd character of mnemonic
-        JSR PrintChar           ; Any print it
+        JSR     PrintChar       ; Any print it
         INX                     ; Advance to next character
         LDAA    0,X             ; Get 4th character of mnemonic
         JSR     PrintChar       ; Any print it

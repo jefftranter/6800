@@ -30,7 +30,8 @@
 ; *** CONSTANTS ***
 
 ; Characters:
- CR      = $0D ; Carriage Return
+ CR      = $0D ; Carriage return
+ LF      = $0A ; Line feed
  SP      = $20 ; Space
  ESC     = $1B ; Escape
 
@@ -166,7 +167,7 @@
 
 ; Variables
  * = $0100
- T1     DS 1                    ; Temp variable 1
+ T1     DS 2                    ; Temp variable 1
  T2     DS 2                    ; Temp variable 2
  ADDR   DS 2                    ; Instruction address, 2 bytes (low/high)
  OPCODE DS 1                    ; Instruction opcode
@@ -193,8 +194,7 @@ OUTER   JSR     PrintCR         ; Print newline
 LOOP    PSHA                    ; Save line count
         JSR     DISASM          ; Disassemble one instruction
         PULA                    ; Restore line count
-        CLC                     ; Decrement count
-        SBCA    #1
+        DECA                    ; Decrement count
         BNE     LOOP            ; Go back if more lines to display
         LDX     #ContinueString ; Prompt to contnue
         JSR     PrintString
@@ -228,12 +228,12 @@ DISASM  LDX     ADDR
         LDX     #OPCODES        ; Start address of table
         STX     T2              ; Save 16-bit value in T2
         CLC                     ; 16-bit add: T1 = T1 + T2
-        LDAA    T1              ; Low byte
-        ADCA    T2
-        STAA    T1
-        LDAA    T1+1            ; High byte
-        ADCA    T2+2            ; Includes possible carry
+        LDAA    T1+1            ; Low byte
+        ADCA    T2+1
         STAA    T1+1
+        LDAA    T1              ; High byte
+        ADCA    T2              ; Includes possible carry
+        STAA    T1
 
         LDX     T1              ; Get address of entry in table
         LDAA    0,X             ; Get the instruction type (e.g. OP_LDA)
@@ -434,10 +434,12 @@ PrintCommaX PSHA                ; Save A
         PULA                    ; Restore A
         RTS
 
-; Print a carriage return
+; Print a carriage return/linefeed
 ; Registers changed: None
 PrintCR PSHA                    ; Save A
         LDAA    #CR
+        JSR     PrintChar
+        LDAA    #LF
         JSR     PrintChar
         PULA                    ; Restore A
         RTS
@@ -495,9 +497,9 @@ PrintByte PSHA                  ; Save A for LSD.
 ; Registers changed: A
 PrintHex ANDA   #$0F            ; Mask LSD for hex print
         ORAA    #'0'            ; Add "0"
-        CMPA    #'9'+1          ; Digit?
-        BCC     PrintChar       ; Yes, output it
-        ADCA    #$06            ; Add offset for letter
+        CMPA    #'9'            ; Digit?
+        BLE     PrintChar       ; Yes, output it
+        ADDA    #$06            ; Add offset for letter
         JMP     PrintChar       ; Print it
 
 ; Print a string

@@ -24,8 +24,6 @@
 ;       OUTPUT  SCODE           ; For Motorola S record (RUN) output
         CODE
 
-; *** ASSEMBLY TIME OPTIONS ***
-
 ; *** CONSTANTS ***
 
 ; Characters:
@@ -34,6 +32,7 @@
  ESC     = $1B ; Escape
 
 ; External Routines:
+; Uncomment desired version to work with.
  INCH    = $F520 ; Fantom II (ACIA) monitor input routine
  OUTCH   = $F569 ; Fantom II (ACIA) monitor output routine
 ;INCH    = $E8E1 ; Fantom II (PIA) monitor input routine
@@ -213,14 +212,16 @@ DISASM  LDX     ADDR
 
 ; Take opcode and double it by shifting (16-bits) since opcode table is two bytes per entry.
 ; Then add address of OPCODES table to get address in table.
+; The instructions ASLB and ROLA together act as a 16-bit arithmetic
+; left shift of the product in accumulators with MSB in A and LSB in B.
 
-        CLR     T1              ; Set 16-bit value of T1 to zero
-        CLR     T1+1
-        CLC
-        ASLA                    ; Double opcode since table is two bytes per entry
-        BCC     NOCARRY         ; Branch if bit 7 not shifted into carry bit
-        INC     T1              ; Increment high byte of T1
-NOCARRY STAA    T1+1            ; Save low byte
+        CLRA                    ; Set MSB to zero
+        LDAB    OPCODE          ; Set LSB to opcode
+        ASLB                    ; Shift LSB
+        ROLA                    ; Shift any carry into MSB
+        STAA    T1              ; Save 16-bit value in T1
+        STAB    T1+1
+
         LDX     #OPCODES        ; Start address of table
         STX     T2              ; Save 16-bit value in T2
         CLC                     ; 16-bit add: T1 = T1 + T2
@@ -247,312 +248,167 @@ NOCARRY STAA    T1+1            ; Save low byte
         LDAA   0,X              ; Get instruction length
         STAA   LEN              ; Save it
 
-  LDX ADDR
-  JSR PrintAddress      ; print address
-  LDX #3
-  JSR PrintSpaces       ; then three spaces
-  LDAA OPCODE            ; get instruction op code
-  JSR PrintByte         ; display the opcode byte
-  JSR PrintSpace
-  LDAA LEN               ; how many bytes in the instruction?
-  CMPA #3
-  BEQ THREE
-  CMPA #2
-  BEQ TWO
-  LDX #5
-  JSR PrintSpaces
-  JMP ONE
-TWO
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte
-  JSR PrintByte         ; display it
-  LDX #3
-  JSR PrintSpaces
-  JMP ONE
-THREE
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte
-  JSR PrintByte         ; display it
-  JSR PrintSpace
-  LDY #2
-  LDAA (ADDR),Y          ; get 2nd operand byte
-  JSR PrintByte         ; display it
-ONE
-  LDX #4
-  JSR PrintSpaces
-  LDAA OP                ; get the op code
-  ASLA                   ; multiply by 2
-  CLC
-  ADCA OP                ; add one more to multiply by 3 since table is three bytes per entry
-  TAX
-  LDY #3
-MNEM
-  LDAA MNEMONICS,X       ; print three chars of mnemonic
-  JSR PrintChar
-  INX
-  DEY
-  BNE MNEM
+        LDX    ADDR
+        JSR    PrintAddress     ; Print address
+        LDX    #3
+        JSR    PrintSpaces      ; Then three spaces
+        LDAA   OPCODE           ; Get instruction op code
+        JSR    PrintByte        ; display the opcode byte
+        JSR    PrintSpace
+        LDAA   LEN              ; How many bytes in the instruction?
+        CMPA   #3               ; Three?
+        BEQ    THREE            ; If so, branch
+        CMPA   #2               ; Two?
+        BEQ    TWO              ; If so, branch
+        LDX    #5               ; One byte instructions, print five padding spaces
+        JSR    PrintSpaces
+        JMP    ONE
+TWO     LDX    #0
+        LDAA   0,X              ; Get 1st operand byte
+        JSR    PrintByte        ; Display it
+        LDX    #3               ; Three adding spaces
+        JSR    PrintSpaces
+        JMP    ONE
+THREE   LDX    #0
+        LDAA   0,X              ; Get 1st operand byte
+        JSR    PrintByte        ; Display it
+        JSR    PrintSpace
+        LDAA   1,X              ; Get 2nd operand byte
+        JSR    PrintByte        ; Display it
+ONE     LDX    #4               ; One byte instruction, print four padding spaces
+        JSR    PrintSpaces
+        LDAA   OP               ; Get the op code
+
+; Calculate entry in mnemonics table by taking opcode and multplying
+; it by four (since entries are each 4 bytes long) and adding as
+; offset to start of the table. Done by shifting to the left twice.
+
+        CLRA                    ; Set MSB to zero
+        LDAB    OP              ; Set LSB to opcode
+        ASLB                    ; Shift LSB
+        ROLA                    ; Shift any carry into MSB
+        ASLB                    ; Shift LSB
+        ROLA                    ; Shift any carry into MSB
+        STAA    T1              ; Save 16-bit value in T1
+        STAB    T1+1
+
+        LDX     #MNEMONICS      ; Start address of table
+        STX     T2              ; Save 16-bit value in T2
+        CLC                     ; 16-bit add: T1 = T1 + T2
+        LDAA    T1              ; Low byte
+        ADCA    T2
+        STAA    T1
+        LDAA    T1+1            ; High byte
+        ADCA    T2+2            ; Includes possible carry
+        STAA    T1+1
+
+        LDX     T1              ; Get entry in table
+        LDAA    0,X             ; Get 1st character of mnemonic
+        JSR PrintChar           ; Any print it
+        INX                     ; Advance to next character
+        LDAA    0,X             ; Get 2nd character of mnemonic
+        JSR PrintChar           ; Any print it
+        INX                     ; Advance to next character
+        LDAA    0,X             ; Get 3rd character of mnemonic
+        JSR PrintChar           ; Any print it
+        INX                     ; Advance to next character
+        LDAA    0,X             ; Get 4th character of mnemonic
+        JSR     PrintChar       ; Any print it
+
 ; Display any operands based on addressing mode
-  LDAA OP                ; is it RMB or SMB?
-  CMPA #OP_RMB
-  BEQ DOMB
-  CMPA #OP_SMB
-  BNE TRYBB
-DOMB
-  LDAA OPCODE            ; get the op code
-  ANDA #$70              ; Upper 3 bits is the bit number
-  LSRA                   
-  LSRA
-  LSRA
-  LSRA
-;  JSR PRHEX
-  LDX #2
-  JSR PrintSpaces
-  JSR PrintDollar
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (low address)
-  JSR PrintByte         ; display it
-  JMP DONEOPS
-TRYBB
-  LDAA OP                ; is it BBR or BBS?
-  CMPA #OP_BBR
-  BEQ DOBB
-  CMPA #OP_BBS
-  BNE TRYIMP
-DOBB                   ; handle special BBRn and BBSn instructions
-  LDAA OPCODE            ; get the op code
-  AND #$70              ; Upper 3 bits is the bit number
-  LSRA                   
-  LSRA
-  LSRA
-  LSRA
-;  JSR PRHEX
-  LDX #2
-  JSR PrintSpaces
-  JSR PrintDollar
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (address)
-  JSR PrintByte         ; display it
-  LDAA #','
-  JSR PrintChar
-  JSR PrintDollar
+
+        LDX     ADDR            ; Set X to first address of instruction
+
+        LDAA    AM              ; Get addressing mode
+        CMPA    #AM_INVALID     ; Is it invalid?
+        BNE     TRYINH          ; Branch if not
+        JMP     DONEOPS         ; If so, then no operands
+
+TRYINH  CMPA    #AM_INHERENT    ; Is it inherent?
+        BNE     TRYIMX          ; Branch if not
+        JMP     DONEOPS         ; If so, then no operands
+
+        CMPA    #AM_IMMEDIATE   ; Is it immediate?
+        BNE     TRYIMX          ; Branch if not
+        LDAA    #'#'            ; Print "#"
+        JSR     PrintChar
+        JSR     PrintDollar     ; Print "$"
+        LDAA    0,X             ; Get 1st operand byte (immediate data)
+        JSR     PrintByte       ; display it
+        JMP     DONEOPS
+
+TRYIMX  CMPA    #AM_IMMEDIATEX  ; Is it immediate indexed?
+        BNE     TRYDIR          ; Branch if not
+        LDAA    #'#'            ; Print "#"
+        JSR     PrintChar
+        JSR     PrintDollar     ; Print "$"
+        LDAA    0,X             ; Get 1st operand byte of immediate data
+        JSR     PrintByte       ; display it
+        LDAA    2,X             ; Get 2nd operand byte of immediate data
+        JSR     PrintByte       ; display it
+        JMP DONEOPS
+
+TRYDIR  CMPA    #AM_DIRECT      ; Is it direct?
+        BNE     TRYIND          ; Branch if not
+        JSR     PrintDollar     ; Print "$"
+        LDAA    0,X             ; Get 1st operand byte
+        JSR     PrintByte       ; Display it
+        JMP DONEOPS
+
+TRYIND  CMPA    #AM_INDEXED     ; Is it indexed?
+        BNE     TRYEXT          ; Branch if not
+        JSR     PrintDollar     ; Print "$"
+        LDAA    0,X             ; Get 1st operand byte
+        JSR     PrintByte       ; Display it
+        JSR     PrintCommaX     ; Display ",X"
+        JMP DONEOPS
+
+TRYEXT  CMPA    #AM_EXTENDED    ; Is it extended?
+        BNE     TRYREL          ; Branch if not
+        JSR     PrintDollar     ; Print "$"
+        LDAA    0,X             ; Get 1st operand byte of immediate data
+        JSR     PrintByte       ; Display it
+        LDAA    2,X             ; Get 2nd operand byte of immediate data
+        JSR     PrintByte       ; Display it
+        JMP     DONEOPS
+
+TRYREL  CMPA    #AM_RELATIVE    ; Is it relative branch?
+        BNE     DONEOPS         ; Branch if not
+        JSR     PrintDollar
+
 ; Handle relative addressing
-; Destination address is Current address + relative (sign extended so upper byte is $00 or $FF) + 3
-  LDY #2
-  LDAA (ADDR),Y          ; get 2nd operand byte (relative branch offset)
-  STAA REL               ; save low byte of offset
-  BMI @NEG              ; if negative, need to sign extend
-  LDAA #0                ; high byte is zero
-  BEQ @ADD
-@NEG
-  LDAA #$FF              ; negative offset, high byte if $FF
-@ADD
-  STAA REL+1             ; save offset high byte
-  LDAA ADDR              ; take adresss
-  CLC
-  ADCA REL               ; add offset
-  STAA DEST              ; and store
-  LDAA ADDR+1            ; also high byte (including carry)
-  ADCA REL+1
-  STAA DEST+1
-  LDAA DEST              ; now need to add 3 more to the address
-  CLC
-  ADCA #3
-  STAA DEST
-  LDAA DEST+1
-  ADCA #0                ; add any carry
-  STAA DEST+1
-  JSR PrintByte         ; display high byte
-  LDAA DEST
-  JSR PrintByte         ; display low byte
-  JMP DONEOPS
-TRYIMP
-  LDAA AM
-  CMPA #AM_IMPLICIT
-  BNE TRYINV
-  JMP DONEOPS           ; no operands
-TRYINV 
-  CMPA #AM_INVALID
-  BNE TRYACC
-  JMP DONEOPS           ; no operands
-TRYACC
-  LDX #3
-  JSR PrintSpaces
-  CMPA #AM_ACCUMULATOR
-  BNE TRYIMM
-; .ifndef NOACCUMULATOR
-  LDAA #'A'
-  JSR PrintChar
-; .endif                 ; .ifndef NOACCUMULATOR
-  JMP DONEOPS
-TRYIMM
-  CMPA #AM_IMMEDIATE
-  BNE TRYZP
-  LDAA #'#'
-  JSR PrintChar
-  JSR PrintDollar
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (low address)
-  JSR PrintByte         ; display it
-  JMP DONEOPS
-TRYZP
-  CMPA #AM_ZEROPAGE
-  BNE TRYZPX
-  JSR PrintDollar
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (low address)
-  JSR PrintByte         ; display it
-  JMP DONEOPS
-TRYZPX
-  CMPA #AM_ZEROPAGE_X
-  BNE TRYZPY
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (address)
-  JSR PrintDollar
-  JSR PrintByte         ; display it
-  JSR PrintCommaX
-  JMP DONEOPS       
-TRYZPY
-  CMPA #AM_ZEROPAGE_Y
-  BNE TRYREL
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (address)
-  JSR PrintByte         ; display it
-  JSR PrintCommaY
-  JMP DONEOPS       
-TRYREL
-  CMPA #AM_RELATIVE
-  BNE TRYABS
-  JSR PrintDollar
-; Handle relative addressing
-; Destination address is Current address + relative (sign extended so upper byte is $00 or $FF) + 2
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (relative branch offset)
-  STAA REL               ; save low byte of offset
-  BMI  SNEG              ; if negative, need to sign extend
-  LDAA #0                ; high byte is zero
-  BEQ SADD
-SNEG
-  LDAA #$FF              ; negative offset, high byte if $FF
-SADD
-  STAA REL+1             ; save offset high byte
-  LDAA ADDR              ; take adresss
-  CLC
-  ADCA REL               ; add offset
-  STAA DEST              ; and store
-  LDAA ADDR+1            ; also high byte (including carry)
-  ADCA REL+1
-  STAA DEST+1
-  LDAA DEST              ; now need to add 2 more to the address
-  CLC
-  ADCA #2
-  STAA DEST
-  LDAA DEST+1
-  ADCA #0                ; add any carry
-  STAA DEST+1
-  JSR PrintByte         ; display high byte
-  LDAA DEST
-  JSR PrintByte         ; display low byte
-  JMP DONEOPS
-TRYABS
-  CMPA #AM_ABSOLUTE
-  BNE TRYABSX
-  JSR PrintDollar
-  LDY #2
-  LDAA (ADDR),Y          ; get 2nd operand byte (high address)
-  JSR PrintByte         ; display it
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (low address)
-  JSR PrintByte         ; display it
-  JMP DONEOPS
-TRYABSX
-  CMPA #AM_ABSOLUTE_X
-  BNE TRYABSY
-  JSR PrintDollar
-  LDY #2
-  LDAA (ADDR),Y          ; get 2nd operand byte (high address)
-  JSR PrintByte         ; display it
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (low address)
-  JSR PrintByte         ; display it
-  JSR PrintCommaX
-  JMP DONEOPS
-TRYABSY
-  CMPA #AM_ABSOLUTE_Y
-  BNE TRYIND
-  JSR PrintDollar
-  LDY #2
-  LDAA (ADDR),Y          ; get 2nd operand byte (high address)
-  JSR PrintByte         ; display it
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (low address)
-  JSR PrintByte         ; display it
-  JSR PrintCommaY
-  JMP DONEOPS
-TRYIND
-  CMPA #AM_INDIRECT
-  BNE TRYINDXIND
-  JSR PrintLParenDollar
-  LDY #2
-  LDAA (ADDR),Y          ; get 2nd operand byte (high address)
-  JSR PrintByte         ; display it
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (low address)
-  JSR PrintByte         ; display it
-  JSR PrintRParen
-  JMP DONEOPS
-TRYINDXIND
-  CMPA #AM_INDEXED_INDIRECT
-  BNE TRYINDINDX
-  JSR PrintLParenDollar
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (low address)
-  JSR PrintByte         ; display it
-  JSR PrintCommaX
-  JSR PrintRParen
-  JMP DONEOPS
-TRYINDINDX
-  CMPA #AM_INDIRECT_INDEXED
-  BNE TRYINDZ
-  JSR PrintLParenDollar
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (low address)
-  JSR PrintByte         ; display it
-  JSR PrintRParen
-  JSR PrintCommaY
-  JMP DONEOPS
-TRYINDZ
-  CMPA #AM_INDIRECT_ZEROPAGE ; [65C02 only]
-  BNE TRYABINDIND
-  JSR PrintLParenDollar
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (low address)
-  JSR PrintByte         ; display it
-  JSR PrintRParen
-  JMP DONEOPS
-TRYABINDIND
-  CMPA #AM_ABSOLUTE_INDEXED_INDIRECT ; [65C02 only]
-  BNE DONEOPS
-  JSR PrintLParenDollar
-  LDY #2
-  LDAA (ADDR),Y          ; get 2nd operand byte (high address)
-  JSR PrintByte         ; display it
-  LDY #1
-  LDAA (ADDR),Y          ; get 1st operand byte (low address)
-  JSR PrintByte         ; display it
-  JSR PrintCommaX
-  JSR PrintRParen
-  JMP DONEOPS
-DONEOPS
-  JSR PrintCR           ; print a final CR
-  LDAA ADDR              ; update address to next instruction
-  CLC
-  ADCA LEN
-  STAA ADDR
-  LDAA ADDR+1
-  ADCA #0                ; to add carry
-  STAA ADDR+1
-  RTS
+; Destination address is current address + relative (sign extended so upper byte is $00 or $FF) + 2
+
+        LDAA    0,X             ; Get 1st operand byte (relative branch offset)
+        STAA    REL+1           ; Save low byte of offset
+        BMI     SNEG            ; If negative, need to sign extend
+        LDAA    #0              ; High byte is zero
+        BEQ     SADD
+SNEG    LDAA    #$FF            ; Negative offset, high byte if $FF
+SADD    STAA    REL             ; Save offset high byte
+        LDAA    ADDR+1          ; Take adresss
+        CLC
+        ADCA    REL+1           ; Add offset
+        STAA    DEST+1          ; And store
+        LDAA    ADDR            ; Also high byte (including carry)
+        ADCA    REL
+        STAA    DEST
+        LDAA    DEST+1          ; Now need to add 2 more to the address
+        CLC
+        ADCA    #2
+        STAA    DEST+1
+        LDAA    DEST
+        ADCA    #0              ; Add any carry
+        STAA    DEST
+        JSR     PrintByte       ; Display high byte
+        LDAA    DEST+1
+        JSR     PrintByte       ; Display low byte
+
+DONEOPS JSR     PrintCR         ; Print a final CR
+        LDX     ADDR            ; Update address to next instruction
+        INX
+        STX     ADDR
+        RTS
 
 ;------------------------------------------------------------------------
 ; Utility functions
@@ -653,7 +509,7 @@ PrintByte PSHA                  ; Save A for LSD.
 ; Print nybble as one hex digit.
 ; Pass byte in A
 ; Registers changed: A
-PrintHex AND    #$0F            ; Mask LSD for hex print
+PrintHex ANDA   #$0F            ; Mask LSD for hex print
         ORAA    #'0'            ; Add "0"
         CMPA    #$3A            ; Digit?
         BCC     PrintChar       ; Yes, output it
@@ -784,9 +640,10 @@ MNEMONICS ASC "??? " ; $00
  ASC "TXS " ; $6A
  ASC "WAI " ; $6B
 
-; Lengths of instructions given an addressing mode. Matches values of AM_*
-; INVALID, INHERENT, IMMEDIATE, IMMEDIATEX, DIRECT, INDEXED, EXTENDED,
-;  RELATIVE
+; Lengths of instructions given an addressing mode. Matches values of
+; AM_* in the order INVALID, INHERENT, IMMEDIATE, IMMEDIATEX, DIRECT,
+; INDEXED, EXTENDED, RELATIVE.
+; Make sure this table does not cross a page boundary!
 LENGTHS DB 1, 1, 2, 3, 2, 2, 3, 2
 
 ; Opcodes. Listed in order. Defines the mnemonic and addressing mode.

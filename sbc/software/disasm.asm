@@ -15,13 +15,16 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 ;
+; TO DO:
+; - Integrate with ROM monitor code
+;
 ; Revision History
 ; Version Date         Comments
 ; 0.0     16-Mar-2022  First version started, based on 6502 version
 
         CPU     6800
-        OUTPUT  HEX             ; For Intel hex output
-;       OUTPUT  SCODE           ; For Motorola S record (RUN) output
+;       OUTPUT  HEX             ; For Intel hex output
+        OUTPUT  SCODE           ; For Motorola S record (RUN) output
         CODE
 
 ; *** CONSTANTS ***
@@ -150,14 +153,14 @@
 
 ; Addressing Modes. OPCODES table lists these for each instruction.
 ; LENGTHS lists the instruction length for each addressing mode.
- AM_INVALID = 0                 ; example:
+ AM_INVALID = 0                 ; Example:
  AM_INHERENT = 1                ; RTS
  AM_IMMEDIATE = 2               ; LDAA #$12
  AM_IMMEDIATEX = 3              ; LDX #$1234
  AM_DIRECT = 4                  ; LDAA $12
  AM_INDEXED = 5                 ; LDAA $12,X
  AM_EXTENDED = 6                ; LDAA $1234
- AM_RELATIVE = 7                ; BNE $FD
+ AM_RELATIVE = 7                ; BNE $1234
 
 ; *** VARIABLES ***
 
@@ -183,7 +186,6 @@
 START   JSR     PrintCR         ; Print newline
         LDX     #WelcomeString  ; Print welcome string
         JSR     PrintString
-        JSR     PrintCR         ; Print newline
         LDX     #START          ; Start disassembling from START
         STX     ADDR
 OUTER   JSR     PrintCR         ; Print newline
@@ -210,7 +212,8 @@ DISASM  LDX     ADDR
         LDAA    0,X             ; Get instruction op code
         STAA    OPCODE          ; Save it
 
-; Take opcode and double it by shifting (16-bits) since opcode table is two bytes per entry.
+; Take opcode and double it by shifting (16-bits) since opcode table
+; is two bytes per entry.
 ; Then add address of OPCODES table to get address in table.
 ; The instructions ASLB and ROLA together act as a 16-bit arithmetic
 ; left shift of the product in accumulators with MSB in A and LSB in B.
@@ -253,7 +256,7 @@ DISASM  LDX     ADDR
         LDX    #3
         JSR    PrintSpaces      ; Then three spaces
         LDAA   OPCODE           ; Get instruction op code
-        JSR    PrintByte        ; display the opcode byte
+        JSR    PrintByte        ; Display the opcode byte
         JSR    PrintSpace
         LDAA   LEN              ; How many bytes in the instruction?
         CMPA   #3               ; Three?
@@ -334,7 +337,7 @@ TRYINH  CMPA    #AM_INHERENT    ; Is it inherent?
         JSR     PrintChar
         JSR     PrintDollar     ; Print "$"
         LDAA    0,X             ; Get 1st operand byte (immediate data)
-        JSR     PrintByte       ; display it
+        JSR     PrintByte       ; Display it
         JMP     DONEOPS
 
 TRYIMX  CMPA    #AM_IMMEDIATEX  ; Is it immediate indexed?
@@ -343,9 +346,9 @@ TRYIMX  CMPA    #AM_IMMEDIATEX  ; Is it immediate indexed?
         JSR     PrintChar
         JSR     PrintDollar     ; Print "$"
         LDAA    0,X             ; Get 1st operand byte of immediate data
-        JSR     PrintByte       ; display it
+        JSR     PrintByte       ; Display it
         LDAA    2,X             ; Get 2nd operand byte of immediate data
-        JSR     PrintByte       ; display it
+        JSR     PrintByte       ; Display it
         JMP DONEOPS
 
 TRYDIR  CMPA    #AM_DIRECT      ; Is it direct?
@@ -431,24 +434,6 @@ PrintCommaX PSHA                ; Save A
         PULA                    ; Restore A
         RTS
 
-; Print "($"
-; Registers changed: None
-PrintLParenDollar PSHA          ; Save A
-        LDAA    #'('
-        JSR     PrintChar
-        LDAA    #'$'
-        JSR     PrintChar
-        PULA                    ; Restore A
-        RTS
-
-; Print a right parenthesis
-; Registers changed: None
-PrintRParen PSHA                ; Save A
-        LDAA    #')'
-        JSR     PrintChar
-        PULA                    ; Restore A
-        RTS
-
 ; Print a carriage return
 ; Registers changed: None
 PrintCR PSHA                    ; Save A
@@ -481,7 +466,6 @@ PrintChar JMP   OUTCH
 
 ; Get character from keyboard
 ; Returns in A
-; Clears high bit to be valid ASCII
 ; Registers changed: A
 GetKey  JMP     INCH
 
@@ -511,7 +495,7 @@ PrintByte PSHA                  ; Save A for LSD.
 ; Registers changed: A
 PrintHex ANDA   #$0F            ; Mask LSD for hex print
         ORAA    #'0'            ; Add "0"
-        CMPA    #$3A            ; Digit?
+        CMPA    #'9'+1          ; Digit?
         BCC     PrintChar       ; Yes, output it
         ADCA    #$06            ; Add offset for letter
         JMP     PrintChar       ; Print it
@@ -519,7 +503,6 @@ PrintHex ANDA   #$0F            ; Mask LSD for hex print
 ; Print a string
 ; Pass address of string in X.
 ; String must be terminated in a null.
-; Cannot be longer than 256 characters.
 ; Registers changed: A, X
 PrintString LDAA 0,X            ; Get character
         BEQ     done            ; Branch if null
@@ -923,4 +906,4 @@ OPCODES DB OP_INV, AM_INVALID     ; $00
 ; *** Strings ***
 
 ContinueString ASC "  <SPACE> to continue, <ESC> to stop\0"
-WelcomeString ASC "Disasm version 0.0 by Jeff Tranter\0"
+WelcomeString ASC "Disasm version 0.0 by Jeff Tranter\r\n\0"

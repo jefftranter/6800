@@ -26,9 +26,6 @@
 
 ; *** ASSEMBLY TIME OPTIONS ***
 
-; Start address.
- *       = $1000
-
 ; *** CONSTANTS ***
 
 ; Characters:
@@ -165,18 +162,22 @@
 
 ; *** VARIABLES ***
 
-; Page zero variables
- T1     = $35                   ; temp variable 1
- T2     = $36                   ; temp variable 2
- ADDR   = $37                   ; instruction address, 2 bytes (low/high)
- OPCODE = $39                   ; instruction opcode
- OP     = $3A                   ; instruction type OP_*
- AM     = $41                   ; addressing mode AM_*
- LEN    = $42                   ; instruction length
- REL    = $43                   ; relative addressing branch offset (2 bytes)
- DEST   = $45                   ; relative address destination address (2 bytes)
+; Variables
+ * = $0100
+ T1     DS 1                    ; Temp variable 1
+ T2     DS 2                    ; Temp variable 2
+ ADDR   DS 2                    ; Instruction address, 2 bytes (low/high)
+ OPCODE DS 1                    ; Instruction opcode
+ OP     DS 1                    ; Instruction type OP_*
+ AM     DS 1                    ; Addressing mode AM_*
+ LEN    DS 1                    ; Instruction length
+ REL    DS 2                    ; Relative addressing branch offset (2 bytes)
+ DEST   DS 2                    ; Relative address destination address (2 bytes)
 
 ; *** CODE ***
+
+; Start address.
+ * = $1000
 
 ; Main program disassembles starting from itself. Prompts user to hit
 ; key to continue after each screen.
@@ -209,26 +210,43 @@ SpaceOrEscape JSR GetKey        ; Get a key
 DISASM  LDX     ADDR
         LDAA    0,X             ; Get instruction op code
         STAA    OPCODE          ; Save it
-  BMI UPPER              ; if bit 7 set, in upper half of table
-  ASLA                   ; double it since table is two bytes per entry
-  TAX
-  LDAA OPCODES1,X        ; get the instruction type (e.g. OP_LDA)
-  STAA OP                ; store it
-  INX
-  LDAA OPCODES1,X        ; get addressing mode
-  STAA AM                ; store it
-  JMP AROUND
-UPPER ASLA                 ; double it since table is two bytes per entry
-  TAX
-  LDAA OPCODES2,X        ; get the instruction type (e.g. OP_LDA)
-  STAA OP                ; store it
-  INX
-  LDAA OPCODES2,X        ; get addressing mode
-  STAA AM                ; store it
-AROUND
-  TAX                   ; put addressing mode in X
-  LDAA LENGTHS,X         ; get instruction length given addressing mode
-  STAA LEN               ; store it
+
+; Take opcode and double it by shifting (16-bits) since opcode table is two bytes per entry.
+; Then add address of OPCODES table to get address in table.
+
+        CLR     T1              ; Set 16-bit value of T1 to zero
+        CLR     T1+1
+        CLC
+        ASLA                    ; Double opcode since table is two bytes per entry
+        BCC     NOCARRY         ; Branch if bit 7 not shifted into carry bit
+        INC     T1              ; Increment high byte of T1
+NOCARRY STAA    T1+1            ; Save low byte
+        LDX     #OPCODES        ; Start address of table
+        STX     T2              ; Save 16-bit value in T2
+        CLC                     ; 16-bit add: T1 = T1 + T2
+        LDAA    T1              ; Low byte
+        ADCA    T2
+        STAA    T1
+        LDAA    T1+1            ; High byte
+        ADCA    T2+2            ; Includes possible carry
+        STAA    T1+1
+
+        LDX     T1              ; Get address of entry in table
+        LDAA    0,X             ; Get the instruction type (e.g. OP_LDA)
+        STAA    OP              ; Store it
+        INX                     ; Advance to next field in table
+        LDAA    0,X             ; Get addressing mode
+        STAA    AM              ; Store it
+
+        LDX    #LENGTHS         ; Get address of instruction lengths table
+        STX    T1               ; Save it
+        ADDA   T1+1             ; A contains length, add LSB of table address
+        STAA   T1+1             ; And save
+
+        LDX    T1               ; Get address of table entry
+        LDAA   0,X              ; Get instruction length
+        STAA   LEN              ; Save it
+
   LDX ADDR
   JSR PrintAddress      ; print address
   LDX #3
@@ -769,13 +787,11 @@ MNEMONICS ASC "??? " ; $00
 ; Lengths of instructions given an addressing mode. Matches values of AM_*
 ; INVALID, INHERENT, IMMEDIATE, IMMEDIATEX, DIRECT, INDEXED, EXTENDED,
 ;  RELATIVE
-LENGTHS
- DB 1, 1, 2, 3, 2, 2, 3, 2
+LENGTHS DB 1, 1, 2, 3, 2, 2, 3, 2
 
 ; Opcodes. Listed in order. Defines the mnemonic and addressing mode.
 ; 2 bytes per table entry
-OPCODES
- DB OP_INV, AM_INVALID            ; $00
+OPCODES DB OP_INV, AM_INVALID     ; $00
  DB OP_NOP, AM_INHERENT           ; $01
  DB OP_INV, AM_INVALID            ; $02
  DB OP_INV, AM_INVALID            ; $03

@@ -5,4 +5,4 @@
 ; FILL UNUSED LOCATIONS WITH FF
 
 *       EQU     $C000
-        DS      $E400-*,$FF
+        DS      $D000-*,$FF

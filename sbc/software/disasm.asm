@@ -15,18 +15,14 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 ;
-; TO DO:
-; - Integrate with ROM monitor code
-;
 ; Revision History
 ; Version Date         Comments
 ; 0.0     16-Mar-2022  First version started, based on 6502 version
 ; 1.0     22-Mar-2022  First working version (standalone).
 
         CPU     6800
-;       OUTPUT  HEX             ; For Intel hex output
-        OUTPUT  SCODE           ; For Motorola S record (RUN) output
-        CODE
+        OUTPUT  HEX             ; For Intel hex output
+;       OUTPUT  SCODE           ; For Motorola S record (RUN) output
 
 ; *** CONSTANTS ***
 
@@ -40,8 +36,10 @@
 ; Uncomment desired version to work with.
  INCH    = $F520                ; Fantom II (ACIA) monitor input routine
  OUTCH   = $F569                ; Fantom II (ACIA) monitor output routine
+ MONITOR = $F400                ; Fantom II (ACIA) monitor start address
 ;INCH    = $E8E1                ; Fantom II (PIA) monitor input routine
 ;OUTCH   = $E865                ; Fantom II (PIA) monitor output routine
+;MONITOR = $E400                ; Fantom II (ACIA) monitor start address
 
 ; Instructions. Matches entries in table of MNEMONICS
  OP_INV  = $00
@@ -166,6 +164,8 @@
 
 ; *** VARIABLES ***
 
+        DUMMY
+
 ; Variables
  * = $0100
  T1     DS 2                    ; Temp variable 1
@@ -180,8 +180,10 @@
 
 ; *** CODE ***
 
+        CODE
+
 ; Start address.
- * = $1000
+ * = $D000
 
 ; Main program prompts user for a start address and starts
 ; disassembling. Prompts user to hit key to continue after each
@@ -217,7 +219,7 @@ SpaceOrEscape JSR GetKey        ; Get a key
         CMPA    #'x'            ; Also support lowercase
         BEQ     RET             ; If so, branch to return
         BNE     SpaceOrEscape   ; If not, keep prompting
-RET     RTS                     ; Return to caller (e.g. monitor)
+RET     JMP     MONITOR         ; Return to Monitor
 
 ; Disassemble instruction at address ADDR (high) / ADDR+1 (low). On
 ; return ADDR/ADDR+1 points to next instruction so it can be called
@@ -973,3 +975,7 @@ OPCODES DB OP_INV, AM_INVALID     ; $00
 ContinueString ASC "<SPACE> to continue, A for new address, X to exit \0"
 WelcomeString ASC "Disasm version 1.0 by Jeff Tranter\r\n\0"
 PromptString ASC "Start Address? \0"
+
+;; Fill the rest of the ROM with FFs.
+
+        DS      $E400-*,$FF

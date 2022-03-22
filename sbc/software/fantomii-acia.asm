@@ -6,7 +6,6 @@
         CPU    6800
         OUTPUT  HEX             ; For Intel hex output
 ;       OUTPUT  SCODE           ; For Motorola S record (RUN) output
-        CODE
 ;
 ; FANTOM-II is a 1-K byte loader/monitor/debugger program for the 6800.
 ; It can be supplied in a ROM or 2708 EPROM, or as firmware
@@ -40,7 +39,9 @@
 ;
 ; FANTOM II
 ; RAM DECLARATIONS
+       DUMMY
 *      EQU   $00CC
+
 USRSTK EQU    *-1      ;INITIAL VALUE OF USER S.P.
 USRCCR DS     1        ;INITIAL LOCATIONS OF USER
 USRACB DS     1        ; REGISTERS - VALID ON POWER
@@ -81,6 +82,8 @@ ACIADR EQU    $8301
 ;                (A) = ASCII COMMAND CHARACTER
 
 *      EQU    $F400
+       CODE
+
 ROMBAS EQU    *
 
 ; Make initial code a jump to start for convenience purposes.

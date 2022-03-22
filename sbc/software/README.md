@@ -13,6 +13,8 @@ This is a port of software to my 6800-based single board computer:
 - Pittman Tiny Basic from the Heathkit ETA-3400 memory I/O accessory.
   Uses the PIA serial port.
 
+- A 6800 disassembler. Uses the ACIA serial port.
+
 - A port of Microsoft Basic for the Altair 680 computer (in progress).
 
 All will fit in the 16K 6800 SBC EPROM.
@@ -160,3 +162,21 @@ Registers can be changed writing to memory locations starting from
 Go (with registers as above):
 
 G
+
+DISASSMEBLER:
+
+Run from address D000 from the Fantom II (ACIA) monitor. Use should be
+self-explanatory. See sample output below.
+
+Disasm version 1.0 by Jeff Tranter
+Start Address? FB00
+FB00  B6 83 00  LDAA $8300
+FB03  47        ASRA 
+FB04  24 FA     BCC  $FB00
+FB06  B6 83 01  LDAA $8301
+...
+FB27  86 15     LDAA #$15
+FB29  B7 83 00  STAA $8300
+FB2C  86 11     LDAA #$11
+FB2E  8D 7E     BSR  $FBAE
+<SPACE> to continue, A for new address, X to exit 

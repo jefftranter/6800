@@ -16,7 +16,6 @@
 ; limitations under the License.
 ;
 ; TO DO:
-; - Prompt user for start address
 ; - Integrate with ROM monitor code
 ;
 ; Revision History
@@ -184,13 +183,19 @@
 ; Start address.
  * = $1000
 
-; Main program disassembles starting from itself. Prompts user to hit
-; key to continue after each screen.
+; Main program prompts user for a start address and starts
+; disassembling. Prompts user to hit key to continue after each
+; screen.
+
 START   JSR     PrintCR         ; Print newline
         LDX     #WelcomeString  ; Print welcome string
         JSR     PrintString
-        LDX     #START          ; Start disassembling from START
-        STX     ADDR
+PROMPT  JSR     PrintCR
+        LDX     #PromptString   ; Prompt user for address
+        JSR     PrintString
+        JSR     GetHexAddress   ; Get start address
+        JSR     PrintCR
+        STX     ADDR            ; Save it
 OUTER   JSR     PrintCR         ; Print newline
         LDAA    #23             ; Prompt every 23 lines
 LOOP    PSHA                    ; Save line count
@@ -203,9 +208,16 @@ LOOP    PSHA                    ; Save line count
 SpaceOrEscape JSR GetKey        ; Get a key
         CMPA    #' '            ; Space?
         BEQ     OUTER           ; If so, disassemble more lines
-        CMPA    #ESC            ; Escape?
+        CMPA    #'A'            ; Enter new address?
+        BEQ     PROMPT          ; If so, go to prompt
+        CMPA    #'a'            ; Also support lowercase
+        BEQ     PROMPT
+        CMPA    #'X'            ; Exit?
+        BEQ     RET             ; If so, branch to return
+        CMPA    #'x'            ; Also support lowercase
+        BEQ     RET             ; If so, branch to return
         BNE     SpaceOrEscape   ; If not, keep prompting
-        RTS                     ; Escape pressed, so return
+RET     RTS                     ; Return to caller (e.g. monitor)
 
 ; Disassemble instruction at address ADDR (high) / ADDR+1 (low). On
 ; return ADDR/ADDR+1 points to next instruction so it can be called
@@ -520,6 +532,49 @@ PrintString LDAA 0,X            ; Get character
         INX                     ; Advance pointer
         BRA     PrintString     ; Go back
 done    RTS                     ; Return
+
+; Read character corresponding to hex number ('0'-'9','A'-'F').
+; Only accepts valid characters.
+; Return binary value in A.
+; Registers changed: A
+getHexChar jsr  GetKey          ; Read character
+        CMPA    #'0'            ; Error if < '0'
+        BLT     getHexChar      ; Try again if invalid
+        CMPA    #'9'            ; Valid if <= '9'
+        BLE     num
+        CMPA    #'A'            ; Error if < 'A'
+        BLT     getHexChar
+        CMPA    #'F'            ; Error if > 'F'
+        BGT     getHexChar
+        SUBA    #'A'-10         ; Value is character-('A'-10)
+        RTS
+num     SUBA    #'0'            ; Value is character-'0'
+        RTS                     ; Return
+
+; Read two characters corresponding to 8-bit hex number.
+; Only accepts valid characters.
+; Return binary value in A .
+; Registers changed: A,B
+getHexByte JSR  getHexChar      ; Get high nybble
+        ASLA                    ; Shift return value left to upper nybble
+        ASLA
+        ASLA
+        ASLA
+        TAB                     ; Save value in B
+        JSR     getHexChar      ; Get low nybble
+        ABA                     ; Add return value to previous value
+        RTS                     ; Return
+
+; Read four characters corresponding to 16-bit hex address.
+; Only accepts valid characters.
+; Return binary value in X.
+; Registers changed: A,B
+getHexAddress JSR getHexByte    ; Get high order byte
+        STAA    T1              ; Save it
+        JSR     getHexByte      ; Get low order byte
+        STAA    T1+1            ; Save it
+        LDX     T1              ; Put 16-bit value in X
+        RTS                     ; Return
 
 ; DATA
 
@@ -915,5 +970,6 @@ OPCODES DB OP_INV, AM_INVALID     ; $00
 
 ; *** Strings ***
 
-ContinueString ASC "  <SPACE> to continue, <ESC> to stop\0"
+ContinueString ASC "<SPACE> to continue, A for new address, X to exit \0"
 WelcomeString ASC "Disasm version 1.0 by Jeff Tranter\r\n\0"
+PromptString ASC "Start Address? \0"

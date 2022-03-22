@@ -253,32 +253,36 @@ DISASM  LDX     ADDR
 
         LDX     ADDR
         JSR     PrintAddress    ; Print address
-        LDX     #3
-        JSR     PrintSpaces     ; Then three spaces
+        LDX     #2
+        JSR     PrintSpaces     ; Then two spaces
         LDAA    OPCODE          ; Get instruction op code
         JSR     PrintByte       ; Display the opcode byte
         JSR     PrintSpace
+
         LDAA    LEN             ; How many bytes in the instruction?
         CMPA    #3              ; Three?
         BEQ     THREE           ; If so, branch
         CMPA    #2              ; Two?
         BEQ     TWO             ; If so, branch
-        LDX     #5              ; One byte instructions, print five padding spaces
+        LDX     #5              ; One byte instruction, print five padding spaces
         JSR     PrintSpaces
-        JMP     ONE
-TWO     LDX     #0
-        LDAA    0,X             ; Get 1st operand byte
+        BRA     MNEM
+
+TWO     LDX     ADDR
+        LDAA    1,X             ; Get 1st operand byte
         JSR     PrintByte       ; Display it
         LDX     #3              ; Three adding spaces
         JSR     PrintSpaces
-        JMP     ONE
-THREE   LDX     #0
-        LDAA    0,X             ; Get 1st operand byte
+        BRA     MNEM
+
+THREE   LDX     ADDR
+        LDAA    1,X             ; Get 1st operand byte
         JSR     PrintByte       ; Display it
         JSR     PrintSpace
-        LDAA    1,X             ; Get 2nd operand byte
+        LDAA    2,X             ; Get 2nd operand byte
         JSR     PrintByte       ; Display it
-ONE     LDX     #4              ; One byte instruction, print four padding spaces
+
+MNEM    LDX     #2              ; print two padding spaces
         JSR     PrintSpaces
 
 ; Calculate entry in mnemonics table by taking opcode and multplying
@@ -479,7 +483,7 @@ PrintAddress STX T1             ; Save address
         LDAA    T1              ; Get high byte
         JSR     PrintByte       ; Print it
         LDAA    T1+1            ; Get low byte
-        JMP     PrintByte       ; Print it
+        BRA     PrintByte       ; Print it
 
 ; Print byte as two hex chars.
 ; Pass byte in A
@@ -500,8 +504,8 @@ PrintHex ANDA   #$0F            ; Mask LSD for hex print
         ORAA    #'0'            ; Add "0"
         CMPA    #'9'            ; Digit?
         BLE     PrintChar       ; Yes, output it
-        ADDA    #$06            ; Add offset for letter
-        JMP     PrintChar       ; Print it
+        ADDA    #$07            ; Add offset for letter
+        BRA     PrintChar       ; Print it
 
 ; Print a string
 ; Pass address of string in X.

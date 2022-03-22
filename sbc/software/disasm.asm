@@ -280,7 +280,6 @@ THREE   LDX     #0
         JSR     PrintByte       ; Display it
 ONE     LDX     #4              ; One byte instruction, print four padding spaces
         JSR     PrintSpaces
-        LDAA    OP              ; Get the op code
 
 ; Calculate entry in mnemonics table by taking opcode and multplying
 ; it by four (since entries are each 4 bytes long) and adding as
@@ -298,25 +297,23 @@ ONE     LDX     #4              ; One byte instruction, print four padding space
         LDX     #MNEMONICS      ; Start address of table
         STX     T2              ; Save 16-bit value in T2
         CLC                     ; 16-bit add: T1 = T1 + T2
-        LDAA    T1              ; Low byte
-        ADCA    T2
-        STAA    T1
-        LDAA    T1+1            ; High byte
-        ADCA    T2+2            ; Includes possible carry
+        LDAA    T1+1            ; Low byte
+        ADCA    T2+1
         STAA    T1+1
+        LDAA    T1              ; High byte
+        ADCA    T2              ; Includes possible carry
+        STAA    T1
 
         LDX     T1              ; Get entry in table
         LDAA    0,X             ; Get 1st character of mnemonic
         JSR     PrintChar       ; Any print it
-        INX                     ; Advance to next character
-        LDAA    0,X             ; Get 2nd character of mnemonic
+        LDAA    1,X             ; Get 2nd character of mnemonic
         JSR     PrintChar       ; Any print it
-        INX                     ; Advance to next character
-        LDAA    0,X             ; Get 3rd character of mnemonic
+        LDAA    2,X             ; Get 3rd character of mnemonic
         JSR     PrintChar       ; Any print it
-        INX                     ; Advance to next character
-        LDAA    0,X             ; Get 4th character of mnemonic
+        LDAA    3,X             ; Get 4th character of mnemonic
         JSR     PrintChar       ; Any print it
+        JSR     PrintSpace
 
 ; Display any operands based on addressing mode
 
@@ -328,15 +325,15 @@ ONE     LDX     #4              ; One byte instruction, print four padding space
         JMP     DONEOPS         ; If so, then no operands
 
 TRYINH  CMPA    #AM_INHERENT    ; Is it inherent?
-        BNE     TRYIMX          ; Branch if not
+        BNE     TRYIMM          ; Branch if not
         JMP     DONEOPS         ; If so, then no operands
 
-        CMPA    #AM_IMMEDIATE   ; Is it immediate?
+TRYIMM  CMPA    #AM_IMMEDIATE   ; Is it immediate?
         BNE     TRYIMX          ; Branch if not
         LDAA    #'#'            ; Print "#"
         JSR     PrintChar
         JSR     PrintDollar     ; Print "$"
-        LDAA    0,X             ; Get 1st operand byte (immediate data)
+        LDAA    1,X             ; Get 1st operand byte (immediate data)
         JSR     PrintByte       ; Display it
         JMP     DONEOPS
 
@@ -345,7 +342,7 @@ TRYIMX  CMPA    #AM_IMMEDIATEX  ; Is it immediate indexed?
         LDAA    #'#'            ; Print "#"
         JSR     PrintChar
         JSR     PrintDollar     ; Print "$"
-        LDAA    0,X             ; Get 1st operand byte of immediate data
+        LDAA    1,X             ; Get 1st operand byte of immediate data
         JSR     PrintByte       ; Display it
         LDAA    2,X             ; Get 2nd operand byte of immediate data
         JSR     PrintByte       ; Display it
@@ -354,14 +351,14 @@ TRYIMX  CMPA    #AM_IMMEDIATEX  ; Is it immediate indexed?
 TRYDIR  CMPA    #AM_DIRECT      ; Is it direct?
         BNE     TRYIND          ; Branch if not
         JSR     PrintDollar     ; Print "$"
-        LDAA    0,X             ; Get 1st operand byte
+        LDAA    1,X             ; Get 1st operand byte
         JSR     PrintByte       ; Display it
         JMP DONEOPS
 
 TRYIND  CMPA    #AM_INDEXED     ; Is it indexed?
         BNE     TRYEXT          ; Branch if not
         JSR     PrintDollar     ; Print "$"
-        LDAA    0,X             ; Get 1st operand byte
+        LDAA    1,X             ; Get 1st operand byte
         JSR     PrintByte       ; Display it
         JSR     PrintCommaX     ; Display ",X"
         JMP DONEOPS
@@ -369,7 +366,7 @@ TRYIND  CMPA    #AM_INDEXED     ; Is it indexed?
 TRYEXT  CMPA    #AM_EXTENDED    ; Is it extended?
         BNE     TRYREL          ; Branch if not
         JSR     PrintDollar     ; Print "$"
-        LDAA    0,X             ; Get 1st operand byte of immediate data
+        LDAA    1,X             ; Get 1st operand byte of immediate data
         JSR     PrintByte       ; Display it
         LDAA    2,X             ; Get 2nd operand byte of immediate data
         JSR     PrintByte       ; Display it
@@ -408,9 +405,13 @@ SADD    STAA    REL             ; Save offset high byte
         JSR     PrintByte       ; Display low byte
 
 DONEOPS JSR     PrintCR         ; Print a final CR
-        LDX     ADDR            ; Update address to next instruction
-        INX
-        STX     ADDR
+        CLC
+        LDAA    ADDR+1          ; Increment address to point to next instruction
+        ADCA    LEN             ; by adding instruction length
+        STAA    ADDR+1
+        LDAA    ADDR            ; High byte
+        ADCA    #0              ; Add any carry
+        STAA    ADDR
         RTS
 
 ;------------------------------------------------------------------------

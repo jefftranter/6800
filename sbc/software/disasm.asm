@@ -16,11 +16,13 @@
 ; limitations under the License.
 ;
 ; TO DO:
+; - Prompt user for start address
 ; - Integrate with ROM monitor code
 ;
 ; Revision History
 ; Version Date         Comments
 ; 0.0     16-Mar-2022  First version started, based on 6502 version
+; 1.0     22-Mar-2022  First working version (standalone).
 
         CPU     6800
 ;       OUTPUT  HEX             ; For Intel hex output
@@ -30,17 +32,17 @@
 ; *** CONSTANTS ***
 
 ; Characters:
- CR      = $0D ; Carriage return
- LF      = $0A ; Line feed
- SP      = $20 ; Space
- ESC     = $1B ; Escape
+ CR      = $0D                  ; Carriage return
+ LF      = $0A                  ; Line feed
+ SP      = $20                  ; Space
+ ESC     = $1B                  ; Escape
 
 ; External Routines:
 ; Uncomment desired version to work with.
- INCH    = $F520 ; Fantom II (ACIA) monitor input routine
- OUTCH   = $F569 ; Fantom II (ACIA) monitor output routine
-;INCH    = $E8E1 ; Fantom II (PIA) monitor input routine
-;OUTCH   = $E865 ; Fantom II (PIA) monitor output routine
+ INCH    = $F520                ; Fantom II (ACIA) monitor input routine
+ OUTCH   = $F569                ; Fantom II (ACIA) monitor output routine
+;INCH    = $E8E1                ; Fantom II (PIA) monitor input routine
+;OUTCH   = $E865                ; Fantom II (PIA) monitor output routine
 
 ; Instructions. Matches entries in table of MNEMONICS
  OP_INV  = $00
@@ -381,9 +383,10 @@ TRYREL  CMPA    #AM_RELATIVE    ; Is it relative branch?
         JSR     PrintDollar
 
 ; Handle relative addressing
-; Destination address is current address + relative (sign extended so upper byte is $00 or $FF) + 2
+; Destination address is current address + relative (sign extended so
+; upper byte is $00 or $FF) + 2
 
-        LDAA    0,X             ; Get 1st operand byte (relative branch offset)
+        LDAA    1,X             ; Get 1st operand byte (relative branch offset)
         STAA    REL+1           ; Save low byte of offset
         BMI     SNEG            ; If negative, need to sign extend
         LDAA    #0              ; High byte is zero
@@ -504,7 +507,7 @@ PrintHex ANDA   #$0F            ; Mask LSD for hex print
         ORAA    #'0'            ; Add "0"
         CMPA    #'9'            ; Digit?
         BLE     PrintChar       ; Yes, output it
-        ADDA    #$07            ; Add offset for letter
+        ADDA    #'A'-'9'-1      ; Add offset for letter
         BRA     PrintChar       ; Print it
 
 ; Print a string
@@ -913,4 +916,4 @@ OPCODES DB OP_INV, AM_INVALID     ; $00
 ; *** Strings ***
 
 ContinueString ASC "  <SPACE> to continue, <ESC> to stop\0"
-WelcomeString ASC "Disasm version 0.0 by Jeff Tranter\r\n\0"
+WelcomeString ASC "Disasm version 1.0 by Jeff Tranter\r\n\0"

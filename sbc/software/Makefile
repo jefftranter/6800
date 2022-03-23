@@ -1,4 +1,4 @@
-all:	all.bin all.run all.hex monitor.hex fantomii.hex fantomii-acia.hex tinybasic.hex mikbug.hex minibug.hex disasm.hex unused.hex basic680.run example.run
+all:	all.bin all.run all.hex monitor.hex fantomii.hex fantomii-acia.hex tinybasic.hex mikbug.hex minibug.hex disasm.hex unused.hex basic680.run MicroBas.run
 
 monitor.hex: monitor.asm
 	crasm -o monitor.hex monitor.asm >monitor.lst
@@ -29,6 +29,9 @@ example.run: example.asm
 
 disasm.hex: disasm.asm
 	crasm -o disasm.hex disasm.asm >disasm.lst
+
+MicroBas.run: MicroBas.asm
+	as02 -v -q -s -l -oMicroBas.run MicroBas.asm
 
 all.hex: monitor.hex fantomii.hex fantomii-acia.hex tinybasic.hex minibug.hex mikbug.hex disasm.hex unused.hex
 	cat monitor.hex mikbug.hex minibug.hex fantomii.hex fantomii-acia.hex tinybasic.hex disasm.hex unused.hex | grep "^:1" | sort >all.hex

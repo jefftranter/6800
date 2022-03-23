@@ -15,8 +15,6 @@ This is a port of software to my 6800-based single board computer:
 
 - A 6800 disassembler. Uses the ACIA serial port.
 
-- A port of Microsoft Basic for the Altair 680 computer (in progress).
-
 All will fit in the 16K 6800 SBC EPROM.
 
 Program             Size        Addresses  Start
@@ -163,12 +161,12 @@ Go (with registers as above):
 
 G
 
-DISASSMEBLER:
+DISASSEMBLER:
 
-Run from address D000 from the Fantom II (ACIA) monitor. Use should be
-self-explanatory. See sample output below.
+Run from address D000 from the Fantom II (ACIA) monitor or the front
+panel. Use should be self-explanatory. See sample output below.
 
-Disasm version 1.0 by Jeff Tranter
+6800 Disassembler ver 1.0 by Jeff Tranter
 Start Address? FB00
 FB00  B6 83 00  LDAA $8300
 FB03  47        ASRA 

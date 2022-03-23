@@ -18,13 +18,14 @@
 ; Revision History
 ; Version Date         Comments
 ; 0.0     16-Mar-2022  First version started, based on 6502 version
-; 1.0     22-Mar-2022  First working version (standalone).
+; 1.0     22-Mar-2022  First working version (standalone or in ROM).
 
         CPU     6800
         OUTPUT  HEX             ; For Intel hex output
 ;       OUTPUT  SCODE           ; For Motorola S record (RUN) output
 
 ; *** CONSTANTS ***
+ ACIA    =  $8300                ; 6850 ACIA
 
 ; Characters:
  CR      = $0D                  ; Carriage return
@@ -189,9 +190,16 @@
 ; disassembling. Prompts user to hit key to continue after each
 ; screen.
 
-START   JSR     PrintCR         ; Print newline
+START   LDAA    #$03            ; Reset ACIA
+        STAA    ACIA
+        LDAA    #$15            ; Set ACIA to 8N1, CLK/16, RTS LOW
+        STAA    ACIA
+        LDS     #$00E9          ; Initialize stack pointer
+
+        JSR     PrintCR         ; Print newline
         LDX     #WelcomeString  ; Print welcome string
         JSR     PrintString
+
 PROMPT  JSR     PrintCR
         LDX     #PromptString   ; Prompt user for address
         JSR     PrintString
@@ -539,6 +547,7 @@ done    RTS                     ; Return
 ; Only accepts valid characters.
 ; Return binary value in A.
 ; Registers changed: A
+; TODO: Support lowercase a-f.
 getHexChar jsr  GetKey          ; Read character
         CMPA    #'0'            ; Error if < '0'
         BLT     getHexChar      ; Try again if invalid
@@ -973,7 +982,7 @@ OPCODES DB OP_INV, AM_INVALID     ; $00
 ; *** Strings ***
 
 ContinueString ASC "<SPACE> to continue, A for new address, X to exit \0"
-WelcomeString ASC "Disasm version 1.0 by Jeff Tranter\r\n\0"
+WelcomeString ASC "6800 Disassembler ver 1.0 by Jeff Tranter\r\n\0"
 PromptString ASC "Start Address? \0"
 
 ;; Fill the rest of the ROM with FFs.

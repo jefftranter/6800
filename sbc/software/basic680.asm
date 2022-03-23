@@ -42,13 +42,15 @@
 
   CPU    6800
   CODE
+; OUTPUT  HEX             ; For Intel hex output
+  OUTPUT  SCODE           ; For Motorola S record (RUN) output
 
 ; I/O routines from MikBug.
 
-MF002   EQU     $F002           ; Hardware straps? See MikBug.
-INCH    EQU     $FF00
-POLCAT  EQU     $FF24
-OUTCH   EQU     $FF81
+MF002   EQU     $8200           ; Hardware straps? See MikBug.
+INCH    EQU     $F520           ; For Fantom II ACIA version
+POLCAT  EQU     $F4E2           ; For Fantom II ACIA version. Stub routine for now
+OUTCH   EQU     $F569           ; For Fantom II ACIA version
 
 ;****************************************************
 ;* Program Code / Data Areas                        *

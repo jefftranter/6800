@@ -75,7 +75,7 @@ CODEBASE	equ	$1000	;where user programs start
 ; your system, so choose wisely.  Also, the EXTERN
 ; space is located just past this.
 ;
-RAM_END		equ	$1EFF	;8K = 1EFF, 16K = 3EFF, etc
+RAM_END		equ	$7EFF	;8K = 1EFF, 16K = 3EFF, etc
 ;
 ; If true, use the ACIA (6850) instead of the PIA.  Set this
 ; for MP-S or other boards using an ACIA.
@@ -85,7 +85,7 @@ USE_ACIA	equ	TRUE
 ; If USE_ACIA is TRUE, this must be set to indicate the
 ; base address of the ACIA.
 ;
-ACIA_BASE	equ	$8004	;8004 is slot 1
+ACIA_BASE	equ	$8300	;For 6800 SBC
 ;
 ; If true, print out copyright message at start-up.
 ; The original did not print a copyright but it adds a
@@ -105,7 +105,7 @@ FORCE_RTS	equ	FALSE
 ;
 ; EQUATES
 ;
-STACK		equ	$A07F
+STACK		equ	$7FFF
 	if USE_ACIA
 ACIASTAT	equ	ACIA_BASE	;status register
 ACIADATA	equ	ACIA_BASE+1	;data register
@@ -115,9 +115,9 @@ PIAADR		equ	$8004
 PFILBG		equ	$A002
 PFILEN		equ	$A004
 EXTERN		equ	RAM_END+1
-MONITR		equ	$E0E3
+MONITR		equ	$F400
 MONPC		equ	$A048
-STKBOT		equ	$A000
+STKBOT		equ	$7E00
 		page
 ;
 ; TEMPORARY STORAGE
@@ -203,8 +203,8 @@ RESTRT		jmp	FILBUF
 
 * EXTERNAL I-O ROUTINES
 
-OUTEEE		jmp	$E1D1
-INCH		jsr	$E1AC
+OUTEEE		jmp	$F569
+INCH		jsr	$F520
 BREAK		jmp	INTBRK
 MEMEND		fdb	RAM_END
 
@@ -2125,4 +2125,3 @@ STORSP		equ	*
 		rts
 	endif
 		end
-

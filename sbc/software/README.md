@@ -164,7 +164,11 @@ G
 DISASSEMBLER:
 
 Run from address D000 from the Fantom II (ACIA) monitor or the front
-panel. Use should be self-explanatory. See sample output below.
+panel using: RESET DO D000.
+
+Use should be self-explanatory. Enter a hex start address, press
+<SPACE> to see a page of output, A to enter a new start address, and X
+to go to the Fantom II (ACIA) monitor. Sample output is below:
 
 6800 Disassembler ver 1.0 by Jeff Tranter
 Start Address? FB00

@@ -313,7 +313,11 @@ STARTMSG	db	CR,LF,LF
 		db	CR,LF,LF,EOT
 	endif
 
-MICBAS
+MICBAS		lda	#$03	;Reset ACIA
+		sta	ACIASTAT
+		lda	#$15	;Set ACIA to 8N1, CLK/16, RTS LOW
+		sta	ACIASTAT
+	        lds	#STACK  ;Initialize stack pointer
 	if	SHOW_COPYRIGHT
 		ldx	#STARTMSG
 		jsr	PDATA1
@@ -349,7 +353,7 @@ FILBUF		ldx	#RESTRT
 		ldx	#BUFFER
 		stx	XTEMP3	;SAVE BOUND
 		bsr	CLRBG2
-		ldx	#ENDSTR	;SET PUHCH LIMITS
+		ldx	#ENDSTR	;SET PUNCH LIMITS
 		stx	PFILBG
 		ldx	0,x	;SET END
 		stx	PFILEN

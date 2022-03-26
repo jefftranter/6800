@@ -48,6 +48,11 @@ all.bin: all.hex
 	srec_cat all.hex -Intel --crop 0xc000 0x10000 --offset -0xc000 -output all.bin -Binary
 
 clean:
+	$(RM) *.lst
+	$(RM) disasm.hex fantomii-acia.hex fantomii.hex loader.hex MicroBas.hex mikbug.hex minibug.hex monitor.hex tinybasic.hex
+	$(RM) basic680.run MicroBas.run
+
+distclean:
 	$(RM) *.hex *.lst *.run *.bin
 
 # For EPROM programming using TL866 II Plus programmer

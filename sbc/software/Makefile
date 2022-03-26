@@ -1,4 +1,4 @@
-all:	all.bin all.run all.hex monitor.hex fantomii.hex fantomii-acia.hex tinybasic.hex mikbug.hex minibug.hex disasm.hex unused.hex basic680.run MicroBas.run
+all:	all.bin all.run all.hex monitor.hex fantomii.hex fantomii-acia.hex tinybasic.hex mikbug.hex minibug.hex disasm.hex loader.hex basic680.run MicroBas.run
 
 monitor.hex: monitor.asm
 	crasm -o monitor.hex monitor.asm >monitor.lst
@@ -21,8 +21,8 @@ minibug.hex: minibug.asm
 basic680.run: basic680.asm
 	crasm -o basic680.run basic680.asm >basic680.lst
 
-unused.hex: unused.asm
-	crasm -o unused.hex unused.asm >unused.lst
+loader.hex: loader.asm
+	crasm -o loader.hex loader.asm >loader.lst
 
 example.run: example.asm
 	crasm -o example.run example.asm >example.lst
@@ -34,8 +34,11 @@ MicroBas.run: MicroBas.asm
 	as02 -v -q -s -l -oMicroBas.run MicroBas.asm
 	echo "S9030000FC" >>MicroBas.run
 
-all.hex: monitor.hex fantomii.hex fantomii-acia.hex tinybasic.hex minibug.hex mikbug.hex disasm.hex unused.hex
-	cat monitor.hex mikbug.hex minibug.hex fantomii.hex fantomii-acia.hex tinybasic.hex disasm.hex unused.hex | grep "^:1" | sort >all.hex
+MicroBas.hex: MicroBas.run
+	srec_cat MicroBas.run -Motorola --crop 0x0100 0x1000 --offset 0xc000 -output MicroBas.hex -Intel
+
+all.hex: loader.hex MicroBas.hex disasm.hex fantomii.hex tinybasic.hex fantomii-acia.hex mikbug.hex minibug.hex monitor.hex
+	cat loader.hex MicroBas.hex disasm.hex fantomii.hex tinybasic.hex fantomii-acia.hex mikbug.hex minibug.hex monitor.hex | grep "^:[12]" >all.hex
 	echo ":00000001FF" >>all.hex
 
 all.run: all.hex

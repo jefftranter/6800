@@ -28,7 +28,7 @@ Fantom II (ACIA)    0500 (1.3K) F400-F8FF  F400
 Tiny Basic          0800 (2K)   EC00-F3FF  EC00
 Fantom II (PIA)     0800 (2K)   E400-EBFF  E400
 Disassembler (ACIA) 1000 (4K)   D000-DFFF  D000
-Unused              1000 (4K)   C000-CFFF
+TSC Basic           1000 (4K)   C000-CFFF  C000
 
 MONITOR:
 
@@ -191,8 +191,8 @@ A port of TSC Micro BASIC PLUS. The language is pretty limited as
 compared to other BASICs (e.g. integer math only, no string
 variables).
 
-It must be loaded as a RUN file into RAM from the Fantom II (ACIA) monitor.
-Run from address 0100.
+Run from address C000 from the Fantom II (ACIA) monitor or the front
+panel using: RESET DO C000.
 
 The MONITOR command jumps to the Fantom II monitor. A running program
 can be interrupted with Control-C.

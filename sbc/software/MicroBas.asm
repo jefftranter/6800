@@ -1,7 +1,8 @@
-; This is a port of TSC Basic to my 6800 Single Board Computer.
-;
-; Note that, depite comments in the code, it cannot run from ROM as it
-; makes heavy use of self-modifying code.
+; This is a port of TSC Basic to my 6800 Single Board Computer. Note
+; that, depite comments in the code, it cannot run from ROM as it
+; makes heavy use of self-modifying code. What we can do is copy the
+; code from ROM to RAM at run time. See the program loader.asm which
+; does this.
 ;
 ; Jeff Tranter <tranter@pobox.com>
 
@@ -2113,6 +2114,8 @@ RPT		lda	3,x	;GET M.S. BYTE OF RANDOM NO.
 		adda	#0	;SET HALF CARRY
 		daa
 		rts
+
+                rmb     $1000-*
 
 		bss
 		org	CODEBASE

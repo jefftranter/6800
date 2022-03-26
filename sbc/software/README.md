@@ -15,7 +15,9 @@ This is a port of software to my 6800-based single board computer:
 
 - A 6800 disassembler. Uses the ACIA serial port.
 
-All will fit in the 16K 6800 SBC EPROM.
+- A port of TSC Micro BASIC PLUS. Uses the ACIA serial port.
+
+The programs will fit in the 16K 6800 SBC EPROM as below:
 
 Program             Size        Addresses  Start
 ----------          ----        ---------  ----
@@ -182,3 +184,56 @@ FB29  B7 83 00  STAA $8300
 FB2C  86 11     LDAA #$11
 FB2E  8D 7E     BSR  $FBAE
 <SPACE> to continue, A for new address, X to exit 
+
+TSC MICRO BASIC
+
+A port of TSC Micro BASIC PLUS. The language is pretty limited as
+compared to other BASICs (e.g. integer math only, no string
+variables).
+
+It must be loaded as a RUN file into RAM from the Fantom II (ACIA) monitor.
+Run from address 0100.
+
+The MONITOR command jumps to the Fantom II monitor. A running program
+can be interrupted with Control-C.
+
+Instruction Summary:
+
+Commands: LIST MONITOR RUN SCRATCH
+
+Statements: DATA DIM END EXTERNAL FOR GOSUB GOTO IF INPUT LET NEXT ON PRINT READ REM RESTORE RETURN THEN
+
+Functions: ABS RND SGN SPC TAB
+
+Math Operators: - + * / ^
+
+Relational Operators: = < > <= >= <>
+
+Other:
+
+Line Numbers: 0 to 9999
+Constants: -99999 to +99999
+Variables: single letters, A to Z, may be subscripted
+Backspace: Control-H
+Line cancel: Control-X
+
+Error Codes:
+
+10 Unrecognizable keyword
+14 Illegal variable
+16 No line number referenced by GOTO or GOSUB
+20 Expression syntax, unbalanced parens, or dimension error
+21 Expression expected but not found
+22 Divided by zero
+23 Arithmetic overflow
+24 Expression too complex
+31 Syntax error in PRINT statement
+32 Missing closing quote in printed string
+40 Bad DIM statement
+45 Syntax error in INPUT statement
+51 Syntax error in READ statement
+62 Syntax error in IF statement
+73 RETURN with no GOSUB
+81 Error with FOR-NEXT
+90 Memory overflow
+99 "BREAK" detected

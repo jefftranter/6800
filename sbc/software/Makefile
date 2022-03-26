@@ -32,6 +32,7 @@ disasm.hex: disasm.asm
 
 MicroBas.run: MicroBas.asm
 	as02 -v -q -s -l -oMicroBas.run MicroBas.asm
+	echo "S9030000FC" >>MicroBas.run
 
 all.hex: monitor.hex fantomii.hex fantomii-acia.hex tinybasic.hex minibug.hex mikbug.hex disasm.hex unused.hex
 	cat monitor.hex mikbug.hex minibug.hex fantomii.hex fantomii-acia.hex tinybasic.hex disasm.hex unused.hex | grep "^:1" | sort >all.hex

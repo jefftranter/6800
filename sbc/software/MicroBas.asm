@@ -1,3 +1,10 @@
+; This is a port of TSC Basic to my 6800 Single Board Computer.
+;
+; Note that, depite comments in the code, it cannot run from ROM as it
+; makes heavy use of self-modifying code.
+;
+; Jeff Tranter <tranter@pobox.com>
+
 		list
 ;--------------------------------------------------------
 ; MICRO BASIC PLUS SOURCE LISTING
@@ -112,11 +119,8 @@ ACIADATA	equ	ACIA_BASE+1	;data register
 	else
 PIAADR		equ	$8004
 	endif
-PFILBG		equ	$A002
-PFILEN		equ	$A004
 EXTERN		equ	RAM_END+1
 MONITR		equ	$F400
-MONPC		equ	$A048
 STKBOT		equ	$7E00
 		page
 ;
@@ -175,6 +179,7 @@ BUFFER		rmb	72
 
 LBLTBL		rmb	78
 STKTOP		rmb	2
+ENDSTR		rmb	2
 
 * CONSTANTS
 ;
@@ -199,7 +204,6 @@ PRMPTC		equ	'!'	;originally '!'
 * MAIN PROGRAM
 
 START		jmp	MICBAS	;JMP TO BEGIN
-RESTRT		jmp	FILBUF
 
 * EXTERNAL I-O ROUTINES
 
@@ -347,16 +351,12 @@ MICBAS		lda	#$03	;Reset ACIA
 
 * GET LINE INTO INPUT BUFFER
 
-FILBUF		ldx	#RESTRT
-		stx	MONPC	;SET UP RETURN POINTER
-		lds	#STACK
+FILBUF		lds	#STACK
 		ldx	#BUFFER
 		stx	XTEMP3	;SAVE BOUND
 		bsr	CLRBG2
 		ldx	#ENDSTR	;SET PUNCH LIMITS
-		stx	PFILBG
 		ldx	0,x	;SET END
-		stx	PFILEN
 		stx	DIMPNT
 		ldx	#BUFFER	;POINT TO BUFFER
 		jsr	PCRLF	;OUT A CR & LF
@@ -2113,7 +2113,6 @@ RPT		lda	3,x	;GET M.S. BYTE OF RANDOM NO.
 		adda	#0	;SET HALF CARRY
 		daa
 		rts
-ENDSTR		rmb	2
 
 		bss
 		org	CODEBASE

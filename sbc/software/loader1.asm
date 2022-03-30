@@ -12,7 +12,7 @@
 FROM    EQU     $C100                   ; Address to copy from
 TO      EQU     $0100                   ; Address to copy to
 END     EQU     $0FFF                   ; Last address to copy to
-GO      EQU     $0100                   ; Start address of Basic on RAM
+GO      EQU     $0100                   ; Start address of Basic in RAM
 EXTERN  EQU     $7F00                   ; Location of Basic EXTERN routine
 
 *       EQU     $0000

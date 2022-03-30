@@ -17,25 +17,14 @@
 ; A hack was needed to force crasm to use extended addressing mode for
 ;  some JSR calls.
 ;
-; It does i/o using the Altair version of MikMon (the link above has the
-; source). I plan to adapt my MikMon port for it.
+; It does i/o using code for my 6800 SBC.
 ;
-; It starts at address 0 and will likely need some work to make it relocatable.
-;
-; I don't know if it will run from ROM - it appears to have some
-; self-modifying code.
-;
-; I plan to start with testing it from RAM although may have to move up
-; from code from the start address of zero.
+; It starts at address 0 and is not easily relocatable and also has some
+; self-modifying code, making it challenging to run from ROM. The solution
+; I used is to put the code in ROM but copy it at run time to RAM. See
+; the file loader2.asm which does this.
 ;
 ; The code size is 6.9K.
-;
-; TODO:
-; Implement and hook up MikBug routines.
-; Try loading and running it from RAM.
-; Test all features.
-; See if it can be made to run from ROM.
-; Clean up source code.
 
 ; f9dasm: M6800/1/2/3/8/9 / H6309 Binary/OS9/FLEX9 Disassembler V1.79
 ; Loaded Motorola S file basic680.mot
@@ -45,12 +34,12 @@
 ; OUTPUT  HEX             ; For Intel hex output
   OUTPUT  SCODE           ; For Motorola S record (RUN) output
 
-; I/O routines from MikBug.
+; I/O routines. Keep these in sync with addresses in loader2.asm.
 
-MF002   EQU     $8200           ; Hardware straps? See MikBug.
-INCH    EQU     $F520           ; For Fantom II ACIA version
-POLCAT  EQU     $F4E2           ; For Fantom II ACIA version. Stub routine for now
-OUTCH   EQU     $F569           ; For Fantom II ACIA version
+MF002   EQU     $DF56           ; Hardware straps - see MikBug
+INCH    EQU     $DF3A           ; For Fantom II ACIA version
+POLCAT  EQU     $DF35           ; For Fantom II ACIA version
+OUTCH   EQU     $DF44           ; For Fantom II ACIA version
 
 ;****************************************************
 ;* Program Code / Data Areas                        *
@@ -579,7 +568,7 @@ Z0413   CPX     #$8607                   ;0413: 8C 86 07       '...'
         BRA     Z03F1                    ;0419: 20 D6          ' .'
 Z041B   JMP     Z082F                    ;041B: 7E 08 2F       '~./'
 Z041E   PSHB                             ;041E: 37             '7'
-        JSR     INCH                     ;041F: BD FF 00       '...'   Read char into A (in monitor)
+        JSR     INCH                     ;041F: BD FF 00       '...'   Read char into B (in monitor)
         TBA                              ;0422: 17             '.'
         PULB                             ;0423: 33             '3'
         ANDA    #$7F                     ;0424: 84 7F          '..'
@@ -1185,7 +1174,7 @@ STRPR2  DECB                             ;0880: 5A             'Z'
 ;
 ; OUTDO OUTPUTS THE CHARACTER IN ACCA, USING CNTWFL
 ; (SUPPRESS OR NOT), TRMPOS (PRINT HEAD POSITION),
-; TIMING, ETCQ. NO REGISTERS ARE CHANGED.
+; TIMING, ETC. NO REGISTERS ARE CHANGED.
 ;
 OUTSPC  LDAA    #$20                     ;0890: 86 20          '. '
 Z0892   CPX     #$863F                   ;0892: 8C 86 3F       '..?'
@@ -3515,5 +3504,9 @@ LASTWR  DB      $00                      ;1AB7: 00             '.'
         DB      $0D                      ;1AED: 0D             '.'
         ASC     " END"                   ;1AEE: 20 45 4E 44    ' END'
         DB      $0D,$00                  ;1AF2: 0D 00          '..'
+
+; Fill unused locations with $FF
+
+        DS      $1F00-*,$FF
 
 ;       END     START

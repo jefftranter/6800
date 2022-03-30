@@ -17,7 +17,11 @@ This is a port of software to my 6800-based single board computer:
 
 - A port of TSC Micro BASIC PLUS. Uses the ACIA serial port.
 
+- A port of Microsoft MITS Altair 680 BASIC Version 1.1 rev 3.2.
+
 The programs will fit in the 16K 6800 SBC EPROM as below:
+
+ROM Image all1.bin:
 
 Program             Size        Addresses  Start
 ----------          ----        ---------  ----
@@ -29,6 +33,18 @@ Tiny Basic          0800 (2K)   EC00-F3FF  EC00
 Fantom II (PIA)     0800 (2K)   E400-EBFF  E400
 Disassembler (ACIA) 1000 (4K)   D000-DFFF  D000
 TSC Basic           1000 (4K)   C000-CFFF  C000
+
+ROM Image all2.bin:
+
+Program             Size        Addresses  Start
+----------          ----        ---------  ----
+Monitor             0400 (1K)   FC00-FFFF  FC00 or reset
+MiniBug             0100 (256)  FB00-FBFF  FBD6
+MikBug              0200 (512)  F900-FAFF  F9D0
+Fantom II (ACIA)    0500 (1.3K) F400-F8FF  F400
+Tiny Basic          0800 (2K)   EC00-F3FF  EC00
+Fantom II (PIA)     0800 (2K)   E400-EBFF  E400
+Microsoft Basic     1000 (4K)   C000-DFFF  CDF00
 
 MONITOR:
 
@@ -237,3 +253,8 @@ Error Codes:
 81 Error with FOR-NEXT
 90 Memory overflow
 99 "BREAK" detected
+
+MICROSOFT BASIC
+
+A port of the full featured (e.g. floating point) Microsoft Basic
+originally for the MITS Altair 680 computer.

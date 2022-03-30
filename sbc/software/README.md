@@ -270,3 +270,6 @@ width or a number to specify a line width.
 
 At the "WANT SIN-COS-TAN-ATN?" prompt select "Y" to include the trig
 functions or "N" to omit them and free up 240 bytes of memory.
+
+For more details on Altair Basic, see:
+https://www.vintagecomputer.net/MITS/680/MITS_Altair_680b_BASIC_Manual.pdf

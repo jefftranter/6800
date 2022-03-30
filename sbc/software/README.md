@@ -258,3 +258,12 @@ MICROSOFT BASIC
 
 A port of the full featured (e.g. floating point) Microsoft Basic
 originally for the MITS Altair 680 computer.
+
+At the "MEMORY SIZE?" prompt, press <Enter> to use all available
+memory or a smaller number to use less memory.
+
+At the "TERMINAL WIDTH?" prompt press <Enter> for the default line
+width or a number to specify a line width.
+
+At the "WANT SIN-COS-TAN-ATN?" prompt select "Y" to include the trig
+functions or "N" to omit them and free up 240 bytes of memory.

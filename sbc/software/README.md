@@ -259,6 +259,9 @@ MICROSOFT BASIC
 A port of the full featured (e.g. floating point) Microsoft Basic
 originally for the MITS Altair 680 computer.
 
+Run from address DF00 from the Fantom II (ACIA) monitor or the front
+panel using: RESET DO DF00.
+
 At the "MEMORY SIZE?" prompt, press <Enter> to use all available
 memory or a smaller number to use less memory.
 

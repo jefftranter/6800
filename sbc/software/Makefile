@@ -69,7 +69,7 @@ all2.bin: all2.hex
 
 clean:
 	$(RM) *.lst
-	$(RM) disasm.hex fantomii-acia.hex fantomii.hex loader1.hex MicroBas.hex mikbug.hex minibug.hex monitor.hex tinybasic.hex
+	$(RM) disasm.hex fantomii-acia.hex fantomii.hex loader1.hex loader2.hex MicroBas.hex mikbug.hex minibug.hex monitor.hex tinybasic.hex basic680.hex
 	$(RM) basic680.run MicroBas.run
 
 distclean:

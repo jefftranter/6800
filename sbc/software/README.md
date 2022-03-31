@@ -13,7 +13,7 @@ This is a port of software to my 6800-based single board computer:
 - Pittman Tiny Basic from the Heathkit ETA-3400 memory I/O accessory.
   Uses the PIA serial port.
 
-- A 6800 disassembler. Uses the ACIA serial port.
+- A 6800 disassembler of my own creation. Uses the ACIA serial port.
 
 - A port of TSC Micro BASIC PLUS. Uses the ACIA serial port.
 
@@ -44,7 +44,7 @@ MikBug              0200 (512)  F900-FAFF  F9D0
 Fantom II (ACIA)    0500 (1.3K) F400-F8FF  F400
 Tiny Basic          0800 (2K)   EC00-F3FF  EC00
 Fantom II (PIA)     0800 (2K)   E400-EBFF  E400
-Microsoft Basic     1000 (4K)   C000-DFFF  CDF00
+Microsoft Basic     1000 (4K)   C000-DFFF  DF00
 
 MONITOR:
 
@@ -82,7 +82,7 @@ B      - Go to BASIC Warm start
 
 FANTOM II Monitor (ACIA):
 
-This is a version of the FANTOM II montor above that uses the ACIA for
+This is a version of the FANTOM II monitor above that uses the ACIA for
 serial i/o.
 
 Set jumpers for ACIA serial interface, set serial port settings to
@@ -90,7 +90,7 @@ Set jumpers for ACIA serial interface, set serial port settings to
 
 TINY BASIC:
 
-This is the Pitman Tiny Basic from the Heathkit ETA-3400. From the
+This is the Pittman Tiny Basic from the Heathkit ETA-3400. From the
 FANTOM II PIA monitor, start Tiny Basic by typing G EC00. See the
 Heathkit manuals for more details.
 

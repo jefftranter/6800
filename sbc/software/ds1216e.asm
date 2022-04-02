@@ -1,4 +1,4 @@
-; Example or programmming real-time clock using a DS1216E SmartWatch
+; Example of programmming real-time clock using a DS1216E SmartWatch
 ; ROM AKA No-Slot Clock. Install a DS1216E in the EPROM socket.
 ;
 ; Notes:
@@ -8,11 +8,9 @@
 ; 1. One cycle with A2 high to reset.
 ; 2. Enable with 64 cycles with A2 low and A1 set by pattern.
 ; 3. To read registers:
-;     64 read cycles, A2 high, data returned in D0
+;     64 read cycles, A2 high, data returned in D0.
 ; 3.  To write registers:
-;     64 read cycles, A2 low, data set by A0
-;
-; Pattern: C5 3A A3 5C C5 3A A3 5C
+;     64 read cycles, A2 low, data set by A0.
 
         CPU     6800
         OUTPUT  SCODE           ; For Motorola S record (RUN) output
@@ -23,7 +21,7 @@ BUFFER  equ     $2000           ; Buffer for clock data
 
         * EQU   $1000
 
-; Example read:
+; Unlock clock
 
         ldaa    ROM+4           ; Reset the sequence
         ldx     #pattern        ; Get pointer to pattern byte

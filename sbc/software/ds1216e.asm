@@ -29,7 +29,7 @@ BUFFER  equ     $2000           ; Buffer for clock data
         ldx     #pattern        ; Get pointer to pattern byte
 l2      clrb                    ; Shift count
         ldaa    0,x             ; Get byte of pattern
-L1      lsra                    ; Shift LSB into carry
+l1      lsra                    ; Shift LSB into carry
         bcs     one
         tst     ROM             ; Zero bit pattern
         bra     shift
@@ -39,18 +39,33 @@ shift   incb                    ; Increment shift count
         bne     l1              ; If not, go back and continue
         inx                     ; Increment pointer to next byte in pattern
         cpx     #pattern+8      ; Last byte reached?
-        bne     l2              ; If not, go back and contine
+        bne     l2              ; If not, go back and continue
 
 ; Now read 64 register bits using 64 reads.
 ; A2 must be high, data is in D0
 
         ldx     #BUFFER         ; Start of data buffer
-loop    ldaa    ROM+4           ; Get data
-        staa    0,X             ; Save in buffer
-        inx                     ; Advance buffer
-        cpx     #ROM+64         ; 64 bytes reached?
-        bne     loop            ; Branch if not
-
+o2      clr     0,x             ; Initially clear byte
+        clrb                    ; Shift count
+o1      ldaa    ROM+4           ; Get data
+        anda    #$01            ; Mask out all bits except D0
+        asla                    ; Shift bit 0 into bit 7
+        asla
+        asla
+        asla
+        asla
+        asla
+        asla
+        lsr     0,x             ; Shift previous buffer contents to the right
+        oraa    0,x             ; Set bit 7 of buffer byte based on data bit
+        staa    0,x             ; Save in buffer
+        incb                    ; Increment shift count
+        cmpb    #8              ; Shifted 8 times?
+        bne     o1              ; If not, go back and continue
+        inx                     ; Increment pointer to next byte in pattern
+        cpx     #BUFFER+8       ; Last byte reached?
+        bne     o2              ; If not, go back and continue
         jmp     MONITOR         ; Done, back to monitor
 
+; Enable pattern
 pattern DB      $C5, $3A, $A3, $5C, $C5, $3A, $A3, $5C

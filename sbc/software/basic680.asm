@@ -1,6 +1,5 @@
-;
-; This is a port of Microsoft 6800 Basic for the Altair 680.
-; It is still a work in process.
+; This is a port of Microsoft 6800 Basic for the Altair 680
+; to my 6800 Single Board Computer.
 ;
 ; Notes:
 ; No official source code is known to exist for Microsoft 6800 Basic.

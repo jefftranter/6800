@@ -37,6 +37,9 @@ loader2.hex: loader2.asm
 example.run: example.asm
 	crasm -o example.run example.asm >example.lst
 
+ds1216e.run: ds1216e.asm
+	crasm -o ds1216e.run ds1216e.asm >ds1216e.lst
+
 disasm.hex: disasm.asm
 	crasm -o disasm.hex disasm.asm >disasm.lst
 
@@ -70,7 +73,7 @@ all2.bin: all2.hex
 clean:
 	$(RM) *.lst
 	$(RM) disasm.hex fantomii-acia.hex fantomii.hex loader1.hex loader2.hex MicroBas.hex mikbug.hex minibug.hex monitor.hex tinybasic.hex basic680.hex
-	$(RM) basic680.run MicroBas.run
+	$(RM) basic680.run MicroBas.run ds1216e.run
 
 distclean:
 	$(RM) *.hex *.lst *.run *.bin

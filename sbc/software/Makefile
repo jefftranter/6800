@@ -43,15 +43,15 @@ ds1216e.run: ds1216e.asm
 disasm.hex: disasm.asm
 	crasm -o disasm.hex disasm.asm >disasm.lst
 
-MicroBas.run: MicroBas.asm
-	as02 -v -q -s -l -oMicroBas.run MicroBas.asm
-	echo "S9030000FC" >>MicroBas.run
+tscbasic.run: tscbasic.asm
+	as02 -v -q -s -l -otscbasic.run tscbasic.asm
+	echo "S9030000FC" >>tscbasic.run
 
-MicroBas.hex: MicroBas.run
-	srec_cat MicroBas.run -Motorola --crop 0x0100 0x1000 --offset 0xc000 -output MicroBas.hex -Intel
+tscbasic.hex: tscbasic.run
+	srec_cat tscbasic.run -Motorola --crop 0x0100 0x1000 --offset 0xc000 -output tscbasic.hex -Intel
 
-all1.hex: loader1.hex MicroBas.hex disasm.hex fantomii.hex tinybasic.hex fantomii-acia.hex mikbug.hex minibug.hex monitor.hex
-	cat loader1.hex MicroBas.hex disasm.hex fantomii.hex tinybasic.hex fantomii-acia.hex mikbug.hex minibug.hex monitor.hex | grep "^:[12]" >all1.hex
+all1.hex: loader1.hex tscbasic.hex disasm.hex fantomii.hex tinybasic.hex fantomii-acia.hex mikbug.hex minibug.hex monitor.hex
+	cat loader1.hex tscbasic.hex disasm.hex fantomii.hex tinybasic.hex fantomii-acia.hex mikbug.hex minibug.hex monitor.hex | grep "^:[12]" >all1.hex
 	echo ":00000001FF" >>all1.hex
 
 all2.hex: basic680.hex loader2.hex fantomii.hex tinybasic.hex fantomii-acia.hex mikbug.hex minibug.hex monitor.hex
@@ -72,8 +72,8 @@ all2.bin: all2.hex
 
 clean:
 	$(RM) *.lst
-	$(RM) disasm.hex fantomii-acia.hex fantomii.hex loader1.hex loader2.hex MicroBas.hex mikbug.hex minibug.hex monitor.hex tinybasic.hex basic680.hex
-	$(RM) basic680.run MicroBas.run ds1216e.run
+	$(RM) disasm.hex fantomii-acia.hex fantomii.hex loader1.hex loader2.hex tscbasic.hex mikbug.hex minibug.hex monitor.hex tinybasic.hex basic680.hex
+	$(RM) basic680.run tscbasic.run ds1216e.run
 
 distclean:
 	$(RM) *.hex *.lst *.run *.bin

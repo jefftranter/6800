@@ -18,54 +18,54 @@
 *THIS PROGRAM ASSUMES THAT THE
 *MOTOROLA MIKBUG ROM IS INSTALLED
 *AND THAT ITS ASSOCIATED 128 BYTE
-*RAN IS ALSO PRESENT
+*RAM IS ALSO PRESENT
 *THE SP AND XSTACK WILL HAVE TO
 *BE MOVED IF THIS IS NOT THE CASE
 
-        org $20   
+        org $20
 INDEX1  fdb $0000
-INDEX2  fdb $0000 
-INDEX3  fdb $0000 
-INDEX4  fdb $0000 
-SAVESP  fdb $0000 
-NEXTBA  fdb END  
-WORKBA  fdb END  
-SOURCE  fdb END  
-PACKLN  fdb $0000 
-HIGHLN  fdb $0000 
-BASPNT  fdb $0000 
-BASLIN  fdb $0000 
-PUSHTX  fdb $0000 
-XSTACK  fdb $A07F 
-RNDVAL  fdb $0000 
-DIMPNT  fdb $0000 
-DIMCAL  fdb $0000 
-PRCNT   fcb 0  
-MAXLIN  fcb 72  
-BACKSP  fcb $0F  
-CANCEL  fcb $18  
-MEMEND  fdb $1FFF 
-ARRTAB  fdb $0000 
-KEYWD   fdb $0000 
-TSIGN   fcb 0  
-NCMPR   fcb 0  
-TNUMB   fcb 0  
-ANUMB   fcb 0  
-BNUMB   fcb 0  
-AESTK   fdb ASTACK 
-FORPNT  fdb FORSTK 
-VARPNT  fdb VARTAB 
-SBRPNT  fdb SBRSTK 
-SBRSTK  rmb 16  
-FORSTK  rmb 48  
-DIMVAR  fdb VARTAB 
+INDEX2  fdb $0000
+INDEX3  fdb $0000
+INDEX4  fdb $0000
+SAVESP  fdb $0000
+NEXTBA  fdb END
+WORKBA  fdb END
+SOURCE  fdb END
+PACKLN  fdb $0000
+HIGHLN  fdb $0000
+BASPNT  fdb $0000
+BASLIN  fdb $0000
+PUSHTX  fdb $0000
+XSTACK  fdb $A07F
+RNDVAL  fdb $0000
+DIMPNT  fdb $0000
+DIMCAL  fdb $0000
+PRCNT   fcb 0
+MAXLIN  fcb 72
+BACKSP  fcb $0F
+CANCEL  fcb $18
+MEMEND  fdb $7FFF
+ARRTAB  fdb $0000
+KEYWD   fdb $0000
+TSIGN   fcb 0
+NCMPR   fcb 0
+TNUMB   fcb 0
+ANUMB   fcb 0
+BNUMB   fcb 0
+AESTK   fdb ASTACK
+FORPNT  fdb FORSTK
+VARPNT  fdb VARTAB
+SBRPNT  fdb SBRSTK
+SBRSTK  rmb 16
+FORSTK  rmb 48
+DIMVAR  fdb VARTAB
 
 
-        org $00AC   
-BUFNXT  fdb $00B0 
-ENDBUF  fdb $00B0 
-        org $00B0   
-BUFFER  rmb $50 
+        org $00AC
+BUFNXT  fdb $00B0
+ENDBUF  fdb $00B0
+        org $00B0
+BUFFER  rmb $50
 
         org $0100
 PROGM   jmp START
@@ -76,7 +76,7 @@ COMMAN  fcc "RUN"
         fdb RUN
         fcc "LIST"
         fcb $1E
-        fdb CLIST 
+        fdb CLIST
         fcc "NEW"
         fcb $1E
         fdb START
@@ -163,7 +163,7 @@ KEYBD0  ldx #BUFFER
 KEYBD1  bsr INCH
         cmpa  #$00
         bne KEYB11
-        decb 
+        decb
         bne KEYB11
 KEYB10  jmp READY
 KEYB11  cmpa  CANCEL
@@ -199,21 +199,21 @@ IEXIT   ldaa  #$1E
 
 OUTCH   bsr BREAK
         jmp OUTEEE
-OUTEEE  equ $E1D1
+OUTEEE  equ $F569
 
 INCH    jmp INEEE
 
 BREAK   jmp BREAK1
-BREAK1  psha 
+BREAK1  psha
         ldaa  PIAD
 PIAD    equ $8004
         bmi BREAK2
         jmp READY
 
-BREAK2  pula 
+BREAK2  pula
         rts
 
-INEEE   equ $E1AC
+INEEE   equ $F520
 OUTPUT  equ *
         bsr OUTNCR
         bra CRLF
@@ -244,12 +244,12 @@ PUSHX   stx PUSHTX
         dex
         dex
         stx XSTACK
-        psha 
+        psha
         ldaa  PUSHTX
         staa  0,x
         ldaa  PUSHTX+1
         staa  1,x
-        pula 
+        pula
         ldx PUSHTX
         rts
 
@@ -259,8 +259,8 @@ PULLX   ldx XSTACK
         inc XSTACK+1
         rts
 
-STORE   psha 
-        pshb 
+STORE   psha
+        pshb
         bsr PUSHX
         jsr PULLAE
         ldx AESTK
@@ -273,13 +273,13 @@ STORE   psha
         staa  0,x
         stab  1,x
         bsr PULLX
-        pulb 
-        pula 
+        pulb
+        pula
         rts
 
 IND     bsr PUSHX
-        psha 
-        pshb 
+        psha
+        pshb
         ldx AESTK
         inx
         inx
@@ -290,8 +290,8 @@ IND     bsr PUSHX
         ldaa  0,x
         ldab  1,x
         jsr PUSHAE
-        pulb 
-        pula 
+        pulb
+        pula
         bsr PULLX
         rts
 
@@ -334,10 +334,10 @@ OUTLI2  dex
         jsr PULLX
         jmp OUTPUT
 
-PRINSP  psha 
+PRINSP  psha
         ldaa  #$20
         jsr OUTCH
-        pula 
+        pula
         rts
 
 RANDOM  inx
@@ -377,7 +377,7 @@ TSTV1   cmpa  #'R'
 TSTV2   jsr PUSHX
         suba  #$40
         staa  VARPNT+1
-        asla 
+        asla
         adda  VARPNT+1
         staa  VARPNT+1
         ldx VARPNT
@@ -401,12 +401,12 @@ TSTV22  inx
         jsr EXPR
         jsr PUSHX
         jsr PULLAE
-        tsta 
+        tsta
         beq TSTV3
 SUBER1  jmp  SUBERR
 
 TSTV3   ldx DIMPNT
-        tstb 
+        tstb
         beq  SUBER1
         cmpb  0,x
         bhi  SUBER1
@@ -414,7 +414,7 @@ TSTV3   ldx DIMPNT
         staa  ANUMB
         beq TST666
         ldx DIMCAL
-TSTV4   decb 
+TSTV4   decb
         beq TSTV6
         ldaa  ANUMB
 TSTV5   inx
@@ -432,17 +432,17 @@ TSTV6   stx DIMCAL
         jsr EXPR
         jsr PUSHX
         jsr PULLAE
-        tsta 
+        tsta
         bne SUBER1
         ldx DIMPNT
-        tstb 
+        tstb
         beq SUBER1
         cmpb  1,x
         bhi SUBER1
 TST666  ldx DIMCAL
 TSTV7   inx
         inx
-        decb 
+        decb
         bne TSTV7
         dex
         dex
@@ -476,16 +476,16 @@ YESNO   clc
 PULPSH  bsr PULLAE
 PUSHAE  sts SAVESP
         lds AESTK
-        pshb 
-        psha 
+        pshb
+        psha
         sts AESTK
         lds SAVESP
         rts
 
 PULLAE  sts SAVESP
         lds AESTK
-        pula 
-        pulb 
+        pula
+        pulb
         sts AESTK
         lds SAVESP
         rts
@@ -561,7 +561,7 @@ MPY     bsr MDSIGN
         ldaa  #15
         staa  0,x
         clrb
-        clra 
+        clra
 MPY4    lsr 3,x
         ror 4,x
         bcc MPY5
@@ -574,7 +574,7 @@ MPY5    asl 2,x
         rol 1,x
         dec 0,x
         bne MPY4
-        tsta 
+        tsta
         bmi MPYERR
         tst TSIGN
         bpl MPY6
@@ -585,7 +585,7 @@ MPY6    stab  4,x
         rts
 
 MDSIGN  jsr PUSHX
-        clra 
+        clra
         ldx AESTK
         tst 1,x
         bpl MDS2
@@ -643,17 +643,17 @@ DIV167  rol 4,x
 DIV169  jsr PULLX
         rts
 
-NEG     psha 
-        pshb 
+NEG     psha
+        pshb
         jsr PULLAE
         bsr NEGAB
         jsr PUSHAE
-        pulb 
-        pula 
+        pulb
+        pula
         rts
 
-NEGAB   coma 
-        comb 
+NEGAB   coma
+        comb
         addb  #1
         adca  #0
         rts
@@ -680,7 +680,7 @@ FIND0   jsr PULPSH
         sbca  0,x
         bcs FIND3
         bne FIND1
-        tstb 
+        tstb
         beq  FIND4
 FIND1   inx
 FIND2   bsr  INXSKP
@@ -726,7 +726,7 @@ CCODE   bsr SKIPSP
         ldx #COMMAN-1
 LOOP3   lds  INDEX4
 LOOP4   inx
-        pula 
+        pula
         ldab  0,x
         cmpb  #$1E
         beq LOOP7
@@ -756,12 +756,12 @@ START   ldx SOURCE
         stx WORKBA
         stx ARRTAB
         dex
-        clra 
+        clra
 START2  inx
         staa  0,x
         cpx MEMEND
         bne  START2
-START1  clra 
+START1  clra
         staa  PACKLN
         staa  PACKLN+1
         staa  PRCNT
@@ -791,7 +791,7 @@ ERROR   lds #$A045
         jsr CRLF
         ldx #ERRMS1
         jsr OUTNCR
-        clra 
+        clra
         jsr PUSHAE
         jsr PRN
         ldx #ERRMS2
@@ -816,7 +816,7 @@ RUN     ldx  SOURCE
         stx XSTACK
         ldx NEXTBA
         stx ARRTAB
-        clra 
+        clra
         dex
 RUN1    inx
         staa  0,x
@@ -826,7 +826,7 @@ RUN1    inx
         ldab   #78
 RUN2    staa  0,x
         inx
-        decb 
+        decb
         bne RUN2
         jmp  BASIC
 
@@ -842,16 +842,16 @@ CLIST1  jsr SKIPSP
         jsr FINDN1
         stx INDEX3
         ldx BASPNT
-        psha 
+        psha
         jsr SKIPSP
         cmpa  #$1E
-        pula 
+        pula
         bne CLIST2
         jsr PUSHAE
         bra  CLIST3
 CLIST2  inx
         jsr  INTSTN
-CLIST3  clra 
+CLIST3  clra
         ldab  #1
         jsr ADD1
         jsr FINDN1
@@ -959,7 +959,7 @@ BUFWRT  ldx  WORKBA
         inx
         lds BUFNXT
         des
-BUF3    pula 
+BUF3    pula
         staa  0,x
         inx
         cmpa  #$1E
@@ -1081,7 +1081,7 @@ DBLLTR  ldab  #3
 TSTN    bsr INTSTN
         bcs TSTN0
         jsr PULLAE
-        tsta 
+        tsta
         bpl TSTN1
 TSTN0   sec
         rts
@@ -1100,26 +1100,26 @@ INNUM0  jsr   SKIPSP
         bcc INNUM1
         rts
 INNUM1  dex
-        clra 
+        clra
         clrb
 INNUM2  inx
-        psha 
+        psha
         ldaa  0,x
         jsr TESTNO
         bcs INNEX
         suba  #$30
         staa  TNUMB
-        pula 
-        aslb 
-        rola 
+        pula
+        aslb
+        rola
         bcs INNERR
         stab  BNUMB
         staa  ANUMB
-        aslb 
-        rola 
+        aslb
+        rola
         bcs INNERR
-        aslb 
-        rola 
+        aslb
+        rola
         bcs INNERR
         addb  BNUMB
         adca  ANUMB
@@ -1129,7 +1129,7 @@ INNUM2  inx
         bcc  INNUM2
 INNERR  ldab  #2
         jmp  ERROR
-INNEX   pula 
+INNEX   pula
         tst TSIGN
         beq INNEX2
         jsr NEGAB
@@ -1184,7 +1184,7 @@ PRINT7  inx
         bls PRIN88
 PRIN77  jsr PRINSP
         bsr ENLINE
-        decb 
+        decb
         bne PRIN77
         bra PRIN88
 PRINT8  jsr  EXPR
@@ -1209,29 +1209,29 @@ PREND   cmpa  #$1E
         beq PRINT4
         ldab  #6
         bra PRINTE
-ENLINE  psha 
+ENLINE  psha
         ldaa  PRCNT
         inca
         cmpa  MAXLIN
         bne ENLEXT
         jsr CRLF
-        clra 
+        clra
 ENLEXT  staa  PRCNT
-        pula 
+        pula
         rts
 PRN     jsr PRINSP
         bsr ENLINE
         ldaa  #$FF
         staa  TSIGN
         jsr PULLAE
-        tsta 
+        tsta
         bpl PRN0
         jsr NEGAB
-        psha 
+        psha
         ldaa  #'-'
         jsr OUTCH
         bsr ENLINE
-        pula 
+        pula
 PRN0    jsr  PUSHX
         ldx #KIOK
 PRN1    clr  TNUMB
@@ -1242,7 +1242,7 @@ PRN2    subb  1,x
         bra PRN2
 PRN5    addb  1,x
         adca  0,x
-        psha 
+        psha
         ldaa  TNUMB
         bne PRN6
         cpx #KIOK+8
@@ -1253,7 +1253,7 @@ PRN6    adda  #$30
         clr TSIGN
         jsr OUTCH
         bsr ENLINE
-PRN7    pula 
+PRN7    pula
         inx
         inx
         cpx #KIOK+10
@@ -1304,7 +1304,7 @@ DIM1    jsr SKIPSP
         jmp DIMEX
 DIM111  suba  #$40
         staa  DIMVAR+1
-        asla 
+        asla
         adda  DIMVAR+1
         staa  DIMVAR+1
         jsr PUSHX
@@ -1329,9 +1329,9 @@ DIMER1  jmp ERROR
 DIM2    inx
         jsr EXPR
         jsr PULPSH
-        tstb 
+        tstb
         beq SUBERR
-        tsta 
+        tsta
         beq  DIM3
 SUBERR  ldab  #15
         bra DIMER1
@@ -1342,13 +1342,13 @@ DIM3    bsr STRSUB
         inx
         jsr EXPR
         jsr PULPSH
-        tstb 
+        tstb
         beq SUBERR
-        tsta 
+        tsta
         bne SUBERR
         bsr STRSUB
         jsr MPY
-DIM6    clra 
+DIM6    clra
         ldab  #2
         jsr PUSHAE
         jsr MPY
@@ -1359,7 +1359,7 @@ DIM6    clra
         ldab  ARRTAB+1
         ldaa  ARRTAB
         jsr ADD1
-        clra 
+        clra
         ldab  #2
         jsr ADD1
         jsr PULLAE
@@ -1485,7 +1485,7 @@ NEXT5   inx
         inx
         inx
         bra NEXT2
-NEXT6   ldab  #17 
+NEXT6   ldab  #17
         jmp ERROR
 
 IF      ldx BASPNT
@@ -1537,13 +1537,13 @@ RELOP5  cmpb  #'<'
         rts
 
 CMPR    ldaa   NCMPR
-        asla 
-        asla 
+        asla
+        asla
         staa  FUNNY+1
         ldx #CMPR1
         jsr SUB
         jsr PULLAE
-        tsta 
+        tsta
 FUNNY   jmp  0,x
 CMPR1   beq MAYEQ
         bra NOCMPR
@@ -1560,14 +1560,12 @@ NOCMPR  sec
         rts
 OKCMPR  clc
         rts
-MAYEQ   tstb 
+MAYEQ   tstb
         beq OKCMPR
         bra NOCMPR
-MYNTEQ  tstb 
+MYNTEQ  tstb
         bne OKCMPR
         bra NOCMPR
 
 END     equ *
-        org $A048
-        fdb PROGM
         end

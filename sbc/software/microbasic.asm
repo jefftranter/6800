@@ -7,6 +7,18 @@
 * - Changed I/O routines and PIA address to work with by SBC
 * - Added corrections and bug fixes listed on the web site.
 *
+* PROGRAM FILE AND SYSTEM CUSTOMIZING
+*  1. The program is stored starting at location $OCA4
+*  2. The next available core location is stored in $002A and $0028
+*  3. Location $0046 and $0047 contain the high end of
+*     memory. This is set to $7FFF (32K) and must be changed if
+*     you have more or less. (The system will run in 4K, but you
+*     will have room for only about 35 statements)
+*  4. Memory location $43 contains $48 (Decimal 72) (And must be changed
+*     per different print line lengths)
+*  5. Memory location $44 contains $OF (Backspace control)
+*  6. Memory location $45 contains $18 (Cancel control)
+*
 * For more information, see https://deramp.com/swtpc.com/NewsLetter1/MicroBasic.htm
 
         title "MICROBASIC"
@@ -36,7 +48,7 @@ HIGHLN  fdb $0000
 BASPNT  fdb $0000
 BASLIN  fdb $0000
 PUSHTX  fdb $0000
-XSTACK  fdb $A07F
+XSTACK  fdb $7F7F
 RNDVAL  fdb $0000
 DIMPNT  fdb $0000
 DIMCAL  fdb $0000
@@ -44,7 +56,7 @@ PRCNT   fcb 0
 MAXLIN  fcb 72
 BACKSP  fcb $0F
 CANCEL  fcb $18
-MEMEND  fdb $7FFF
+MEMEND  fdb $7F00
 ARRTAB  fdb $0000
 KEYWD   fdb $0000
 TSIGN   fcb 0
@@ -767,11 +779,11 @@ START1  clra
         staa  PRCNT
         ldx PACKLN
         stx HIGHLN
-READY   lds #$A045
+READY   lds #$7F45
         ldx #RDYMSG
         jsr OUTPUT
-NEWLIN  lds #$A045
-        ldx #$A07F
+NEWLIN  lds #$7F45
+        ldx #$7F7F
         stx XSTACK
         clr PRCNT
 NEWL3   jsr CNTLIN
@@ -787,7 +799,7 @@ LOOP2   cmpa  #$1E
         ldx 0,x
         jmp  0,x
 
-ERROR   lds #$A045
+ERROR   lds #$7F45
         jsr CRLF
         ldx #ERRMS1
         jsr OUTNCR
@@ -812,7 +824,7 @@ RUN     ldx  SOURCE
         stx SBRPNT
         ldx #FORSTK
         stx FORPNT
-        ldx #$A07F
+        ldx #$7F7F
         stx XSTACK
         ldx NEXTBA
         stx ARRTAB
@@ -863,12 +875,12 @@ CLIST5  jmp  REMARK
 
 PATCH   jsr  NXTLIN
         ldx #BASIC
-        stx $A046
-        lds #$A040
+        stx $7F46
+        lds #$7F40
         sts SP
-SP      equ $A008
+SP      equ $7F08
         jmp CONTRL
-CONTRL  equ  $E0E3
+CONTRL  equ  $F400
 
 NUMBER  jsr LINENO
 NUM1    jsr FINDNO

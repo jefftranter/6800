@@ -191,7 +191,7 @@ to go to the Fantom II (ACIA) monitor. Sample output is below:
 6800 Disassembler ver 1.0 by Jeff Tranter
 Start Address? FB00
 FB00  B6 83 00  LDAA $8300
-FB03  47        ASRA 
+FB03  47        ASRA
 FB04  24 FA     BCC  $FB00
 FB06  B6 83 01  LDAA $8301
 ...
@@ -199,7 +199,7 @@ FB27  86 15     LDAA #$15
 FB29  B7 83 00  STAA $8300
 FB2C  86 11     LDAA #$11
 FB2E  8D 7E     BSR  $FBAE
-<SPACE> to continue, A for new address, X to exit 
+<SPACE> to continue, A for new address, X to exit
 
 TSC MICRO BASIC
 

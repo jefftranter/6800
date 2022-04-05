@@ -50,6 +50,10 @@ tscbasic.run: tscbasic.asm
 tscbasic.hex: tscbasic.run
 	srec_cat tscbasic.run -Motorola --crop 0x0100 0x1000 --offset 0xc000 -output tscbasic.hex -Intel
 
+microbasic.run: microbasic.asm
+	as02 -v -q -s -l -omicrobasic.run microbasic.asm
+	echo "S9030000FC" >>microbasic.run
+
 all1.hex: loader1.hex tscbasic.hex disasm.hex fantomii.hex tinybasic.hex fantomii-acia.hex mikbug.hex minibug.hex monitor.hex
 	cat loader1.hex tscbasic.hex disasm.hex fantomii.hex tinybasic.hex fantomii-acia.hex mikbug.hex minibug.hex monitor.hex | grep "^:[12]" >all1.hex
 	echo ":00000001FF" >>all1.hex
@@ -73,7 +77,7 @@ all2.bin: all2.hex
 clean:
 	$(RM) *.lst
 	$(RM) disasm.hex fantomii-acia.hex fantomii.hex loader1.hex loader2.hex tscbasic.hex mikbug.hex minibug.hex monitor.hex tinybasic.hex basic680.hex
-	$(RM) basic680.run tscbasic.run ds1216e.run
+	$(RM) basic680.run tscbasic.run ds1216e.run microbasic.run
 
 distclean:
 	$(RM) *.hex *.lst *.run *.bin

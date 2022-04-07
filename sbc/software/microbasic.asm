@@ -280,7 +280,6 @@ STORE   psha
         inx
         stx AESTK
         dex
-        dex
         ldx 0,x
         staa 0,x
         stab 1,x
@@ -296,7 +295,6 @@ IND     bsr PUSHX
         inx
         inx
         stx AESTK
-        dex
         dex
         ldx 0,x
         ldaa 0,x
@@ -534,7 +532,7 @@ TERM0   jsr SKIPSP
         bsr MPY
         bra TERM0
 
-TERM1   cmpa #'"'
+TERM1   cmpa #'/'
         bne TERM2
         inx
         bsr FACT
@@ -611,7 +609,6 @@ MDS2    inx
         bsr NEG
         adda #$80
 MDS3    staa TSIGN
-        dex
         dex
         dex
         rts
@@ -737,6 +734,7 @@ CCODE   bsr SKIPSP
         sts SAVESP
         ldx #COMMAN-1
 LOOP3   lds INDEX4
+        des
 LOOP4   inx
         pula
         ldab 0,x
@@ -845,7 +843,6 @@ RUN2    staa 0,x
 CLIST   ldx #PGCNTL
         jsr OUTPUT
         ldx BASPNT
-        dex
 CLIST1  jsr SKIPSP
         cmpa #$1E
         beq CLIST4

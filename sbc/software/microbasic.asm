@@ -1,11 +1,151 @@
 * This is a port of Robert Uiterwyk's Micro Basic to my 6800 Single
 * Board Computer.
 *
-* Changes made:
-*
-* - Modified to build with the as09 assembler
-* - Changed I/O routines and PIA address to work with by SBC
+* Changes made by Jeff Tranter <tranter@pobox.com>:
+* - Modified to build with the as09 assembler.
+* - Changed I/O routines and PIA address to work with by SBC.
 * - Added corrections and bug fixes listed on the web site.
+* - Fixed some additional typos.
+* - PATH command goes to the Fantom II monitor.
+*
+* To run it, load the file microbasic.run from the Fantom II monitor
+*  and run starting at address 0100.
+*
+*                INSTRUCTIONS FOR MICRO-BASIC VERSION 1.3
+*
+* EDITING AND LINE FORMATS
+*
+* 1. Line numbers must be between 1 and 65535.
+* 2. Lines are appended and/or inserted.
+* 3. Line number alone followed by C/R deletes the line.
+* 4. Blanks are immaterial, except key words must contain no embedded blanks.
+* 5. Control "X" deletes entire line if entered before C/R.
+* 6. Control "0" deletes the last character.
+* 7. The system prompts with a "#".
+* 8. Multiple statement lines are not permitted.
+*
+* COMMANDS
+*
+* 1. NEW - Deletes all lines and data.
+* 2. LIST - Lists the program as follows:
+*    A. LIST C/R - Lists entire program.
+*    B. LIST X - Lists line labeled with X.
+*    C. LIST X,Y - Lists all lines between labels X and Y.
+* 3. SIZE - Prints two decimal numbers:
+*    A. Number of bytes used by program
+*    B. Number of bytes of RAM memory remaining (variable storage
+*    is not included until program has been run)
+* 4 .RUN - Executes program consisting of the numbered statements.
+* 5. Any line without a line number is executed immediately.
+*    Example: PRINT (47+56) *15
+*    (Caution: A basic program could contain the statement:
+*    100 NEW which would be suicidal)
+* 6. A "Break" will terminate program execution and return to "#".
+*
+* INPUT/OUTPUT
+*
+* 1.INPUT Statement:
+*    A. INPUT X
+*    B. INPUT X,Y,Z
+*    C. System prompts with "?" on an input command.
+*    D. If the input list defines more input than is entered an
+*       additional "?" is prompted.
+*    E. Numbers inputed must be separated by a comma.
+*    F. Entry of numbers out of the range +/- 32762 causes an error.
+* 2. PRINT statement:
+*    A. PRINT - Prints a blank line
+*    B. PRINT A,B,C
+*    C. PRINT "LITERAL STRING"
+*    D. PRINT A; "TIMES"; B; "EQUALS"; A*B
+*    E. A semicolon creates a single space between elements
+*       whereas a comma is used for zone spacing. (See tab
+*       function).
+*    F. A semicolon at the end of the print line suppresses C/R
+*       and LF.
+*
+* VARIABLES
+* 1. 26 Variable names A,B,C,D ....Z are allowed.
+* 2. Can be subscripted (See 5 below).
+* 3. +/- 32762.
+* 4. No string variables (Strings can only be used in print
+*    statements).
+* 5. DIM statement: One or two dimensions. Array arguments can
+*    be expressions.
+*    A. Example: DIM X(5,10), Y(A+30)
+*    B. Maximum subscript size 255.
+*    C. No minus or zero subscripts allowed.
+*
+* EXPRESSIONS
+* A. X
+* B. X+Y *(5-Z)
+* C. (X+Y) * (X-Y)/(X * Y)
+* D. Divide by zero causes error printout.
+* E. Abbreviated below as "EXPR" to show how statements work.
+* F. Double byte integer math only.
+* G. Overflow over/under +/0 31762 causes error on multiply and divide,
+*    no error on addition or subtraction overflow..
+*
+* ASSIGNMENT STATEMENTS
+* A. LET (VARIABLE)=EXPR
+*    Examples:
+*    LET X = Y
+*    LET Y = 10+C
+*    LET A(10,X) = (X+Y)*5 - (Z+3)*50
+* B. Can be implied.
+*    Example:
+*    Y = A*B + 1976
+*
+* RELATIONSHIP TEST
+* A. IF EXPR (RELATIONSHIP) EXPR (STATEMENT)
+* B. RELATIONSHIP can be:
+*    <, >, =, <>, ><, <=, >=
+* C. Examples:
+*    IF X = Y GOTO 30
+*    IF X+5 = 2*Y-7 LET X=Y
+*    IF A(10,Y) <> B(10,Z) PRINT "WRONG"
+*
+* CONTROL STATEMENTS
+* 1. GOTO (EXPR)
+*    Examples:
+*    GOTO 35
+*    GOTO R+50
+* 2. GOSUB (EXPR)
+*    Examples:
+*    GOSUB 8000
+*    GOSUB Z*1000
+* 3. While there is no "ON" EXPR "GOTO" command, using the calculating
+*    ability shown above gives one the same effect.
+* 4. RETURN
+*    A. Must be preceded by a GOSUB
+* 5. FOR and NEXT
+*    A. FOR (VARIABLE) = (EXPR) TO (EXPR)
+*    B. Examples:
+*    FOR J = 1 TO 20
+*    FOR A(5) = T+3 TO Y*10
+*    C. Step is 1 only
+*    D. FOR Loops can be nested
+*    E. Branching out of the loops without indexing the
+*    variable is not permitted due to stack control problems
+* 6. NEXT Variable:
+*    A. Examples:
+*    NEXT A(5)
+*    NEXT J
+*    B. Indexes the FOR variable by one.
+*
+* FUNCTIONS
+* 1. TAB (EXPR) - Starts next print element at position specified by
+*    EXPR
+*    A. Examples:
+*    PRINT TAB (20); I; TAB (40); "YES"
+*    PRINT TAB (X+5); "*"
+*    B. If print element is past point defined, printing starts
+*    at present print position
+* 3. RND - Random number generator creates a random number
+*    between 1 and 32762.
+*    A. Examples:
+*    X = RND
+*    Y = 30+2=RND/1000
+*    B. No arguments allowed
 *
 * PROGRAM FILE AND SYSTEM CUSTOMIZING
 *  1. The program is stored starting at location $0CA4
@@ -18,6 +158,29 @@
 *     per different print line lengths)
 *  5. Memory location $44 contains $0F (Backspace control)
 *  6. Memory location $45 contains $18 (Cancel control)
+*
+* ERROR MESSAGES
+* 1. ERROR #______________ IN LINE #______________
+*    A. If LINE # = 00000 error was in direct execution
+*    statement.
+* 2. Error Codes:
+*    1. Input line over 72 characters
+*    2. Numeric overflow
+*    3. Illegal character or variable
+*    4. No ending " in print literal
+*    5. Dimensioning error
+*    6. Illegal arithmetic
+*    7. Line number not found
+*    8. Divide by zero attempted
+*    9. Excessive subroutine nesting (max is 8)
+*    10. RETURN without prior GOSUB
+*    11. Illegal variable
+*    12. Unrecognizable statement
+*    13. Parenthesis error
+*    14. Memory full
+*    15. Subscript error
+*    16. Excessive FOR loops active (Max is 8)
+*    17. NEXT "X" without FOR loop defining "X"
 *
 * For more information, see https://deramp.com/swtpc.com/NewsLetter1/MicroBasic.htm
 

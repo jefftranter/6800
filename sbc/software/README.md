@@ -19,6 +19,8 @@ This is a port of software to my 6800-based single board computer:
 
 - A port of Microsoft MITS Altair 680 BASIC Version 1.1 rev 3.2.
 
+- A port of Robert Uiterwyk's Micro Basic.
+
 The programs will fit in the 16K 6800 SBC EPROM as below:
 
 ROM Image all1.bin:

@@ -6,10 +6,13 @@
 * - Changed I/O routines and PIA address to work with by SBC.
 * - Added corrections and bug fixes listed on the web site.
 * - Fixed some additional typos.
-* - PATH command goes to the Fantom II monitor.
+* - PATCH command goes to the Fantom II monitor.
 *
-* To run it, load the file microbasic.run from the Fantom II monitor
-*  and run starting at address 0100.
+* To run it, load the file microbasic.run from the Fantom II (ACIA)
+* monitor and run starting at address 0100.
+*
+* To Do:
+* - Use more standard character (e.g. Delete) for deleting characters.
 *
 *                INSTRUCTIONS FOR MICRO-BASIC VERSION 1.3
 *
@@ -32,10 +35,10 @@
 *    B. LIST X - Lists line labeled with X.
 *    C. LIST X,Y - Lists all lines between labels X and Y.
 * 3. SIZE - Prints two decimal numbers:
-*    A. Number of bytes used by program
+*    A. Number of bytes used by program.
 *    B. Number of bytes of RAM memory remaining (variable storage
-*    is not included until program has been run)
-* 4 .RUN - Executes program consisting of the numbered statements.
+*    is not included until program has been run).
+* 4. RUN - Executes program consisting of the numbered statements.
 * 5. Any line without a line number is executed immediately.
 *    Example: PRINT (47+56) *15
 *    (Caution: A basic program could contain the statement:
@@ -82,8 +85,8 @@
 * D. Divide by zero causes error printout.
 * E. Abbreviated below as "EXPR" to show how statements work.
 * F. Double byte integer math only.
-* G. Overflow over/under +/0 31762 causes error on multiply and divide,
-*    no error on addition or subtraction overflow..
+* G. Overflow over/under +/- 31762 causes error on multiply and divide,
+*    no error on addition or subtraction overflow.
 *
 * ASSIGNMENT STATEMENTS
 * A. LET (VARIABLE)=EXPR
@@ -122,10 +125,10 @@
 *    B. Examples:
 *    FOR J = 1 TO 20
 *    FOR A(5) = T+3 TO Y*10
-*    C. Step is 1 only
-*    D. FOR Loops can be nested
+*    C. Step is 1 only.
+*    D. FOR Loops can be nested.
 *    E. Branching out of the loops without indexing the
-*    variable is not permitted due to stack control problems
+*    variable is not permitted due to stack control problems.
 * 6. NEXT Variable:
 *    A. Examples:
 *    NEXT A(5)
@@ -139,25 +142,25 @@
 *    PRINT TAB (20); I; TAB (40); "YES"
 *    PRINT TAB (X+5); "*"
 *    B. If print element is past point defined, printing starts
-*    at present print position
+*    at present print position.
 * 3. RND - Random number generator creates a random number
 *    between 1 and 32762.
 *    A. Examples:
 *    X = RND
 *    Y = 30+2=RND/1000
-*    B. No arguments allowed
+*    B. No arguments allowed.
 *
 * PROGRAM FILE AND SYSTEM CUSTOMIZING
-*  1. The program is stored starting at location $0CA4
-*  2. The next available core location is stored in $002A and $002B
+*  1. The program is stored starting at location $0CA4.
+*  2. The next available core location is stored in $002A and $002B.
 *  3. Location $0046 and $0047 contain the high end of
 *     memory. This is set to $7F00 (32K) and must be changed if
 *     you have more or less. (The system will run in 4K, but you
-*     will have room for only about 35 statements)
+*     will have room for only about 35 statements).
 *  4. Memory location $43 contains $48 (Decimal 72) (And must be changed
-*     per different print line lengths)
-*  5. Memory location $44 contains $0F (Backspace control)
-*  6. Memory location $45 contains $18 (Cancel control)
+*     per different print line lengths).
+*  5. Memory location $44 contains $0F (Backspace control).
+*  6. Memory location $45 contains $18 (Cancel control).
 *
 * ERROR MESSAGES
 * 1. ERROR #______________ IN LINE #______________
@@ -300,7 +303,7 @@ GOLIST  fcc "GOSUB"
         fcc "NEXT"
         fcb $1E
         fdb NEXT
-        fcc "EEM"
+        fcc "REM"
         fcb $1E
         fdb REMARK
 PAUMSG  fcc "PAUSE"

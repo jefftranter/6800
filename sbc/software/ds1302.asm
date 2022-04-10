@@ -170,7 +170,7 @@ MONITOR equ     $F400           ; Start address of monitor
 ; Variables
 
 REGNUM  ds      1               ; Register to read/write
-REGDATA ds      8               ; Register data to read/write
+REGDATA ds      1               ; Register data to read/write
 RAMCLK  ds      1               ; Set to 1 to read/write RAM, 0 for clock registers
 
 ; Code
@@ -253,61 +253,25 @@ s0      oraa    #RST            ; Always want RST high
         ldaa    #$04            ; Select peripheral register
         staa    CRB
 
+        clrb                    ; Initially clear read data
+        ldx     #8              ; Number of bits to read
+
+rl      aslb                    ; Shift previous value
         ldaa    #RST|CLK        ; Toggle CLK high
         staa    PRB
+        nop
+        ldaa    #RST            ; Toggle CLK low
+        staa    PRB
+        nop
         ldaa    PRB             ; Read data bit 0 on DAT line
-        staa    REGDATA+0       ; Save it
-        ldaa    #RST            ; Toggle CLK low
-        staa    PRB
+        bita    #DAT            ; Is data bit set?
+        beq     r0              ; Branch of zero
+        orab    #$01            ; Set bit
 
-        ldaa    #RST|CLK        ; Toggle CLK high
-        staa    PRB
-        ldaa    PRB             ; Read data bit 1 on DAT line
-        staa    REGDATA+1       ; Save it
-        ldaa    #RST            ; Toggle CLK low
-        staa    PRB
+r0      dex                     ; Decrement bit count
+        bne     rl              ; Do next bit if not done
 
-        ldaa    #RST|CLK        ; Toggle CLK high
-        staa    PRB
-        ldaa    PRB             ; Read data bit 2 on DAT line
-        staa    REGDATA+2       ; Save it
-        ldaa    #RST            ; Toggle CLK low
-        staa    PRB
-
-        ldaa    #RST|CLK        ; Toggle CLK high
-        staa    PRB
-        ldaa    PRB             ; Read data bit 3 on DAT line
-        staa    REGDATA+3       ; Save it
-        ldaa    #RST            ; Toggle CLK low
-        staa    PRB
-
-        ldaa    #RST|CLK        ; Toggle CLK high
-        staa    PRB
-        ldaa    PRB             ; Read data bit 4 on DAT line
-        staa    REGDATA+4       ; Save it
-        ldaa    #RST            ; Toggle CLK low
-        staa    PRB
-
-        ldaa    #RST|CLK        ; Toggle CLK high
-        staa    PRB
-        ldaa    PRB             ; Read data bit 5 on DAT line
-        staa    REGDATA+5       ; Save it
-        ldaa    #RST            ; Toggle CLK low
-        staa    PRB
-
-        ldaa    #RST|CLK        ; Toggle CLK high
-        staa    PRB
-        ldaa    PRB             ; Read data bit 6 on DAT line
-        staa    REGDATA+6       ; Save it
-        ldaa    #RST            ; Toggle CLK low
-        staa    PRB
-
-        ldaa    #RST|CLK        ; Toggle CLK high
-        staa    PRB
-        ldaa    PRB             ; Read data bit 7 on DAT line
-        staa    REGDATA+7       ; Save it
-        ldaa    #RST            ; Toggle CLK low
-        staa    PRB
+        stab    REGDATA         ; Save it
 
         ldaa    #CLK|RST        ; Toggle CLK high
         staa    PRB

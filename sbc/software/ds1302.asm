@@ -269,15 +269,16 @@ rl      lsrb                    ; Shift previous value
         ldaa    #RST|CLK        ; Toggle CLK high
         staa    PRB
         nop
-        ldaa    #RST            ; Toggle CLK low
-        staa    PRB
-        nop
+
         ldaa    PRB             ; Read data bit 0 on DAT line
         bita    #DAT            ; Is data bit set?
-        beq     r0              ; Branch of zero
+        beq     r0              ; Branch if zero
         orab    #$80            ; Set bit
 
-r0      dex                     ; Decrement bit count
+r0      ldaa    #RST            ; Toggle CLK low
+        staa    PRB
+
+        dex                     ; Decrement bit count
         bne     rl              ; Do next bit if not done
 
         stab    REGDATA         ; Save it

@@ -154,7 +154,7 @@
 
 ; Constants
 
-PIA     equ     $8100           ; 6821 VIA
+PIA     equ     $8200           ; 6821 VIA
 DDRB    equ     PIA+2           ; Data Direction Register B
 PRB     equ     PIA+2           ; Peripheral Register B
 CRB     equ     PIA+3           ; Control Register B
@@ -182,6 +182,7 @@ START   ldaa    #$00            ; Select clock registers
         ldaa    #$00            ; Select register 0
         staa    REGNUM
         jsr     READ            ; Call read routine
+        bra     START
         jmp     MONITOR         ; Go back to monitor
 
 READ    ldaa    #$00            ; Select data direction register

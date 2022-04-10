@@ -154,7 +154,7 @@
 
 ; Constants
 
-PIA     equ     $8200           ; 6821 VIA
+PIA     equ     $8200           ; 6821 VIA base address
 DDRB    equ     PIA+2           ; Data Direction Register B
 PRB     equ     PIA+2           ; Peripheral Register B
 CRB     equ     PIA+3           ; Control Register B
@@ -182,6 +182,11 @@ START   ldaa    #$00            ; Select clock registers
         ldaa    #$00            ; Select register 0
         staa    REGNUM
         jsr     READ            ; Call read routine
+
+        ldx     #1000           ; Delay between reads
+delay   dex
+        bne     delay
+
         bra     START
         jmp     MONITOR         ; Go back to monitor
 
@@ -209,40 +214,22 @@ READ    ldaa    #$00            ; Select data direction register
         eora    #CLK
         staa    PRB
 
-        ldaa    #$00            ; Set DAT line to bit 0 of regNum
-        oraa    #RST
+        ldx     #5              ; Number of address bits to send
+        ldab    REGNUM          ; Get register address
+
+nxt     anda    #~DAT           ; Clear data bit
+        lsrb                    ; Shift bit into carry
+        bcc     s0              ; Branch to send 0, fall through to send 1
+        oraa    #DAT            ; Set data bit to 1
+
+s0      oraa    #RST            ; Always want RST high
         oraa    #CLK            ; Toggle CLK high and then low
         staa    PRB
         eora    #CLK
         staa    PRB
 
-        ldaa    #$00            ; Set DAT line to bit 1 of regNum
-        oraa    #RST
-        oraa    #CLK            ; Toggle CLK high and then low
-        staa    PRB
-        eora    #CLK
-        staa    PRB
-
-        ldaa    #$00            ; Set DAT line to bit 2 of regNum
-        oraa    #RST
-        oraa    #CLK            ; Toggle CLK high and then low
-        staa    PRB
-        eora    #CLK
-        staa    PRB
-
-        ldaa    #$00            ; Set DAT line to bit 3 of regNum
-        oraa    #RST
-        oraa    #CLK            ; Toggle CLK high and then low
-        staa    PRB
-        eora    #CLK
-        staa    PRB
-
-        ldaa    #$00            ; Set DAT line to bit 4 of regNum
-        oraa    #RST
-        oraa    #CLK            ; Toggle CLK high and then low
-        staa    PRB
-        eora    #CLK
-        staa    PRB
+        dex                     ; Decrement bit count
+        bne     nxt             ; Continue sending bits if not done
 
         ldaa    #$00            ; Set DAT line to 1 for RAM or 0 for clock register
         oraa    #RST

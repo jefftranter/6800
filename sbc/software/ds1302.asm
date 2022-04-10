@@ -164,6 +164,8 @@ CLK     equ     $02             ; CLK bit in PIA
 DAT     equ     $04             ; DAT bit in PIA
 
 MONITOR equ     $F400           ; Start address of monitor
+THB0    equ     $F580           ; Print A in hex
+OUTCH   equ     $F569           ; Output char in A
 
         * EQU   $1000           ; Start address
 
@@ -183,12 +185,19 @@ START   ldaa    #$00            ; Select clock registers
         staa    REGNUM
         jsr     READ            ; Call read routine
 
-        ldx     #1000           ; Delay between reads
+        ldx     #$FFFF          ; Delay between reads
 delay   dex
         bne     delay
 
+        ldaa    REGDATA         ; Get data read
+        jsr     THB0            ; Print it
+        ldaa    #$0D            ; Print CR
+        jsr     OUTCH
+        ldaa    #$0A            ; Print LD
+        jsr     OUTCH
+
         bra     START
-        jmp     MONITOR         ; Go back to monitor
+;       jmp     MONITOR         ; Go back to monitor
 
 READ    ldaa    #$00            ; Select data direction register
         staa    CRB
@@ -256,7 +265,7 @@ s0      oraa    #RST            ; Always want RST high
         clrb                    ; Initially clear read data
         ldx     #8              ; Number of bits to read
 
-rl      aslb                    ; Shift previous value
+rl      lsrb                    ; Shift previous value
         ldaa    #RST|CLK        ; Toggle CLK high
         staa    PRB
         nop
@@ -266,7 +275,7 @@ rl      aslb                    ; Shift previous value
         ldaa    PRB             ; Read data bit 0 on DAT line
         bita    #DAT            ; Is data bit set?
         beq     r0              ; Branch of zero
-        orab    #$01            ; Set bit
+        orab    #$80            ; Set bit
 
 r0      dex                     ; Decrement bit count
         bne     rl              ; Do next bit if not done

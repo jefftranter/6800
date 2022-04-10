@@ -18,136 +18,6 @@
 ; Notes:
 ; 1. See the DS1302 datasheet for details.
 ; 2. No support here for burst mode.
-;
-; Pseudocode to read a register, given regNum and data:
-;
-; - Set RST, CLK, and DAT as outputs, others as inputs
-; - Select PIA peripheral register
-;
-; - set CLK and RST low
-;
-; - set RST high
-;
-; - set DAT line to 1 (read)
-; - toggle CLK high and then low
-;
-; - set DAT line to bit 0 of regNum
-; - toggle CLK high and then low
-;
-; - set DAT line to bit 1 of regNum
-; - toggle CLK high and then low
-;
-; - set DAT line to bit 2 of regNum
-; - toggle CLK high and then low
-;
-; - set DAT line to bit 3 of regNum
-; - toggle CLK high and then low
-;
-; - set DAT line to bit 4 of regNum
-; - toggle CLK high and then low
-;
-; - set DAT line to 1 for RAM or 0 for clock register
-; - toggle CLK high and then low
-;
-; - set DAT line to 1
-; - toggle CLK high and then low
-;
-; - Set DAT as input
-;
-; - toggle CLK high
-; - Read data bit 0 on DAT line
-; - toggle CLK low
-;
-; - toggle CLK high
-; - Read data bit 1 on DAT line
-; - toggle CLK low
-;
-; - toggle CLK high
-; - Read data bit 2 on DAT line
-; - toggle CLK low
-;
-; - toggle CLK high
-; - Read data bit 3 on DAT line
-; - toggle CLK low
-;
-; - toggle CLK high
-; - Read data bit 4 on DAT line
-; - toggle CLK low
-;
-; - toggle CLK high
-; - Read data bit 5 on DAT line
-; - toggle CLK low
-;
-; - toggle CLK high
-; - Read data bit 6 on DAT line
-; - toggle CLK low
-;
-; - toggle CLK high
-; - Read data bit 7 on DAT line
-; - toggle CLK low
-;
-; - toggle CLK high
-; - set RST low
-;
-; Pseudocode to write a register:
-;
-; - Set RST, CLK, and DAT as outputs, others as inputs
-; - Select PIA peripheral register
-;
-; - set CLK and RST low
-;
-; - set RST high
-;
-; - set DAT line to 0 (write)
-; - toggle CLK high and then low
-;
-; - set DAT line to bit 0 of regNum
-; - toggle CLK high and then low
-;
-; - set DAT line to bit 1 of regNum
-; - toggle CLK high and then low
-;
-; - set DAT line to bit 2 of regNum
-; - toggle CLK high and then low
-;
-; - set DAT line to bit 3 of regNum
-; - toggle CLK high and then low
-;
-; - set DAT line to bit 4 of regNum
-; - toggle CLK high and then low
-;
-; - set DAT line to 1 for RAM or 0 for clock register
-; - toggle CLK high and then low
-;
-; - set DAT line to 1
-; - toggle CLK high and then low
-;
-; - Write data bit 0 on DAT line
-; - toggle CLK high and then low
-;
-; - Write data bit 1 on DAT line
-; - toggle CLK high and then low
-;
-; - Write data bit 2 on DAT line
-; - toggle CLK high and then low
-;
-; - Write data bit 3 on DAT line
-; - toggle CLK high and then low
-;
-; - Write data bit 4 on DAT line
-; - toggle CLK high and then low
-;
-; - Write data bit 5 on DAT line
-; - toggle CLK high and then low
-;
-; - Write data bit 6 on DAT line
-; - toggle CLK high and then low
-;
-; - Write data bit 7 on DAT line
-; - toggle CLK high and then low
-;
-; - set CLK high
-; - set RST low
 
         CPU     6800
         OUTPUT  SCODE           ; For Motorola S record (RUN) output
@@ -181,22 +51,58 @@ RAMCLK  ds      1               ; Set to 1 to read/write RAM, 0 for clock regist
 
 START   ldaa    #$00            ; Select clock registers
         staa    RAMCLK
-        ldaa    #$00            ; Select register 0
+        ldaa    #$02            ; Select register 2 (hours)
         staa    REGNUM
         jsr     READ            ; Call read routine
+        ldaa    REGDATA         ; Get data read
+        anda    #$3F            ; Mask out hours
+        jsr     THB0            ; Print it
+        ldaa    #':'
+        jsr     OUTCH
+        ldaa    #$01            ; Select register 1 (minutes)
+        staa    REGNUM
+        jsr     READ            ; Call read routine
+        ldaa    REGDATA         ; Get data read
+        jsr     THB0            ; Print it
+        ldaa    #':'
+        jsr     OUTCH
+        ldaa    #$00            ; Select register 1 (seconds)
+        staa    REGNUM
+        jsr     READ            ; Call read routine
+        ldaa    REGDATA         ; Get data read
+        jsr     THB0            ; Print it
+        ldaa    #' '
+        jsr     OUTCH
+        ldaa    #$03            ; Select register 3 (date)
+        staa    REGNUM
+        jsr     READ            ; Call read routine
+        ldaa    REGDATA         ; Get data read
+        jsr     THB0            ; Print it
+        ldaa    #'/'
+        jsr     OUTCH
+        ldaa    #$04            ; Select register 4 (month)
+        staa    REGNUM
+        jsr     READ            ; Call read routine
+        ldaa    REGDATA         ; Get data read
+        jsr     THB0            ; Print it
+        ldaa    #'/'
+        jsr     OUTCH
+        ldaa    #$06            ; Select register 6 (year)
+        staa    REGNUM
+        jsr     READ            ; Call read routine
+        ldaa    REGDATA         ; Get data read
+        jsr     THB0            ; Print it
+
+        ldaa    #$0D            ; Print CR
+        jsr     OUTCH
+        ldaa    #$0A            ; Print LF
+        jsr     OUTCH
 
         ldx     #$FFFF          ; Delay between reads
 delay   dex
         bne     delay
 
-        ldaa    REGDATA         ; Get data read
-        jsr     THB0            ; Print it
-        ldaa    #$0D            ; Print CR
-        jsr     OUTCH
-        ldaa    #$0A            ; Print LD
-        jsr     OUTCH
-
-        bra     START
+        jmp     START
 ;       jmp     MONITOR         ; Go back to monitor
 
 READ    ldaa    #$00            ; Select data direction register
@@ -268,7 +174,6 @@ s0      oraa    #RST            ; Always want RST high
 rl      lsrb                    ; Shift previous value
         ldaa    #RST|CLK        ; Toggle CLK high
         staa    PRB
-        nop
 
         ldaa    PRB             ; Read data bit 0 on DAT line
         bita    #DAT            ; Is data bit set?

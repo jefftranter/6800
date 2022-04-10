@@ -1,4 +1,4 @@
-all: all1 all2 example.run ds1216e.run microbasic.run
+all: all1 all2 example.run ds1216e.run ds1302.run microbasic.run
 
 all1:	all1.bin all1.run all1.hex
 
@@ -40,6 +40,9 @@ example.run: example.asm
 ds1216e.run: ds1216e.asm
 	crasm -o ds1216e.run ds1216e.asm >ds1216e.lst
 
+ds1302.run: ds1302.asm
+	crasm -o ds1302.run ds1302.asm >ds1302.lst
+
 disasm.hex: disasm.asm
 	crasm -o disasm.hex disasm.asm >disasm.lst
 
@@ -77,7 +80,7 @@ all2.bin: all2.hex
 clean:
 	$(RM) *.lst
 	$(RM) disasm.hex fantomii-acia.hex fantomii.hex loader1.hex loader2.hex tscbasic.hex mikbug.hex minibug.hex monitor.hex tinybasic.hex basic680.hex
-	$(RM) basic680.run tscbasic.run example.run ds1216e.run microbasic.run
+	$(RM) basic680.run tscbasic.run example.run ds1216e.run ds1302.run microbasic.run
 
 distclean:
 	$(RM) *.hex *.lst *.run *.bin

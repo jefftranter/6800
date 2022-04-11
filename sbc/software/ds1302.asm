@@ -15,9 +15,13 @@
 ; PB1  CLK
 ; PB2  DAT
 ;
+; You will also need a pullup resistor connected from PB1 to VCC;
+; suggested value 10Kohms.
+;
 ; Notes:
 ; 1. See the DS1302 datasheet for details.
-; 2. No support here for burst mode.
+; 2. No support yet for RAM functions.
+; 3. No support yet for burst mode.
 
         CPU     6800
         OUTPUT  SCODE           ; For Motorola S record (RUN) output
@@ -48,6 +52,8 @@ RAMCLK  ds      1               ; Set to 1 to read/write RAM, 0 for clock regist
 ; Code
 
         * EQU   $1010           ; Start address
+
+        lds     #$7F00          ; Initialize stack
 
 ; Enable code below if you want to initially set the date.
 

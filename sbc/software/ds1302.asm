@@ -16,7 +16,7 @@
 ; PB2  DAT
 ;
 ; You will also need a pullup resistor connected from PB1 to VCC;
-; suggested value 10Kohms.
+; suggested value 10Kohms (this is not needed if you use PIA port A).
 ;
 ; Notes:
 ; 1. See the DS1302 datasheet for details.

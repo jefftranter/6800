@@ -70,11 +70,30 @@ START   ldaa    #$00            ; Select clock registers
         LDAA    #$04            ; Month 04
         staa    REGDATA
         jsr     WRITE           ; Call write routine
-        ldaa    #$06            ; Select register 3 (day)
+        ldaa    #$03            ; Select register 3 (day)
         staa    REGNUM
         LDAA    #$10            ; Day 10
         staa    REGDATA
         jsr     WRITE           ; Call write routine
+
+        ldaa    #$02            ; Select register 2 (hours)
+        staa    REGNUM
+        LDAA    #$22            ; Hour 22
+        staa    REGDATA
+        jsr     WRITE           ; Call write routine
+
+        ldaa    #$01            ; Select register 1 (minutes)
+        staa    REGNUM
+        LDAA    #$30            ; Minutes 30
+        staa    REGDATA
+        jsr     WRITE           ; Call write routine
+
+        ldaa    #$00            ; Select register 0 (seconds)
+        staa    REGNUM
+        LDAA    #$00            ; Seconds 0
+        staa    REGDATA
+        jsr     WRITE           ; Call write routine
+
 endc
 
 DISP    ldaa    #$02            ; Select register 2 (hours)

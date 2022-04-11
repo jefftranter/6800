@@ -49,9 +49,40 @@ RAMCLK  ds      1               ; Set to 1 to read/write RAM, 0 for clock regist
 
         * EQU   $1010           ; Start address
 
+; Enable code below if you want to initially set the date.
+
+if 0
+
 START   ldaa    #$00            ; Select clock registers
         staa    RAMCLK
-        ldaa    #$02            ; Select register 2 (hours)
+
+        ldaa    #$07            ; Select register 7 (control)
+        staa    REGNUM
+        ldaa    #$00            ; Turn off write protect
+        staa    REGDATA
+        jsr     WRITE           ; Call write routine
+
+        ldaa    #$06            ; Select register 6 (year)
+        staa    REGNUM
+        LDAA    #$22            ; Year 2022
+        staa    REGDATA
+        jsr     WRITE           ; Call write routine
+
+        ldaa    #$04            ; Select register 4 (month)
+        staa    REGNUM
+        LDAA    #$04            ; Month 04
+        staa    REGDATA
+        jsr     WRITE           ; Call write routine
+
+        ldaa    #$06            ; Select register 3 (day)
+        staa    REGNUM
+        LDAA    #$10            ; Day 10
+        staa    REGDATA
+        jsr     WRITE           ; Call write routine
+
+endc
+
+DISP    ldaa    #$02            ; Select register 2 (hours)
         staa    REGNUM
         jsr     READ            ; Call read routine
         ldaa    REGDATA         ; Get data read
@@ -102,7 +133,7 @@ START   ldaa    #$00            ; Select clock registers
 delay   dex
         bne     delay
 
-        jmp     START
+        jmp     DISP
 ;       jmp     MONITOR         ; Go back to monitor
 
 READ    ldaa    #$00            ; Select data direction register
@@ -195,4 +226,80 @@ r0      ldaa    #RST            ; Toggle CLK low
 
         rts                     ; Done
 
-WRITE   rts
+WRITE   ldaa    #$00            ; Select data direction register
+        staa    CRB
+        ldaa    #RST|CLK|DAT    ; Set RST, CLK, and DAT as outputs, others as inputs
+        staa    DDRB            ; Write to DDRB
+
+        ldaa    #$04            ; Select peripheral register
+        staa    CRB
+
+        ldaa    #$00            ; Set CLK and RST low
+        staa    PRB
+        nop                     ; Short delay
+
+        ldaa    #RST            ; Set RST high
+        staa    PRB             ; Note that DAT line is set to 0 (write)
+        nop                     ; Short delay
+
+        oraa    #CLK            ; Toggle CLK high and then low
+        staa    PRB
+        eora    #CLK
+        staa    PRB
+
+        ldx     #5              ; Number of address bits to send
+        ldab    REGNUM          ; Get register address
+
+wnxt    anda    #~DAT           ; Clear data bit
+        lsrb                    ; Shift bit into carry
+        bcc     ws0             ; Branch to send 0, fall through to send 1
+        oraa    #DAT            ; Set data bit to 1
+
+ws0     oraa    #RST            ; Always want RST high
+        oraa    #CLK            ; Toggle CLK high and then low
+        staa    PRB
+        eora    #CLK
+        staa    PRB
+
+        dex                     ; Decrement bit count
+        bne     wnxt            ; Continue sending bits if not done
+
+        ldaa    #$00            ; Set DAT line to 1 for RAM or 0 for clock register
+        oraa    #RST
+        oraa    #CLK            ; Toggle CLK high and then low
+        staa    PRB
+        eora    #CLK
+        staa    PRB
+
+        ldaa    #DAT            ; Set DAT line to 1
+        oraa    #RST
+        oraa    #CLK            ; Toggle CLK high and then low
+        staa    PRB
+        eora    #CLK
+        staa    PRB
+
+        ldab    REGDATA         ; Get write data
+        ldx     #8              ; Number of bits to write
+
+wrl     ldaa    #RST|CLK        ; Toggle CLK high
+        lsrb                    ; Shift bit into carry
+        bcc     w0
+        oraa    #DAT            ; Set data bit
+w0      staa    PRB
+        eora    #CLK            ; Toggle CLK low
+        staa    PRB
+
+        dex                     ; Decrement bit count
+        bne     wrl             ; Do next bit if not done
+
+        ldaa    #CLK|RST        ; Toggle CLK high
+        staa    PRB
+        ldaa    #CLK            ; Set RST low
+        staa    PRB
+
+        nop
+        nop
+        nop
+        nop
+
+        rts                     ; Done

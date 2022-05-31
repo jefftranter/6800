@@ -150,11 +150,10 @@ L
 
 Display and optionally change memory:
 
-M <hex address> <byte> or <CR> <byte>
+M <hex address> <space> <byte> or <CR>
 
-
-Output paper tape file (Start address in A002,3 and end address
-in A004,5):
+Output paper tape file (Start address in 0102,3 and end address
+in 0104,5):
 
 P
 

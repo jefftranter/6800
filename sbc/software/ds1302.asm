@@ -4,7 +4,7 @@
 ;
 ; Jeff Tranter <tranter@pobox.com>
 ;
-; Hardware connections between 68210 PIA (via the parallel port
+; Hardware connections between 6821 PIA (via the parallel port
 ; connector) and DS1302 clock module:
 ;
 ; SBC  DS1302

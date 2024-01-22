@@ -6,7 +6,7 @@ However, the ET-3400 used a MCM6830A ROM which has an entirely
 different pinout from a 2716. You can rewire the socket as listed
 below to allow using a 2716. As well as rewiring all the pins, a chip
 select signal needed to be inverted, which can be done by adding a
-74LS04 inverter ship.
+74LS04 inverter chip.
 
 You will have to cut the tracks to the original socket pins and wire
 them to the changed signals. This is quite a job as all 28 pins were

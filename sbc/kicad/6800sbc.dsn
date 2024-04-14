@@ -245,7 +245,7 @@
       (place C1 140970 -30480 front 0 (PN 0.1uF))
     )
     (component Capacitor_THT:CP_Radial_D5.0mm_P2.00mm
-      (place C2 199390 -41910 front 0 (PN 1000uF))
+      (place C2 199390 -41910 front 0 (PN 100uF))
     )
   )
   (library

@@ -114,8 +114,8 @@ power source is recommended (note that some USB power supplies and
 older USB ports can only supply 0.5A).
 
 It can be powered from unregulated AC or DC input. It can operate from
-8 to 25 volts DC either polarity. Make sure (the maximum voltage
-rating of C2 is not exceeded). For AC input, change the value of C2 to
+8 to 25 volts DC either polarity. Make sure the maximum voltage
+rating of C2 is not exceeded. For AC input, change the value of C2 to
 2000 uF or more. AC input is required if you want to use the AC line
 (50/60 Hz) interrupt feature.
 

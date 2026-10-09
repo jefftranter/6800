@@ -34,18 +34,19 @@ inptr   equ     $002e           ; two bytes
 
 in      equ     $0200
 
-kbd     equ     $d010
-kbd_cr  equ     $d011
-dsp     equ     $d012
-dsp_cr  equ     $d013
+; 6850 ACIA at $8300
+acia_cr equ     $8300           ; Control register (write-only)
+acia_sr equ     $8300           ; Status regsuter (read-only)
+acia_dr equ     $8301           ; Data register (write to TDR, read from RDR)
 
-        * = $ff00
+        * = $c000               ; Start of ROM
 
-reset   ldab    #$7f            ; Mask for DSP data direction register.
-        stab    dsp             ; Set it up.
-        ldab    #$a7            ; KBD and DSP control register mask.
-        stab    kbd_cr          ; Enable interrupts, set CA1, CB1, for
-        stab    dsp_cr          ;  positive edge sense/output mode.
+        ds      $fe00-*,$ff     ; Fill unused ROM locations with $FF
+
+reset   ldab    #$03
+        stab    acia_cr         ; Reset ACIA
+        ldab    #$15            ; 8N1, CLK/16, RTS low, no IRQ
+        stab    acia_cr         ; Set it up.
         lds     #$01f           ; On the 6502, the monitor didn't initialize the
                                 ;  stack pointer, which was OK because it was
                                 ;  guaranteed to be somewhere in page 1. Not so
@@ -75,7 +76,7 @@ escape  ldaa    #$dc            ; "\".
 
 getline ldaa    #$8d            ; CR.
         jsr     echo            ; Output it.
-        ldx     #in+1           ; Initiallize [sic] text index.
+        ldx     #in+1           ; Initialize text index.
         ldab    #1
 backspace
         dex                     ; Back up text index.
@@ -83,9 +84,11 @@ backspace
         bmi     getline         ; Beyond start of line, reinitialize.
 
 nextchar
-        ldaa    kbd_cr          ; Key ready?
-        bpl     nextchar        ; Loop until ready.
-        ldaa    kbd             ; Load character. B7 should be '1'.
+        ldaa    acia_sr
+        bita    #$01            ; Key ready?
+        beq     nextchar        ; Loop until ready.
+        ldaa    acia_dr         ; Load character.
+        oraa    #$80            ; Set high-ASCII encoding.
         staa    ,x              ; Add to text buffer.
         bsr     echo            ; Display character.
         cmpa    #$8d            ; CR?
@@ -167,9 +170,13 @@ prhex   anda    #$0f            ; Mask LSD for hex print.
         cmpa    #$b9            ; Digit?
         bls     echo            ; Yes, output it.
         adda    #$07            ; Add offset for letter.
-echo    tst     dsp             ; DA bit (B7) cleared yet?
-        bmi     echo            ; No, wait for display.
-        staa    dsp             ; Output character. Sets DA.
+
+echo    ldab    acia_sr
+        bitb    #$02            ; Bit 2 cleared yet?
+        beq     echo            ; No, wait for display.
+        anda    #$7F            ; Convert to low ACII.
+        staa    acia_dr         ; Output character.
+        oraa    #$80            ; Convert back to high ASCII.
         rts                     ; Return.
 
 run     ldx     xam

@@ -89,7 +89,7 @@ wozmon.hex: wozmon.asm
 	@egrep "ERRORS: |WARNINGS: " wozmon.lst
 
 wozmon.bin: wozmon.hex
-	srec_cat wozmon.hex -Intel --crop 0xff00 0x10000 --offset -0xff00 -output wozmon.bin -Binary
+	srec_cat wozmon.hex -Intel --crop 0xc000 0x10000 --offset -0xc000 -output wozmon.bin -Binary
 
 clean:
 	$(RM) *.lst

@@ -1,4 +1,4 @@
-all: all1 all2 example.run ds1216e.run ds1302.run microbasic.run mondeb.bin
+all: all1 all2 example.run ds1216e.run ds1302.run microbasic.run mondeb.bin wozmon.bin
 
 all1:	all1.bin all1.run all1.hex
 
@@ -83,6 +83,13 @@ mondeb.hex: mondeb.asm
 
 mondeb.bin: mondeb.hex
 	srec_cat mondeb.hex -Intel --crop 0xc000 0x10000 --offset -0xc000 -output mondeb.bin -Binary
+
+wozmon.hex: wozmon.asm
+	crasm -o wozmon.hex wozmon.asm >wozmon.lst
+	@egrep "ERRORS: |WARNINGS: " wozmon.lst
+
+wozmon.bin: wozmon.hex
+	srec_cat wozmon.hex -Intel --crop 0xff00 0x10000 --offset -0xff00 -output wozmon.bin -Binary
 
 clean:
 	$(RM) *.lst

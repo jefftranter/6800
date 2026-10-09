@@ -1,4 +1,4 @@
-all: all1 all2 example.run ds1216e.run ds1302.run microbasic.run
+all: all1 all2 example.run ds1216e.run ds1302.run microbasic.run mondeb.run
 
 all1:	all1.bin all1.run all1.hex
 
@@ -77,10 +77,16 @@ all1.bin: all1.hex
 all2.bin: all2.hex
 	srec_cat all2.hex -Intel --crop 0xc000 0x10000 --offset -0xc000 -output all2.bin -Binary
 
+mondeb.run: mondeb.asm
+	crasm -o mondeb.run mondeb.asm >mondeb.lst
+	@egrep "ERRORS: |WARNINGS: " mondeb.lst
+	grep -v "S1..70" mondeb.run >X
+	mv X mondeb.run
+
 clean:
 	$(RM) *.lst
 	$(RM) disasm.hex fantomii-acia.hex fantomii.hex loader1.hex loader2.hex tscbasic.hex mikbug.hex minibug.hex monitor.hex tinybasic.hex basic680.hex
-	$(RM) basic680.run tscbasic.run example.run ds1216e.run ds1302.run microbasic.run
+	$(RM) basic680.run tscbasic.run example.run ds1216e.run ds1302.run microbasic.run mondeb.run
 
 distclean:
 	$(RM) *.hex *.lst *.run *.bin

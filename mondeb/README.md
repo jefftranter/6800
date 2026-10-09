@@ -32,8 +32,9 @@ An address range is in the form <start>:<end>
 
 I typed in the listing from the book and adapted it to build with the
 crasm cross-compiler. I have confirmed that it produces binary output
-identical to the one in the book, but I have no hardware that can run
-it so I cannot verify that it works.
+identical to the one in the book
+
+For a port to my single board computer, see the folder ../sbc/software
 
 To use the code or port it to another computer, you will want to
 obtain a copy of the book.

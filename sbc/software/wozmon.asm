@@ -36,7 +36,7 @@ in      equ     $0200
 
 ; 6850 ACIA at $8300
 acia_cr equ     $8300           ; Control register (write-only)
-acia_sr equ     $8300           ; Status regsuter (read-only)
+acia_sr equ     $8300           ; Status register (read-only)
 acia_dr equ     $8301           ; Data register (write to TDR, read from RDR)
 
         * = $c000               ; Start of ROM
@@ -75,6 +75,8 @@ escape  ldaa    #$dc            ; "\".
         jsr     echo            ; Output it.
 
 getline ldaa    #$8d            ; CR.
+        jsr     echo            ; Output it.
+        ldaa    #$8a            ; LF.
         jsr     echo            ; Output it.
         ldx     #in+1           ; Initialize text index.
         ldab    #1
@@ -192,10 +194,12 @@ notstor bne     xamnext         ; mode = $00 for XAM, $56 for BLOCK XAM.
 nxtprnt bne     prdata          ; NE means no address to print.
         ldaa    #$8d            ; CR.
         bsr     echo            ; Output it.
+        ldaa    #$8a            ; LF.
+        bsr     echo            ; Output it.
         ldaa    xam             ; 'Examine index' high-order byte.
         bsr     prbyte          ; Output it in hex format.
         ldaa    xam+1           ; Low-order 'Examine index' byte.
-        bsr     prbyte           ; Output it in hex format.
+        bsr     prbyte          ; Output it in hex format.
         ldaa    #$ba            ; ":".
         bsr     echo            ; Output it.
 
@@ -219,5 +223,5 @@ xamnext clr     mode            ; 0->MODE (XAM mode).
         * = $FFF8               ; vector table
         dw      $0000           ; IRQ
         dw      $0000           ; SWI
-        dw      $f000           ; NMI
-        dw      $ff00           ; RESET
+        dw      $0000           ; NMI
+        dw      reset           ; RESET

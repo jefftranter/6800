@@ -23,6 +23,8 @@ This is a port of software to my 6800-based single board computer:
 
 - A port of Don Peters' MONDEB monitor debugger.
 
+- A port of the 6800 version of WozMon.
+
 The programs are set up to assemble with the "crasm" cross-assembler
 which can be found here: https://github.com/colinbourassa/crasm
 It is also available as a package on most Linux distributions like

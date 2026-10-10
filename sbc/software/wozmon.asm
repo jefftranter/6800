@@ -47,6 +47,8 @@ reset   ldab    #$03
         stab    acia_cr         ; Reset ACIA
         ldab    #$15            ; 8N1, CLK/16, RTS low, no IRQ
         stab    acia_cr         ; Set it up.
+        bra     escape          ; Show prompt
+
         lds     #$01f           ; On the 6502, the monitor didn't initialize the
                                 ;  stack pointer, which was OK because it was
                                 ;  guaranteed to be somewhere in page 1. Not so
@@ -55,10 +57,6 @@ reset   ldab    #$03
                                 ;  starting right before the input buffer to
                                 ;  save a few bytes, but I haven't yet figured
                                 ;  out how to do it.
-
-; Note that B contains $a7 here, which means that the incb below will
-; set the negative flag, causing the bpl to fall through into escape.
-; This saves us a "bra escape" instruction here.
 
 ; Get a line of input from the keyboard, echoing to display.
 ; Normally enter at escape or getline.
